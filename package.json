@@ -1,0 +1,13 @@
+{
+    "name": "zedit",
+    "version": "0.0.0",
+    "private": true,
+    "jam": {
+        "packageDir": "www/jam",
+        "baseUrl": "www",
+        "dependencies": {
+            "jquery": "~1.8.3",
+            "events": "0.0.2"
+        }
+    }
+}
