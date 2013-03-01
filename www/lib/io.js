@@ -5,7 +5,14 @@ define(function(require, exports, module) {
         $.post(config.get('url'), {
             action: 'find'
         }, function(res) {
-            callback(null, res.split("\n"));
+            var items = res.split("\n");
+            for(var i = 0; i < items.length; i++) {
+                if(!items[i]) {
+                    items.splice(i, 1);
+                    i--;
+                }
+            }
+            callback(null, items);
         }, 'text');
     }
 
@@ -26,7 +33,23 @@ define(function(require, exports, module) {
         });
     }
 
+    function dirname(path) {
+        if(path[path.length-1] === '/')
+            path = path.substring(0, path.length-1);
+        var parts = path.split("/");
+        return parts.slice(0, parts.length - 1).join("/");
+    }
+    
+    function filename(path) {
+        if(path[path.length-1] === '/')
+            path = path.substring(0, path.length-1);
+        var parts = path.split("/");
+        return parts[parts.length - 1];
+    }
+
     exports.find = find;
     exports.readFile = readFile;
     exports.writeFile = writeFile;
+    exports.dirname = dirname;
+    exports.filename = filename;
 });

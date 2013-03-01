@@ -1,5 +1,10 @@
 define(function(require, exports, module) {
     require("ace/ace");
+    /*
+    require(["ace/keybinding-vim", "ace/keybinding-emacs"], function() {
+        editor.ace.setKeyboardHandler("ace/keyboard/vim");
+    });
+    */
 
     var eventbus = require("eventbus");
 
@@ -78,6 +83,7 @@ define(function(require, exports, module) {
             }
             var session = ace.createEditSession(content);
             session.setMode(mode);
+            session.filename = path;
             return session;
         },
         switchSession: function(session) {
@@ -85,7 +91,24 @@ define(function(require, exports, module) {
         },
         setMode: function(ext, modeModule) {
             editor.extMapping[ext] = modeModule;
-        }
+        },
+        getActiveSession: function() {
+            return editor.ace.getSession();
+        },
+        getSessionState: function(session) {
+            return {
+                scrollTop: session.getScrollTop(),
+                scrollLeft: session.getScrollLeft(),
+                selection: session.getSelection().getRange(),
+                lastUse: session.lastUse
+            };
+        },
+        setSessionState : function(session, state) {
+            session.getSelection().setSelectionRange(state.selection, false);
+            session.setScrollTop(state.scrollTop);
+            session.setScrollLeft(state.scrollLeft);
+            session.lastUse = state.lastUse;
+        },
     };
 
     $("body").append("<div id='editor'>");

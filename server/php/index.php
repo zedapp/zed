@@ -101,7 +101,7 @@ function handlePost($path) {
     }
 }
 
-function printRecursiveList($dir, $prefix = '', $hidden = false) {
+function printRecursiveList($dir, $prefix = '/', $hidden = false) {
     $dir = rtrim($dir, '\\/');
     foreach (scandir($dir) as $f) {
         if ($f !== '.' && $f !== '..' && ($hidden || $f[0] != '.')) {

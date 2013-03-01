@@ -32,6 +32,20 @@ body {
     -webkit-box-sizing: border-box;
 }
 
-li.selected {
-    background-color: #ccc;
+#goto ul {
+    margin: 0;
+    padding: 5px;
+}
+
+#goto li {
+    list-style-type: none;
+    padding: 3px;
+}
+
+#goto li.selected {
+    background-color: #33CCFF;
+}
+
+#goto li.soft-selected {
+    background-color: #eee;
 }

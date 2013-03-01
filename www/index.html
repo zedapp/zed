@@ -2,10 +2,18 @@
 <html>
     <head>
         <title>ZEdit</title>
-        <link href="app.css" rel="stylesheet" type="text/css" />
     </head>
     <body>
         <script src="jam/require.js"></script>
-        <script src="app.js"></script>
+        <script>
+            require.config({
+                baseUrl: "lib",
+                paths: {
+                    //"some": "some/v1.0"
+                },
+                waitSeconds: 15
+            });
+        </script>
+        <script src="lib/app.js"></script>
     </body>
 </html>

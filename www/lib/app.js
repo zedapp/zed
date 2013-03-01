@@ -6,9 +6,9 @@ require(["plugins", "jquery"], function(plugins, eventbus) {
     loadCSS("lib/app.css");
 
     require(plugins, function() {
-
         var config = require("config");
         var eventbus = require("eventbus");
+        var session_manager = require("session_manager");
 
         var hash = location.hash;
         if(!hash) {
@@ -16,7 +16,6 @@ require(["plugins", "jquery"], function(plugins, eventbus) {
             hash = location.hash;
         }
         config.set('url', hash.substr(1));
-        eventbus.emit("pathchange");
         setInterval(function() {
             if(location.hash !== hash) {
                 hash = location.hash;
@@ -24,6 +23,15 @@ require(["plugins", "jquery"], function(plugins, eventbus) {
                 eventbus.emit("pathchange");
             }
         }, 1000);
+
+        $.get("README.md", function(res) {
+            session_manager.specialDocs['zedit:start'] = {
+                mode: 'ace/mode/markdown',
+                content: res
+            };
+            eventbus.emit("pathchange");
+        }, 'text');
+
         console.log("Zedit loaded.");
     });
 
