@@ -95,7 +95,7 @@ function handlePut($path) {
 function handlePost($path) {
     $action = $_POST["action"];
     switch($action) {
-    case "find":
+    case "filelist":
         $filePath = filePath($path);
         printRecursiveList($filePath);
     }

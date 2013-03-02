@@ -1,4 +1,6 @@
 define(function(require, exports, module) {
+    require("jquery.caret.min");
+    
     var editor = require("editor");
     var session_manager = require("session_manager");
     var eventbus = require("eventbus");
@@ -15,13 +17,17 @@ define(function(require, exports, module) {
     function pathMatch(currentPath, path) {
         var partsMatch = 0;
         for(var i = 0; i < currentPath.length && i < path.length && currentPath[i] === path[i]; i++) {
-            if(currentPath[i] === '/') {
+            if(currentPath[i] === '/')
                 partsMatch++;
-            }
+            //partsMatch += .001;
         }
-        for(var j = i; j < path.length; j++)
+        for(var j = i; j < path.length; j++) {
             if(path[j] === '/')
                 partsMatch--;
+            
+            // Slightly favor shorter paths
+            partsMatch -= .1;
+        }
         return partsMatch;
     }
 
@@ -29,7 +35,7 @@ define(function(require, exports, module) {
         var results = {};
 
         var sessions = session_manager.getSessions();
-        var currentPath = editor.getActiveSession().filename;
+        var currentPath = editor.getActiveSession().filename || "";
         phrase = phrase.toLowerCase();
         for(var i = 0; i < fileCache.length; i++) {
             var file = fileCache[i];
@@ -103,7 +109,7 @@ define(function(require, exports, module) {
 
         function close() {
             box.remove();
-            editor.ace.focus();
+            editor.getActiveEditor().focus();
             visible = false;
         }
         
@@ -145,7 +151,7 @@ define(function(require, exports, module) {
                     }
                     close();
                     break;
-                case 9:
+                case 9: // tab
                     break;
                 case 191: // slash
                     var firstMatch = results[0].path;
@@ -188,9 +194,10 @@ define(function(require, exports, module) {
                     break;
                 case 8: // backspace
                     var val = input.val();
+                    var caret = input.caret();
                     if(val === '/') {
                         input.val('');
-                    } else if(val[val.length-1] === '/') {
+                    } else if(val[caret.start-1] === '/') {
                         input.val(io.dirname(input.val()) + "/");
                         event.preventDefault();
                     }
@@ -213,6 +220,10 @@ define(function(require, exports, module) {
         io.find(function(err, files) {
             fileCache = files;
         });
+    });
+    
+    eventbus.on("newfilesession", function(path) {
+        fileCache.push(path);
     });
 
     keys.bind("Command-e", function() {

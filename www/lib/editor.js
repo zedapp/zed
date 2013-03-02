@@ -7,10 +7,17 @@ define(function(require, exports, module) {
     */
 
     var eventbus = require("eventbus");
+    
+    var editors = [];
+    
+    var SPLIT_1 = 0;
+    var SPLIT_VERTICAL_2 = 1;
+    var SPLIT_HORIZONTAL_2 = 2;
+    
+    var activeEditor = null;
 
     var editor = module.exports = {
         buffers: {},
-        ace: null, // Set during init
         extMapping: {
             "abap": "ace/mode/abap",
             "asciidoc": "ace/mode/asciidoc",
@@ -73,7 +80,6 @@ define(function(require, exports, module) {
             "xquery": "ace/mode/xquery",
             "yaml": "ace/mode/yaml"
         },
-        ace: editor,
         createSession: function(path, content) {
             var parts = path.split(".");
             var ext = parts[parts.length - 1];
@@ -86,14 +92,25 @@ define(function(require, exports, module) {
             session.filename = path;
             return session;
         },
-        switchSession: function(session) {
-            editor.ace.setSession(session);
+        switchSession: function(session, edit) {
+            edit = edit || editor.getActiveEdtor();
+            edit.setSession(session);
         },
         setMode: function(ext, modeModule) {
             editor.extMapping[ext] = modeModule;
         },
+        getActiveEditor: function() {
+            return activeEditor;
+        },
+        setActiveEditor: function(editor) {
+            activeEditor = editor;
+            activeEditor.focus();
+        },
+        getEditors: function() {
+            return editors;
+        },
         getActiveSession: function() {
-            return editor.ace.getSession();
+            return editor.getActiveEditor().getSession();
         },
         getSessionState: function(session) {
             return {
@@ -110,10 +127,30 @@ define(function(require, exports, module) {
             session.lastUse = state.lastUse;
         },
     };
+    
+    init();
 
-    $("body").append("<div id='editor'>");
-    editor.ace = ace.edit("editor");
-
-    eventbus.emit("editorloaded");
-    editor.ace.focus();
+    function init() {
+        $("body").append("<div id='editor0' class='editor-vsplit-left'>");
+        $("body").append("<div id='editor1' class='editor-vsplit-right'>");
+        editors.push(ace.edit("editor0"));
+        editors.push(ace.edit("editor1"));
+        
+        var keyboardHandler = editors[0].getKeyboardHandler();
+        editors.forEach(function(editor) {
+            editor.setHighlightActiveLine(false);
+            editor.setKeyboardHandler(keyboardHandler);
+            editor.on("focus", function() {
+                activeEditor = editor;
+                editor.setHighlightActiveLine(true);
+            });
+            editor.on("blur", function() {
+                activeEditor = editor;
+                editor.setHighlightActiveLine(false);
+            });
+        });
+    
+        eventbus.emit("editorloaded");
+        editor.setActiveEditor(editors[0]);
+    }
 });

@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
     var io = require("io");
     var config = {};
+    var eventbus = require("eventbus");
 
     // TODO add listeners
 
@@ -24,4 +25,10 @@ define(function(require, exports, module) {
             return JSON.stringify(config, null, 2);
         }
     };
+    
+    eventbus.on("pathchange", function() {
+        module.exports.load(function(config) {
+            eventbus.emit("configloaded", config);
+        });
+    });
 });

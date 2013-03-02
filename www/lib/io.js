@@ -3,7 +3,7 @@ define(function(require, exports, module) {
 
     function find(callback) {
         $.post(config.get('url'), {
-            action: 'find'
+            action: 'filelist'
         }, function(res) {
             var items = res.split("\n");
             for(var i = 0; i < items.length; i++) {

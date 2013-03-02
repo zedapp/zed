@@ -28,7 +28,7 @@ define(function(require, exports, module) {
     var oldConfigJSON = null;
     
     function updateConfig() {
-        config.set("session.current", editor.getActiveSession().filename);
+        config.set("session.current", editor.getEditors().map(function(e) { return e.getSession().filename; }));
         var openDocuments = {};
         for(var path in sessions) {
             openDocuments[path] = editor.getSessionState(sessions[path]);
@@ -54,15 +54,18 @@ define(function(require, exports, module) {
         });
     }
 
-    function go(path) {
+    function go(path, edit) {
+        edit = edit || editor.getActiveEditor();
         if(exports.specialDocs[path]) {
             var doc = exports.specialDocs[path];
             var session = editor.createSession(path, doc.content);
             session.setMode(doc.mode);
-            editor.switchSession(session);
+            editor.switchSession(session, edit);
             return;
         }
-        if(sessions[path]) {
+        if(!path) {
+            // Ignore
+        } else if(sessions[path]) {
             show(sessions[path]);
         } else {
             if(goto.getFileCache().indexOf(path) === -1) {
@@ -71,17 +74,18 @@ define(function(require, exports, module) {
                 var session = editor.createSession(path, "");
                 setupSave(session)
                 show(session);
+                eventbus.emit("newfilesession", session);
                 return;
             }
             console.log("Going to load", path);
             loadFile(path, function(err, session) {
+                eventbus.emit("newsession", session);
                 show(session);
             });
         }
         function show(session) {
             session.lastUse = Date.now();
-            editor.ace.setReadOnly(false);
-            editor.switchSession(session);
+            editor.switchSession(session, edit);
             document.title = io.filename(session.filename) + ' - ZEdit';
         }
     }
@@ -89,25 +93,30 @@ define(function(require, exports, module) {
     eventbus.on("pathchange", function() {
         sessions = {};
         go("zedit:start");
+
+    });
+    
+    eventbus.on("configloaded", function() {
         function done() {
             console.log("All sessions loaded.");
-            go(config.get("session.current"));
+            var editors = editor.getEditors();
+            config.get("session.current").forEach(function(path, idx) {
+                go(path, editors[idx]);
+            });
         }
-        config.load(function() {
-            var sessions = config.get("session.open");
-            var count = Object.keys(sessions).length;
-            for(var path in sessions) {
-                (function() {
-                    var sessionState = sessions[path];
-                    loadFile(path, function(err, session) {
-                        editor.setSessionState(session, sessionState);
-                        count--;
-                        if(count === 0)
-                            done();
-                    });
-                })();
-            }
-        });
+        var sessions = config.get("session.open");
+        var count = Object.keys(sessions).length;
+        for(var path in sessions) {
+            (function() {
+                var sessionState = sessions[path];
+                loadFile(path, function(err, session) {
+                    editor.setSessionState(session, sessionState);
+                    count--;
+                    if(count === 0)
+                        done();
+                });
+            })();
+        }
     });
 
     exports.go = go;

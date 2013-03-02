@@ -2,12 +2,50 @@ body {
     font-family: Tahoma, Arial;
 }
 
-#editor {
+div.editor-single {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+}
+
+div.editor-disabled {
+    display: none;
+}
+
+div.editor-vsplit-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+}
+
+div.editor-vsplit-right {
+    position: absolute;
+    border-left: 1px solid black;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+}
+
+div.editor-split-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+}
+
+div.editor-split-bottom {
+    position: absolute;
+    border-top: 1px solid black;
+    height: 50%;
+    right: 0;
+    left: 0;
+    bottom: 0;
 }
 
 #goto {

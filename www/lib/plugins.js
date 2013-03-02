@@ -6,6 +6,7 @@ define(function(require, exports, module) {
         "config",
         "io",
         "keys",
+        "split",
         "session_manager",
     ];
 });
