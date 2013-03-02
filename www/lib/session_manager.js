@@ -86,13 +86,13 @@ define(function(require, exports, module) {
         function show(session) {
             session.lastUse = Date.now();
             editor.switchSession(session, edit);
-            document.title = io.filename(session.filename) + ' - ZEdit';
+            document.title = io.filename(session.filename) + ' - Zed';
         }
     }
 
     eventbus.on("pathchange", function() {
         sessions = {};
-        go("zedit:start");
+        go("zed:start");
 
     });
     

@@ -1,4 +1,4 @@
-require(["plugins", "jquery"], function(plugins, eventbus) {
+require(["plugins"], function(plugins) {
     function loadCSS(url) {
         $("head").append('<link href="' + url + '" rel="stylesheet" type="text/css">');
     }
@@ -24,15 +24,15 @@ require(["plugins", "jquery"], function(plugins, eventbus) {
             }
         }, 1000);
 
-        $.get("README.md", function(res) {
-            session_manager.specialDocs['zedit:start'] = {
+        $.get("manual.md", function(res) {
+            session_manager.specialDocs['zed:start'] = {
                 mode: 'ace/mode/markdown',
                 content: res
             };
             eventbus.emit("pathchange");
         }, 'text');
 
-        console.log("Zedit loaded.");
+        console.log("Zed loaded.");
     });
 
 });

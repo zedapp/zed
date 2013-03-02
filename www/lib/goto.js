@@ -1,6 +1,4 @@
 define(function(require, exports, module) {
-    require("jquery.caret.min");
-    
     var editor = require("editor");
     var session_manager = require("session_manager");
     var eventbus = require("eventbus");
@@ -223,7 +221,7 @@ define(function(require, exports, module) {
     });
     
     eventbus.on("newfilesession", function(path) {
-        fileCache.push(path);
+        fileCache.push(path.filename);
     });
 
     keys.bind("Command-e", function() {
