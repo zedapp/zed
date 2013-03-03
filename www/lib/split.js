@@ -6,44 +6,57 @@ define(function(require, exports, module) {
     
     function resetEditorDiv(el) {
         el.attr("class").split(/\s+/).forEach(function(cls) {
-            if(cls.substring(0, "editor-".length) === "editor-")
+            if(cls.substring(0, "editor-".length) === "editor-") {
                 el.removeClass(cls);
+            }
         });
         return el;
     }
     
     function splitOne() {
         config.set("split", 1);
-        
         resetEditorDiv($("#editor0")).addClass("editor-single");
         resetEditorDiv($("#editor1")).addClass("editor-disabled");
-        
+        resetEditorDiv($("#editor2")).addClass("editor-disabled");
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
+        eventbus.emit("splitchange", 1);
     }
     
-    function splitVertical() {
+    function splitTwo() {
         config.set("split", 2);
-        resetEditorDiv($("#editor0")).addClass("editor-vsplit-left");
-        resetEditorDiv($("#editor1")).addClass("editor-vsplit-right");
+        resetEditorDiv($("#editor0")).addClass("editor-vsplit2-left");
+        resetEditorDiv($("#editor1")).addClass("editor-vsplit2-right");
+        resetEditorDiv($("#editor2")).addClass("editor-disabled");
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
+        eventbus.emit("splitchange", 2);
     }
     
-    function splitHorizontal() {
+    function splitThree() {
         config.set("split", 3);
-        resetEditorDiv($("#editor0")).addClass("editor-split-top");
-        resetEditorDiv($("#editor1")).addClass("editor-split-bottom");
+        resetEditorDiv($("#editor0")).addClass("editor-vsplit3-left");
+        resetEditorDiv($("#editor1")).addClass("editor-vsplit3-middle");
+        resetEditorDiv($("#editor2")).addClass("editor-vsplit3-right");
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
+        eventbus.emit("splitchange", 3);
+    }
+    
+    function switchSplit() {
+        var editors = editor.getEditors();
+        var activeEditor = editor.getActiveEditor();
+        var idx = editors.indexOf(activeEditor);
+        editor.setActiveEditor(editors[(idx + 1) % editors.length]);
     }
     
     keys.bind("Command-1", splitOne);
-    keys.bind("Command-2", splitVertical);
-    keys.bind("Command-3", splitHorizontal);
+    keys.bind("Command-2", splitTwo);
+    keys.bind("Command-3", splitThree);
+    keys.bind("Command-0", switchSplit);
     
     eventbus.on("configloaded", function() {
         switch(config.get("split")) {
@@ -51,10 +64,10 @@ define(function(require, exports, module) {
                 splitOne();
                 break;
             case 2:
-                splitVertical();
+                splitTwo();
                 break;
             case 3:
-                splitHorizontal();
+                splitThree();
                 break;
             default:
                 splitOne();

@@ -10,11 +10,12 @@ div.editor-single {
     left: 0;
 }
 
+
 div.editor-disabled {
     display: none;
 }
 
-div.editor-vsplit-left {
+div.editor-vsplit2-left {
     position: absolute;
     top: 0;
     left: 0;
@@ -22,13 +23,40 @@ div.editor-vsplit-left {
     width: 50%;
 }
 
-div.editor-vsplit-right {
+div.editor-vsplit2-right {
     position: absolute;
     border-left: 1px solid black;
     top: 0;
     right: 0;
     bottom: 0;
     width: 50%;
+}
+
+div.editor-vsplit3-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 33.33%;
+}
+
+div.editor-vsplit3-middle {
+    position: fixed;
+    border-left: 1px solid black;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -16.666%;
+    width: 33.33%;
+}
+
+div.editor-vsplit3-right {
+    position: absolute;
+    border-left: 1px solid black;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 33.3%;
 }
 
 div.editor-split-top {
@@ -50,29 +78,37 @@ div.editor-split-bottom {
 
 #goto {
     position: fixed;
-    top: 0;
-    left: 50%;
-    margin-left: -30%;
     border-left: solid 1px black;
     border-bottom: solid 1px black;
     border-right: solid 1px black;
     background: #fff;
-    padding: 10px;
-    width: 70%;
+    padding: 0;
     z-index: 999;
+    font-family: Monaco, Menlo;
+    font-size: 12px;
 }
 
 #goto input {
-    font-size: 16px;
+    font-size: 12px;
     width: 100%;
     box-sizing: border-box;
+    padding: 5px;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+    outline-width: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px dotted gray;
+    border-top: 0;
+    font-family: Monaco, Menlo;
 }
 
 #goto ul {
     margin: 0;
-    padding: 5px;
+    padding: 0;
+    max-height: 200px;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 #goto li {
@@ -86,4 +122,36 @@ div.editor-split-bottom {
 
 #goto li.soft-selected {
     background-color: #eee;
+}
+
+.editbar {
+    position: absolute;
+    bottom: 0;
+    height: 25px;
+    background-color: #eee;
+    border: 1px solid #aaa;
+    
+    z-index: 999;
+}
+
+.editbar .path {
+    font-family: Monaco, Menlo;
+    font-size: 13px;
+    line-height: 25px;
+    padding-left: 5px;
+}
+
+.editbar .info {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-family: Monaco, Menlo;
+    font-size: 10px;
+    line-height: 25px;
+    padding-right: 5px;
+    color: #777;
+}
+
+.hidden {
+    display: none;
 }

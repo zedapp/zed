@@ -9,11 +9,6 @@ define(function(require, exports, module) {
     var eventbus = require("eventbus");
     
     var editors = [];
-    
-    var SPLIT_1 = 0;
-    var SPLIT_VERTICAL_2 = 1;
-    var SPLIT_HORIZONTAL_2 = 2;
-    
     var activeEditor = null;
 
     var editor = module.exports = {
@@ -95,6 +90,7 @@ define(function(require, exports, module) {
         switchSession: function(session, edit) {
             edit = edit || editor.getActiveEdtor();
             edit.setSession(session);
+            eventbus.emit("switchsession", edit, session);
         },
         setMode: function(ext, modeModule) {
             editor.extMapping[ext] = modeModule;
@@ -131,10 +127,12 @@ define(function(require, exports, module) {
     init();
 
     function init() {
-        $("body").append("<div id='editor0' class='editor-vsplit-left'>");
-        $("body").append("<div id='editor1' class='editor-vsplit-right'>");
+        $("body").append("<div id='editor0'>");
+        $("body").append("<div id='editor1'>");
+        $("body").append("<div id='editor2'>");
         editors.push(ace.edit("editor0"));
         editors.push(ace.edit("editor1"));
+        editors.push(ace.edit("editor2"));
         
         var keyboardHandler = editors[0].getKeyboardHandler();
         editors.forEach(function(editor) {
@@ -149,7 +147,7 @@ define(function(require, exports, module) {
                 editor.setHighlightActiveLine(false);
             });
         });
-    
+        
         eventbus.emit("editorloaded");
         editor.setActiveEditor(editors[0]);
     }

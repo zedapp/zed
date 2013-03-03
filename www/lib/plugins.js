@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
     module.exports = [
         "editor",
+        "editbar",
         "eventbus",
         "goto",
         "config",

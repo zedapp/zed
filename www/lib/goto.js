@@ -81,7 +81,17 @@ define(function(require, exports, module) {
     function show() {
         if(visible)
             return;
+        var edit = editor.getActiveEditor();
+        //$(edit.container).parent().append("<div id='goto'><input type='text' id='gotoinput' placeholder='file'/><ul id='results'>");
         $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='file'/><ul id='results'>");
+        
+        var editorEl = $(edit.container);
+        var gotoEl = $("#goto");
+        
+        gotoEl.css("left", (editorEl.offset().left + 40) + "px");
+        gotoEl.css("width", (editorEl.width() - 80) + "px");
+        gotoEl.css("top", editorEl.offset().top + "px");
+        
         visible = true;
 
         var box = $("#goto");

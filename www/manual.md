@@ -12,6 +12,7 @@ To open or create a new file: `Cmd-e`. Inside the picker:
 Split view
 ==========
 
-* Command-1: full screen
+* Command-1: one split
 * Command-2: vertical split
 * Command-3: horizontal split
+* Command-0: toggle focus from one split to the next
