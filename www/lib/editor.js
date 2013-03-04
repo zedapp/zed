@@ -7,12 +7,13 @@ define(function(require, exports, module) {
     */
 
     var eventbus = require("eventbus");
+
+    eventbus.declare("editorloaded");
     
     var editors = [];
     var activeEditor = null;
 
     var editor = module.exports = {
-        buffers: {},
         extMapping: {
             "abap": "ace/mode/abap",
             "asciidoc": "ace/mode/asciidoc",
@@ -75,6 +76,41 @@ define(function(require, exports, module) {
             "xquery": "ace/mode/xquery",
             "yaml": "ace/mode/yaml"
         },
+        hook: function() {
+            eventbus.on("configloaded", function(config) {
+                var theme = config.get("editor.theme");
+                if(theme) {
+                    editor.getEditors(true).forEach(function(edit) {
+                        edit.setTheme(theme);
+                    });
+                }
+            });
+        },
+        init: function() {
+            $("body").append("<div id='editor0'>");
+            $("body").append("<div id='editor1'>");
+            $("body").append("<div id='editor2'>");
+            editors.push(ace.edit("editor0"));
+            editors.push(ace.edit("editor1"));
+            editors.push(ace.edit("editor2"));
+            
+            var keyboardHandler = editors[0].getKeyboardHandler();
+            editors.forEach(function(editor) {
+                editor.setHighlightActiveLine(false);
+                editor.setKeyboardHandler(keyboardHandler);
+                editor.on("focus", function() {
+                    activeEditor = editor;
+                    editor.setHighlightActiveLine(true);
+                });
+                editor.on("blur", function() {
+                    activeEditor = editor;
+                    editor.setHighlightActiveLine(false);
+                });
+            });
+            
+            editor.setActiveEditor(editors[0]);
+            eventbus.emit("editorloaded");
+        },
         createSession: function(path, content) {
             var parts = path.split(".");
             var ext = parts[parts.length - 1];
@@ -102,8 +138,13 @@ define(function(require, exports, module) {
             activeEditor = editor;
             activeEditor.focus();
         },
-        getEditors: function() {
-            return editors;
+        getEditors: function(all) {
+            if(all)
+                return editors;
+
+            return editors.filter(function(edit) {
+                return $(edit.container).is(':visible');
+            });
         },
         getActiveSession: function() {
             return editor.getActiveEditor().getSession();
@@ -123,32 +164,4 @@ define(function(require, exports, module) {
             session.lastUse = state.lastUse;
         },
     };
-    
-    init();
-
-    function init() {
-        $("body").append("<div id='editor0'>");
-        $("body").append("<div id='editor1'>");
-        $("body").append("<div id='editor2'>");
-        editors.push(ace.edit("editor0"));
-        editors.push(ace.edit("editor1"));
-        editors.push(ace.edit("editor2"));
-        
-        var keyboardHandler = editors[0].getKeyboardHandler();
-        editors.forEach(function(editor) {
-            editor.setHighlightActiveLine(false);
-            editor.setKeyboardHandler(keyboardHandler);
-            editor.on("focus", function() {
-                activeEditor = editor;
-                editor.setHighlightActiveLine(true);
-            });
-            editor.on("blur", function() {
-                activeEditor = editor;
-                editor.setHighlightActiveLine(false);
-            });
-        });
-        
-        eventbus.emit("editorloaded");
-        editor.setActiveEditor(editors[0]);
-    }
 });

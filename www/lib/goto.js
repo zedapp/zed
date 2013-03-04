@@ -223,21 +223,27 @@ define(function(require, exports, module) {
         input.focus();
     }
 
-    eventbus.on("pathchange", function() {
-        console.log("Fetching file list...");
-        io.find(function(err, files) {
-            fileCache = files;
+    exports.hook = function() {
+        eventbus.on("pathchange", function() {
+            console.log("Fetching file list...");
+            io.find(function(err, files) {
+                fileCache = files;
+            });
         });
-    });
-    
-    eventbus.on("newfilesession", function(path) {
-        fileCache.push(path.filename);
-    });
+        
+        eventbus.on("newfilesession", function(path) {
+            fileCache.push(path.filename);
+        });
 
-    keys.bind("Command-e", function() {
-        show();
-    });
-    
+        eventbus.once("keysbindable", function() {
+            keys.bind("Command-e", function() {
+                show();
+            });
+        });
+    };
+
+    exports.init = function() { };
+
     exports.getFileCache = function() {
         return fileCache;
     };

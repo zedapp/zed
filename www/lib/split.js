@@ -1,8 +1,9 @@
 define(function(require, exports, module) {
-    var keys = require("keys");
     var config = require("config");
     var editor = require("editor");
     var eventbus = require("eventbus");
+
+    eventbus.declare("splitchange");
     
     function resetEditorDiv(el) {
         el.attr("class").split(/\s+/).forEach(function(cls) {
@@ -52,26 +53,31 @@ define(function(require, exports, module) {
         var idx = editors.indexOf(activeEditor);
         editor.setActiveEditor(editors[(idx + 1) % editors.length]);
     }
+
+    exports.hook = function() {
+        eventbus.once("keysbindable", function(keys) {
+            keys.bind("Command-1", splitOne);
+            keys.bind("Command-2", splitTwo);
+            keys.bind("Command-3", splitThree);
+            keys.bind("Command-0", switchSplit);
+        });
+        
+        eventbus.on("configloaded", function() {
+            switch(config.get("split")) {
+                case 1:
+                    splitOne();
+                    break;
+                case 2:
+                    splitTwo();
+                    break;
+                case 3:
+                    splitThree();
+                    break;
+                default:
+                    splitOne();
+            }
+        });
+    };
     
-    keys.bind("Command-1", splitOne);
-    keys.bind("Command-2", splitTwo);
-    keys.bind("Command-3", splitThree);
-    keys.bind("Command-0", switchSplit);
-    
-    eventbus.on("configloaded", function() {
-        switch(config.get("split")) {
-            case 1:
-                splitOne();
-                break;
-            case 2:
-                splitTwo();
-                break;
-            case 3:
-                splitThree();
-                break;
-            default:
-                splitOne();
-        }
-    });
     
 });

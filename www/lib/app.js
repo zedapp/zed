@@ -10,6 +10,18 @@ require(["plugins"], function(plugins) {
         var eventbus = require("eventbus");
         var session_manager = require("session_manager");
 
+        eventbus.declare("pathchange");
+
+        var pluginModules = Array.prototype.slice.call(arguments);
+        pluginModules.forEach(function(module) {
+            if(module.hook)
+                module.hook();
+        });
+        pluginModules.forEach(function(module) {
+            if(module.init)
+                module.init();
+        });
+        
         var hash = location.hash;
         if(!hash) {
             location.hash = "#" + prompt("URL:");

@@ -5,7 +5,12 @@ define(function(require, exports, module) {
     var goto = require("goto");
     var config = require("config");
 
+    eventbus.declare("switchsession");
+    eventbus.declare("newfilesession");
+    eventbus.declare("newsession");
+
     var sessions = {};
+    var oldConfigJSON = null;
 
     exports.specialDocs = {}; // {content: ..., mode: ..., readonly: true}
     
@@ -25,8 +30,6 @@ define(function(require, exports, module) {
         sessions[path] = session;
     }
     
-    var oldConfigJSON = null;
-    
     function updateConfig() {
         config.set("session.current", editor.getEditors().map(function(e) { return e.getSession().filename; }));
         var openDocuments = {};
@@ -44,7 +47,6 @@ define(function(require, exports, module) {
         oldConfigJSON = configJSON;
     }
     
-    setInterval(updateConfig, 2500);
     
     function loadFile(path, callback) {
         io.readFile(path, function(err, text) {
@@ -89,34 +91,39 @@ define(function(require, exports, module) {
         }
     }
 
-    eventbus.on("pathchange", function() {
-        sessions = {};
-        go("zed:start");
-
-    });
-    
-    eventbus.on("configloaded", function() {
-        function done() {
-            console.log("All sessions loaded.");
-            var editors = editor.getEditors();
-            config.get("session.current").forEach(function(path, idx) {
-                go(path, editors[idx]);
-            });
-        }
-        var sessions = config.get("session.open");
-        var count = Object.keys(sessions).length;
-        for(var path in sessions) {
-            (function() {
-                var sessionState = sessions[path];
-                loadFile(path, function(err, session) {
-                    editor.setSessionState(session, sessionState);
-                    count--;
-                    if(count === 0)
-                        done();
+    exports.hook = function() {
+        eventbus.on("pathchange", function() {
+            sessions = {};
+            go("zed:start");
+        });
+        
+        eventbus.on("configloaded", function() {
+            function done() {
+                console.log("All sessions loaded.");
+                var editors = editor.getEditors();
+                config.get("session.current").forEach(function(path, idx) {
+                    go(path, editors[idx]);
                 });
-            })();
-        }
-    });
+            }
+            var sessions = config.get("session.open");
+            var count = Object.keys(sessions).length;
+            for(var path in sessions) {
+                (function() {
+                    var sessionState = sessions[path];
+                    loadFile(path, function(err, session) {
+                        editor.setSessionState(session, sessionState);
+                        count--;
+                        if(count === 0)
+                            done();
+                    });
+                })();
+            }
+        });
+    };
+
+    exports.init = function() {
+        setInterval(updateConfig, 2500);
+    };
 
     exports.go = go;
     exports.getSessions = function() {

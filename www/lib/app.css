@@ -130,7 +130,6 @@ div.editor-split-bottom {
     height: 25px;
     background-color: #eee;
     border: 1px solid #aaa;
-    
     z-index: 999;
 }
 
@@ -139,6 +138,20 @@ div.editor-split-bottom {
     font-size: 13px;
     line-height: 25px;
     padding-left: 5px;
+}
+
+.editbar input {
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    outline-width: 0;
+    border: 0;
+    padding-left: 5px;
+    font-family: Monaco, Menlo;
+    font-size: 13px;
+    line-height: 23px;
+    background-color: #eee;
 }
 
 .editbar .info {

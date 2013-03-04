@@ -3,9 +3,16 @@ define(function(require, exports, module) {
     var config = {};
     var eventbus = require("eventbus");
 
+    eventbus.declare("configloaded");
+
     // TODO add listeners
 
     module.exports = {
+        hook: function() {
+            eventbus.on("pathchange", function() {
+                module.exports.load();
+            });
+        },
         set: function(key, value) {
             config[key] = value;
         },
@@ -15,7 +22,8 @@ define(function(require, exports, module) {
         load: function(callback) {
             io.readFile("/.zedsession", function(err, json) {
                 config = JSON.parse(json);
-                callback(config);
+                eventbus.emit("configloaded", module.exports);
+                callback && callback(config);
             });
         },
         save: function(callback) {
@@ -26,9 +34,4 @@ define(function(require, exports, module) {
         }
     };
     
-    eventbus.on("pathchange", function() {
-        module.exports.load(function(config) {
-            eventbus.emit("configloaded", config);
-        });
-    });
 });

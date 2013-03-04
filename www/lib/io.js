@@ -17,7 +17,7 @@ define(function(require, exports, module) {
     }
 
     function readFile(path, callback) {
-        $.get(config.get('url') + '/' + path, function(res) {
+        $.get(config.get('url') + path, function(res) {
             callback(null, res);
         }, 'text');
     }
@@ -46,6 +46,9 @@ define(function(require, exports, module) {
         var parts = path.split("/");
         return parts[parts.length - 1];
     }
+
+    exports.hook = function() { };
+    exports.init = function() { };
 
     exports.find = find;
     exports.readFile = readFile;
