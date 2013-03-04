@@ -120,6 +120,7 @@ define(function(require, exports, module) {
             }
             var session = ace.createEditSession(content);
             session.setMode(mode);
+            session.mode = mode;
             session.filename = path;
             return session;
         },

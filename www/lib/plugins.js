@@ -4,6 +4,7 @@ define(function(require, exports, module) {
         "editbar",
         "commandline",
         "eventbus",
+        "beautify",
         "goto",
         "config",
         "io",

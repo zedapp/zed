@@ -52,7 +52,7 @@ define(function(require, exports, module) {
     function enterCommand() {
         var editbarEl = editor.getActiveEditor().editbarEl;
         editbarEl.find('div').hide();
-        editbarEl.append('<input type="text" id="commandline">');
+        editbarEl.append('<input type="text" id="commandline" placeholder="command">');
         
         setupCommandLine($("#commandline"));
     }
