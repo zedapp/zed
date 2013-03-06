@@ -9,6 +9,7 @@ define(function(require, exports, module) {
         "config",
         "io",
         "keys",
+        "complete",
         "split",
         "session_manager",
     ];

@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     var eventbus = require("eventbus");
     var keys = require("keys");
     var io = require("io");
+    var fuzzyfind = require("fuzzyfind");
 
     var fileCache = [];
 
@@ -30,38 +31,47 @@ define(function(require, exports, module) {
     }
 
     function filter(phrase) {
-        var results = {};
-
         var sessions = session_manager.getSessions();
+        var resultList;
         var currentPath = editor.getActiveSession().filename || "";
-        phrase = phrase.toLowerCase();
-        for(var i = 0; i < fileCache.length; i++) {
-            var file = fileCache[i];
-            var fileNorm = file.toLowerCase();
-            var score = 1;
-
-            if(sessions[file]) {
-                score = sessions[file].lastUse;
-            }
-            
-            if(editor.getActiveSession().filename === file)
-                continue;
-
-            // If starts with /, then prefix matching
-            if(phrase[0] === '/') {
+        
+        if(phrase[0] !== '/') {
+            resultList = fuzzyfind(fileCache, phrase);
+            resultList.forEach(function(result) {
+                if(sessions[result.path]) {
+                    result.score = sessions[result.path].lastUse;
+                }
+            });
+        } else {
+            var results = {};
+            phrase = phrase.toLowerCase();
+            for(var i = 0; i < fileCache.length; i++) {
+                var file = fileCache[i];
+                var fileNorm = file.toLowerCase();
+                var score = 1;
+    
+                if(sessions[file]) {
+                    score = sessions[file].lastUse;
+                }
+    
                 if(fileNorm.substring(0, phrase.length) === phrase)
                     results[file] = score;
             }
-            // Super trivial matching
-            else if(fileNorm.indexOf(phrase) !== -1) {
-                results[file] = score;
+            var resultList = [];
+            for(var path in results) {
+                if(results.hasOwnProperty(path))
+                    resultList.push(new Result(path, results[path]));
             }
         }
-        var resultList = [];
-        for(var path in results) {
-            if(results.hasOwnProperty(path))
-                resultList.push(new Result(path, results[path]));
-        }
+        var editors = editor.getEditors();
+        resultList = resultList.filter(function(result) {
+            for(var i = 0; i < editors.length; i++) {
+                if(editors[i].getSession().filename === result.path)
+                    return false;
+            }
+            return true;
+        });
+        
         resultList.sort(function(r1, r2) {
             if(r1.score === r2.score) {
                 // var lengthDiff1 = Math.abs(r1.path.length - currentPath.length);
@@ -69,9 +79,9 @@ define(function(require, exports, module) {
                 var pathMatch1 = pathMatch(currentPath, r1.path);
                 var pathMatch2 = pathMatch(currentPath, r2.path);
                 return pathMatch1 - pathMatch2;
-            }
-            else
+            } else {
                 return r2.score - r1.score;
+            }
         });
         return resultList;
     }
@@ -83,7 +93,7 @@ define(function(require, exports, module) {
             return;
         var edit = editor.getActiveEditor();
         //$(edit.container).parent().append("<div id='goto'><input type='text' id='gotoinput' placeholder='file'/><ul id='results'>");
-        $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='file'/><ul id='results'>");
+        $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='path pattern'/><ul id='results'>");
         
         var editorEl = $(edit.container);
         var gotoEl = $("#goto");
@@ -97,42 +107,47 @@ define(function(require, exports, module) {
         var box = $("#goto");
         var input = $("#gotoinput");
         var resultsEl = $("#results");
-        var selectionIdx = -1;
         var lastPhrase = null;
         var results = [];
+        
+        var ignoreFocus = false;
+        
+        resultsEl.menu({
+            select: select,
+            focus: function(event, ui) {
+                if(ignoreFocus) {
+                    ignoreFocus = false;
+                    return;
+                }
 
-        function unselect() {
-            resultsEl.find("li").removeClass("selected");
-        }
-
-        function select() {
-            if(selectionIdx >= 0) {
-                var li = resultsEl.find("li").eq(selectionIdx);
-                li.addClass("selected");
-                input.val(li.text());
-            } else if(input.val()[0] !== '/') {
-                resultsEl.find("li").eq(0).addClass("selected");
+                input.val(ui.item.text());
             }
+        });
+        
+        function select(event) {
+            var filename = input.val();
+            var selectedPath = resultsEl.find("a.ui-state-focus").text();
+            console.log("Selected path",selectedPath);
+            if(filename) {
+                if(filename[0] !== '/')
+                    filename = selectedPath;
+                session_manager.go(filename);
+            } else {
+                // By default pick the item at the top of the list
+                if(selectedPath)
+                    session_manager.go(selectedPath);
+            }
+            close();
+            event && event.preventDefault();
         }
 
         function close() {
+            resultsEl.menu("destroy");
             box.remove();
             editor.getActiveEditor().focus();
             visible = false;
         }
         
-        function down() {
-            unselect();
-            selectionIdx = Math.min(results.length - 1, selectionIdx + 1);
-            select();
-        }
-        
-        function up() {
-            unselect();
-            selectionIdx = Math.max(0, selectionIdx - 1);
-            select();
-        }
-
         input.keyup(function(event) {
             //console.log(event);
             switch(event.keyCode) {
@@ -140,50 +155,33 @@ define(function(require, exports, module) {
                     close();
                     break;
                 case 38: // up
-                    up();
+                    resultsEl.menu("previous");
                     break;
                 case 40: // down
-                    down();
+                    resultsEl.menu("next");
                     break;
                 case 13: // enter
-                    var filename = input.val();
-                    if(filename) {
-                        if(filename[0] !== '/')
-                            filename = resultsEl.find("li").eq(0).text();
-                        session_manager.go(filename);
-                    } else {
-                        // By default pick the item at the top of the list
-                        filename = resultsEl.find("li").eq(0).text();
-                        if(filename)
-                            session_manager.go(filename);
-                    }
-                    close();
+                    select();
                     break;
                 case 9: // tab
                     break;
-                case 191: // slash
-                    var firstMatch = results[0].path;
-                    var phrase = input.val();
-                    if(phrase !== "/") {
-                        var idx = firstMatch.indexOf(phrase.substring(0, phrase.length-1));
-                        var idxSlash = firstMatch.indexOf('/', idx + phrase.length) + 1;
-                        var slice = firstMatch.substring(0, idxSlash);
-                        console.log(firstMatch, idx, idxSlash, slice);
-                        input.val(slice);
-                    }
                     // explicit non-break
                 default:
                     // TODO only update on textual characters
-                    console.log(event);
                     if(lastPhrase != input.val()) {
+                        var phrase = input.val();
                         selectionIdx = -1;
-                        results = filter(input.val()).slice(0, 100);
+                        results = filter(phrase).slice(0, 100);
                         resultsEl.empty();
                         results.forEach(function(r, idx) {
-                            resultsEl.append('<li>' + r.path + '</li>');
+                            resultsEl.append('<li><a href="#">' + r.path + '</a></li>');
                         });
-                        select();
-                        lastPhrase = input.val();
+                        resultsEl.menu("refresh");
+                        if(phrase[0] !== '/') {
+                            ignoreFocus = true;
+                            resultsEl.menu("next");
+                        }
+                        lastPhrase = phrase;
                     }
             }
         });
@@ -212,9 +210,9 @@ define(function(require, exports, module) {
                     break;
                 case 9: // Tab
                     if(event.shiftKey)
-                        up();
+                        resultsEl.menu("previous");
                     else
-                        down();
+                        resultsEl.menu("next");
                     event.preventDefault();
                     event.stopPropagation();
                     break;

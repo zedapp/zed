@@ -22,3 +22,8 @@ Keys
 * `Command-2`: 2 vertical splits
 * `Command-3`: 3 vertical splits
 * `Command-0`: switch focus from one split to the next
+* `Tab` (following an identifier): complete code. In completion mode:
+    * `Tab` select next completion
+    * `Shift-Tab` select previous completion
+    * `Enter` pick selected completion
+    * `Esc` close completion box

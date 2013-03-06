@@ -13,7 +13,6 @@ define(function(require, exports, module) {
         if (beautifiers[mode]) {
             var range = session.getSelection().getRange();
             var text = session.getTextRange(range);
-
             var reformattedText = beautifiers[mode](text);
             session.replace(range, reformattedText);
         }

@@ -1,7 +1,6 @@
 body {
     font-family: Tahoma, Arial;
 }
-
 div.editor-single {
     position: absolute;
     top: 0;
@@ -9,12 +8,9 @@ div.editor-single {
     bottom: 0;
     left: 0;
 }
-
-
 div.editor-disabled {
     display: none;
 }
-
 div.editor-vsplit2-left {
     position: absolute;
     top: 0;
@@ -22,7 +18,6 @@ div.editor-vsplit2-left {
     bottom: 0;
     width: 50%;
 }
-
 div.editor-vsplit2-right {
     position: absolute;
     border-left: 1px solid black;
@@ -31,7 +26,6 @@ div.editor-vsplit2-right {
     bottom: 0;
     width: 50%;
 }
-
 div.editor-vsplit3-left {
     position: absolute;
     top: 0;
@@ -39,7 +33,6 @@ div.editor-vsplit3-left {
     bottom: 0;
     width: 33.33%;
 }
-
 div.editor-vsplit3-middle {
     position: fixed;
     border-left: 1px solid black;
@@ -49,7 +42,6 @@ div.editor-vsplit3-middle {
     margin-left: -16.666%;
     width: 33.33%;
 }
-
 div.editor-vsplit3-right {
     position: absolute;
     border-left: 1px solid black;
@@ -58,7 +50,6 @@ div.editor-vsplit3-right {
     bottom: 0;
     width: 33.3%;
 }
-
 div.editor-split-top {
     position: absolute;
     top: 0;
@@ -66,7 +57,6 @@ div.editor-split-top {
     right: 0;
     height: 50%;
 }
-
 div.editor-split-bottom {
     position: absolute;
     border-top: 1px solid black;
@@ -75,7 +65,6 @@ div.editor-split-bottom {
     left: 0;
     bottom: 0;
 }
-
 #goto {
     position: fixed;
     border-left: solid 1px black;
@@ -87,7 +76,6 @@ div.editor-split-bottom {
     font-family: Monaco, Menlo;
     font-size: 12px;
 }
-
 #goto input {
     font-size: 12px;
     width: 100%;
@@ -102,7 +90,6 @@ div.editor-split-bottom {
     border-top: 0;
     font-family: Monaco, Menlo;
 }
-
 #goto ul {
     margin: 0;
     padding: 0;
@@ -110,20 +97,19 @@ div.editor-split-bottom {
     overflow: scroll;
     overflow-x: hidden;
 }
-
 #goto li {
     list-style-type: none;
-    padding: 3px;
+    padding: 0;
 }
-
-#goto li.selected {
+#goto a {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+    color: black;
+}
+#goto a.ui-state-focus {
     background-color: #33CCFF;
 }
-
-#goto li.soft-selected {
-    background-color: #eee;
-}
-
 .editbar {
     position: absolute;
     bottom: 0;
@@ -132,14 +118,12 @@ div.editor-split-bottom {
     border: 1px solid #aaa;
     z-index: 999;
 }
-
 .editbar .path {
     font-family: Monaco, Menlo;
     font-size: 13px;
     line-height: 25px;
     padding-left: 5px;
 }
-
 .editbar input {
     width: 100%;
     box-sizing: border-box;
@@ -153,7 +137,6 @@ div.editor-split-bottom {
     line-height: 21px;
     background-color: #eee;
 }
-
 .editbar .info {
     position: absolute;
     right: 0;
@@ -164,7 +147,36 @@ div.editor-split-bottom {
     padding-right: 5px;
     color: #777;
 }
-
 .hidden {
     display: none;
+}
+#complete-box {
+    position: absolute;
+    font-family: Monaco, Menlo;
+    font-size: 12px;
+    border: 1px solid black;
+    background-color: white;
+    z-index: 999;
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 200px;
+    margin: 0;
+    padding: 0;
+}
+
+#complete-box li {
+    list-style-type: none;
+    padding: 0;
+}
+#complete-box a {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+    color: black;
+}
+#complete-box a.ui-state-focus {
+    background-color: #33CCFF;
+}
+#complete-box span.match {
+    color: #080;
 }
