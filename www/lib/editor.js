@@ -1,11 +1,4 @@
 define(function(require, exports, module) {
-    require("ace/ace");
-    /*
-    require(["ace/keybinding-vim", "ace/keybinding-emacs"], function() {
-        editor.ace.setKeyboardHandler("ace/keyboard/vim");
-    });
-    */
-
     var eventbus = require("eventbus");
 
     eventbus.declare("editorloaded");
@@ -77,8 +70,8 @@ define(function(require, exports, module) {
             "yaml": "ace/mode/yaml"
         },
         hook: function() {
-            eventbus.on("configloaded", function(config) {
-                var theme = config.get("editor.theme");
+            eventbus.on("stateloaded", function(state) {
+                var theme = state.get("editor.theme");
                 if(theme) {
                     editor.getEditors(true).forEach(function(edit) {
                         edit.setTheme(theme);
@@ -94,10 +87,8 @@ define(function(require, exports, module) {
             editors.push(ace.edit("editor1"));
             editors.push(ace.edit("editor2"));
             
-            var keyboardHandler = editors[0].getKeyboardHandler();
             editors.forEach(function(editor) {
                 editor.setHighlightActiveLine(false);
-                editor.setKeyboardHandler(keyboardHandler);
                 editor.on("focus", function() {
                     activeEditor = editor;
                     editor.setHighlightActiveLine(true);
@@ -109,7 +100,7 @@ define(function(require, exports, module) {
             });
             
             editor.setActiveEditor(editors[0]);
-            eventbus.emit("editorloaded");
+            eventbus.emit("editorloaded", exports);
         },
         createSession: function(path, content) {
             var parts = path.split(".");
@@ -155,14 +146,35 @@ define(function(require, exports, module) {
                 scrollTop: session.getScrollTop(),
                 scrollLeft: session.getScrollLeft(),
                 selection: session.getSelection().getRange(),
-                lastUse: session.lastUse
+                lastUse: session.lastUse,
+                undo: session.getUndoManager().$undoStack,
+                redo: session.getUndoManager().$redoStack
             };
         },
         setSessionState : function(session, state) {
+            var Range = ace.require("ace/range").Range;
+            
+            // Turns JSONified Range objects back into real Ranges
+            function rangify(ar) {
+                ar.forEach(function(undoArray) {
+                    undoArray.forEach(function(undo) {
+                        undo.deltas.forEach(function(delta) {
+                            delta.range = Range.fromPoints(delta.range.start, delta.range.end);
+                        })
+                    });
+                });
+            }
             session.getSelection().setSelectionRange(state.selection, false);
             session.setScrollTop(state.scrollTop);
             session.setScrollLeft(state.scrollLeft);
             session.lastUse = state.lastUse;
+            var undoManager = session.getUndoManager();
+            rangify(state.undo);
+            rangify(state.redo);
+            
+            undoManager.$doc = session;
+            undoManager.$undoStack = state.undo || [];
+            undoManager.$redoStack = state.redo || [];
         },
     };
 });

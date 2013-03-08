@@ -1,20 +1,22 @@
 define(function(require, exports, module) {
     var eventbus = require("eventbus");
     var editor = require("editor");
+    var keys = require("keys");
     var sandboxEval = require("commandline").sandboxEval;
-    var config = null; // delayed: require("config");
+    var state = null; // delayed: require("state");
     
     var commandHistory = [];
     
     exports.hook = function() {
-        require(["config"], function(config_) {
-            config = config_;
+        require(["state"], function(state_) {
+            state = state_;
         });
         eventbus.on("splitchange", update);
         eventbus.on("switchsession", switchSession);
-        eventbus.on("keysbindable", function(keys) {
-            keys.bind("Command-.", enterCommand);
-        });
+        keys.bind("entercommand", {
+                mac: "Command-.",
+                win: "Ctrl-."
+            }, enterCommand);
         
         eventbus.once("editorloaded", function() {
             editor.getEditors(true).forEach(function(edit, idx) {
@@ -30,8 +32,8 @@ define(function(require, exports, module) {
             });
         });
         
-        eventbus.on("configloaded", function(config) {
-            commandHistory = config.get("commandhistory") || [];
+        eventbus.on("stateloaded", function(state) {
+            commandHistory = state.get("commandhistory") || [];
         });
     };
     
@@ -65,7 +67,7 @@ define(function(require, exports, module) {
         if(commandHistory.length > 50)
             commandHistory = commandHistory.slice(commandHistory.length - 50);
         commandHistory.push(command);
-        config.set("commandhistory", commandHistory);
+        state.set("commandhistory", commandHistory);
     }
     
     function setupCommandLine(el) {

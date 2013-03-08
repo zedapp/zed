@@ -19,7 +19,7 @@ case "POST":
 function filePath($path) {
     $real = get_absolute_path(ROOT_PATH . $path);
     if(substr($real, 0, strlen(ROOT_PATH)) != ROOT_PATH) {
-        error("Hack attempt");
+        error(500, "Hack attempt");
     }
     return $real;
 }
@@ -52,7 +52,7 @@ function handleGet($path) {
             readfile($filePath);
         }
     } else {
-        error("File does not exist: ". $filePath);
+        error(404, "File does not exist: ". $filePath);
     }
 }
 
@@ -115,9 +115,9 @@ function printRecursiveList($dir, $prefix = '/', $hidden = false) {
     flush();
 }
 
-function error($message) {
+function error($errorCode, $message) {
     global $path;
-    http_response_code(500);
+    http_response_code($errorCode);
     error_log("Error [$path]: " . $message);
     echo "Error: $message";
     exit();

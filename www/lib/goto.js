@@ -127,9 +127,8 @@ define(function(require, exports, module) {
         function select(event) {
             var filename = input.val();
             var selectedPath = resultsEl.find("a.ui-state-focus").text();
-            console.log("Selected path",selectedPath);
             if(filename) {
-                if(filename[0] !== '/')
+                if(filename[0] !== '/' && filename.indexOf("zed:") !== 0)
                     filename = selectedPath;
                 session_manager.go(filename);
             } else {
@@ -233,10 +232,11 @@ define(function(require, exports, module) {
             fileCache.push(path.filename);
         });
 
-        eventbus.once("keysbindable", function() {
-            keys.bind("Command-e", function() {
-                show();
-            });
+        keys.bind("goto", {
+            mac: "Command-E",
+            win: "Ctrl-E"
+        }, function() {
+            show();
         });
     };
 

@@ -1,7 +1,8 @@
 define(function(require, exports, module) {
-    var config = require("config");
+    var state = require("state");
     var editor = require("editor");
     var eventbus = require("eventbus");
+    var keys = require("keys");
 
     eventbus.declare("splitchange");
     
@@ -15,7 +16,7 @@ define(function(require, exports, module) {
     }
     
     function splitOne() {
-        config.set("split", 1);
+        state.set("split", 1);
         resetEditorDiv($("#editor0")).addClass("editor-single");
         resetEditorDiv($("#editor1")).addClass("editor-disabled");
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
@@ -26,7 +27,7 @@ define(function(require, exports, module) {
     }
     
     function splitTwo() {
-        config.set("split", 2);
+        state.set("split", 2);
         resetEditorDiv($("#editor0")).addClass("editor-vsplit2-left");
         resetEditorDiv($("#editor1")).addClass("editor-vsplit2-right");
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
@@ -37,7 +38,7 @@ define(function(require, exports, module) {
     }
     
     function splitThree() {
-        config.set("split", 3);
+        state.set("split", 3);
         resetEditorDiv($("#editor0")).addClass("editor-vsplit3-left");
         resetEditorDiv($("#editor1")).addClass("editor-vsplit3-middle");
         resetEditorDiv($("#editor2")).addClass("editor-vsplit3-right");
@@ -55,15 +56,13 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
-        eventbus.once("keysbindable", function(keys) {
-            keys.bind("Command-1", splitOne);
-            keys.bind("Command-2", splitTwo);
-            keys.bind("Command-3", splitThree);
-            keys.bind("Command-0", switchSplit);
-        });
+        keys.bind("splitone", {mac: "Command-1", win: "Ctrl-1"}, splitOne);
+        keys.bind("splittwo", {mac: "Command-2", win: "Ctrl31"}, splitTwo);
+        keys.bind("splitthree", {mac: "Command-3", win: "Ctrl-3"}, splitThree);
+        keys.bind("splitswitch", {mac: "Command-0", win: "Ctrl-0"}, switchSplit);
         
-        eventbus.on("configloaded", function() {
-            switch(config.get("split")) {
+        eventbus.on("stateloaded", function() {
+            switch(state.get("split")) {
                 case 1:
                     splitOne();
                     break;

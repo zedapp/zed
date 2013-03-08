@@ -3,14 +3,14 @@ define(function(require, exports, module) {
     var editor = require("editor");
     var eventbus = require("eventbus");
     var goto = require("goto");
-    var config = require("config");
+    var state = require("state");
 
     eventbus.declare("switchsession");
     eventbus.declare("newfilesession");
     eventbus.declare("newsession");
 
     var sessions = {};
-    var oldConfigJSON = null;
+    var oldstateJSON = null;
 
     exports.specialDocs = {}; // {content: ..., mode: ..., readonly: true}
     
@@ -30,21 +30,21 @@ define(function(require, exports, module) {
         sessions[path] = session;
     }
     
-    function updateConfig() {
-        config.set("session.current", editor.getEditors().map(function(e) { return e.getSession().filename; }));
+    function updateState() {
+        state.set("session.current", editor.getEditors().map(function(e) { return e.getSession().filename; }));
         var openDocuments = {};
         for(var path in sessions) {
             openDocuments[path] = editor.getSessionState(sessions[path]);
         }
-        config.set("session.open", openDocuments);
+        state.set("session.open", openDocuments);
         
-        var configJSON = config.toJSON();
-        if(configJSON !== oldConfigJSON) {
-            console.log("Saving config.");
-            config.save();
+        var stateJSON = state.toJSON();
+        if(stateJSON !== oldstateJSON) {
+            console.log("Saving state.");
+            state.save();
         }
         
-        oldConfigJSON = configJSON;
+        oldstateJSON = stateJSON;
     }
     
     
@@ -97,15 +97,15 @@ define(function(require, exports, module) {
             go("zed:start");
         });
         
-        eventbus.on("configloaded", function() {
+        eventbus.on("stateloaded", function() {
             function done() {
                 console.log("All sessions loaded.");
                 var editors = editor.getEditors();
-                config.get("session.current").forEach(function(path, idx) {
+                state.get("session.current").forEach(function(path, idx) {
                     go(path, editors[idx]);
                 });
             }
-            var sessions = config.get("session.open");
+            var sessions = state.get("session.open");
             var count = Object.keys(sessions).length;
             for(var path in sessions) {
                 (function() {
@@ -122,7 +122,7 @@ define(function(require, exports, module) {
     };
 
     exports.init = function() {
-        setInterval(updateConfig, 2500);
+        setInterval(updateState, 2500);
     };
 
     exports.go = go;

@@ -1,13 +1,13 @@
 define(function(require, exports, module) {
     var editor = require("editor");
-    var config = null; // delayed: require("config");
+    var state = null; // delayed: require("state");
     
     /**
      * Hack required because module loading in browsers sucks.
      */
     exports.hook = function() {
-        require(["config"], function(config_) {
-            config = config_;
+        require(["state"], function(state_) {
+            state = state_;
         });
     };
     
@@ -18,7 +18,7 @@ define(function(require, exports, module) {
         setTheme: function(theme) {
             editor.getEditors(true).forEach(function(edit) {
                 edit.setTheme("ace/theme/" + theme);
-                config.set("editor.theme", "ace/theme/" + theme);
+                state.set("editor.theme", "ace/theme/" + theme);
                 edit.renderer.on("themeLoaded", function() {
                     console.log("Theme successfully loaded!");
                 });

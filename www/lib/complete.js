@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
     var eventbus = require("eventbus");
     var editor = require("editor");
+    var keys = require("keys");
     var Map = require("collection").Map;
     
     var splitRegex = /[^a-zA-Z_0-9\$\-]+/;
@@ -230,11 +231,9 @@ define(function(require, exports, module) {
     
     
     exports.hook = function() {
-        eventbus.once("keysbindable", function(keys) {
-            keys.bind("Tab", function() {
-                if(!complete())
-                    editor.getActiveEditor().indent();
-            })
-        });
+        keys.bind("codecomplete", "Tab", function() {
+            if(!complete())
+                editor.getActiveEditor().indent();
+        })
     };
 });

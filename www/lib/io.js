@@ -1,8 +1,8 @@
 define(function(require, exports, module) {
-    var config = require("config");
+    var state = require("state");
 
     function find(callback) {
-        $.post(config.get('url'), {
+        $.post(state.get('url'), {
             action: 'filelist'
         }, function(res) {
             var items = res.split("\n");
@@ -17,13 +17,13 @@ define(function(require, exports, module) {
     }
 
     function readFile(path, callback) {
-        $.get(config.get('url') + path, function(res) {
+        $.get(state.get('url') + path, function(res) {
             callback(null, res);
         }, 'text');
     }
 
     function writeFile(path, content, callback) {
-        $.ajax(config.get('url') + '/' + path, {
+        $.ajax(state.get('url') + '/' + path, {
             type: 'PUT',
             data: content,
             dataType: 'text',

@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
     var eventbus = require("eventbus");
     var editor = require("editor");
+    var keys = require("keys");
 
     var beautifiers = exports.beautifiers = {
         "ace/mode/css": require("util/beautify-css"),
@@ -19,10 +20,11 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
-        eventbus.once("keysbindable", function(keys) {
-            keys.bind("Command-Shift-b", function() {
-                beautify(editor.getActiveEditor().getSession());
-            });
+        keys.bind("beautify", {
+            mac: "Command-Shift-B",
+            win: "Ctrl-Shift-B"
+        }, function() {
+            beautify(editor.getActiveEditor().getSession());
         });
     };
 });
