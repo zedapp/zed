@@ -180,3 +180,16 @@ div.editor-split-bottom {
 #complete-box span.match {
     color: #080;
 }
+#tree {
+    position: fixed;
+    border-left: solid 1px black;
+    border-bottom: solid 1px black;
+    border-right: solid 1px black;
+    background: #fff;
+    padding: 0;
+    z-index: 999;
+    font-family: Monaco, Menlo;
+    font-size: 12px;
+    max-height: 200px;
+    overflow: scroll;
+}
