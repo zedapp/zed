@@ -1,7 +1,6 @@
 define(function(require, exports, module) {
     "use strict";
     var editor = require("editor");
-    var io = require("io");
     
     var visible = false;
 

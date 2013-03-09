@@ -1,23 +1,22 @@
 define(function(require, exports, module) {
     var eventbus = require("eventbus");
     var editor = require("editor");
-    var command = require("command");
-    var keyJsonText = require("text!keys.json");
     var keyboardHandler = null;
 
-    exports.update = function() {
-        console.log("Update");
-        var CommandManager = ace.require("ace/commands/command_manager").CommandManager;
-        var useragent = ace.require("ace/lib/useragent");
-        var KeyBinding = ace.require("ace/keyboard/keybinding").KeyBinding;
-        
-        var edit = editor.getActiveEditor();
-        edit.commands = new CommandManager(useragent.isMac ? "mac" : "win", commands);
-        edit.keyBinding = new KeyBinding(edit);
-        keyboardHandler = edit.getKeyboardHandler();
-        
-        editor.getEditors().forEach(function(edit) {
-            edit.setKeyboardHandler(keyboardHandler);
+    exports.hook = function() {
+        eventbus.once("editorloaded", function() {
+            var CommandManager = ace.require("ace/commands/command_manager").CommandManager;
+            var useragent = ace.require("ace/lib/useragent")
+            var KeyBinding = ace.require("ace/keyboard/keybinding").KeyBinding;
+            
+            var edit = editor.getActiveEditor();
+            edit.commands = new CommandManager(useragent.isMac ? "mac" : "win", commands);
+            edit.keyBinding = new KeyBinding(edit);
+            keyboardHandler = edit.getKeyboardHandler();
+            
+            editor.getEditors().forEach(function(edit) {
+                edit.setKeyboardHandler(keyboardHandler);
+            });
         });
     };
 
@@ -29,18 +28,7 @@ define(function(require, exports, module) {
             readOnly: true
         });
     };
-
-    var bindCommand = exports.bindCommand = function(cmd, bindKey) {
-        commands.push({
-            name: cmd,
-            bindKey: bindKey,
-            exec: function(editor) {
-                return command.exec(cmd, editor);
-            },
-            //readOnly: command.lookup(cmd).readOnly
-        });
-    };
-
+    
     var lang = ace.require("ace/lib/lang");
     var config = ace.require("ace/config");
 
@@ -50,19 +38,32 @@ define(function(require, exports, module) {
             mac: mac
         };
     }
-    
-    exports.hook = function() {
-        eventbus.once("editorloaded", exports.update);
-        
-        var keysJson = JSON.parse(keyJsonText);
-        for(var cmd in keysJson) {
-            if(keysJson.hasOwnProperty(cmd)) {
-                bindCommand(cmd, keysJson[cmd]);
-            }
-        }
-    };
 
     var commands = exports.commands = [{
+        name: "selectall",
+        bindKey: bindKey("Ctrl-A", "Command-A"),
+        exec: function(editor) {
+            editor.selectAll();
+        },
+        readOnly: true
+    }, {
+        name: "centerselection",
+        bindKey: bindKey(null, "Ctrl-L"),
+        exec: function(editor) {
+            editor.centerSelection();
+        },
+        readOnly: true
+    }, {
+        name: "gotoline",
+        bindKey: "Ctrl-G",
+        exec: function(editor) {
+            var line = parseInt(prompt("Enter line number:"), 10);
+            if (!isNaN(line)) {
+                editor.gotoLine(line);
+            }
+        },
+        readOnly: true
+    }, {
         name: "fold",
         bindKey: bindKey("Alt-L|Ctrl-F1", "Command-Alt-L|Command-F1"),
         exec: function(editor) {

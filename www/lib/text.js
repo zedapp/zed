@@ -22,8 +22,6 @@ define(['module'], function (module) {
         buildMap = [],
         masterConfig = (module.config && module.config()) || {};
 
-        console.log("Config", masterConfig);
-
     text = {
         version: '2.0.5+',
 

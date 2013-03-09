@@ -1,13 +1,12 @@
 define(function(require, exports, module) {
     module.exports = [
-        "command",
         "editor",
         "editbar",
+        "commandline",
         "eventbus",
         "beautify",
         "goto",
         "help",
-        "tree",
         "state",
         "io",
         "keys",
