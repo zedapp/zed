@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
     var state = require("state");
-
+    
     function find(callback) {
         $.post(state.get('url'), {
             action: 'filelist'

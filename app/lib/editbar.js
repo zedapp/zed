@@ -37,7 +37,7 @@ define(function(require, exports, module) {
         });
     };
     
-    function update(splits) {
+    function update() {
         editor.getEditors(true).forEach(function(edit, idx) {
             var el = $(edit.container);
             var barEl = edit.editbarEl;
@@ -50,6 +50,8 @@ define(function(require, exports, module) {
             }
         });
     }
+    
+    $(window).resize(update);
     
     function enterCommand() {
         var editbarEl = editor.getActiveEditor().editbarEl;
