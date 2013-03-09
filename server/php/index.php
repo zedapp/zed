@@ -4,6 +4,11 @@ require("config.php");
 $path = $_SERVER['QUERY_STRING'];
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
+class Test {
+    function doSomething() {
+    }
+}
+
 switch($requestMethod) {
 case "GET":
     handleGet($path);
