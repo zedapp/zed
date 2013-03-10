@@ -2,24 +2,41 @@ define(function(require, exports, module) {
     var state = require("state");
     
     function find(callback) {
-        $.post(state.get('url'), {
-            action: 'filelist'
-        }, function(res) {
-            var items = res.split("\n");
-            for(var i = 0; i < items.length; i++) {
-                if(!items[i]) {
-                    items.splice(i, 1);
-                    i--;
+        $.ajax({
+            type: "POST",
+            url: state.get('url'),
+            data: {
+                action: 'filelist'
+            },
+            error: function(xhr, err, errString) {
+                callback(errString);
+            },
+            success: function(res) {
+                var items = res.split("\n");
+                for(var i = 0; i < items.length; i++) {
+                    if(!items[i]) {
+                        items.splice(i, 1);
+                        i--;
+                    }
                 }
-            }
-            callback(null, items);
-        }, 'text');
+                callback(null, items);
+            },
+            dataType: "text"
+        });
     }
 
     function readFile(path, callback) {
-        $.get(state.get('url') + path, function(res) {
-            callback(null, res);
-        }, 'text');
+        $.ajax({
+            type: "GET",
+            url: state.get('url') + path,
+            error: function(xhr, err, errString) {
+                callback(errString);
+            },
+            success: function(res) {
+                callback(null, res);
+            },
+            dataType: "text"
+        });
     }
 
     function writeFile(path, content, callback) {

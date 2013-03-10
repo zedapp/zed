@@ -19,6 +19,10 @@ define(function(require, exports, module) {
         },
         load: function(callback) {
             io.readFile("/.zedstate", function(err, json) {
+                if(err) {
+                    // No worries, empty state!
+                    json = {};
+                }
                 state = JSON.parse(json);
                 eventbus.emit("stateloaded", module.exports);
                 callback && callback(state);

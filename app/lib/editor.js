@@ -104,6 +104,7 @@ define(function(require, exports, module) {
 
             editors.forEach(function(editor) {
                 editor.setHighlightActiveLine(false);
+                editor.setTheme("ace/theme/cobalt");
                 editor.on("focus", function() {
                     activeEditor = editor;
                     editor.setHighlightActiveLine(true);

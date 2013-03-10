@@ -1,27 +1,23 @@
 {
-  "name": "Zed",
-  "version": "0.1",
-  "manifest_version": 2,
-  "minimum_chrome_version": "23",
-  "description": "Code ditor.",
-  "app": {
-    "background": {
-      "scripts": ["background.js"]
+    "name": "Zed",
+    "version": "0.1",
+    "manifest_version": 2,
+    "minimum_chrome_version": "23",
+    "description": "Code ditor.",
+    "app": {
+        "background": {
+            "scripts": ["background.js"]
+        }
+    },
+    "permissions": [
+        "storage",
+        "http://*/",
+        "https://*/"
+    ],
+    "icons": {
+        "16":  "img/16x16/file_edit.png",
+        "32":  "img/32x32/file_edit.png",
+        "64":  "img/64x64/file_edit.png",
+        "128": "img/128x128/file_edit.png"
     }
-  },
-
-  "permissions": [
-    {"fileSystem": ["write"]},
-    "unlimitedStorage",
-    "contextMenus",
-    "http://*/",
-    "https://*/"
-  ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "icons": {
-    "16":  "img/16x16/file_edit.png",
-    "32":  "img/32x32/file_edit.png",
-    "64":  "img/64x64/file_edit.png",
-    "128": "img/128x128/file_edit.png"
-  }
 }

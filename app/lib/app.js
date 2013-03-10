@@ -10,6 +10,10 @@ require(["plugins"], function(plugins) {
         var session_manager = require("session_manager");
 
         eventbus.declare("pathchange");
+        
+        if(typeof chrome.app.window !== 'undefined') {
+            chrome.app.window.current().maximize();
+        }
 
         var pluginModules = Array.prototype.slice.call(arguments);
         pluginModules.forEach(function(module) {
@@ -23,6 +27,7 @@ require(["plugins"], function(plugins) {
         
         var hash = location.hash;
         if(!hash) {
+            console.log("meh meh");
             location.hash = "#http://localhost:8080/server/php/?/fabedit";//; + prompt("URL:");
             hash = location.hash;
         }
