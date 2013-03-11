@@ -1,36 +1,50 @@
 <?php
-require("config.php");
-$path = $_SERVER['PATH_INFO'];
-if(!$path)
-    $path = "/";
-$requestMethod = $_SERVER['REQUEST_METHOD'];
 
-error_log("Rq: $requestMethod Path: $path");
-switch($requestMethod) {
-case "GET":
-    handleGet($path);
-    break;
-case "PUT":
-    handlePut($path);
-    break;
-case "DELETE":
-    handleDelete($path);
-    break;
-case "POST":
-    handlePost($path);
-    break;
+/**
+ * This is the function to call to expose a directory
+ * @param $rootPath the absolute Unix path of the directory to expose
+ * @param $username (optional) BasicAuth username to use
+ * @param $password (option) BasicAuth password to use
+ */
+function webfs($rootPath, $username = null, $password = null) {
+    if ($username && $password && ($_SERVER['PHP_AUTH_USER'] != $username || $_SERVER['PHP_AUTH_PW'] != $password)) {
+        header('WWW-Authenticate: Basic realm="My Realm"');
+        header('HTTP/1.0 401 Unauthorized');
+        echo 'Unauthorized';
+        exit;
+    }
+
+    $path = $_SERVER['PATH_INFO'];
+    if(!$path)
+        $path = "/";
+    $requestMethod = $_SERVER['REQUEST_METHOD'];
+
+    switch($requestMethod) {
+    case "GET":
+        handleGet($path, $rootPath);
+        break;
+    case "PUT":
+        handlePut($path, $rootPath);
+        break;
+    case "DELETE":
+        handleDelete($path, $rootPath);
+        break;
+    case "POST":
+        handlePost($path, $rootPath);
+        break;
+    }
 }
 
-function filePath($path) {
-    $real = get_absolute_path(ROOT_PATH . $path);
-    if(substr($real, 0, strlen(ROOT_PATH)) != ROOT_PATH) {
+function filePath($path, $rootPath) {
+    $real = get_absolute_path($rootPath . $path);
+    if(substr($real, 0, strlen($rootPath)) != $rootPath) {
         error(500, "Hack attempt");
     }
     return $real;
 }
 
-function handleGet($path) {
-    $filePath = filePath($path);
+function handleGet($path, $rootPath) {
+    $filePath = filePath($path, $rootPath);
     if(file_exists($filePath)) {
         if(is_dir($filePath)) {
             $handle = opendir($filePath);
@@ -49,8 +63,8 @@ function handleGet($path) {
                 );
             }
             closedir($handle);
-            header('Content-Type: application/json');
-            echo json_encode($files, JSON_OPTIONS);
+            header('Content-Type: text/directory');
+            echo json_encode($files);
         } else {
             header('Content-Transfer-Encoding: binary');
             header('Content-Length: ' . filesize($filePath));
@@ -64,8 +78,8 @@ function handleGet($path) {
 /**
  * Write file or make directory
  */
-function handlePut($path) {
-    $filePath = filePath($path);
+function handlePut($path, $rootPath) {
+    $filePath = filePath($path, $rootPath);
     $contentType = $_SERVER["CONTENT_TYPE"];
     if($contentType == "text/directory") {
         $result = mkdir($filePath);
@@ -97,8 +111,8 @@ function handlePut($path) {
 /**
  * Delete file
  */
-function handleDelete($path) {
-    $filePath = filePath($path);
+function handleDelete($path, $rootPath) {
+    $filePath = filePath($path, $rootPath);
     error_log("Deleting $filePath");
     if(unlink($filePath)) {
         http_response_code(200);
@@ -112,11 +126,11 @@ function handleDelete($path) {
 /**
  * RPC like things
  */
-function handlePost($path) {
+function handlePost($path, $rootPath) {
     $action = $_POST["action"];
     switch($action) {
     case "filelist":
-        $filePath = filePath($path);
+        $filePath = filePath($path, $rootPath);
         printRecursiveList($filePath);
     }
 }
@@ -157,4 +171,5 @@ function get_absolute_path($path) {
     }
     return implode(DIRECTORY_SEPARATOR, $absolutes);
 }
+
 ?>
