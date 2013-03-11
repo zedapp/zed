@@ -21,7 +21,7 @@ define(function(require, exports, module) {
             project.readFile("/.zedstate", function(err, json) {
                 if(err) {
                     // No worries, empty state!
-                    json = {};
+                    json = "{}";
                 }
                 state = JSON.parse(json);
                 eventbus.emit("stateloaded", module.exports);

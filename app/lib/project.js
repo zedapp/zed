@@ -22,9 +22,16 @@ define(function(require, exports, module) {
     exports.filename = filename;
     
     exports.hook = function() {
-        var url = location.hash.substring(1);
-        console.log("URL:", url);
-        var io = require('fs/web')(url);
+        var urlReq = location.search.substring(1);
+        var parts = urlReq.split("&");
+        var options = {}
+        parts.forEach(function(part) {
+            var spl = part.split('=');
+            options[spl[0]] = spl[1];
+        });
+        
+        console.log("URL:", options.url);
+        var io = require('fs/web')(options.url, options.username, options.password);
         exports.filelist = io.filelist;
         exports.readFile = io.readFile;
         exports.writeFile = io.writeFile;

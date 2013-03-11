@@ -7,7 +7,9 @@ define(function(require, exports, module) {
             if (chrome.app.window) {
                 var win = chrome.app.window.current();
                 var bounds = state.get('window');
-                win.setBounds(bounds);
+                if(bounds) {
+                    win.setBounds(bounds);
+                }
                 win.onBoundsChanged.addListener(function() {
                     state.set("window", win.getBounds());
                 });

@@ -25,11 +25,6 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
         }
     }
     
-    /*var projects = [
-        {name: "FabEdit", url: "http://localhost:8080/server/php/?/fabedit"},
-        {name: "Zed", url: "http://localhost:8080/server/php/?/zed/app"}
-    ];*/
-        
     getKey("projects", function(projects) {
         projects = projects || {};
         var input = $("#gotoinput");
@@ -43,13 +38,35 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
         
         function open() {
             var projectName = resultsEl.find("a.ui-state-focus").text();
+            if(!projectName) {
+                $("#addform").show();
+                $("#url").focus();
+                $("#hint").html("Press <tt>Enter</tt> to create.");
+                return;
+            }
             var project = projects[projectName];
-            chrome.app.window.create('editor.html#' + project.url, {
+            chrome.app.window.create('editor.html?url=' + project.url +
+                                     '&username=' + project.username +
+                                     '&password=' + project.password, {
                 frame: 'chrome',
                 width: 720,
                 height: 400
             });
-            chrome.app.window.current().close();
+            close();
+        }
+        
+        function remove() {
+            var projectName = resultsEl.find("a.ui-state-focus").text();
+            delete projects[projectName];
+            setKey("projects", projects);
+        }
+        
+        function close() {
+            chrome.app.window.current().hide();
+            // Reset UI for next showing
+            $("#addform").hide();
+            input.val("");
+            renderProjects();
         }
         
         function renderProjects() {
@@ -66,16 +83,19 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                 resultsEl.append(el);
             });
             resultsEl.menu("refresh");
-            resultsEl.menu("next");
+            if(matchingProjects.length > 0) {
+                resultsEl.menu("next");
+                $("#hint").html("Press <tt>Enter</tt> to <u>open</u> or <tt>Shift-Delete</tt> to <u>delete</u>.");
+            } else {
+                $("#hint").html("Press <tt>Enter</tt> to <u>create</u> project with this name.");
+            }
             input.focus();
         }
         
         renderProjects();
         input.keyup(function(event) {
+            console.log(event);
             switch(event.keyCode) {
-                case 27: // Esc
-                    chrome.app.window.current().close();
-                    break;
                 case 38: // up
                     resultsEl.menu("previous");
                     break;
@@ -86,6 +106,10 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                     open();
                 case 9: // tab
                     break;
+                case 46: // Delete
+                    if(event.shiftKey) {
+                        remove();
+                    }
                 default:
                     renderProjects();
             }
@@ -101,16 +125,28 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                     event.stopPropagation();
                     break;
             }
-        });        
+        });
+        $(window).keyup(function(event) {
+            if(event.keyCode == 27) { // Esc
+                close();
+            }
+        });
         
         $("#addform").hide().submit(function(event) {
-            var name = $("#name").val();
+            var name = input.val();
             var url = $("#url").val();
-            var io = webfs(url);
-            $("#status").text("Testing...");
+            var username = $("#username").val() || undefined;
+            var password = $("#password").val() || undefined;
+            var io = webfs(url, username, password);
+            $("#status").text("Verifying...");
             io.writeFile("/__zedtest.txt", "testing", function(err) {
                 if(err) {
-                    return $("#status").text("Error: " + err);
+                    if(err.indexOf("Unauthorized") !== -1) {
+                        $(".authenticate").fadeIn();
+                        return $("#status").text("Provide username and password and try again.");
+                    } else {
+                        return $("#status").text("Error: " + err);
+                    }
                 }
                 io.readFile("/__zedtest.txt", function(err, result) {
                     if(err) {
@@ -125,20 +161,19 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                         }
                     });
                     projects[name] = {
-                        url: url
+                        url: url,
+                        username: username,
+                        password: password
                     };
                     setKey("projects", projects);
                     $("#name").val("");
                     $("#url").val("http://");
+                    $("#addform").hide();
                     renderProjects();
                     $("#status").text("OK. Added.");
                 });
             })
             event.preventDefault();
-        });
-        $("#addbutton").click(function() {
-            $("#addform").show();
-            $("#addbutton").hide();
         });
     });
 

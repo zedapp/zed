@@ -124,7 +124,6 @@ define(function(require, exports, module) {
         updateCompletion();
         completionEl.width(200);
         completionEl.hide();
-        completionEl.menu("next");
         
         function updatePosition() {
             // Need a timeout, to give ACE some time to move the cursor
@@ -139,6 +138,7 @@ define(function(require, exports, module) {
         function updateCompletion() {
             completionEl.html(renderOptionsHtml(matches));
             completionEl.menu("refresh");
+            completionEl.menu("next");
         }
         
         function close() {

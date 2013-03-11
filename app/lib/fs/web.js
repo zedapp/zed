@@ -1,9 +1,11 @@
 define(function(require, exports, module) {
-    module.exports = function(url) {
+    module.exports = function(url, username, password) {
         function filelist(callback) {
             $.ajax({
                 type: "POST",
                 url: url,
+                username: username,
+                password: password,
                 data: {
                     action: 'filelist'
                 },
@@ -28,6 +30,8 @@ define(function(require, exports, module) {
             $.ajax({
                 type: "GET",
                 url: url + path,
+                username: username,
+                password: password,
                 error: function(xhr, err, errString) {
                     callback(errString);
                 },
@@ -43,6 +47,8 @@ define(function(require, exports, module) {
                 type: 'PUT',
                 data: content,
                 dataType: 'text',
+                username: username,
+                password: password,
                 success: function(res) {
                     callback(null, res);
                 },
@@ -55,6 +61,8 @@ define(function(require, exports, module) {
             $.ajax(url + path, {
                 type: 'DELETE',
                 dataType: 'text',
+                username: username,
+                password: password,
                 success: function(res) {
                     callback(null, res);
                 },

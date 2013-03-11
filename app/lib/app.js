@@ -24,21 +24,6 @@ require(["plugins", "text!../manual.md"], function(plugins, manual) {
                 module.init();
         });
         
-        var url = location.hash.substring(1);
-        if(!url) {
-            alert("URL should end with #http://project.url...");
-            return;
-        }
-        var hash = location.hash;
-        setInterval(function() {
-            if(location.hash !== hash) {
-                location.reload();
-            }
-        }, 1000);
-        
-        
-
-
         console.log("Zed loaded.");
     });
 

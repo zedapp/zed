@@ -73,7 +73,9 @@ define(function(require, exports, module) {
             resultsEl.menu("refresh");
             if(phrase[0] !== '/') {
                 ignoreFocus = true;
-                resultsEl.menu("next");
+                if(results.length > 0) {
+                    resultsEl.menu("next");
+                }
             }
             lastPhrase = phrase;
         }

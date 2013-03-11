@@ -179,7 +179,7 @@ div.editor-split-bottom {
     background-color: #33CCFF;
 }
 #complete-box span.match {
-    color: #080;
+    text-decoration: underline;
 }
 #tree {
     position: fixed;
