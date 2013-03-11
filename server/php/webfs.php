@@ -1,20 +1,20 @@
 <?php
 require("config.php");
-//phpinfo();
-$path = $_SERVER['QUERY_STRING'];
+$path = $_SERVER['PATH_INFO'];
+if(!$path)
+    $path = "/";
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-class Test {
-    function doSomething() {
-    }
-}
-
+error_log("Rq: $requestMethod Path: $path");
 switch($requestMethod) {
 case "GET":
     handleGet($path);
     break;
 case "PUT":
     handlePut($path);
+    break;
+case "DELETE":
+    handleDelete($path);
     break;
 case "POST":
     handlePost($path);
@@ -91,6 +91,21 @@ function handlePut($path) {
             http_response_code(500);
             echo "ERROR";
         }
+    }
+}
+
+/**
+ * Delete file
+ */
+function handleDelete($path) {
+    $filePath = filePath($path);
+    error_log("Deleting $filePath");
+    if(unlink($filePath)) {
+        http_response_code(200);
+        echo "OK";
+    } else {
+        http_response_code(500);
+        echo "FAIL";
     }
 }
 

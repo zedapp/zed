@@ -1,0 +1,17 @@
+define(function(require, exports, module) {
+    var state = require("./state");
+    var eventbus = require("./eventbus");
+
+    exports.hook = function() {
+        eventbus.once("stateloaded", function() {
+            if (chrome.app.window) {
+                var win = chrome.app.window.current();
+                var bounds = state.get('window');
+                win.setBounds(bounds);
+                win.onBoundsChanged.addListener(function() {
+                    state.set("window", win.getBounds());
+                });
+            }
+        });
+    };
+});

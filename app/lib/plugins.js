@@ -6,13 +6,13 @@ define(function(require, exports, module) {
         "eventbus",
         "beautify",
         "goto",
-        "help",
         "tree",
         "state",
-        "io",
+        "project",
         "keys",
         "complete",
         "split",
+        "window",
         "session_manager",
     ];
 });

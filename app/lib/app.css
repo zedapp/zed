@@ -194,15 +194,3 @@ div.editor-split-bottom {
     max-height: 200px;
     overflow: scroll;
 }
-
-#projects a {
-    display: block;
-    background-color: #fff;
-    text-decoration: none;
-    color: #000;
-    padding: 5px;
-}
-#projects a:hover {
-    background-color: #000;
-    color: #fff;
-}

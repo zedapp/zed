@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     "use strict";
-    var editor = require("editor");
-    var io = require("io");
+    var editor = require("./editor");
+    var project = require("./project");
     
     var visible = false;
 
@@ -95,7 +95,6 @@ define(function(require, exports, module) {
                     break;
                 case 9: // tab
                     break;
-                    // explicit non-break
                 default:
                     // TODO only update on textual characters
                     if(lastPhrase != input.val()) {
@@ -111,7 +110,7 @@ define(function(require, exports, module) {
                         break;
                     var session = editor.getActiveSession();
                     if(session.filename) {
-                        input.val(io.dirname(session.filename) + "/");
+                        input.val(project.dirname(session.filename) + "/");
                         event.preventDefault();
                     }
                     break;
@@ -121,7 +120,7 @@ define(function(require, exports, module) {
                     if(val === '/') {
                         input.val('');
                     } else if(val[caret.start-1] === '/') {
-                        input.val(io.dirname(input.val()) + "/");
+                        input.val(project.dirname(input.val()) + "/");
                         event.preventDefault();
                     }
                     break;

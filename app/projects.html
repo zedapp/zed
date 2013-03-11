@@ -7,19 +7,85 @@
         <script src="require.js"></script>
         <script src="jquery.js"></script>
         <script src="jquery-ui.js"></script>
-        <script src="lib/projects.js"></script>
-        <link href="lib/app.css" rel="stylesheet" type="text/css">
+<style>
+#status {
+    background: yellow;
+}
+body {
+    margin: 0;
+}
+
+#goto {
+    width: 100%;
+    font-family: Monaco, Menlo;
+    font-size: 14px;
+}
+#goto > input {
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    outline-width: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px dotted gray;
+    border-top: 0;
+}
+
+#goto button {
+    position: absolute;
+    right: 0;
+    top: 5px;
+}
+#goto ul {
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+#goto li {
+    position: relative;
+    list-style-type: none;
+    padding: 0;
+    height: 30px;
+    line-height: 30px;
+}
+#goto a {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+    color: black;
+}
+#goto a.ui-state-focus {
+    background-color: #33CCFF;
+}
+</style>
     </head>
     <body>
-    <h1>Projects</h1>
-    <div id="projects">
-        
+    <div id="goto">
+        <input id="gotoinput" type="text"/>
+        <ul id="results">
+        </ul>
     </div>
-    <h2>Add new</h2>
-    <form id="addform">
-        Name: <input type="text" id="name"/><br/>
-        URL: <input type="text" id="url" value="http://"/><br/>
-        <input type="submit" value="Add"/>
+    <form id="addform" style="display:none;">
+    <h2>Add Project</h2>
+    <table border="0">
+        <tr>
+            <td><b>Name:</b></td>
+            <td><input type="text" id="name"/></td>
+        </tr>
+        <tr>
+            <td><b>URL:</b></td>
+            <td><input type="text" id="url" value="http://"/></td>
+        </tr>
+    </table>
+    <input type="submit" value="Add"/>
+    <div id="status"></div>
     </form>
-    </body>
+    <button id="addbutton">Add new Project</button>
+    <script src="lib/projects.js"></script>
+</body>
 </html>

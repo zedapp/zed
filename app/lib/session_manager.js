@@ -1,9 +1,9 @@
 define(function(require, exports, module) {
-    var io = require("io");
-    var editor = require("editor");
-    var eventbus = require("eventbus");
-    var goto = require("goto");
-    var state = require("state");
+    var project = require("./project");
+    var editor = require("./editor");
+    var eventbus = require("./eventbus");
+    var goto = require("./goto");
+    var state = require("./state");
 
     eventbus.declare("switchsession");
     eventbus.declare("newfilesession");
@@ -22,7 +22,7 @@ define(function(require, exports, module) {
                 clearTimeout(saveTimer);
             saveTimer = setTimeout(function() {
                 console.log("Saving...");
-                io.writeFile(path, session.getValue(), function(err, res) {
+                project.writeFile(path, session.getValue(), function(err, res) {
                     console.log("Result:", res);
                 });
             }, 1000);
@@ -49,7 +49,7 @@ define(function(require, exports, module) {
     
     
     function loadFile(path, callback) {
-        io.readFile(path, function(err, text) {
+        project.readFile(path, function(err, text) {
             var session = editor.createSession(path, text);
             setupSave(session);
             callback(null, session);
@@ -92,12 +92,10 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
-        eventbus.on("pathchange", function() {
-            sessions = {};
-            go("zed:start");
-        });
+        sessions = {};
         
         eventbus.on("stateloaded", function() {
+            go("zed:start");
             function done() {
                 console.log("All sessions loaded.");
                 var editors = editor.getEditors();

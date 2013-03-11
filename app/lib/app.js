@@ -3,18 +3,17 @@ require.config({
     waitSeconds: 15
 });
 
-require(["plugins"], function(plugins) {
+require(["plugins", "text!../manual.md"], function(plugins, manual) {
     require(plugins, function() {
         var state = require("state");
         var eventbus = require("eventbus");
         var session_manager = require("session_manager");
 
-        eventbus.declare("pathchange");
+        session_manager.specialDocs['zed:start'] = {
+            mode: 'ace/mode/markdown',
+            content: manual
+        };
         
-        if(typeof chrome.app.window !== 'undefined') {
-            chrome.app.window.current().maximize();
-        }
-
         var pluginModules = Array.prototype.slice.call(arguments);
         pluginModules.forEach(function(module) {
             if(module.hook)
@@ -25,28 +24,20 @@ require(["plugins"], function(plugins) {
                 module.init();
         });
         
-        var hash = location.hash;
-        if(!hash) {
-            console.log("meh meh");
-            location.hash = "#http://localhost:8080/server/php/?/fabedit";//; + prompt("URL:");
-            hash = location.hash;
+        var url = location.hash.substring(1);
+        if(!url) {
+            alert("URL should end with #http://project.url...");
+            return;
         }
-        state.set('url', hash.substr(1));
+        var hash = location.hash;
         setInterval(function() {
             if(location.hash !== hash) {
-                hash = location.hash;
-                state.set('url', location.hash.substr(1));
-                eventbus.emit("pathchange");
+                location.reload();
             }
         }, 1000);
+        
+        
 
-        $.get("manual.md", function(res) {
-            session_manager.specialDocs['zed:start'] = {
-                mode: 'ace/mode/markdown',
-                content: res
-            };
-            eventbus.emit("pathchange");
-        }, 'text');
 
         console.log("Zed loaded.");
     });

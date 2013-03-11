@@ -1,12 +1,12 @@
 define(function(require, exports, module) {
-    var editor = require("editor");
-    var session_manager = require("session_manager");
-    var eventbus = require("eventbus");
-    var keys = require("keys");
-    var io = require("io");
-    var fuzzyfind = require("fuzzyfind");
-    var command = require("command");
-    var ui = require("ui");
+    var editor = require("./editor");
+    var session_manager = require("./session_manager");
+    var eventbus = require("./eventbus");
+    var keys = require("./keys");
+    var project = require("./project");
+    var fuzzyfind = require("./fuzzyfind");
+    var command = require("./command");
+    var ui = require("./ui");
 
     var fileCache = [];
 
@@ -89,9 +89,9 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
-        eventbus.on("pathchange", function() {
+        eventbus.on("ioavailable", function() {
             console.log("Fetching file list...");
-            io.find(function(err, files) {
+            project.filelist(function(err, files) {
                 fileCache = files;
             });
         });

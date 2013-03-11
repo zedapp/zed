@@ -1,57 +1,73 @@
 define(function(require, exports, module) {
     module.exports = function(url) {
-        function find(callback) {
-            $.post(url, {
-                action: 'filelist'
-            }, function(res) {
-                var items = res.split("\n");
-                for(var i = 0; i < items.length; i++) {
-                    if(!items[i]) {
-                        items.splice(i, 1);
-                        i--;
+        function filelist(callback) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    action: 'filelist'
+                },
+                error: function(xhr, err, errString) {
+                    callback(errString);
+                },
+                success: function(res) {
+                    var items = res.split("\n");
+                    for(var i = 0; i < items.length; i++) {
+                        if(!items[i]) {
+                            items.splice(i, 1);
+                            i--;
+                        }
                     }
-                }
-                callback(null, items);
-            }, 'text');
+                    callback(null, items);
+                },
+                dataType: "text"
+            });
         }
     
         function readFile(path, callback) {
-            $.get(url + path, function(res) {
-                callback(null, res);
-            }, 'text');
+            $.ajax({
+                type: "GET",
+                url: url + path,
+                error: function(xhr, err, errString) {
+                    callback(errString);
+                },
+                success: function(res) {
+                    callback(null, res);
+                },
+                dataType: "text"
+            });
         }
     
         function writeFile(path, content, callback) {
-            $.ajax(url + '/' + path, {
+            $.ajax(url + path, {
                 type: 'PUT',
                 data: content,
                 dataType: 'text',
                 success: function(res) {
                     callback(null, res);
+                },
+                error: function(xhr, err, errString) {
+                    callback(errString);
                 }
             });
         }
-    
-        function dirname(path) {
-            if(path[path.length-1] === '/')
-                path = path.substring(0, path.length-1);
-            var parts = path.split("/");
-            return parts.slice(0, parts.length - 1).join("/");
-        }
-        
-        function filename(path) {
-            if(path[path.length-1] === '/')
-                path = path.substring(0, path.length-1);
-            var parts = path.split("/");
-            return parts[parts.length - 1];
-        }
-        
+        function deleteFile(path, callback) {
+            $.ajax(url + path, {
+                type: 'DELETE',
+                dataType: 'text',
+                success: function(res) {
+                    callback(null, res);
+                },
+                error: function(xhr, err, errString) {
+                    callback(errString);
+                }
+            });
+        }    
         return {
-            find: find,
+            filelist: filelist,
             readFile: readFile,
             writeFile: writeFile,
-            dirname: dirname,
-            filename: filename
+            deleteFile: deleteFile
         };
     };
 });

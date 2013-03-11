@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    var io = require("io");
+    var project = require("./project");
     module.exports = function(files, pattern) {
         var fileRegex, pathRegex;
         var pathMatches = {};
@@ -45,7 +45,7 @@ define(function(require, exports, module) {
         
         function matchPath(filename) {
             var segments = filename.split('/').length - 1;
-            var dirname = io.dirname(filename);
+            var dirname = project.dirname(filename);
             if (pathMatches[dirname]) {
                 return pathMatches[dirname];
             }
@@ -66,8 +66,8 @@ define(function(require, exports, module) {
         }
         
         function matchFile(filename, pathMatch) {
-            var basename = io.filename(filename);
-            var dirname = io.dirname(filename);
+            var basename = project.filename(filename);
+            var dirname = project.dirname(filename);
             var match = fileRegex.exec(basename);
             if (match) {
                 var matchResult = buildResult(match, 1);
