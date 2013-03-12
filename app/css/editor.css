@@ -191,6 +191,6 @@ div.editor-split-bottom {
     z-index: 999;
     font-family: Monaco, Menlo;
     font-size: 12px;
-    max-height: 200px;
+    max-height: 80%;
     overflow: scroll;
 }

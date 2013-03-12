@@ -24,6 +24,9 @@ define(function(require, exports, module) {
                     json = "{}";
                 }
                 state = JSON.parse(json);
+                if(chrome.app.window) {
+                    chrome.app.window.current().show();
+                }
                 eventbus.emit("stateloaded", module.exports);
                 callback && callback(state);
             });

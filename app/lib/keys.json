@@ -4,5 +4,5 @@
     "Editor:Goto Line": "Ctrl-G",
     "Goto:Goto Anything": {"mac": "Command-E", "win": "Ctrl-E"},
     "Command:Enter Command": {"mac": "Command-.", "win": "Ctrl-."},
-    "Goto:Tree": "Ctrl-T"
+    "Goto:Tree": "Alt-T"
 }

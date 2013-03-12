@@ -1,6 +1,8 @@
 define(function(require, exports, module) {
-    var goto = require("goto");
-    var command = require("command");
+    var goto = require("./goto");
+    var command = require("./command");
+    var session_manager = require("./session_manager");
+    var editor = require("./editor");
     
     function buildDirectoryObject() {
         var fileList = goto.getFileCache();
@@ -29,51 +31,96 @@ define(function(require, exports, module) {
         return root;
     }
     
-    function htmlEscape(s) {
-        return s;
+    function objToDynaTree(obj, path) {
+        var elements = [];
+        Object.keys(obj).forEach(function(filename) {
+            var entry = obj[filename];
+            var fullPath = path + '/' + filename;
+            if(entry === true) {
+                elements.push({
+                    title: filename,
+                    key: fullPath
+                });
+            } else {
+                elements.push({
+                    title: filename,
+                    key: fullPath,
+                    isFolder: true,
+                    children: objToDynaTree(entry, fullPath)
+                });
+            }
+        })
+        return elements;
     }
     
-    function directoryObjectToUl(obj) {
-        var html = '<ul>';
-        Object.keys(obj).forEach(function(file) {
-            if(obj[file] === true) {
-                html += "<li><a>" + htmlEscape(file) + "</a></li>";
-            } else {
-                html += "<li><a>" + htmlEscape(file) + "</a><ul>" + directoryObjectToUl(obj[file]) + "</ul></li>";
+    var treeEl = null;
+    var ignoreActivate = true;
+    var lastFocusEl = null;
+    
+    function close() {
+        treeEl.hide();
+        editor.getActiveEditor().focus();
+    }
+    
+    function focusTree() {
+        setTimeout(function() {
+            editor.getActiveEditor().blur();
+            var tree = $("#tree").dynatree("getTree");
+            ignoreActivate = true;
+            tree.activateKey(editor.getActiveSession().filename);
+            if(!tree.getActiveNode()) {
+                $(lastFocusEl ? lastFocusEl.li : "#tree li:first").focus().click();
             }
-        });
-        html += '</ul>';
-        return html;
+            ignoreActivate = false;
+        }, 100);
     }
     
     command.define("Goto:Tree", {
         exec: function(edit) {
-            $("body").append("<div id='tree'>" + directoryObjectToUl(buildDirectoryObject()));
             
             var editorEl = $(edit.container);
-            var treeEl = $("#tree");
-            
+            if(!treeEl) {
+                $("body").append("<div id='tree'>");
+                
+                treeEl = $("#tree");
+                treeEl.dynatree({
+                    onActivate: function(node) {
+                        console.log("On activate", node, ignoreActivate);
+                        if(ignoreActivate) {
+                            return;
+                        }
+                        if(!node.data.isFolder) {
+                            close();
+                            session_manager.go(node.data.key);
+                            editor.getActiveEditor().focus();
+                        }
+                    },
+                    onKeydown: function(node, event) {
+                        if(event.keyCode === 27) {
+                            close();
+                        }
+                    },
+                    onFocus: function(node) {
+                        lastFocusEl = node;
+                        window.node = node;
+                    },
+                    keyboard: true,
+                    autoFocus: true,
+                    debugLevel: 0,
+                    children: objToDynaTree(buildDirectoryObject(), "")
+                });
+                focusTree();
+            } else {
+                treeEl.show();
+                focusTree();
+            }
             treeEl.css("left", (editorEl.offset().left + 40) + "px");
             treeEl.css("width", (editorEl.width() - 80) + "px");
             treeEl.css("top", editorEl.offset().top + "px");
-            treeEl.jstree({
-                "plugins": ["themes", "html_data", "ui", "crrm", "hotkeys"],
-                themes: {
-                    theme: "classic",
-                    icons: false
-                },
-                core: {
-                    animation: 2
-                }
-            }).bind("loaded.jstree", function (event, data) {
-                console.log("Loaded");
-                console.log(jQuery.jstree._reference("tree").set_focus());
-            }).focus();
         },
         readOnly: true
     });
     
     
     exports.buildDirectoryObject = buildDirectoryObject;
-    exports.directoryObjectToUl = directoryObjectToUl;
 });

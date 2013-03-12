@@ -42,6 +42,7 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                 $("#addform").show();
                 $("#url").focus();
                 $("#hint").html("Press <tt>Enter</tt> to create.");
+                updateWindowSize();
                 return;
             }
             var project = projects[projectName];
@@ -50,7 +51,8 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                                      '&password=' + project.password, {
                 frame: 'chrome',
                 width: 720,
-                height: 400
+                height: 400,
+                hidden: true
             });
             close();
         }
@@ -67,6 +69,11 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
             $("#addform").hide();
             input.val("");
             renderProjects();
+        }
+        
+        function updateWindowSize() {
+            var win = chrome.app.window.current();
+            win.resizeTo(400, $("body").height());
         }
         
         function renderProjects() {
@@ -90,6 +97,7 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                 $("#hint").html("Press <tt>Enter</tt> to <u>create</u> project with this name.");
             }
             input.focus();
+            updateWindowSize();
         }
         
         renderProjects();
@@ -170,11 +178,12 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                     $("#url").val("http://");
                     $("#addform").hide();
                     renderProjects();
-                    $("#status").text("OK. Added.");
+                    $("#status").text();
                 });
             })
             event.preventDefault();
         });
+        updateWindowSize();
     });
 
 });
