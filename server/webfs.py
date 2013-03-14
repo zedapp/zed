@@ -1,4 +1,9 @@
 #!/usr/bin/python
+
+##  Usage: webfs.py [rootPath] [port]
+##     rootPath defaults to $HOME
+##     port defaults to 1338
+
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import os, os.path
 import sys
@@ -9,6 +14,8 @@ PORT_NUMBER = 1338
 ROOT = os.getenv("HOME")
 if len(sys.argv) > 1:
     ROOT = sys.argv[1]
+if len(sys.argv) > 2:
+    PORT_NUMBER = int(sys.argv[2])
 
 class Handler(BaseHTTPRequestHandler):
     def safe_path(self, path):
@@ -97,9 +104,10 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(message)
 
 try:
-	server = HTTPServer(('localhost', PORT_NUMBER), Handler)
-	print 'Started server on port', PORT_NUMBER
-	server.serve_forever()
+    server = HTTPServer(('localhost', PORT_NUMBER), Handler)
+    print "Started WebFS server listening at http://localhost:%d" % PORT_NUMBER
+    print "Exposing filesystem:", ROOT
+    server.serve_forever()
 except KeyboardInterrupt:
 	print '^C received, shutting down the web server'
 	server.socket.close()
