@@ -39,6 +39,7 @@ define(function(require, exports, module) {
             "lisp": "ace/mode/lisp",
             "lua": "ace/mode/lua",
             "lucene": "ace/mode/lucene",
+            "logic": "ace/mode/logiql",
             "Makefile": "ace/mode/makefile",
             "md": "ace/mode/markdown",
             "m": "ace/mode/objectivec",
