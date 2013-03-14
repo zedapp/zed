@@ -8,6 +8,9 @@ define(function(require, exports, module) {
     eventbus.declare("switchsession");
     eventbus.declare("newfilesession");
     eventbus.declare("newsession");
+    eventbus.declare("sessionsaved");
+    eventbus.declare("sessionchanged");
+    eventbus.declare("allsessionsloaded");
 
     var sessions = {};
     var oldstateJSON = null;
@@ -17,13 +20,15 @@ define(function(require, exports, module) {
     function setupSave(session) {
         var saveTimer = null;
         var path = session.filename;
-        session.on('change', function() {
+        session.on('change', function(delta) {
+            eventbus.emit("sessionchanged", session, delta);
             if(saveTimer)
                 clearTimeout(saveTimer);
             saveTimer = setTimeout(function() {
                 console.log("Saving...");
                 project.writeFile(path, session.getValue(), function(err, res) {
                     console.log("Result:", res);
+                    eventbus.emit("sessionsaved", session);
                 });
             }, 1000);
         });
@@ -58,6 +63,9 @@ define(function(require, exports, module) {
 
     function go(path, edit) {
         edit = edit || editor.getActiveEditor();
+        if(!path) {
+            return;
+        }
         if(exports.specialDocs[path]) {
             var doc = exports.specialDocs[path];
             var session = editor.createSession(path, doc.content);
@@ -65,9 +73,11 @@ define(function(require, exports, module) {
             editor.switchSession(session, edit);
             return;
         }
-        if(!path) {
-            // Ignore
-        } else if(sessions[path]) {
+        if(path[0] !== '/') {
+            // Normalize
+            path = '/' + path;
+        }
+        if(sessions[path]) {
             show(sessions[path]);
         } else {
             if(goto.getFileCache().indexOf(path) === -1) {
@@ -102,12 +112,14 @@ define(function(require, exports, module) {
                 state.get("session.current").forEach(function(path, idx) {
                     go(path, editors[idx]);
                 });
+                eventbus.emit("allsessionsloaded");
             }
             var sessions = state.get("session.open");
             var count = Object.keys(sessions).length;
             for(var path in sessions) {
                 (function() {
                     var sessionState = sessions[path];
+                        console.log("Count", count);
                     loadFile(path, function(err, session) {
                         editor.setSessionState(session, sessionState);
                         count--;
@@ -116,6 +128,8 @@ define(function(require, exports, module) {
                     });
                 })();
             }
+            if(count === 0)
+                done();
         });
     };
 

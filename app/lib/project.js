@@ -31,10 +31,16 @@ define(function(require, exports, module) {
         });
         
         console.log("URL:", options.url);
-        var io = require('fs/web')(options.url, options.username, options.password);
+        if(options.url === "draganddrop") {
+            var dir = window.dir;
+            return;
+        } else {
+            var io = require('fs/web')(options.url, options.username, options.password);
+        }
         exports.filelist = io.filelist;
         exports.readFile = io.readFile;
         exports.writeFile = io.writeFile;
+        exports.getUrl = io.getUrl;
         eventbus.emit("ioavailable", exports);
     };
 });

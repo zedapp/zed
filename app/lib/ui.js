@@ -45,7 +45,7 @@ define(function(require, exports, module) {
             var selectedPath = resultsEl.find("a.ui-state-focus").text();
             close();
             if(selection) {
-                if(selection[0] !== '/' && selection.indexOf("zed:") !== 0)
+                if(selection[0] !== '/' && selection.indexOf("zed:") !== 0 && selectedPath)
                     selection = selectedPath;
                 selectCallback(selection);
             } else {

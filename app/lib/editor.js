@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
-    var eventbus = require("eventbus");
-    var command = require("command");
+    var eventbus = require("./eventbus");
+    var command = require("./command");
+    var state = require("./state");
 
     eventbus.declare("editorloaded");
 
@@ -127,6 +128,7 @@ define(function(require, exports, module) {
             }
             var session = ace.createEditSession(content);
             session.setMode(mode);
+            session.setUseWrapMode(!!state.get('wordwrap'));
             session.mode = mode;
             session.filename = path;
             return session;
@@ -218,6 +220,19 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
+    
+    command.define("Editor:Toggle Word Wrap", {
+        exec: function(editor) {
+            require(["./session_manager"], function(session_manager) {
+                var sessions = session_manager.getSessions();
+                state.set("wordwrap", !state.get("wordwrap"));
+                Object.keys(sessions).forEach(function(path) {
+                    sessions[path].setUseWrapMode(state.get("wordwrap"));
+                });
+            });
+        },
+        readOnly: true
+    })
 
     Object.keys(editor.extMapping).forEach(function(ext) {
         var module = editor.extMapping[ext];

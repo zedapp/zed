@@ -2,7 +2,7 @@ Basic usage
 ===========
 
 Keys
------
+----
 
 * `Command-E`: To open or create a new file. Inside the picker:
     * In an empty box, press space to complete the directory of the currently open document.

@@ -1,6 +1,6 @@
 <?php
 
 require('webfs.php');
-webfs('/Users/zef/git');
+webfs('/Users/zef');
 
 ?>

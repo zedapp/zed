@@ -11,8 +11,10 @@
     },
     "permissions": [
         "storage",
+        "webview",
         "http://*/",
-        "https://*/"
+        "https://*/",
+        {"fileSystem": ["write"]}
     ],
     "icons": {
         "16":  "img/16x16/file_edit.png",

@@ -51,6 +51,22 @@ div.editor-vsplit3-right {
     bottom: 0;
     width: 33.3%;
 }
+div.preview-vsplit2-right {
+    position: absolute;
+    border-left: 1px solid #aaa;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+}
+#preview {
+    position: absolute;
+    display: block;
+    border: 0;
+    height: 100%;
+    width: 100%;
+}
+/*
 div.editor-split-top {
     position: absolute;
     top: 0;
@@ -66,6 +82,7 @@ div.editor-split-bottom {
     left: 0;
     bottom: 0;
 }
+*/
 #goto {
     position: fixed;
     border-left: solid 1px black;

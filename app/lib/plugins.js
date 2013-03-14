@@ -10,6 +10,7 @@ define(function(require, exports, module) {
         "state",
         "project",
         "keys",
+        "preview",
         "complete",
         "split",
         "window",

@@ -1,8 +1,8 @@
 define(function(require, exports, module) {
-    var state = require("state");
-    var editor = require("editor");
-    var eventbus = require("eventbus");
-    var keys = require("keys");
+    var state = require("./state");
+    var editor = require("./editor");
+    var eventbus = require("./eventbus");
+    var command = require("./command");
 
     eventbus.declare("splitchange");
     
@@ -14,6 +14,7 @@ define(function(require, exports, module) {
         });
         return el;
     }
+    exports.resetEditorDiv = resetEditorDiv;
     
     function splitOne() {
         state.set("split", 1);
@@ -47,7 +48,7 @@ define(function(require, exports, module) {
         });
         eventbus.emit("splitchange", 3);
     }
-    
+
     function switchSplit() {
         var editors = editor.getEditors();
         var activeEditor = editor.getActiveEditor();
@@ -56,12 +57,10 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
-        keys.bind("splitone", {mac: "Command-1", win: "Ctrl-1"}, splitOne);
-        keys.bind("splittwo", {mac: "Command-2", win: "Ctrl31"}, splitTwo);
-        keys.bind("splitthree", {mac: "Command-3", win: "Ctrl-3"}, splitThree);
-        keys.bind("splitswitch", {mac: "Command-0", win: "Ctrl-0"}, switchSplit);
-        
         eventbus.on("stateloaded", function() {
+            if(!state.get("split")) {
+                return splitOne();
+            }
             switch(state.get("split")) {
                 case 1:
                     splitOne();
@@ -72,11 +71,13 @@ define(function(require, exports, module) {
                 case 3:
                     splitThree();
                     break;
-                default:
-                    splitOne();
             }
         });
     };
     
+    command.define("Split:One", {exec: splitOne, readOnly: true});
+    command.define("Split:Vertical Two", {exec: splitTwo, readOnly: true});
+    command.define("Split:Vertical Three", {exec: splitThree, readOnly: true});
+    command.define("Split:Switch Focus", {exec: switchSplit, readOnly: true});
     
 });

@@ -57,6 +57,7 @@ define(function(require, exports, module) {
                 }
             });
         }
+        
         function deleteFile(path, callback) {
             $.ajax(url + path, {
                 type: 'DELETE',
@@ -70,12 +71,22 @@ define(function(require, exports, module) {
                     callback(errString);
                 }
             });
-        }    
+        }
+        
+        function getUrl(path, callback) {
+            if(username) {
+                var parts = url.split('://');
+                url = parts[0] + '://' + username + ':' + password + '@' + parts[1];
+            }
+            callback(null, url + path);
+        }
+        
         return {
             filelist: filelist,
             readFile: readFile,
             writeFile: writeFile,
-            deleteFile: deleteFile
+            deleteFile: deleteFile,
+            getUrl: getUrl
         };
     };
 });

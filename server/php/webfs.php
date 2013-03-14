@@ -53,20 +53,13 @@ function handleGet($path, $rootPath) {
                 if($entry == "." || $entry == "..")
                     continue;
                 $entryPath = "$filePath/$entry";
-                $stat = stat($entryPath);
-                $files[$entry] = array(
-                    "type" => is_dir($entryPath) ? "dir" : "file",
-                    "size" => $stat['size'],
-                    "atime" => $stat['atime'],
-                    "mtime" => $stat['mtime'],
-                    "ctime" => $stat['ctime']
-                );
+                array_push($files, is_dir($entryPath) ? "$entry/" : $entry);
             }
             closedir($handle);
-            header('Content-Type: text/directory');
+            header('Content-Type: text/plain');
             echo json_encode($files);
         } else {
-            header('Content-Transfer-Encoding: binary');
+            //header('Content-Transfer-Encoding: binary');
             header('Content-Length: ' . filesize($filePath));
             readfile($filePath);
         }
@@ -80,31 +73,21 @@ function handleGet($path, $rootPath) {
  */
 function handlePut($path, $rootPath) {
     $filePath = filePath($path, $rootPath);
-    $contentType = $_SERVER["CONTENT_TYPE"];
-    if($contentType == "text/directory") {
-        $result = mkdir($filePath);
-        if($result) {
-            http_response_code(200);
-            echo "OK";
-        } else {
-            http_response_code(500);
-            echo "ERROR";
+    $parentDir = dirname($filePath);
+    mkdir($parentDir, 0777, true);
+    $input = fopen("php://input", "rb");
+    $output = fopen($filePath, "wb");
+    if($output) {
+        while(($buffer = fread($input, 8192)) != false) {
+            fwrite($output, $buffer);
         }
+        fclose($input);
+        fclose($output);
+        http_response_code(200);
+        echo "OK";
     } else {
-        $input = fopen("php://input", "rb");
-        $output = fopen($filePath, "wb");
-        if($output) {
-            while(($buffer = fread($input, 8192)) != false) {
-                fwrite($output, $buffer);
-            }
-            fclose($input);
-            fclose($output);
-            http_response_code(200);
-            echo "OK";
-        } else {
-            http_response_code(500);
-            echo "ERROR";
-        }
+        http_response_code(500);
+        echo "ERROR";
     }
 }
 
