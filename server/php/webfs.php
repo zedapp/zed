@@ -48,16 +48,15 @@ function handleGet($path, $rootPath) {
     if(file_exists($filePath)) {
         if(is_dir($filePath)) {
             $handle = opendir($filePath);
-            $files = array();
+            header('Content-Type: text/plain');
             while (false !== ($entry = readdir($handle))) {
-                if($entry == "." || $entry == "..")
+                if($entry[0] == ".")
                     continue;
                 $entryPath = "$filePath/$entry";
-                array_push($files, is_dir($entryPath) ? "$entry/" : $entry);
+                echo is_dir($entryPath) ? "$entry/" : $entry;
+                echo "\n";
             }
             closedir($handle);
-            header('Content-Type: text/plain');
-            echo json_encode($files);
         } else {
             //header('Content-Transfer-Encoding: binary');
             header('Content-Length: ' . filesize($filePath));

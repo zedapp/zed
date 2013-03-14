@@ -1,12 +1,14 @@
+#!/usr/bin/python
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import os, os.path
+import sys
 import cgi
-import json
 import errno
 
 PORT_NUMBER = 1338
 ROOT = os.getenv("HOME")
-
+if len(sys.argv) > 1:
+    ROOT = sys.argv[1]
 
 class Handler(BaseHTTPRequestHandler):
     def safe_path(self, path):
@@ -21,15 +23,15 @@ class Handler(BaseHTTPRequestHandler):
             return self.error(404, "Path does not found")
         self.send_response(200)
         if os.path.isdir(filePath):
-            files = []
-            for file in os.listdir(filePath):
-                if os.path.isdir("%s/%s" % (filePath, file)):
-                    files.append("%s/" % file)
-                else:
-                    files.append(file)
             self.send_header('Content-type','text/plain')
             self.end_headers()
-            self.wfile.write(json.dumps(files))
+            for file in os.listdir(filePath):
+                if file.startswith("."):
+                    continue
+                if os.path.isdir("%s/%s" % (filePath, file)):
+                    self.wfile.write("%s/\n" % file)
+                else:
+                    self.wfile.write("%s\n" % file)
         else: # file
             f = open(filePath, 'rb')
             buf = f.read()
