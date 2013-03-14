@@ -5,6 +5,8 @@ require.config({
 
 require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
     
+    var projectWindows = {};
+    
     function getKey(key, callback) {
         if(chrome.storage) {
             chrome.storage.sync.get(key, function(results) {
@@ -45,22 +47,34 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                 updateWindowSize();
                 return;
             }
-            var project = projects[projectName];
-            chrome.app.window.create('editor.html?url=' + project.url +
-                                     '&username=' + project.username +
-                                     '&password=' + project.password, {
-                frame: 'chrome',
-                width: 720,
-                height: 400,
-                hidden: true
-            });
+            if(projectWindows[projectName]) {
+                projectWindows[projectName].show();
+            } else {
+                var project = projects[projectName];
+                project.lastUse = Date.now();
+                saveProjects();
+                chrome.app.window.create('editor.html?url=' + project.url +
+                                         '&username=' + project.username +
+                                         '&password=' + project.password, {
+                    frame: 'chrome',
+                    width: 720,
+                    height: 400,
+                    hidden: true
+                }, function(win) {
+                    projectWindows[projectName] = win;
+                    window.win = win;
+                    win.onClosed.addListener(function() {
+                        projectWindows[projectName] = undefined;
+                    });
+                });
+            }
             close();
         }
         
         function remove() {
             var projectName = resultsEl.find("a.ui-state-focus").text();
             delete projects[projectName];
-            setKey("projects", projects);
+            saveProjects();
         }
         
         function close() {
@@ -69,6 +83,10 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
             $("#addform").hide();
             input.val("");
             renderProjects();
+        }
+        
+        function saveProjects() {
+            setKey("projects", projects);
         }
         
         function updateWindowSize() {
@@ -80,6 +98,13 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
             var allProjects = Object.keys(projects);
             resultsEl.empty();
             var matchingProjects = fuzzyfind(allProjects, input.val());
+            matchingProjects.sort(function(a, b) {
+                if(a.score === b.score) {
+                    return projects[b.path].lastUse - projects[a.path].lastUse;
+                } else {
+                    return b.score - a.score;
+                }
+            });
             matchingProjects.forEach(function(match) {
                 var project = projects[match.path];
                 var projectName = match.path;
@@ -102,7 +127,6 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
         
         renderProjects();
         input.keyup(function(event) {
-            console.log(event);
             switch(event.keyCode) {
                 case 38: // up
                     resultsEl.menu("previous");
@@ -112,6 +136,7 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                     break;
                 case 13: // Enter
                     open();
+                    break;
                 case 9: // tab
                     break;
                 case 46: // Delete
@@ -173,7 +198,7 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                         username: username,
                         password: password
                     };
-                    setKey("projects", projects);
+                    saveProjects();
                     $("#name").val("");
                     $("#url").val("http://");
                     $("#addform").hide();

@@ -9,6 +9,7 @@ import os, os.path
 import sys
 import cgi
 import errno
+import urllib
 
 PORT_NUMBER = 1338
 ROOT = os.getenv("HOME")
@@ -19,7 +20,7 @@ if len(sys.argv) > 2:
 
 class Handler(BaseHTTPRequestHandler):
     def safe_path(self, path):
-        path = os.path.abspath(ROOT + path)
+        path = os.path.abspath(ROOT + urllib.unquote(path))
         if not path.startswith(ROOT):
             return self.error(500, "Hacker attempt?")
         return path
