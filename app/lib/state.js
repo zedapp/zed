@@ -24,9 +24,6 @@ define(function(require, exports, module) {
                     json = "{}";
                 }
                 state = JSON.parse(json);
-                if(chrome.app.window) {
-                    chrome.app.window.current().show();
-                }
                 eventbus.emit("stateloaded", module.exports);
                 callback && callback(state);
             });
@@ -35,7 +32,7 @@ define(function(require, exports, module) {
             project.writeFile("/.zedstate", this.toJSON(), callback || function() {});
         },
         toJSON: function() {
-            return JSON.stringify(state);
+            return JSON.stringify(state, null, 2);
         }
     };
     

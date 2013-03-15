@@ -22,6 +22,9 @@
         "64":  "img/64x64/file_edit.png",
         "128": "img/128x128/file_edit.png"
     },
+    "sandbox": {
+        "pages": ["sandbox.html"]
+    },
     "commands" : {
         "cmdNew": {
             "suggested_key": {

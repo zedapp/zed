@@ -3,7 +3,15 @@ require.config({
     waitSeconds: 15
 });
 
-require(["plugins", "text!../manual.md"], function(plugins, manual) {
+var toLoad = ["plugins", "text!../manual.md"];
+/*
+if(location.search.indexOf("&chromeapp=true") !== -1) {
+    console.log("Chrome app!");
+    toLoad.push("fs/messagefs");
+}
+*/
+
+require(toLoad, function(plugins, manual) {
     require(plugins, function() {
         var state = require("state");
         var eventbus = require("eventbus");
@@ -23,6 +31,7 @@ require(["plugins", "text!../manual.md"], function(plugins, manual) {
             if(module.init)
                 module.init();
         });
+        
         
         console.log("Zed loaded.");
     });

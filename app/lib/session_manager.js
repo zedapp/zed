@@ -114,12 +114,11 @@ define(function(require, exports, module) {
                 });
                 eventbus.emit("allsessionsloaded");
             }
-            var sessions = state.get("session.open");
+            var sessions = state.get("session.open") || [];
             var count = Object.keys(sessions).length;
             for(var path in sessions) {
                 (function() {
                     var sessionState = sessions[path];
-                        console.log("Count", count);
                     loadFile(path, function(err, session) {
                         editor.setSessionState(session, sessionState);
                         count--;

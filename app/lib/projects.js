@@ -3,7 +3,14 @@ require.config({
     waitSeconds: 15
 });
 
-require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
+/*
+chrome.app.window.create('sandbox.html', {
+                    frame: 'chrome',
+                    width: 720,
+                    height: 400
+                });
+*/              
+require(["fs/web", "fuzzyfind", "messageapi"], function(webfs, fuzzyfind, messageapi) {
     
     var projectWindows = {};
     
@@ -55,11 +62,11 @@ require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
                 saveProjects();
                 chrome.app.window.create('editor.html?url=' + project.url +
                                          '&username=' + project.username +
-                                         '&password=' + project.password, {
+                                         '&password=' + project.password +
+                                         '&chromeapp=true', {
                     frame: 'chrome',
                     width: 720,
                     height: 400,
-                    hidden: true
                 }, function(win) {
                     projectWindows[projectName] = win;
                     window.win = win;

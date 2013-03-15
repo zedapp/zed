@@ -10,9 +10,9 @@ define(function(require, exports, module) {
         "state",
         "project",
         "keys",
-        "preview",
         "complete",
         "split",
+        "preview",
         "window",
         "session_manager",
     ];

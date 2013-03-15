@@ -97,9 +97,9 @@ define(function(require, exports, module) {
             });
         },
         init: function() {
-            $("body").append("<div id='editor0'>");
-            $("body").append("<div id='editor1'>");
-            $("body").append("<div id='editor2'>");
+            $("body").append("<div id='editor0' class='editor-single'>");
+            $("body").append("<div id='editor1' class='editor-disabled'>");
+            $("body").append("<div id='editor2' class='editor-disabled'>");
             editors.push(ace.edit("editor0"));
             editors.push(ace.edit("editor1"));
             editors.push(ace.edit("editor2"));
@@ -119,6 +119,7 @@ define(function(require, exports, module) {
 
             editor.setActiveEditor(editors[0]);
             eventbus.emit("editorloaded", exports);
+            
         },
         createSession: function(path, content) {
             var parts = path.split(".");
