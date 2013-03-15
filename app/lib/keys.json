@@ -1,13 +1,39 @@
 {
-    "Editor:Select All":           {"win": "Ctrl-A", "mac": "Command-A"},
-    "Editor:Center Selection":     {"mac": "Ctrl-L"},
-    "Editor:Goto Line":            "Ctrl-G",
-    "Goto:Goto Anything":          {"mac": "Command-E", "win": "Ctrl-E"},
-    "Command:Enter Command":       {"mac": "Command-.", "win": "Ctrl-."},
-    "Split:One":                   {"mac": "Command-1", "win": "Ctrl-1"},
-    "Split:Vertical Two":          {"mac": "Command-2", "win": "Ctrl-2"},
-    "Split:Vertical Three":        {"mac": "Command-3", "win": "Ctrl-3"},
-    "Split:Switch Focus":          {"mac": "Command-0", "win": "Ctrl-0"},
-    "Split:Preview":               {"mac": "Command-P", "win": "Ctrl-P"},
-    "Goto:Tree":                   "Alt-T"
+    "Editor:Select All": {
+        "win": "Ctrl-A",
+        "mac": "Command-A"
+    },
+    "Editor:Center Selection": {
+        "mac": "Ctrl-L"
+    },
+    "Editor:Goto Line": "Ctrl-G",
+    "Goto:Goto Anything": {
+        "mac": "Command-E",
+        "win": "Ctrl-E"
+    },
+    "Command:Enter Command": {
+        "mac": "Command-.",
+        "win": "Ctrl-."
+    },
+    "Split:One": {
+        "mac": "Command-1",
+        "win": "Ctrl-1"
+    },
+    "Split:Vertical Two": {
+        "mac": "Command-2",
+        "win": "Ctrl-2"
+    },
+    "Split:Vertical Three": {
+        "mac": "Command-3",
+        "win": "Ctrl-3"
+    },
+    "Split:Switch Focus": {
+        "mac": "Command-0",
+        "win": "Ctrl-0"
+    },
+    "Split:Preview": {
+        "mac": "Command-P",
+        "win": "Ctrl-P"
+    },
+    "Goto:Tree": "Alt-T"
 }
