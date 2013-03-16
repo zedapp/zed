@@ -16,7 +16,7 @@ define(function(require, exports, module) {
         edit.keyBinding = new KeyBinding(edit);
         keyboardHandler = edit.getKeyboardHandler();
         
-        editor.getEditors().forEach(function(edit) {
+        editor.getEditors(true).forEach(function(edit) {
             edit.setKeyboardHandler(keyboardHandler);
         });
     };

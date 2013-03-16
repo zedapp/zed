@@ -36,6 +36,13 @@ require(["fs/web", "fuzzyfind", "messageapi"], function(webfs, fuzzyfind, messag
     
     getKey("projects", function(projects) {
         projects = projects || {};
+        
+        if(!projects.Settings) {
+            projects.Settings = {
+                url: "settings:"
+            };
+        }
+        
         var input = $("#gotoinput");
         var resultsEl = $("#results");
         resultsEl.menu({

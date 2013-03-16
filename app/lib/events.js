@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
-    var EventEmitter = exports.EventEmitter = function () {
+    var EventEmitter = exports.EventEmitter = function (checked) {
         this._events = {};
+        this._checked = checked;
     };
     
     var toString = Object.prototype.toString;
@@ -32,8 +33,8 @@ define(function(require, exports, module) {
     };
     
     EventEmitter.prototype.emit = function(type) {
-        // If there is no 'error' event listener then throw.
         console.log("Emitting", type);
+        // If there is no 'error' event listener then throw.
         if (type === 'error') {
             if (!this._events || !this._events.error ||
                 (isArray(this._events.error) && !this._events.error.length))
@@ -49,8 +50,10 @@ define(function(require, exports, module) {
     
         var handler = this._events[type];
         
-        if(!handler)
+        if(!handler && this._checked)
             throw Error("Event not declared: " + type);
+        else if(!handler)
+            handler = this._events[type] = [];
     
         var args = Array.prototype.slice.call(arguments, 1);
 
@@ -66,10 +69,12 @@ define(function(require, exports, module) {
             throw new Error('addListener only takes instances of Function');
         }
 
-        if (!this._events[type]) {
+        if (!this._events[type] && this._checked) {
             // Optimize the case of one listener. Don't need the extra array object.
             throw new Error("Event not declared: " + type);
-        } 
+        } else if(!this._events[type]) {
+            this._events[type] = [];
+        }
         // Check for listener leak
         if (!this._events[type].warned) {
             var m;

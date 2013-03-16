@@ -31,11 +31,14 @@ define(function(require, exports, module) {
         });
         
         console.log("URL:", options.url);
+        var io;
         if(options.url === "draganddrop") {
             var dir = window.dir;
             return;
+        } else if(options.url.indexOf("settings:") === 0) {
+            io = require("fs/settings")();
         } else {
-            var io = require('fs/web')(options.url, options.username, options.password);
+            io = require('fs/web')(options.url, options.username, options.password);
         }
         exports.filelist = io.filelist;
         exports.readFile = io.readFile;

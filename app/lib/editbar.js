@@ -107,6 +107,6 @@ define(function(require, exports, module) {
     }
     
     function switchSession(edit, session) {
-        edit.editbarEl.find('.path').text(session.filename);
+        edit.editbarEl.find('.path').text(session.filename.substring(1));
     }
 });

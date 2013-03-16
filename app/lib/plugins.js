@@ -15,5 +15,6 @@ define(function(require, exports, module) {
         "preview",
         "window",
         "session_manager",
+        "settings"
     ];
 });

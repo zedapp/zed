@@ -87,13 +87,24 @@ define(function(require, exports, module) {
             "ace/theme/tomorrow_night_eighties", "ace/theme/twilight",
             "ace/theme/vibrant_ink", "ace/theme/xcode"],
         hook: function() {
-            eventbus.on("stateloaded", function(state) {
-                var theme = state.get("editor.theme");
-                if (theme) {
-                    editor.getEditors(true).forEach(function(edit) {
-                        edit.setTheme(theme);
-                    });
-                }
+            eventbus.on("settingschanged", function(settings) {
+                editor.getEditors(true).forEach(function(edit) {
+                    edit.setTheme(settings.get("theme"));
+                    edit.setHighlightActiveLine(settings.get("highlightActiveLine"));
+                    edit.setHighlightGutterLine(settings.get("highlightGutterLine"));
+                    edit.setFontSize(settings.get("fontSize"));
+                    edit.setShowPrintMargin(settings.get("showPrintMargin"));
+                    edit.setPrintMarginColumn(settings.get("printMarginColumn"));
+                    edit.setShowInvisibles(settings.get("showInvisibles"));
+                    edit.setDisplayIndentGuides(settings.get("displayIndentGuides"));
+                    edit.setAnimatedScroll(settings.get("animatedScroll"));
+                    edit.setShowFoldWidgets(settings.get("showFoldWidgets"));
+                    edit.setScrollSpeed(settings.get("scrollSpeed"));
+                    edit.renderer.setShowGutter(settings.get("showGutter"));
+                    edit.setHighlightSelectedWord(settings.get("highlightSelectedWord"));
+                    edit.setBehavioursEnabled(settings.get("behaviorsEnabled")); // ( -> ()
+                    edit.setWrapBehavioursEnabled(settings.get("wrapBehaviorsEnabled")); // same as above but with selection
+                });
             });
         },
         init: function() {
@@ -106,7 +117,8 @@ define(function(require, exports, module) {
 
             editors.forEach(function(editor) {
                 editor.setHighlightActiveLine(false);
-                editor.setTheme("ace/theme/cobalt");
+                editor.setShowPrintMargin(false);
+                editor.setTheme("ace/theme/monokai");
                 editor.on("focus", function() {
                     activeEditor = editor;
                     editor.setHighlightActiveLine(true);

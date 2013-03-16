@@ -8,6 +8,7 @@ define(function(require, exports, module) {
     module.exports = {
         hook: function() {
             eventbus.on("ioavailable", function() {
+                console.log("IO available!");
                 module.exports.load();
             });
         },
