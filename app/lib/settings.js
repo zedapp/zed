@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    var settingsfs = require("./fs/settings")();
+    var settingsfs = require("./fs/settings");
     var eventbus = require("./eventbus");
     
     eventbus.declare("settingschanged");

@@ -118,6 +118,13 @@ define(function(require, exports, module) {
         exec: fetchFileList,
         readOnly: true
     });
+    
+    command.define("File:Goto File Under Cursor", {
+        exec: function(edit) {
+            
+        },
+        readOnly: true
+    });
 
     exports.init = function() { };
 

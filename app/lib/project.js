@@ -36,7 +36,7 @@ define(function(require, exports, module) {
             var dir = window.dir;
             return;
         } else if(options.url.indexOf("settings:") === 0) {
-            io = require("fs/settings")();
+            io = require("fs/settings");
         } else {
             io = require('fs/web')(options.url, options.username, options.password);
         }

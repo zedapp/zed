@@ -29,7 +29,8 @@ define(function(require, exports, module) {
             if(areaName === "sync") {
                 Object.keys(changes).forEach(function(key) {
                     if(key.indexOf("settings:") === 0) {
-                        emitter.emit("filechanged:" + key.substring("settings:".length));
+                        var path = key.substring("settings:".length);
+                        emitter.emit("filechanged:" + path, path);
                     }
                 });
             }
@@ -38,57 +39,56 @@ define(function(require, exports, module) {
         window.addEventListener("storage", function(event) {
             var key = event.key;
             if(key.indexOf("settings:") === 0) {
-                emitter.emit("filechanged:" + key.substring("settings:".length));
+                var path = key.substring("settings:".length)
+                emitter.emit("filechanged:" + path, path);
             }
         });
     }
     
-    module.exports = function() {
-        function filelist(callback) {
-            callback(null, documents);
-        }
+    function filelist(callback) {
+        callback(null, documents);
+    }
 
-        function readFile(path, callback) {
-            getKey("settings:" + path, function(val) {
-                if (!val) {
-                    return $.get("settings" + path, function(result) {
-                        callback(null, result);
-                    }, "text");
-                }
-                callback(null, val);
-            });
-        }
+    function readFile(path, callback) {
+        getKey("settings:" + path, function(val) {
+            if (!val) {
+                return $.get("settings" + path, function(result) {
+                    callback(null, result);
+                }, "text");
+            }
+            callback(null, val);
+        });
+    }
 
-        function writeFile(path, content, callback) {
-            setKey("settings:" + path, content);
-            emitter.emit("filechanged:" + path);
-            callback(null, "OK");
-        }
+    function writeFile(path, content, callback) {
+        setKey("settings:" + path, content);
+        emitter.emit("filechanged:" + path, path, "changed");
+        callback(null, "OK");
+    }
 
-        function deleteFile(path, callback) {
-            callback("Not supported");
-        }
+    function deleteFile(path, callback) {
+        callback("Not supported");
+    }
 
-        function getUrl(path, callback) {
-            callback("Not supported");
-        }
+    function getUrl(path, callback) {
+        callback("Not supported");
+    }
 
-        function watchFile(path, callback) {
-            emitter.on("filechanged:" + path, callback);
-        }
+    function watchFile(path, callback) {
+        emitter.on("filechanged:" + path, callback);
+    }
 
-        function unwatchFile(path, callback) {
-            emitter.removeListener("filechanged:" + path, callback);
-        }
+    function unwatchFile(path, callback) {
+        emitter.removeListener("filechanged:" + path, callback);
+    }
 
-        return {
-            filelist: filelist,
-            readFile: readFile,
-            writeFile: writeFile,
-            deleteFile: deleteFile,
-            getUrl: getUrl,
-            watchFile: watchFile,
-            unwatchFile: unwatchFile
-        };
+    module.exports = {
+        filelist: filelist,
+        readFile: readFile,
+        writeFile: writeFile,
+        deleteFile: deleteFile,
+        getUrl: getUrl,
+        watchFile: watchFile,
+        unwatchFile: unwatchFile
     };
 });
