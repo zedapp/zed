@@ -44,6 +44,8 @@ define(function(require, exports, module) {
         exports.readFile = io.readFile;
         exports.writeFile = io.writeFile;
         exports.getUrl = io.getUrl;
+        exports.watchFile = io.watchFile;
+        exports.unwatchFile = io.unwatchFile;
         eventbus.emit("ioavailable", exports);
     };
 });

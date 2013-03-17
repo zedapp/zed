@@ -7,7 +7,7 @@
         "mac": "Ctrl-L"
     },
     "Editor:Goto Line": "Ctrl-G",
-    "Goto:Goto Anything": {
+    "File:Goto": {
         "mac": "Command-E",
         "win": "Ctrl-E"
     },

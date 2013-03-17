@@ -1,5 +1,6 @@
 Zed
 ===
+
 This is an editor that I built for myself being unhappy with every editor available
 today.
 

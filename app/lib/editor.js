@@ -1,7 +1,8 @@
 define(function(require, exports, module) {
     var eventbus = require("./eventbus");
     var command = require("./command");
-    var state = require("./state");
+    var settings = require("./settings");
+    var defaultSettings = JSON.parse(require("text!../settings/settings.json"));
 
     eventbus.declare("editorloaded");
 
@@ -9,69 +10,7 @@ define(function(require, exports, module) {
     var activeEditor = null;
 
     var editor = module.exports = {
-        extMapping: {
-            "abap": "ace/mode/abap",
-            "asciidoc": "ace/mode/asciidoc",
-            "cpp": "ace/mode/c_cpp",
-            "clj": "ace/mode/clojure",
-            "coffee": "ace/mode/coffee",
-            "cf": "ace/mode/coldfusion",
-            "cs": "ace/mode/csharp",
-            "css": "ace/mode/css",
-            "curly": "ace/mode/curly",
-            "dart": "ace/mode/dart",
-            "diff": "ace/mode/diff",
-            "dot": "ace/mode/dot",
-            "golang": "ace/mode/golang",
-            "groovy": "ace/mode/groovy",
-            "haml": "ace/mode/haml",
-            "haxe": "ace/mode/haxe",
-            "html": "ace/mode/html",
-            "jade": "ace/mode/jade",
-            "java": "ace/mode/java",
-            "js": "ace/mode/javascript",
-            "json": "ace/mode/json",
-            "jsp": "ace/mode/jsp",
-            "jsx": "ace/mode/jsx",
-            "ltx": "ace/mode/latex",
-            "less": "ace/mode/less",
-            "liquid": "ace/mode/liquid",
-            "lisp": "ace/mode/lisp",
-            "lua": "ace/mode/lua",
-            "lucene": "ace/mode/lucene",
-            "logic": "ace/mode/logiql",
-            "Makefile": "ace/mode/makefile",
-            "md": "ace/mode/markdown",
-            "m": "ace/mode/objectivec",
-            "ocaml": "ace/mode/ocaml",
-            "pl": "ace/mode/perl",
-            "psql": "ace/mode/pgsql",
-            "php": "ace/mode/php",
-            "php": "ace/mode/php",
-            "py": "ace/mode/python",
-            "r": "ace/mode/r",
-            "rdoc": "ace/mode/rdoc",
-            "rhtml": "ace/mode/rhtml",
-            "ruby": "ace/mode/ruby",
-            "scad": "ace/mode/scad",
-            "scala": "ace/mode/scala",
-            "scheme": "ace/mode/scheme",
-            "scss": "ace/mode/scss",
-            "sh": "ace/mode/sh",
-            "sql": "ace/mode/sql",
-            "stylus": "ace/mode/stylus",
-            "svg": "ace/mode/svg",
-            "tcl": "ace/mode/tcl",
-            "tex": "ace/mode/tex",
-            "text": "ace/mode/text",
-            "textile": "ace/mode/textile",
-            "tm_snippet": "ace/mode/tm_snippet",
-            "typescript": "ace/mode/typescript",
-            "vbscript": "ace/mode/vbscript",
-            "xml": "ace/mode/xml",
-            "xquery": "ace/mode/xquery",
-            "yaml": "ace/mode/yaml"
-        },
+        extMapping: defaultSettings.fileExtensions,
         themes: ["ace/theme/ambiance", "ace/theme/chaos",
             "ace/theme/chrome", "ace/theme/clouds",
             "ace/theme/clouds_midnight", "ace/theme/cobalt",
@@ -88,6 +27,7 @@ define(function(require, exports, module) {
             "ace/theme/vibrant_ink", "ace/theme/xcode"],
         hook: function() {
             eventbus.on("settingschanged", function(settings) {
+                editor.extMapping = settings.get("fileExtensions");
                 editor.getEditors(true).forEach(function(edit) {
                     edit.setTheme(settings.get("theme"));
                     edit.setHighlightActiveLine(settings.get("highlightActiveLine"));
@@ -105,6 +45,12 @@ define(function(require, exports, module) {
                     edit.setBehavioursEnabled(settings.get("behaviorsEnabled")); // ( -> ()
                     edit.setWrapBehavioursEnabled(settings.get("wrapBehaviorsEnabled")); // same as above but with selection
                 });
+                require(["./session_manager"], function(session_manager) {
+                    var sessions = session_manager.getSessions();
+                    Object.keys(sessions).forEach(function(path) {
+                        sessions[path].setUseWrapMode(settings.get("wordWrap"));
+                    });
+                });
             });
         },
         init: function() {
@@ -116,16 +62,10 @@ define(function(require, exports, module) {
             editors.push(ace.edit("editor2"));
 
             editors.forEach(function(editor) {
-                editor.setHighlightActiveLine(false);
                 editor.setShowPrintMargin(false);
                 editor.setTheme("ace/theme/monokai");
                 editor.on("focus", function() {
                     activeEditor = editor;
-                    editor.setHighlightActiveLine(true);
-                });
-                editor.on("blur", function() {
-                    activeEditor = editor;
-                    editor.setHighlightActiveLine(false);
                 });
             });
 
@@ -142,7 +82,7 @@ define(function(require, exports, module) {
             }
             var session = ace.createEditSession(content);
             session.setMode(mode);
-            session.setUseWrapMode(!!state.get('wordwrap'));
+            session.setUseWrapMode(settings.get("wordWrap"));
             session.mode = mode;
             session.filename = path;
             return session;
@@ -173,13 +113,15 @@ define(function(require, exports, module) {
             return editor.getActiveEditor().getSession();
         },
         getSessionState: function(session) {
+            var undoStack = session.getUndoManager().$undoStack.slice(-25);
+            var redoStack = session.getUndoManager().$redoStack.slice(-25);
             return {
                 scrollTop: session.getScrollTop(),
                 scrollLeft: session.getScrollLeft(),
                 selection: session.getSelection().getRange(),
                 lastUse: session.lastUse,
-                undo: session.getUndoManager().$undoStack,
-                redo: session.getUndoManager().$redoStack,
+                undo: undoStack,
+                redo: redoStack,
                 mode: session.getMode().$id
             };
         },
@@ -235,14 +177,10 @@ define(function(require, exports, module) {
         readOnly: true
     });
     
-    command.define("Editor:Toggle Word Wrap", {
+    command.define("Settings:Toggle Word Wrap", {
         exec: function(editor) {
             require(["./session_manager"], function(session_manager) {
-                var sessions = session_manager.getSessions();
-                state.set("wordwrap", !state.get("wordwrap"));
-                Object.keys(sessions).forEach(function(path) {
-                    sessions[path].setUseWrapMode(state.get("wordwrap"));
-                });
+                settings.set("wordWrap", !settings.get("wordWrap"));
             });
         },
         readOnly: true
@@ -267,14 +205,14 @@ define(function(require, exports, module) {
         var name = parts[parts.length - 1];
         name = name[0].toUpperCase() + name.substring(1).replace("_", " ");
 
-        command.define("Editor:Theme:" + name, {
+        command.define("Settings:Theme:" + name, {
             exec: function() {
-                require(["state"], function(state) {
+                settings.set("theme", theme);
+                /*require(["state"], function(state) {
                     editor.getEditors(true).forEach(function(edit) {
                         edit.setTheme(theme);
-                        state.set("editor.theme", theme);
                     });
-                });
+                });*/
             },
             readOnly: true
         });

@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     
     eventbus.declare("settingschanged");
     
-    var settings = null;
+    var settings = require("text!../settings/settings.json");
     var ignore = false;
     
     exports.init = function() {
@@ -13,20 +13,13 @@ define(function(require, exports, module) {
     };
     
     exports.get = function(key) {
-        if(!settings)
-            throw Error("Settings not loaded yet");
-        
         return settings[key];
     };
     
     exports.set = function(key, value) {
-        if(!settings)
-            throw Error("Settings not loaded yet");
         settings[key] = value;
-        ignore = true;
-        settings.writeFile("/settings.json", JSON.stringify(settings, null, 4), function(err) {
-            ignore = false;
-            console.log("Settings writter:", err);
+        settingsfs.writeFile("/settings.json", JSON.stringify(settings, null, 4), function(err) {
+            console.log("Settings written:", err);
         });
     };
     

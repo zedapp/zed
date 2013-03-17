@@ -9,6 +9,8 @@ define(function(require, exports, module) {
     var ui = require("./ui");
 
     var fileCache = [];
+    
+    eventbus.declare("loadedfilelist");
 
     function Result(path, score) {
         this.path = path;
@@ -88,24 +90,32 @@ define(function(require, exports, module) {
         });
         return resultList;
     }
+    
+    function fetchFileList() {
+        console.log("Fetching file list...");
+        project.filelist(function(err, files) {
+            fileCache = files;
+            eventbus.emit("loadedfilelist")
+        });
+    }
 
     exports.hook = function() {
-        eventbus.on("ioavailable", function() {
-            console.log("Fetching file list...");
-            project.filelist(function(err, files) {
-                fileCache = files;
-            });
-        });
+        eventbus.on("ioavailable", fetchFileList);
         
         eventbus.on("newfilesession", function(path) {
             fileCache.push(path.filename);
         });
     };
     
-    command.define("Goto:Goto Anything", {
+    command.define("File:Goto", {
         exec: function() {
             ui.filterBox("file path", filter, session_manager.go.bind(session_manager));
         },
+        readOnly: true
+    });
+    
+    command.define("File:Reload Filelist", {
+        exec: fetchFileList,
         readOnly: true
     });
 

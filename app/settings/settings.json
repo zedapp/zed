@@ -17,6 +17,7 @@
     "highlightSelectedWord": true,
     "behaviorsEnabled": true,
     "wrapBehaviorsEnabled": false,
+    "wordWrap": true,
     "fileExtensions": {
         "abap": "ace/mode/abap",
         "asciidoc": "ace/mode/asciidoc",

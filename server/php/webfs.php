@@ -23,6 +23,9 @@ function webfs($rootPath, $username = null, $password = null) {
     case "GET":
         handleGet($path, $rootPath);
         break;
+    case "OPTIONS":
+        handleOptions($path, $rootPath);
+        break;
     case "PUT":
         handlePut($path, $rootPath);
         break;
@@ -60,10 +63,20 @@ function handleGet($path, $rootPath) {
         } else {
             //header('Content-Transfer-Encoding: binary');
             header('Content-Length: ' . filesize($filePath));
+            header('ETag: ' . filemtime($filePath));
             readfile($filePath);
         }
     } else {
         error(404, "File does not exist: ". $filePath);
+    }
+}
+
+function handleOptions($path, $rootPath) {
+    $filePath = filePath($path, $rootPath);
+    if(file_exists($filePath)) {
+        header('ETag: ' . filemtime($filePath));
+    } else {
+        error(404, "File does not exist.");
     }
 }
 
@@ -83,6 +96,7 @@ function handlePut($path, $rootPath) {
         fclose($input);
         fclose($output);
         http_response_code(200);
+        header('ETag: ' . filemtime($filePath));
         echo "OK";
     } else {
         http_response_code(500);

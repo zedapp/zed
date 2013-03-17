@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
     var goto = require("./goto");
     var command = require("./command");
+    var eventbus = require("./eventbus");
     var session_manager = require("./session_manager");
     var editor = require("./editor");
     
@@ -74,6 +75,15 @@ define(function(require, exports, module) {
             ignoreActivate = false;
         }, 100);
     }
+    
+    exports.hook = function() {
+        eventbus.on("loadedfilelist", function() {
+            if(treeEl) {
+                treeEl.remove();
+                treeEl = null;
+            }
+        });
+    };
     
     command.define("Goto:Tree", {
         exec: function(edit) {

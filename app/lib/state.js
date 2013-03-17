@@ -33,7 +33,7 @@ define(function(require, exports, module) {
             project.writeFile("/.zedstate", this.toJSON(), callback || function() {});
         },
         toJSON: function() {
-            return JSON.stringify(state, null, 2);
+            return JSON.stringify(state);
         }
     };
     

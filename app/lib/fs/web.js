@@ -1,5 +1,11 @@
 define(function(require, exports, module) {
-    module.exports = function(url, username, password) {
+    var events = require("events");
+
+    module.exports = function(url, username, password, pollInterval) {
+        pollInterval = pollInterval || 5000;
+        
+        var etagCache = window.etagCache =  {};
+        
         function filelist(callback) {
             $.ajax({
                 type: "POST",
@@ -8,9 +14,6 @@ define(function(require, exports, module) {
                 password: password,
                 data: {
                     action: 'filelist'
-                },
-                error: function(xhr, err, errString) {
-                    callback(errString);
                 },
                 success: function(res) {
                     var items = res.split("\n");
@@ -22,6 +25,9 @@ define(function(require, exports, module) {
                     }
                     callback(null, items);
                 },
+                error: function(xhr) {
+                    callback(xhr.status);
+                },
                 dataType: "text"
             });
         }
@@ -32,10 +38,11 @@ define(function(require, exports, module) {
                 url: url + path,
                 username: username,
                 password: password,
-                error: function(xhr, err, errString) {
-                    callback(errString);
+                error: function(xhr) {
+                    callback(xhr.status);
                 },
-                success: function(res) {
+                success: function(res, status, xhr) {
+                    etagCache[path] = xhr.getResponseHeader("ETag");
                     callback(null, res);
                 },
                 dataType: "text"
@@ -49,11 +56,12 @@ define(function(require, exports, module) {
                 dataType: 'text',
                 username: username,
                 password: password,
-                success: function(res) {
+                success: function(res, status, xhr) {
+                    etagCache[path] = xhr.getResponseHeader("ETag");
                     callback(null, res);
                 },
-                error: function(xhr, err, errString) {
-                    callback(errString);
+                error: function(xhr) {
+                    callback(xhr.status);
                 }
             });
         }
@@ -67,8 +75,8 @@ define(function(require, exports, module) {
                 success: function(res) {
                     callback(null, res);
                 },
-                error: function(xhr, err, errString) {
-                    callback(errString);
+                error: function(xhr) {
+                    callback(xhr.status);
                 }
             });
         }
@@ -81,12 +89,57 @@ define(function(require, exports, module) {
             callback(null, url + path);
         }
         
+        var fileWatchers = window.fileWatchers = {};
+        
+        function watchFile(path, callback) {
+            fileWatchers[path] = fileWatchers[path] || [];
+            fileWatchers[path].push(callback);
+        }
+        
+        function unwatchFile(path, callback) {
+            fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
+        }
+        
+        function pollFiles() {
+            Object.keys(fileWatchers).forEach(function(path) {
+                if(fileWatchers[path].length === 0)
+                    return;
+                
+                $.ajax(url + path, {
+                    type: 'OPTIONS',
+                    username: username,
+                    password: password,
+                    success: function(data, status, xhr) {
+                        var newEtag = xhr.getResponseHeader("ETag");
+                        if(etagCache[path] !== newEtag) {
+                            fileWatchers[path].forEach(function(fn) {
+                                fn(path, "changed");
+                            });
+                            etagCache[path] = newEtag;
+                        }
+                    },
+                    error: function(xhr) {
+                        if(xhr.status === 404) {
+                            fileWatchers[path].forEach(function(fn) {
+                                fn(path, "deleted");
+                            });
+                            fileWatchers[path] = [];
+                        }
+                    }
+                });
+            })
+        }
+        
+        setInterval(pollFiles, pollInterval);
+        
         return {
             filelist: filelist,
             readFile: readFile,
             writeFile: writeFile,
             deleteFile: deleteFile,
-            getUrl: getUrl
+            getUrl: getUrl,
+            watchFile: watchFile,
+            unwatchFile: unwatchFile
         };
     };
 });

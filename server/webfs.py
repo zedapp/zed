@@ -25,11 +25,16 @@ class Handler(BaseHTTPRequestHandler):
             return self.error(500, "Hacker attempt?")
         return path
         
+    def send_etag_header(self, path):
+        stat = os.stat(path)
+        self.send_header('ETag', str(int(stat.st_mtime)))
+
     def do_GET(self):
         filePath = self.safe_path(self.path)
         if not os.path.exists(filePath):
-            return self.error(404, "Path does not found")
+            return self.error(404, "Path not found")
         self.send_response(200)
+        self.send_etag_header(filePath)
         if os.path.isdir(filePath):
             self.send_header('Content-type','text/plain')
             self.end_headers()
@@ -48,6 +53,14 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(buf)
             f.close()
 
+    def do_OPTIONS(self):
+        filePath = self.safe_path(self.path)
+        if not os.path.exists(filePath):
+            return self.error(404, "Path not found")
+        self.send_response(200)
+        self.send_etag_header(filePath)
+        self.end_headers()
+
     def do_PUT(self):
         filePath = self.safe_path(self.path)
         parentDir = os.path.dirname(filePath)
@@ -59,6 +72,7 @@ class Handler(BaseHTTPRequestHandler):
         f.write(buf)
         f.close()
         self.send_response(200)
+        self.send_etag_header(filePath)
         self.end_headers()
         self.wfile.write("OK")
     
