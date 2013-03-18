@@ -184,11 +184,13 @@ div.editor-split-bottom {
     overflow: scroll;
     overflow-x: hidden;
     max-height: 200px;
+    width: 300px;
     margin: 0;
     padding: 0;
 }
 #complete-box li {
     list-style-type: none;
+    position: relative;
     padding: 0;
 }
 #complete-box a {
@@ -196,6 +198,12 @@ div.editor-split-bottom {
     padding: 3px;
     text-decoration: none;
     color: black;
+}
+#complete-box span.meta {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    color: #999;
 }
 #complete-box a.ui-state-focus {
     background-color: #33CCFF;

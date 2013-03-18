@@ -3,11 +3,11 @@ define(function(require, exports, module) {
     var editor = require("./editor");
     
     exports.jump = function(locator, selectionRange) {
-        console.log("Jumping to locator: ", locator);
         var edit = editor.getActiveEditor();
         if(locator[0] === "/") {
             edit.find(locator.substring(1), {
-                start: selectionRange || edit.getSelectionRange()
+                start: selectionRange || edit.getSelectionRange(),
+                wrap: true
             });
         } else {
             try {

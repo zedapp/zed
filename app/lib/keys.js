@@ -41,7 +41,7 @@ define(function(require, exports, module) {
             //readOnly: command.lookup(cmd).readOnly
         });
     };
-
+    
     var lang = ace.require("ace/lib/lang");
     var config = ace.require("ace/config");
 
@@ -58,6 +58,41 @@ define(function(require, exports, module) {
     
     exports.init = function() {
         settingsfs.watchFile("/keys.json", loadKeys);
+    };
+    
+    var oldOnCommandKey = null;
+    var oldOnTextInput = null;
+    exports.tempRebindKeys = function(keyHandler) {
+        var edit = editor.getActiveEditor();
+        console.log("Binding keys");
+        if(oldOnCommandKey) {
+            throw Error("Keys already temporarily bound!");
+        }
+        oldOnCommandKey = edit.keyBinding.onCommandKey;
+        edit.keyBinding.onCommandKey = function(event) {
+            var args = arguments;
+            keyHandler(event, function() {
+                oldOnCommandKey.apply(edit.keyBinding, args);
+            });
+        };
+        oldOnTextInput = edit.keyBinding.onTextInput;
+        edit.keyBinding.onTextInput = function(event) {
+            var args = arguments;
+            keyHandler(event, function() {
+                oldOnTextInput.apply(edit.keyBinding, args);
+            });
+        };
+    };
+    
+    exports.resetTempRebindKeys = function() {
+        var edit = editor.getActiveEditor();
+        if(oldOnCommandKey) {
+            console.log("RESET KEYS")
+            edit.keyBinding.onCommandKey = oldOnCommandKey;
+            edit.keyBinding.onTextInput = oldOnTextInput;
+            oldOnCommandKey = null;
+            oldOnTextInput = null;
+        }
     };
     
     function loadKeys() {

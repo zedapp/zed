@@ -15,9 +15,16 @@
         "win": "Ctrl-F",
         "mac": "Command-F"
     },
-    "Edit:Search For Identifier Under Cursor": "Ctrl-Shift-8",
-    "Edit:Search Backwards For Identifier Under Cursor": "Ctrl-Shift-3",
-    "Edit:Goto Path Under Cursor": "Ctrl-[",
+    "Navigate:Next Instance Of Identifier": "Ctrl-Shift-Right",
+    "Navigate:Previous Instance Of Identifier": "Ctrl-Shift-Left",
+    "Cursor:Add Above": "Ctrl-Alt-Up",
+    "Cursor:Add Below": "Ctrl-Alt-Down",
+    "Cursor:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
+    "Cursor:Add At Previous Instance Of Identifier": "Ctrl-Alt-Left",
+    "Edit:Goto Path Under Cursor": {
+        "mac": "Command-O",
+        "win": "Ctrl-O"
+    },
     "Command:Enter Command": {
         "mac": "Command-.",
         "win": "Ctrl-."

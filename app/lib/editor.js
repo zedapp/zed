@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var command = require("./command");
     var settings = require("./settings");
     var defaultSettings = JSON.parse(require("text!../settings/settings.json"));
-    
+
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
     var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-]+/;
 
@@ -157,25 +157,30 @@ define(function(require, exports, module) {
         getIdentifierUnderCursor: function(edit, regex) {
             regex = regex || IDENT_REGEX;
             edit = edit || editor.getActiveEditor();
+            return edit.getSession().getTextRange(editor.getIdentifierUnderCursorRange(edit, regex));
+        },
+        getIdentifierUnderCursorRange: function(edit, regex) {
+            regex = regex || IDENT_REGEX;
+            edit = edit || editor.getActiveEditor();
+            var Range = ace.require("ace/range").Range;
             var session = edit.getSession();
             var cursor = edit.getCursorPosition();
             var line = session.getLine(cursor.row);
             // If cursor is not on an identifier at all, return empty string
-            if(!regex.test(line[cursor.column]))
-                return "";
-            
-            for(var startCol = cursor.column; startCol >= 0; startCol--) {
-                if(!regex.test(line[startCol])) {
+            if (!regex.test(line[cursor.column])) return "";
+
+            for (var startCol = cursor.column; startCol >= 0; startCol--) {
+                if (!regex.test(line[startCol])) {
                     startCol++;
                     break;
                 }
             }
-            for(var endCol = cursor.column; endCol < line.length; endCol++) {
-                if(!regex.test(line[endCol])) {
+            for (var endCol = cursor.column; endCol < line.length; endCol++) {
+                if (!regex.test(line[endCol])) {
                     break;
                 }
             }
-            return line.substring(startCol, endCol);
+            return new Range(cursor.row, startCol, cursor.row, endCol);
         },
         getPathUnderCursor: function(edit) {
             return editor.getIdentifierUnderCursor(edit, PATH_REGEX);
@@ -202,7 +207,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Editor:Find", {
         exec: function(edit) {
             command.exec("File:Goto", edit, ":/");
@@ -218,44 +223,66 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
-    command.define("Edit:Search For Identifier Under Cursor", {
+
+    command.define("Navigate:Next Instance Of Identifier", {
         exec: function(edit) {
-            var ident = editor.getIdentifierUnderCursor();
-            edit.navigateRight();
-            edit.find(ident, {
-                backwards: false,
-                wholeWord: true,
-                wrap: true,
-                caseSensitive: true
-            });
-            var selectionRange = edit.getSelectionRange();
-            edit.clearSelection();
-            edit.moveCursorToPosition(selectionRange.start);
+            if (edit.selection.isEmpty()) {
+                var range = editor.getIdentifierUnderCursorRange();
+                edit.selection.setSelectionRange(range);
+            }
+            edit.findNext();
         }
     });
 
-    command.define("Edit:Search Backwards For Identifier Under Cursor", {
+    command.define("Navigate:Previous Instance Of Identifier", {
         exec: function(edit) {
-            var ident = editor.getIdentifierUnderCursor();
-            edit.navigateRight();
-            edit.find(ident, {
-                backwards: true,
-                wholeWord: true,
-                wrap: true,
-                caseSensitive: true
-            });
-            var selectionRange = edit.getSelectionRange();
-            edit.clearSelection();
-            edit.moveCursorToPosition(selectionRange.start);
+            if (edit.selection.isEmpty()) {
+                var range = editor.getIdentifierUnderCursorRange();
+                edit.selection.setSelectionRange(range);
+            }
+            edit.findPrevious();
+        }
+    });
+
+    command.define("Cursor:Add At Next Instance Of Identifier", {
+        exec: function(edit) {
+            if (edit.selection.isEmpty()) {
+                var range = editor.getIdentifierUnderCursorRange();
+                edit.selection.setSelectionRange(range);
+            }
+            edit.selectMore(1);
         }
     });
     
+    command.define("Cursor:Add At Previous Instance Of Identifier", {
+        exec: function(edit) {
+            if (edit.selection.isEmpty()) {
+                var range = editor.getIdentifierUnderCursorRange();
+                edit.selection.setSelectionRange(range);
+            }
+            edit.selectMore(-1);
+        }
+    });
+
     command.define("Edit:Goto Path Under Cursor", {
         exec: function(edit) {
             var path = editor.getPathUnderCursor();
             command.exec("File:Goto", edit, path);
         }
+    });
+
+    command.define("Cursor:Add Above", {
+        exec: function(editor) {
+            editor.selectMoreLines(-1);
+        },
+        readonly: true
+    });
+
+    command.define("Cursor:Add Below", {
+        exec: function(editor) {
+            editor.selectMoreLines(1);
+        },
+        readonly: true
     });
 
     Object.keys(editor.extMapping).forEach(function(ext) {

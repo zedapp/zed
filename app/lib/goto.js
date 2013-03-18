@@ -43,7 +43,7 @@ define(function(require, exports, module) {
         phrase = phraseParts[0];
         var loc = phraseParts[1];
         
-        if(!phrase && loc) {
+        if(!phrase && loc !== undefined) {
             resultList = [];
         } else if(phrase[0] !== '/') {
             resultList = fuzzyfind(fileCache, phrase);
@@ -171,7 +171,10 @@ define(function(require, exports, module) {
                     }
                 },
                 onCancel: function() {
-                    editor.getActiveEditor().moveCursorToPosition(currentPos);
+                    var edit = editor.getActiveEditor();
+                    edit.moveCursorToPosition(currentPos);
+                    edit.clearSelection();
+                    edit.centerSelection();
                 }
             });
         },

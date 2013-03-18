@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
     var events = require("events");
-    var documents = ["/settings.json", "/keys.json"];
+    var minimumDocuments = {"/settings.json": true, "/keys.json": true};
 
     var emitter = new events.EventEmitter(false);
 
@@ -45,25 +45,55 @@ define(function(require, exports, module) {
         });
     }
     
+    getKey("settings:", function(settings) {
+        if(!settings)
+            setKey("settings:", minimumDocuments);
+    });
+    
     function filelist(callback) {
-        callback(null, documents);
+        getKey("settings:", function(docs) {
+            callback(null, Object.keys(docs).filter(function(path) {
+                var parts = path.split('/');
+                for(var i = 0; i < parts.length; i++) {
+                    if(parts[i][0] === '.') {
+                        return false;
+                    }
+                }
+                return true;
+            }));
+        });
     }
 
     function readFile(path, callback) {
         getKey("settings:" + path, function(val) {
             if (!val) {
-                return $.get("settings" + path, function(result) {
-                    callback(null, result);
-                }, "text");
+                return $.ajax({
+                    method: "GET",
+                    url: "settings" + path,
+                    dataType: "text",
+                    success: function(result) {
+                        callback(null, result);
+                    },
+                    error: function(xhr) {
+                        callback(xhr.status);
+                    }
+                });
+            } else {
+                callback(null, val);
             }
-            callback(null, val);
         });
     }
 
     function writeFile(path, content, callback) {
         setKey("settings:" + path, content);
         emitter.emit("filechanged:" + path, path, "changed");
-        callback(null, "OK");
+        getKey("settings:", function(allDocs) {
+            if(!allDocs[path]) {
+                allDocs[path] = true;
+                setKey("settings:", allDocs);
+            }
+            callback(null, "OK");
+        });
     }
 
     function deleteFile(path, callback) {
