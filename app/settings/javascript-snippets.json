@@ -1,0 +1,6 @@
+{
+    "log": "console.log({0})",
+    "def": "define(function(require, exports, module) {\n\t{0}\n});",
+    "require": "var {0} = require(\"{0}\");",
+    "fn": "function {0:name}({1:args}) {\n\t{2:// body}\n}"
+}
