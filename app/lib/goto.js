@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     var fuzzyfind = require("./fuzzyfind");
     var command = require("./command");
     var ui = require("./ui");
+    var locator = require("./locator");
 
     var fileCache = [];
     
@@ -38,8 +39,13 @@ define(function(require, exports, module) {
         var sessions = session_manager.getSessions();
         var resultList;
         var currentPath = editor.getActiveSession().filename || "";
+        var phraseParts = phrase.split(':');
+        phrase = phraseParts[0];
+        var loc = phraseParts[1];
         
-        if(phrase[0] !== '/') {
+        if(!phrase && loc) {
+            resultList = [];
+        } else if(phrase[0] !== '/') {
             resultList = fuzzyfind(fileCache, phrase);
             resultList.forEach(function(result) {
                 if(sessions[result.path]) {
@@ -91,6 +97,28 @@ define(function(require, exports, module) {
         return resultList;
     }
     
+    function esc(s) {
+        return s.replace(/</g, "&lt;");
+    }
+    
+    function hint(phrase, results) {
+        if(phrase[0] === ':') {
+            if(phrase === ":") {
+                return "Type line number and press <tt>Enter</tt> to jump.";
+            } else if(phrase == ":/") {
+                return "Type search phrase and press <tt>Enter</tt> to jump to first match.";
+            } else if(phrase[1] === '/') {
+                return "<tt>Enter</tt> jumps to first match for '" + esc(phrase.substring(2)) + "'";
+            } else {
+                return "<tt>Enter</tt> jumps to line " + phrase.substring(1);
+            }
+        } else if(phrase && results.length === 0) {
+            return "<tt>Return</tt> creates and opens this file.";
+        } else {
+            return "<tt>Return</tt> opens the selected file."
+        }
+    }
+    
     function fetchFileList() {
         console.log("Fetching file list...");
         project.filelist(function(err, files) {
@@ -108,8 +136,44 @@ define(function(require, exports, module) {
     };
     
     command.define("File:Goto", {
-        exec: function() {
-            ui.filterBox("file path", filter, session_manager.go.bind(session_manager));
+        exec: function(edit, text) {
+            var currentPos = edit.getCursorPosition();
+            var selectionRange = edit.getSelectionRange();
+            ui.filterBox({
+                placeholder: "file path",
+                filter: filter,
+                text: text,
+                onChange: function(phrase) {
+                    var phraseParts = phrase.split(':');
+                    var loc = phraseParts[1];
+                    if(loc) {
+                        locator.jump(loc, selectionRange);
+                    }
+                },
+                hint: hint,
+                onSelect: function(file, phrase) {
+                    var fileOnly, locator, phraseParts;
+                    console.log("File", file, "phrase", phrase);
+                    if(file !== phrase) {
+                        phraseParts = phrase.split(':');
+                        fileOnly = file;
+                        locator = phraseParts[1];
+                        file = fileOnly + ':' + locator;
+                    } else {
+                        phraseParts = file.split(':');
+                        fileOnly = phraseParts[0];
+                        locator = phraseParts[1];
+                    }
+                    if(!fileOnly && locator) {
+                        // Nothing to do, already there
+                    } else {
+                        session_manager.go(file);
+                    }
+                },
+                onCancel: function() {
+                    editor.getActiveEditor().moveCursorToPosition(currentPos);
+                }
+            });
         },
         readOnly: true
     });

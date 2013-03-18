@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
-    var eventbus = require("eventbus");
-    var editor = require("editor");
-    var keys = require("keys");
+    var eventbus = require("./eventbus");
+    var editor = require("./editor");
+    var command = require("./command");
 
     var beautifiers = exports.beautifiers = {
         "ace/mode/css": require("util/beautify-css"),
@@ -33,12 +33,9 @@ define(function(require, exports, module) {
         }
     }
 
-    exports.hook = function() {
-        keys.bind("beautify", {
-            mac: "Command-Shift-B",
-            win: "Ctrl-Shift-B"
-        }, function() {
-            beautify(editor.getActiveEditor().getSession());
-        });
-    };
+    command.define("Edit:Beautify", {
+        exec: function(edit) {
+            beautify(edit.getSession());
+        }
+    });
 });

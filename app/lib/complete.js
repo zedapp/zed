@@ -1,8 +1,9 @@
 define(function(require, exports, module) {
-    var eventbus = require("eventbus");
-    var editor = require("editor");
-    var keys = require("keys");
-    var Map = require("collection").Map;
+    var eventbus = require("./eventbus");
+    var editor = require("./editor");
+    var keys = require("./keys");
+    var command = require("./command");
+    var Map = require("./collection").Map;
     
     var splitRegex = /[^a-zA-Z_0-9\$\-]+/;
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
@@ -230,11 +231,10 @@ define(function(require, exports, module) {
         edit.container.addEventListener("mousewheel", close);
     }
     
-    
-    exports.hook = function() {
-        keys.bind("codecomplete", "Tab", function() {
+    command.define("Edit:Complete", {
+        exec: function(edit) {
             if(!complete())
-                editor.getActiveEditor().indent();
-        })
-    };
+                edit.indent();
+        }
+    });
 });

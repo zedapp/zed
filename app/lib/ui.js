@@ -5,13 +5,39 @@ define(function(require, exports, module) {
 
     var visible = false;
 
-    exports.filterBox = function(placeholder, filterCallback, selectCallback) {
-        if (visible) return;
+    /**
+     * Supported options
+     * - placeholder
+     * - text
+     * - filter (function)
+     * - onSelect
+     * - onCancle
+     * - hint
+     */
+    exports.filterBox = function(options) {
+        var placeholder = options.placeholder || "";
+        var filter = options.filter;
+        var onSelect = options.onSelect;
+        var onChange = options.onChange;
+        var onCancel = options.onCancel;
+        var hint = options.hint;
+        
+        if (visible)
+            return;
+        
         var edit = editor.getActiveEditor();
-        $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='" + placeholder + "'/><ul id='results'>");
+        $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='" + placeholder + "'/><div id='gotohint'></div><ul id='results'>");
 
         var editorEl = $(edit.container);
         var gotoEl = $("#goto");
+        var hintEl = $("#gotohint");
+        var box = $("#goto");
+        var input = $("#gotoinput");
+        var resultsEl = $("#results");
+        
+        if(options.text) {
+            input.val(options.text);
+        }
 
         gotoEl.css("left", (editorEl.offset().left + 40) + "px");
         gotoEl.css("width", (editorEl.width() - 80) + "px");
@@ -19,9 +45,6 @@ define(function(require, exports, module) {
 
         visible = true;
 
-        var box = $("#goto");
-        var input = $("#gotoinput");
-        var resultsEl = $("#results");
         var lastPhrase = null;
         var results = [];
 
@@ -35,19 +58,24 @@ define(function(require, exports, module) {
                     return;
                 }
                 input.val(ui.item.text());
+                onChange && onChange(input.val());
+                updateHint();
             }
         });
 
         function select(event) {
-            var selection = input.val();
+            var inputVal = input.val();
+            var selection = inputVal;
             var selectedPath = resultsEl.find("a.ui-state-focus").text();
             close();
             if (selection) {
-                if (selection[0] !== '/' && selection.indexOf("zed:") !== 0 && selectedPath) selection = selectedPath;
-                selectCallback(selection);
+                if (selection[0] !== '/' && selection.indexOf("zed:") !== 0 && selectedPath)
+                    selection = selectedPath;
+                onSelect(selection, inputVal);
             } else {
                 // By default pick the item at the top of the list
-                if (selectedPath) selectCallback(selectedPath);
+                if (selectedPath)
+                    onSelect(selectedPath, inputVal);
             }
             event && event.preventDefault();
         }
@@ -58,10 +86,17 @@ define(function(require, exports, module) {
             editor.getActiveEditor().focus();
             visible = false;
         }
+        
+        function updateHint() {
+            if(hint) {
+                hintEl.html(hint(input.val(), results));
+            }
+        }
 
         function updateResults() {
             var phrase = input.val();
-            results = filterCallback(phrase).slice(0, 100);
+            updateHint();
+            results = filter(phrase).slice(0, 100);
             resultsEl.empty();
             results.forEach(function(r, idx) {
                 resultsEl.append('<li><a href="#">' + r.path + '</a></li>');
@@ -81,6 +116,7 @@ define(function(require, exports, module) {
             switch (event.keyCode) {
                 case 27:
                     // esc
+                    onCancel && onCancel();
                     close();
                     break;
                 case 38:
@@ -101,6 +137,7 @@ define(function(require, exports, module) {
                 default:
                     // TODO only update on textual characters
                     if (lastPhrase != input.val()) {
+                        onChange && onChange(input.val());
                         updateResults();
                     }
             }

@@ -71,8 +71,12 @@ define(function(require, exports, module) {
                 function filter(phrase) {
                     return fuzzyfind(allCommands, phrase);
                 }
-                ui.filterBox("Enter command", filter, function(cmd) {
-                    exports.exec(cmd, editor.getActiveEditor());
+                ui.filterBox({
+                    placeholder: "Enter command",
+                    filter: filter,
+                    onSelect: function(cmd) {
+                        exports.exec(cmd, editor.getActiveEditor());
+                    }
                 });
             });
         },

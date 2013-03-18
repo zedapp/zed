@@ -118,15 +118,6 @@ define(function(require, exports, module) {
             },
             readOnly: true
         }, {
-            name: "find",
-            bindKey: bindKey("Ctrl-F", "Command-F"),
-            exec: function(editor) {
-                config.loadModule("ace/ext/searchbox", function(e) {
-                    e.Search(editor);
-                });
-            },
-            readOnly: true
-        }, {
             name: "overwrite",
             bindKey: "Insert",
             exec: function(editor) {

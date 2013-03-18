@@ -11,6 +11,10 @@
         "mac": "Command-E",
         "win": "Ctrl-E"
     },
+    "Editor:Find": {
+        "win": "Ctrl-F",
+        "mac": "Command-F"
+    },
     "Command:Enter Command": {
         "mac": "Command-.",
         "win": "Ctrl-."
@@ -35,5 +39,10 @@
         "mac": "Command-P",
         "win": "Ctrl-P"
     },
-    "Goto:Tree": "Alt-T"
+    "Goto:Tree": "Alt-T",
+    "Edit:Beautify": {
+        "mac": "Command-Shift-B",
+        "win": "Ctrl-Shift-B"
+    },
+    "Edit:Complete": "Tab"
 }

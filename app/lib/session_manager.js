@@ -5,6 +5,7 @@ define(function(require, exports, module) {
     var goto = require("./goto");
     var state = require("./state");
     var command = require("./command");
+    var locator = require("./locator");
 
     eventbus.declare("switchsession");
     eventbus.declare("newfilesession");
@@ -85,6 +86,7 @@ define(function(require, exports, module) {
         if (!path) {
             return;
         }
+        
         if (exports.specialDocs[path]) {
             var doc = exports.specialDocs[path];
             var session = editor.createSession(path, doc.content);
@@ -92,6 +94,9 @@ define(function(require, exports, module) {
             editor.switchSession(session, edit);
             return;
         }
+        var pathParts = path.split(':');
+        path = pathParts[0];
+        var loc = pathParts[1];
         if (path[0] !== '/') {
             // Normalize
             path = '/' + path;
@@ -120,8 +125,15 @@ define(function(require, exports, module) {
                 project.unwatchFile(previousSession.filename, previousSession.watcherFn);
             }
             editor.switchSession(session, edit);
+            
+            if(loc) {
+                setTimeout(function() {
+                    locator.jump(loc);
+                });
+            }
+            
+            // File watching
             session.watcherFn = function(path, kind) {
-                console.log(path,"changed:", kind);
                 if(kind === "changed") {
                     project.readFile(path, function(err, text) {
                         if(err)
@@ -150,9 +162,11 @@ define(function(require, exports, module) {
             function done() {
                 console.log("All sessions loaded.");
                 var editors = editor.getEditors();
-                state.get("session.current").forEach(function(path, idx) {
-                    go(path, editors[idx]);
-                });
+                if(state.get("session.current")) {
+                    state.get("session.current").forEach(function(path, idx) {
+                        go(path, editors[idx]);
+                    });
+                }
                 eventbus.emit("allsessionsloaded");
             }
             var sessions = state.get("session.open") || [];
@@ -189,7 +203,6 @@ define(function(require, exports, module) {
 
     exports.go = go;
     exports.getSessions = function() {
-        console.log("GEttin' sessions");
         return sessions;
     };
 });

@@ -57,7 +57,7 @@ require(["fs/web", "fuzzyfind", "messageapi"], function(webfs, fuzzyfind, messag
             if(!projectName) {
                 $("#addform").show();
                 $("#url").focus();
-                $("#hint").html("Press <tt>Enter</tt> to create.");
+                $("#hint").html("Press <tt>Return</tt> to create.");
                 updateWindowSize();
                 return;
             }
@@ -131,9 +131,9 @@ require(["fs/web", "fuzzyfind", "messageapi"], function(webfs, fuzzyfind, messag
             resultsEl.menu("refresh");
             if(matchingProjects.length > 0) {
                 resultsEl.menu("next");
-                $("#hint").html("Press <tt>Enter</tt> to <u>open</u> or <tt>Shift-Delete</tt> to <u>delete</u>.");
+                $("#hint").html("Press <tt>Return</tt> to <u>open</u> or <tt>Shift-Delete</tt> to <u>delete</u>.");
             } else {
-                $("#hint").html("Press <tt>Enter</tt> to <u>create</u> project with this name.");
+                $("#hint").html("Press <tt>Return</tt> to <u>create</u> project with this name.");
             }
             input.focus();
             updateWindowSize();
@@ -148,7 +148,7 @@ require(["fs/web", "fuzzyfind", "messageapi"], function(webfs, fuzzyfind, messag
                 case 40: // down
                     resultsEl.menu("next");
                     break;
-                case 13: // Enter
+                case 13: // Return
                     open();
                     break;
                 case 9: // tab
@@ -223,82 +223,6 @@ require(["fs/web", "fuzzyfind", "messageapi"], function(webfs, fuzzyfind, messag
             event.preventDefault();
         });
         updateWindowSize();
-        
-        function DnDFileController(selector, onDropCallback) {
-          var el_ = document.querySelector(selector);
-        
-          this.dragenter = function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            el_.classList.add('dropping');
-          };
-        
-          this.dragover = function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-          };
-        
-          this.dragleave = function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            //el_.classList.remove('dropping');
-          };
-        
-          this.drop = function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-        
-            el_.classList.remove('dropping');
-        
-            onDropCallback(e.dataTransfer)
-          };
-        
-          el_.addEventListener('dragenter', this.dragenter, false);
-          el_.addEventListener('dragover', this.dragover, false);
-          el_.addEventListener('dragleave', this.dragleave, false);
-          el_.addEventListener('drop', this.drop, false);
-        };
-        
-        // Test
-        new DnDFileController("#goto>input", function(dataTransfer) {
-            console.log("DROP");
-            for (var i = 0; i < dataTransfer.items.length; i++) {
-                var entry = dataTransfer.items[i].webkitGetAsEntry();
-                if (entry.isFile) {
-                    //
-                } else if (entry.isDirectory) {
-                    chrome.app.window.create('editor.html?url=draganddrop', {
-                        frame: 'chrome',
-                        width: 720,
-                        height: 400,
-                        hidden: false
-                    }, function(win) {
-                        win.contentWindow.dir = entry;
-                    });
-/*
-                    var reader = entry.createReader();
-                    reader.readEntries(function(entries) {
-                        for(var i = 0; i < entries.length; i++) {
-                            (function() {
-                                var entry = entries[i];
-                                chrome.fileSystem.getWritableEntry(entry, function(writable) {
-                                    console.log(writable);
-                                    chrome.app.window.create('test.html', {
-                                        frame: 'chrome',
-                                        width: 720,
-                                        height: 400,
-                                        hidden: false
-                                    }, function(win) {
-                                    });
-                                });
-                            })();
-                        }
-                    });
-                    */
-                }
-            }
-        });
-
     });
 
 });

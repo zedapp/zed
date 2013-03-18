@@ -83,7 +83,7 @@ div.editor-split-bottom {
     bottom: 0;
 }
 */
-#goto {
+ #goto {
     position: fixed;
     border-left: solid 1px black;
     border-bottom: solid 1px black;
@@ -127,6 +127,12 @@ div.editor-split-bottom {
 }
 #goto a.ui-state-focus {
     background-color: #33CCFF;
+}
+#gotohint {
+    background: #eee;
+    margin-top: -3px;
+    padding: 2px;
+    font-size: 11px;
 }
 .editbar {
     position: absolute;
@@ -181,7 +187,6 @@ div.editor-split-bottom {
     margin: 0;
     padding: 0;
 }
-
 #complete-box li {
     list-style-type: none;
     padding: 0;

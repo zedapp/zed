@@ -63,7 +63,6 @@ define(function(require, exports, module) {
 
             editors.forEach(function(editor) {
                 editor.setShowPrintMargin(false);
-                editor.setTheme("ace/theme/monokai");
                 editor.on("focus", function() {
                     activeEditor = editor;
                 });
@@ -71,7 +70,7 @@ define(function(require, exports, module) {
 
             editor.setActiveEditor(editors[0]);
             eventbus.emit("editorloaded", exports);
-            
+
         },
         createSession: function(path, content) {
             var parts = path.split(".");
@@ -168,15 +167,19 @@ define(function(require, exports, module) {
     });
 
     command.define("Editor:Goto Line", {
-        exec: function(editor) {
-            var line = parseInt(prompt("Enter line number:"), 10);
-            if (!isNaN(line)) {
-                editor.gotoLine(line);
-            }
+        exec: function(edit) {
+            command.exec("File:Goto", edit, ":");
         },
         readOnly: true
     });
     
+    command.define("Editor:Find", {
+        exec: function(edit) {
+            command.exec("File:Goto", edit, ":/");
+        },
+        readOnly: true
+    })
+
     command.define("Settings:Toggle Word Wrap", {
         exec: function(editor) {
             require(["./session_manager"], function(session_manager) {
@@ -199,7 +202,7 @@ define(function(require, exports, module) {
             readOnly: true
         });
     });
-    
+
     editor.themes.forEach(function(theme) {
         var parts = theme.split('/');
         var name = parts[parts.length - 1];
@@ -208,11 +211,6 @@ define(function(require, exports, module) {
         command.define("Settings:Theme:" + name, {
             exec: function() {
                 settings.set("theme", theme);
-                /*require(["state"], function(state) {
-                    editor.getEditors(true).forEach(function(edit) {
-                        edit.setTheme(theme);
-                    });
-                });*/
             },
             readOnly: true
         });
