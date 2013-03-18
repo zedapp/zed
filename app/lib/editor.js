@@ -1,8 +1,12 @@
 define(function(require, exports, module) {
+    "use strict";
     var eventbus = require("./eventbus");
     var command = require("./command");
     var settings = require("./settings");
     var defaultSettings = JSON.parse(require("text!../settings/settings.json"));
+    
+    var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
+    var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-]+/;
 
     eventbus.declare("editorloaded");
 
@@ -150,6 +154,32 @@ define(function(require, exports, module) {
             undoManager.$undoStack = state.undo || [];
             undoManager.$redoStack = state.redo || [];
         },
+        getIdentifierUnderCursor: function(edit, regex) {
+            regex = regex || IDENT_REGEX;
+            edit = edit || editor.getActiveEditor();
+            var session = edit.getSession();
+            var cursor = edit.getCursorPosition();
+            var line = session.getLine(cursor.row);
+            // If cursor is not on an identifier at all, return empty string
+            if(!regex.test(line[cursor.column]))
+                return "";
+            
+            for(var startCol = cursor.column; startCol >= 0; startCol--) {
+                if(!regex.test(line[startCol])) {
+                    startCol++;
+                    break;
+                }
+            }
+            for(var endCol = cursor.column; endCol < line.length; endCol++) {
+                if(!regex.test(line[endCol])) {
+                    break;
+                }
+            }
+            return line.substring(startCol, endCol);
+        },
+        getPathUnderCursor: function(edit) {
+            return editor.getIdentifierUnderCursor(edit, PATH_REGEX);
+        }
     };
 
     command.define("Editor:Select All", {
@@ -178,7 +208,7 @@ define(function(require, exports, module) {
             command.exec("File:Goto", edit, ":/");
         },
         readOnly: true
-    })
+    });
 
     command.define("Settings:Toggle Word Wrap", {
         exec: function(editor) {
@@ -187,7 +217,46 @@ define(function(require, exports, module) {
             });
         },
         readOnly: true
-    })
+    });
+    
+    command.define("Edit:Search For Identifier Under Cursor", {
+        exec: function(edit) {
+            var ident = editor.getIdentifierUnderCursor();
+            edit.navigateRight();
+            edit.find(ident, {
+                backwards: false,
+                wholeWord: true,
+                wrap: true,
+                caseSensitive: true
+            });
+            var selectionRange = edit.getSelectionRange();
+            edit.clearSelection();
+            edit.moveCursorToPosition(selectionRange.start);
+        }
+    });
+
+    command.define("Edit:Search Backwards For Identifier Under Cursor", {
+        exec: function(edit) {
+            var ident = editor.getIdentifierUnderCursor();
+            edit.navigateRight();
+            edit.find(ident, {
+                backwards: true,
+                wholeWord: true,
+                wrap: true,
+                caseSensitive: true
+            });
+            var selectionRange = edit.getSelectionRange();
+            edit.clearSelection();
+            edit.moveCursorToPosition(selectionRange.start);
+        }
+    });
+    
+    command.define("Edit:Goto Path Under Cursor", {
+        exec: function(edit) {
+            var path = editor.getPathUnderCursor();
+            command.exec("File:Goto", edit, path);
+        }
+    });
 
     Object.keys(editor.extMapping).forEach(function(ext) {
         var module = editor.extMapping[ext];

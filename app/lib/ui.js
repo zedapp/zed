@@ -95,7 +95,6 @@ define(function(require, exports, module) {
 
         function updateResults() {
             var phrase = input.val();
-            updateHint();
             results = filter(phrase).slice(0, 100);
             resultsEl.empty();
             results.forEach(function(r, idx) {
@@ -108,6 +107,7 @@ define(function(require, exports, module) {
                     resultsEl.menu("next");
                 }
             }
+            updateHint();
             lastPhrase = phrase;
         }
 

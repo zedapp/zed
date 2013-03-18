@@ -15,6 +15,9 @@
         "win": "Ctrl-F",
         "mac": "Command-F"
     },
+    "Edit:Search For Identifier Under Cursor": "Ctrl-Shift-8",
+    "Edit:Search Backwards For Identifier Under Cursor": "Ctrl-Shift-3",
+    "Edit:Goto Path Under Cursor": "Ctrl-[",
     "Command:Enter Command": {
         "mac": "Command-.",
         "win": "Ctrl-."
