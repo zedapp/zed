@@ -230,6 +230,19 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
+    
+    command.define("File:Goto Symbol", {
+        exec: function(edit) {
+            command.exec("File:Goto", edit, "@");
+        }
+    });
+    
+    command.define("File:Goto Symbol Under Cursor", {
+        exec: function(edit) {
+            var ident = editor.getIdentifierUnderCursor();
+            command.exec("File:Goto", edit, "@" + ident);
+        }
+    });
 
     exports.init = function() { };
 
