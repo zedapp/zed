@@ -79,7 +79,6 @@ define(function(require, exports, module) {
         
         // Placeholder management
         var placeholders = [];
-        window.placeholders = placeholders;
         var placeholderIndex = 0;
         
         function keyHandler(event, passOnCallback) {
@@ -107,14 +106,15 @@ define(function(require, exports, module) {
         
         function activatePlaceholder(placeholder) {
             edit.exitMultiSelectMode();
-            var anchorPos = placeholder.anchor.getPosition();
-            edit.selection.setRange(Range.fromPoints(anchorPos, {row: anchorPos.row, column: anchorPos.column + placeholder.length}));
-            if(placeholder.extraCursors) {
-                placeholder.extraCursors.forEach(function(placeholder) {
-                    var anchorPos = placeholder.anchor.getPosition();
-                    session.selection.addRange(Range.fromPoints(anchorPos, {row: anchorPos.row, column: anchorPos.column + placeholder.length}));
-                });
-            }
+            placeholder.anchors.forEach(function(anchor, idx) {
+                var anchorPos = anchor.getPosition();
+                var r = Range.fromPoints(anchorPos, {row: anchorPos.row, column: anchorPos.column + placeholder.length});
+                if(idx === 0) {
+                    edit.selection.setRange(r);
+                } else {
+                    edit.selection.addRange(r);
+                }
+            });
         }
         
         while (indentCol < line.length && (line[indentCol] === " " || line[indentCol] === "\t")) {
@@ -125,15 +125,7 @@ define(function(require, exports, module) {
         var match;
         while (match = placeholderRegex.exec(text)) {
             var id = match[2];
-            if(placeholders[id]) {
-                // Already another one there!
-                var placeholder = placeholders[id];
-                placeholder.extraCursors = placeholders.extraCursors || [];
-                placeholder.extraCursors.push({
-                    placeholder: match[4],
-                    wholeMatch: match[0]
-                });
-            } else {
+            if(!placeholders[id]) {
                 placeholders[id] = {
                     placeholder: match[4],
                     wholeMatch: match[0]
@@ -144,21 +136,25 @@ define(function(require, exports, module) {
         
         function processPlaceholder(placeholder) {
             var r = Range.fromPoints(cursor, edit.getCursorPosition());
-            edit.find(placeholder.wholeMatch, {
+            edit.findAll(placeholder.wholeMatch, {
                 start: r
             });
-            var start = edit.selection.getRange().start;
-            var replacementText = placeholder.placeholder || "";
-            session.replace(edit.selection.getRange(), replacementText);
-            placeholder.anchor = doc.createAnchor(start);
+            var replacementText = ""; // assumption all replacement texts have same length
+            placeholder.anchors = [];
+            var ranges = session.selection.getAllRanges();
+            if(ranges.length === 0) { // Not multiple matches
+                ranges = [session.selection.getRange()];
+            }
+            ranges.forEach(function(r) {
+                r = Range.fromPoints(r.start, r.end);
+                var start = r.start;
+                replacementText = placeholder.placeholder || "";
+                doc.replace(r, replacementText);
+                placeholder.anchors.push(doc.createAnchor(start));
+            });
             placeholder.length = replacementText.length;
         }
-        placeholders.forEach(function(placeholder) {
-            processPlaceholder(placeholder);
-            if(placeholder.extraCursors) {
-                placeholder.extraCursors.forEach(processPlaceholder);
-            }
-        });
+        placeholders.forEach(processPlaceholder);
         
         if(placeholders.length > 0) {
             activatePlaceholder(placeholders[0]);
@@ -279,7 +275,9 @@ define(function(require, exports, module) {
 
     command.define("Edit:Complete", {
         exec: function(edit) {
-            if (!complete()) edit.indent();
+            if (!complete()) {
+                edit.indent();
+            }
         }
     });
 });

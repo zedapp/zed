@@ -2,5 +2,10 @@
     "log": "console.log({0})",
     "def": "define(function(require, exports, module) {\n\t{0}\n});",
     "require": "var {0} = require(\"{0}\");",
-    "fn": "function {0:name}({1:args}) {\n\t{2:// body}\n}"
+    "fn": "function {0}({1}) {\n\t{2}\n}",
+    "if": "if({0}) {\n\t{1}\n}",
+    "ifelse": "if({0}) {\n\t{1}\n} else {\n\t{2}\n}",
+    "foreach": "for(var {0:i} = 0; {0:i} < {1:array}.length; {0:i}++) {\n\tvar {2:item} = {1:array}[{0:i}];\n\t{3}\n}",
+    "forEach": "forEach(function({0:el}) {\n\t{1}\n});",
+    "setTimeout": "setTimeout(function() {\n\t{0}\n}, {1:0})"
 }

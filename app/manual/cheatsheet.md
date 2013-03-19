@@ -1,8 +1,5 @@
-Basic usage
-===========
-
-Keys
-----
+Zed Cheatsheet
+==============
 Replace `Command` with `Ctrl` if you're not using a Mac.
 
 * `Command-Shift-E` (Chrome global): open project picker.

@@ -10,7 +10,9 @@ define(function(require, exports, module) {
                 callback(results[key]);
             });
         } else {
-            callback(localStorage[key]);
+            var val = localStorage[key];
+            callback(val ? JSON.parse(val) : undefined);
+            
         }
     }
 
@@ -20,7 +22,7 @@ define(function(require, exports, module) {
             obj[key] = value;
             chrome.storage.sync.set(obj);
         } else {
-            localStorage[key] = value;
+            localStorage[key] = JSON.stringify(value);
         }
     }
     

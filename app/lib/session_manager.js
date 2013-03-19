@@ -72,10 +72,12 @@ define(function(require, exports, module) {
 
 
     function loadFile(path, callback) {
-        project.readFile(path, function(err, text) {
+        project.readFile(path, function(err, text, options) {
+            options = options || {};
             if(err)
                 return callback(err);
             var session = editor.createSession(path, text);
+            session.readOnly = !!options.readOnly;
             setupSave(session);
             callback(null, session);
         });
@@ -90,6 +92,7 @@ define(function(require, exports, module) {
         if (exports.specialDocs[path]) {
             var doc = exports.specialDocs[path];
             var session = editor.createSession(path, doc.content);
+            session.readOnly = true;
             session.setMode(doc.mode);
             editor.switchSession(session, edit);
             return;
@@ -169,20 +172,18 @@ define(function(require, exports, module) {
                 }
                 eventbus.emit("allsessionsloaded");
             }
-            var sessions = state.get("session.open") || [];
+            var sessions = state.get("session.open") || {};
             var count = Object.keys(sessions).length;
-            for (var path in sessions) {
-                (function() {
-                    var sessionState = sessions[path];
-                    loadFile(path, function(err, session) {
-                        if(!err) {
-                            editor.setSessionState(session, sessionState);
-                        }
-                        count--;
-                        if (count === 0) done();
-                    });
-                })();
-            }
+            Object.keys(sessions).forEach(function(path) {
+                var sessionState = sessions[path];
+                loadFile(path, function(err, session) {
+                    if(!err) {
+                        editor.setSessionState(session, sessionState);
+                    }
+                    count--;
+                    if (count === 0) done();
+                });
+            });
             if (count === 0) done();
         });
     };

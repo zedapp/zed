@@ -38,7 +38,7 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 return command.exec(cmd, editor);
             },
-            //readOnly: command.lookup(cmd).readOnly
+            readOnly: true //command.lookup(cmd).readOnly
         });
     };
     

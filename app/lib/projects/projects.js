@@ -42,6 +42,11 @@ require(["fs/web", "fuzzyfind", "messageapi"], function(webfs, fuzzyfind, messag
                 url: "settings:"
             };
         }
+        if(!projects.Manual) {
+            projects.Manual = {
+                url: "manual:"
+            };
+        }
         
         var input = $("#gotoinput");
         var resultsEl = $("#results");

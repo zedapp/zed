@@ -37,6 +37,8 @@ define(function(require, exports, module) {
             return;
         } else if(options.url.indexOf("settings:") === 0) {
             io = require("fs/settings");
+        } else if(options.url.indexOf("manual:") === 0) {
+            io = require("fs/manual");
         } else {
             io = require('fs/web')(options.url, options.username, options.password);
         }
@@ -46,6 +48,8 @@ define(function(require, exports, module) {
         exports.getUrl = io.getUrl;
         exports.watchFile = io.watchFile;
         exports.unwatchFile = io.unwatchFile;
-        eventbus.emit("ioavailable", exports);
+        setTimeout(function() {
+            eventbus.emit("ioavailable", exports);
+        });
     };
 });

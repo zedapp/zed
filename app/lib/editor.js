@@ -93,6 +93,7 @@ define(function(require, exports, module) {
         switchSession: function(session, edit) {
             edit = edit || editor.getActiveEdtor();
             edit.setSession(session);
+            edit.setReadOnly(!!session.readOnly);
             eventbus.emit("switchsession", edit, session);
         },
         setMode: function(ext, modeModule) {
