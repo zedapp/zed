@@ -8,12 +8,13 @@ define(function(require, exports, module) {
             edit.find(locator.substring(1), {
                 start: selectionRange || edit.getSelectionRange(),
                 wrap: true
-            });
+            }, false);
         } else {
             try {
                 var lineNo = parseInt(locator, 10);
-                edit.gotoLine(lineNo);
+                edit.gotoLine(lineNo, 0, false);
             } catch(e) {}
         }
+        edit.centerSelection();
     };
 });

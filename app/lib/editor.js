@@ -91,7 +91,7 @@ define(function(require, exports, module) {
             return session;
         },
         switchSession: function(session, edit) {
-            edit = edit || editor.getActiveEdtor();
+            edit = edit || editor.getActiveEditor();
             edit.setSession(session);
             edit.setReadOnly(!!session.readOnly);
             eventbus.emit("switchsession", edit, session);

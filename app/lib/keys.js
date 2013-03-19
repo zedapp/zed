@@ -1,11 +1,15 @@
 define(function(require, exports, module) {
+    "use strict";
     var settingsfs = require("./fs/settings");
     
-    var eventbus = require("eventbus");
-    var editor = require("editor");
-    var command = require("command");
+    var lang = ace.require("ace/lib/lang");
+    var eventbus = require("./eventbus");
+    var editor = require("./editor");
+    var command = require("./command");
     var keyJsonText = require("text!../settings/keys.json");
     var keyboardHandler = null;
+    var commands;
+    var keysJson = {};
 
     exports.update = function() {
         var CommandManager = ace.require("ace/commands/command_manager").CommandManager;
@@ -42,8 +46,10 @@ define(function(require, exports, module) {
         });
     };
     
-    var lang = ace.require("ace/lib/lang");
-    var config = ace.require("ace/config");
+    exports.getCommandKeys = function() {
+        return keysJson;
+    };
+    
 
     function bindKey(win, mac) {
         return {
@@ -66,7 +72,7 @@ define(function(require, exports, module) {
         var edit = editor.getActiveEditor();
         console.log("Binding keys");
         if(oldOnCommandKey) {
-            throw Error("Keys already temporarily bound!");
+            throw new Error("Keys already temporarily bound!");
         }
         oldOnCommandKey = edit.keyBinding.onCommandKey;
         edit.keyBinding.onCommandKey = function(event) {
@@ -87,7 +93,6 @@ define(function(require, exports, module) {
     exports.resetTempRebindKeys = function() {
         var edit = editor.getActiveEditor();
         if(oldOnCommandKey) {
-            console.log("RESET KEYS")
             edit.keyBinding.onCommandKey = oldOnCommandKey;
             edit.keyBinding.onTextInput = oldOnTextInput;
             oldOnCommandKey = null;
@@ -96,16 +101,14 @@ define(function(require, exports, module) {
     };
     
     function loadKeys() {
-        console.log("Loading keys");
         settingsfs.readFile("/keys.json", function(err, keys) {
             if(err)
                 return console.error("Could not load keys.json", err);
             loadCommands(keys);
             exports.update();
-        })
+        });
     }
     
-    var commands;
     loadCommands(keyJsonText);
     
     function loadCommands(jsonText) {
@@ -478,14 +481,6 @@ define(function(require, exports, module) {
             },
             multiSelectAction: "forEach"
         }, {
-            name: "replace",
-            bindKey: bindKey("Ctrl-H", "Command-Option-F"),
-            exec: function(editor) {
-                config.loadModule("ace/ext/searchbox", function(e) {
-                    e.Search(editor, true)
-                });
-            }
-        }, {
             name: "undo",
             bindKey: bindKey("Ctrl-Z", "Command-Z"),
             exec: function(editor) {
@@ -637,7 +632,7 @@ define(function(require, exports, module) {
             multiSelectAction: "forEach"
         }];
         
-        var keysJson = JSON.parse(jsonText);
+        keysJson = JSON.parse(jsonText);
         for(var cmd in keysJson) {
             if(keysJson.hasOwnProperty(cmd)) {
                 bindCommand(cmd, keysJson[cmd]);

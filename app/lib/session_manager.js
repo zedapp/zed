@@ -83,7 +83,7 @@ define(function(require, exports, module) {
         });
     }
 
-    function go(path, edit) {
+    function go(path, edit, previousSession) {
         edit = edit || editor.getActiveEditor();
         if (!path) {
             return;
@@ -123,7 +123,7 @@ define(function(require, exports, module) {
 
         function show(session) {
             session.lastUse = Date.now();
-            var previousSession = edit.getSession();
+            previousSession = previousSession || edit.getSession();
             if(previousSession.watcherFn) {
                 project.unwatchFile(previousSession.filename, previousSession.watcherFn);
             }
@@ -153,6 +153,37 @@ define(function(require, exports, module) {
                 }
             };
             project.watchFile(session.filename, session.watcherFn);
+        }
+    }
+    
+    exports.previewGo = function(path, edit) {
+        edit = edit || editor.getActiveEditor();
+        if (!path) {
+            return;
+        }
+        
+        var pathParts = path.split(':');
+        path = pathParts[0];
+        var loc = pathParts[1];
+        if (path[0] !== '/') {
+            // Normalize
+            path = '/' + path;
+        }
+        project.readFile(path, function(err, text) {
+            if (err) {
+                return show(editor.createSession(path, ""));
+            }
+            var session = editor.createSession(path, text);
+            show(session);
+        });
+
+        function show(session) {
+            editor.switchSession(session, edit);
+            if(loc) {
+                setTimeout(function() {
+                    locator.jump(loc);
+                });
+            }
         }
     }
 

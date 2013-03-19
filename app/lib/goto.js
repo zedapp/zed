@@ -8,32 +8,30 @@ define(function(require, exports, module) {
     var command = require("./command");
     var ui = require("./ui");
     var locator = require("./locator");
+    var ctags = require("./ctags");
 
     var fileCache = [];
     
     eventbus.declare("loadedfilelist");
 
-    function Result(path, score) {
-        this.path = path;
-        this.score = score;
-    }
-    
     function pathMatch(currentPath, path) {
         var partsMatch = 0;
         for(var i = 0; i < currentPath.length && i < path.length && currentPath[i] === path[i]; i++) {
             if(currentPath[i] === '/')
                 partsMatch++;
-            //partsMatch += .001;
         }
         for(var j = i; j < path.length; j++) {
             if(path[j] === '/')
                 partsMatch--;
             
             // Slightly favor shorter paths
-            partsMatch -= .1;
+            partsMatch -= 0.1;
         }
         return partsMatch;
     }
+    
+    // TODO: Solve this in a cleaner way
+    var beforeGotoSession = null;
 
     function filter(phrase) {
         var sessions = session_manager.getSessions();
@@ -45,14 +43,18 @@ define(function(require, exports, module) {
         
         if(!phrase && loc !== undefined) {
             resultList = [];
-        } else if(phrase[0] !== '/') {
-            resultList = fuzzyfind(fileCache, phrase);
+        } else if(phrase[0] === "@") {
+            var tags = ctags.getCTags();
+            var symbols = tags.map(function(t) { return t.path + ":" + t.locator + "/" + t.symbol; });
+            resultList = fuzzyfind(symbols, phrase.substring(1));
             resultList.forEach(function(result) {
-                if(sessions[result.path]) {
-                    result.score = sessions[result.path].lastUse;
-                }
+                var parts = result.path.split('/');
+                result.name = parts[parts.length-1];
+                result.path = parts.slice(0, -1).join("/");
+                parts = result.path.split(":")[0].split("/");
+                result.meta = parts[parts.length-1];
             });
-        } else {
+        } else if(phrase[0] === '/') {
             var results = {};
             phrase = phrase.toLowerCase();
             for(var i = 0; i < fileCache.length; i++) {
@@ -68,16 +70,35 @@ define(function(require, exports, module) {
                     results[file] = score;
             }
             var resultList = [];
-            for(var path in results) {
-                if(results.hasOwnProperty(path))
-                    resultList.push(new Result(path, results[path]));
-            }
+            Object.keys(results).forEach(function(path) {
+                resultList.push({
+                    path: path,
+                    name: path,
+                    score: results[path]
+                });
+            });
+        } else {
+            resultList = fuzzyfind(fileCache, phrase);
+            resultList.forEach(function(result) {
+                result.name = result.path;
+                if(sessions[result.path]) {
+                    result.score = sessions[result.path].lastUse;
+                }
+            });
         }
         var editors = editor.getEditors();
+        var activeEditor = editor.getActiveEditor();
         resultList = resultList.filter(function(result) {
             for(var i = 0; i < editors.length; i++) {
-                if(editors[i].getSession().filename === result.path)
-                    return false;
+                if(editors[i] === activeEditor && beforeGotoSession) {
+                    if(beforeGotoSession.filename === result.path) {
+                        return false;
+                    }
+                } else {
+                    if(editors[i].getSession().filename === result.path) {
+                        return false;
+                    }
+                }
             }
             return true;
         });
@@ -139,21 +160,35 @@ define(function(require, exports, module) {
         exec: function(edit, text) {
             var currentPos = edit.getCursorPosition();
             var selectionRange = edit.getSelectionRange();
+            beforeGotoSession = edit.getSession();
+            var jumpTimer = null;
+
             ui.filterBox({
                 placeholder: "file path",
                 filter: filter,
                 text: text,
-                onChange: function(phrase) {
+                onChange: function(phrase, selection) {
                     var phraseParts = phrase.split(':');
                     var loc = phraseParts[1];
-                    if(loc) {
+                    if(!phraseParts[0] && loc) {
                         locator.jump(loc, selectionRange);
+                    }
+                    if(selection) {
+                        // Let's delay this a little bit
+                        if (jumpTimer) {
+                            clearTimeout(jumpTimer);
+                        }
+                        jumpTimer = setTimeout(function() {
+                            session_manager.previewGo(selection);
+                        }, 500);
                     }
                 },
                 hint: hint,
                 onSelect: function(file, phrase) {
                     var fileOnly, locator, phraseParts;
-                    console.log("File", file, "phrase", phrase);
+                    if(jumpTimer) {
+                        clearTimeout(jumpTimer);
+                    }
                     if(file !== phrase) {
                         phraseParts = phrase.split(':');
                         fileOnly = file;
@@ -167,14 +202,17 @@ define(function(require, exports, module) {
                     if(!fileOnly && locator) {
                         // Nothing to do, already there
                     } else {
-                        session_manager.go(file);
+                        session_manager.go(file, edit, beforeGotoSession);
                     }
+                    beforeGotoSession = null;
                 },
                 onCancel: function() {
                     var edit = editor.getActiveEditor();
                     edit.moveCursorToPosition(currentPos);
                     edit.clearSelection();
                     edit.centerSelection();
+                    editor.switchSession(beforeGotoSession, edit);
+                    beforeGotoSession = null;
                 }
             });
         },

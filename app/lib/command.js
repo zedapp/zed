@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
-    
-    var api = exports.api = {};
-    var allCommands = [];
+    "use strict";
+    var useragent = ace.require("ace/lib/useragent");
+    var commands = {};
     
     /**
      * @param path in the form of 'Editor:Select All'
@@ -13,31 +13,11 @@ define(function(require, exports, module) {
      */
     exports.define = function(path, def) {
         def.name = path;
-        allCommands.push(path);
-        var parts = path.split(':');
-        var root = api;
-        for(var i = 0; i < parts.length - 1; i++) {
-            var p = pathPartToJs(parts[i]);
-            if(!root[p]) {
-                root[p] = {};
-            }
-            root = root[p];
-        }
-        var lastPart = pathPartToJs(parts[parts.length-1]);
-        root[lastPart] = def;
+        commands[path] = def;
     };
     
     exports.lookup = function(path) {
-        var parts = path.split(':');
-        var root = api;
-        for(var i = 0; i < parts.length; i++) {
-            var p = pathPartToJs(parts[i]);
-            if(!root[p]) {
-                throw Error("No such command: " + path);
-            }
-            root = root[p];
-        }
-        return root;
+        return commands[path];
     };
     
     exports.exec = function(path) {
@@ -46,7 +26,7 @@ define(function(require, exports, module) {
     };
     
     exports.allCommands = function() {
-        return allCommands;
+        return Object.keys(commands);
     };
     
     function pathPartToJs(path) {
@@ -67,9 +47,21 @@ define(function(require, exports, module) {
     
     exports.define("Command:Enter Command", {
         exec: function() {
-            require(["ui", "fuzzyfind", "editor"], function(ui, fuzzyfind, editor) {
+            require(["./ui", "./fuzzyfind", "./editor", "./keys"], function(ui, fuzzyfind, editor, keys) {
                 function filter(phrase) {
-                    return fuzzyfind(allCommands, phrase);
+                    var results = fuzzyfind(exports.allCommands(), phrase);
+                    var commandKeys = keys.getCommandKeys();
+                    results.forEach(function(result) {
+                        var k = commandKeys[result.path];
+                        if(k) {
+                            if(typeof k === "string") {
+                                result.meta = k;
+                            } else {
+                                result.meta = useragent.isMac ? k.mac : k.win;
+                            }
+                        }
+                    });
+                    return results;
                 }
                 ui.filterBox({
                     placeholder: "Enter command",

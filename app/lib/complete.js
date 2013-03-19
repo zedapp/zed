@@ -5,7 +5,11 @@ define(function(require, exports, module) {
     var command = require("./command");
     var string = require("./string");
 
-    var completers = [require("./complete/local_word"), require("./complete/snippet")];
+    var completers = [
+        require("./complete/local_word"),
+        require("./complete/snippet"),
+        require("./complete/ctags")
+    ];
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
     var placeholderRegex = /\{((\d)+(:([^\}]*))?)\}/g;
 

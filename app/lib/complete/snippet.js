@@ -1,4 +1,6 @@
 define(function(require, exports, module) {
+    "use strict";
+    
     var settingsfs = require("../fs/settings");
     module.exports = function(session, pos, prefix, callback) {
         var mode = session.getMode().$id;

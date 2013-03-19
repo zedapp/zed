@@ -116,8 +116,15 @@ div.editor-split-bottom {
     overflow-x: hidden;
 }
 #goto li {
+    position: relative;
     list-style-type: none;
     padding: 0;
+}
+#goto span.meta {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    color: #999;
 }
 #goto a {
     display: block;
