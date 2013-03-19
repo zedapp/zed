@@ -2,10 +2,16 @@ define(function(require, exports, module) {
     var root = "manual";
     module.exports = {
         filelist: function(callback) {
-            $.get(root+"/all.json", function(docs) {
-                console.log(docs);
-                callback(null, docs);
-            }, "json");
+            $.get(root+"/all", function(res) {
+                var items = res.split("\n");
+                for(var i = 0; i < items.length; i++) {
+                    if(!items[i]) {
+                        items.splice(i, 1);
+                        i--;
+                    }
+                }
+                callback(null, items);
+            }, "text");
         },
         readFile: function(path, callback) {
             if(path === "/.zedstate") {
