@@ -1,0 +1,5 @@
+{
+    "name": "Plain Text",
+    "highlighter": "ace/mode/text",
+    "extensions": ["txt"]
+}

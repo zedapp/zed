@@ -42,7 +42,7 @@ define(function(require, exports, module) {
         } else {
             io = require('fs/web')(options.url, options.username, options.password);
         }
-        exports.filelist = io.filelist;
+        exports.listFiles = io.listFiles;
         exports.readFile = io.readFile;
         exports.writeFile = io.writeFile;
         exports.getUrl = io.getUrl;

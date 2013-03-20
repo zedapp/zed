@@ -142,7 +142,7 @@ define(function(require, exports, module) {
     
     function fetchFileList() {
         console.log("Fetching file list...");
-        project.filelist(function(err, files) {
+        project.listFiles(function(err, files) {
             fileCache = files;
             eventbus.emit("loadedfilelist")
         });
@@ -162,6 +162,7 @@ define(function(require, exports, module) {
             var selectionRange = edit.getSelectionRange();
             beforeGotoSession = edit.getSession();
             var jumpTimer = null;
+            var previewSession = null;
 
             ui.filterBox({
                 placeholder: "file path",
@@ -179,7 +180,9 @@ define(function(require, exports, module) {
                             clearTimeout(jumpTimer);
                         }
                         jumpTimer = setTimeout(function() {
-                            session_manager.previewGo(selection);
+                            session_manager.previewGo(selection, edit, function(err, session) {
+                                previewSession = session;
+                            });
                         }, 500);
                     }
                 },
@@ -193,7 +196,7 @@ define(function(require, exports, module) {
                         phraseParts = phrase.split(':');
                         fileOnly = file;
                         locator = phraseParts[1];
-                        file = fileOnly + ':' + locator;
+                        file = fileOnly + (locator ? ':' + locator : '');
                     } else {
                         phraseParts = file.split(':');
                         fileOnly = phraseParts[0];
@@ -202,7 +205,7 @@ define(function(require, exports, module) {
                     if(!fileOnly && locator) {
                         // Nothing to do, already there
                     } else {
-                        session_manager.go(file, edit, beforeGotoSession);
+                        session_manager.go(file, edit, beforeGotoSession, previewSession);
                     }
                     beforeGotoSession = null;
                 },

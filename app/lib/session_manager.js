@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var state = require("./state");
     var command = require("./command");
     var locator = require("./locator");
+    var async = require("./async");
 
     eventbus.declare("switchsession");
     eventbus.declare("newfilesession");
@@ -83,7 +84,7 @@ define(function(require, exports, module) {
         });
     }
 
-    function go(path, edit, previousSession) {
+    function go(path, edit, previousSession, previewSession) {
         edit = edit || editor.getActiveEditor();
         if (!path) {
             return;
@@ -127,6 +128,12 @@ define(function(require, exports, module) {
             if(previousSession.watcherFn) {
                 project.unwatchFile(previousSession.filename, previousSession.watcherFn);
             }
+            if(previewSession) {
+                // Copy scroll position and selection from previewSession
+                session.setScrollTop(previewSession.getScrollTop());
+                session.setScrollLeft(previewSession.getScrollLeft());
+                session.selection.setRange(previewSession.selection.getRange());
+            }
             editor.switchSession(session, edit);
             
             if(loc) {
@@ -156,10 +163,9 @@ define(function(require, exports, module) {
         }
     }
     
-    exports.previewGo = function(path, edit) {
-        edit = edit || editor.getActiveEditor();
+    exports.previewGo = function(path, edit, callback) {
         if (!path) {
-            return;
+            return callback();
         }
         
         var pathParts = path.split(':');
@@ -174,6 +180,12 @@ define(function(require, exports, module) {
                 return show(editor.createSession(path, ""));
             }
             var session = editor.createSession(path, text);
+            if(sessions[path]) {
+                var existingSession = sessions[path];
+                session.setScrollTop(existingSession.getScrollTop());
+                session.setScrollLeft(existingSession.getScrollLeft());
+                session.selection.setRange(existingSession.selection.getRange());
+            }
             show(session);
         });
 
@@ -184,13 +196,14 @@ define(function(require, exports, module) {
                     locator.jump(loc);
                 });
             }
+            callback(null, session);
         }
     }
 
     exports.hook = function() {
         sessions = {};
 
-        eventbus.on("stateloaded", function() {
+        async.waitForEvents(eventbus, ["stateloaded", "modesloaded"], function() {
             go("zed:start");
 
             function done() {

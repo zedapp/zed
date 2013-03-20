@@ -6,7 +6,7 @@ define(function(require, exports, module) {
         
         var etagCache = window.etagCache =  {};
         
-        function filelist(callback) {
+        function listFiles(callback) {
             $.ajax({
                 type: "POST",
                 url: url,
@@ -133,7 +133,7 @@ define(function(require, exports, module) {
         setInterval(pollFiles, pollInterval);
         
         return {
-            filelist: filelist,
+            listFiles: listFiles,
             readFile: readFile,
             writeFile: writeFile,
             deleteFile: deleteFile,

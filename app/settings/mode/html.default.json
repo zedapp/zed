@@ -1,0 +1,5 @@
+{
+    "name": "HTML",
+    "highlighter": "ace/mode/html",
+    "extensions": ["html"]
+}

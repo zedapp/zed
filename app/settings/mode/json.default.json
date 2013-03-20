@@ -1,0 +1,5 @@
+{
+    "name": "JSON",
+    "highlighter": "ace/mode/json",
+    "extensions": ["json"]
+}

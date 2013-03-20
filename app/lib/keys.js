@@ -6,7 +6,8 @@ define(function(require, exports, module) {
     var eventbus = require("./eventbus");
     var editor = require("./editor");
     var command = require("./command");
-    var keyJsonText = require("text!../settings/keys.json");
+    var defaultKeyJson = JSON.parse(require("text!../settings/keys.default.json"));
+    var userKeyJson = {};
     var keyboardHandler = null;
     var commands;
     var keysJson = {};
@@ -63,14 +64,13 @@ define(function(require, exports, module) {
     };
     
     exports.init = function() {
-        settingsfs.watchFile("/keys.json", loadKeys);
+        settingsfs.watchFile("/keys.user.json", loadKeys);
     };
     
     var oldOnCommandKey = null;
     var oldOnTextInput = null;
     exports.tempRebindKeys = function(keyHandler) {
         var edit = editor.getActiveEditor();
-        console.log("Binding keys");
         if(oldOnCommandKey) {
             throw new Error("Keys already temporarily bound!");
         }
@@ -101,17 +101,18 @@ define(function(require, exports, module) {
     };
     
     function loadKeys() {
-        settingsfs.readFile("/keys.json", function(err, keys) {
-            if(err)
-                return console.error("Could not load keys.json", err);
-            loadCommands(keys);
-            exports.update();
+        settingsfs.readFile("/keys.user.json", function(err, userKeys_) {
+            try {
+                userKeyJson = JSON.parse(userKeys_);
+                loadCommands();
+                exports.update();
+            } catch(e) {}
         });
     }
     
-    loadCommands(keyJsonText);
+    loadCommands();
     
-    function loadCommands(jsonText) {
+    function loadCommands() {
         // TODO: Move these into keys.json
         commands = [{
             name: "fold",
@@ -632,11 +633,11 @@ define(function(require, exports, module) {
             multiSelectAction: "forEach"
         }];
         
-        keysJson = JSON.parse(jsonText);
-        for(var cmd in keysJson) {
-            if(keysJson.hasOwnProperty(cmd)) {
-                bindCommand(cmd, keysJson[cmd]);
-            }
-        }
+        Object.keys(defaultKeyJson).forEach(function(cmd) {
+            bindCommand(cmd, defaultKeyJson[cmd]);
+        });
+        Object.keys(userKeyJson).forEach(function(cmd) {
+            bindCommand(cmd, userKeyJson[cmd]);
+        });
     }
 });

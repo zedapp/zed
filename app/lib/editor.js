@@ -3,7 +3,8 @@ define(function(require, exports, module) {
     var eventbus = require("./eventbus");
     var command = require("./command");
     var settings = require("./settings");
-    var defaultSettings = JSON.parse(require("text!../settings/settings.json"));
+    var defaultSettings = JSON.parse(require("text!../settings/settings.default.json"));
+    var modes = require("./modes");
 
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
     var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-]+/;
@@ -12,7 +13,7 @@ define(function(require, exports, module) {
 
     var editors = [];
     var activeEditor = null;
-
+    
     var editor = module.exports = {
         extMapping: defaultSettings.fileExtensions,
         themes: ["ace/theme/ambiance", "ace/theme/chaos",
@@ -31,7 +32,6 @@ define(function(require, exports, module) {
             "ace/theme/vibrant_ink", "ace/theme/xcode"],
         hook: function() {
             eventbus.on("settingschanged", function(settings) {
-                editor.extMapping = settings.get("fileExtensions");
                 editor.getEditors(true).forEach(function(edit) {
                     edit.setTheme(settings.get("theme"));
                     edit.setHighlightActiveLine(settings.get("highlightActiveLine"));
@@ -77,16 +77,10 @@ define(function(require, exports, module) {
 
         },
         createSession: function(path, content) {
-            var parts = path.split(".");
-            var ext = parts[parts.length - 1];
-            var mode = "text";
-            if (editor.extMapping[ext]) {
-                mode = editor.extMapping[ext];
-            }
+            var mode = modes.getModeForPath(path);
             var session = ace.createEditSession(content);
-            session.setMode(mode);
             session.setUseWrapMode(settings.get("wordWrap"));
-            session.mode = mode;
+            modes.setSessionMode(session, mode);
             session.filename = path;
             return session;
         },
@@ -126,7 +120,7 @@ define(function(require, exports, module) {
                 lastUse: session.lastUse,
                 undo: undoStack,
                 redo: redoStack,
-                mode: session.getMode().$id
+                mode: session.mode.language
             };
         },
         setSessionState: function(session, state) {
@@ -145,7 +139,7 @@ define(function(require, exports, module) {
             session.getSelection().setSelectionRange(state.selection, false);
             session.setScrollTop(state.scrollTop);
             session.setScrollLeft(state.scrollLeft);
-            session.setMode(state.mode);
+            modes.setSessionMode(session, state.mode);
             session.lastUse = state.lastUse;
             var undoManager = session.getUndoManager();
             rangify(state.undo);
@@ -284,20 +278,6 @@ define(function(require, exports, module) {
             editor.selectMoreLines(1);
         },
         readonly: true
-    });
-
-    Object.keys(editor.extMapping).forEach(function(ext) {
-        var module = editor.extMapping[ext];
-        var parts = module.split('/');
-        var name = parts[parts.length - 1];
-        name = name[0].toUpperCase() + name.substring(1).replace("_", " ");
-
-        command.define("Editor:Mode:" + name, {
-            exec: function(editor) {
-                editor.getSession().setMode(module);
-            },
-            readOnly: true
-        });
     });
 
     editor.themes.forEach(function(theme) {

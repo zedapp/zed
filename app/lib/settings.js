@@ -4,32 +4,35 @@ define(function(require, exports, module) {
     
     eventbus.declare("settingschanged");
     
-    var settings = require("text!../settings/settings.json");
-    var ignore = false;
+    var defaultSettings = JSON.parse(require("text!../settings/settings.default.json"));
+    var userSettings = {};
     
     exports.init = function() {
-        settingsfs.watchFile("/settings.json", loadSettings);
+        settingsfs.watchFile("/settings.user.json", loadSettings);
         loadSettings();
     };
     
     exports.get = function(key) {
-        return settings[key];
+        // Prefer user settings over default settings
+        if(userSettings[key] !== undefined) {
+            return userSettings[key];
+        } else {
+            return defaultSettings[key];
+        }
     };
     
     exports.set = function(key, value) {
-        settings[key] = value;
-        settingsfs.writeFile("/settings.json", JSON.stringify(settings, null, 4), function(err) {
+        userSettings[key] = value;
+        settingsfs.writeFile("/settings.user.json", JSON.stringify(userSettings, null, 4), function(err) {
             console.log("Settings written:", err);
         });
     };
     
     function loadSettings() {
         console.log("Loading settings");
-        if(ignore)
-            return;
-        settingsfs.readFile("/settings.json", function(err, settings_) {
+        settingsfs.readFile("/settings.user.json", function(err, settings) {
             try {
-                settings = JSON.parse(settings_);
+                userSettings = JSON.parse(settings);
                 eventbus.emit("settingschanged", exports);
             } catch(e) {}
         });

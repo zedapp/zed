@@ -3,6 +3,7 @@ define(function(require, exports, module) {
         "command",
         "editor",
         "editbar",
+        "settings",
         "eventbus",
         "beautify",
         "goto",
@@ -11,10 +12,10 @@ define(function(require, exports, module) {
         "project",
         "keys",
         "complete",
+        "modes",
         "split",
         "preview",
         "window",
         "session_manager",
-        "settings"
     ];
 });

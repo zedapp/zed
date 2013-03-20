@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var root = "manual";
     module.exports = {
-        filelist: function(callback) {
+        listFiles: function(callback) {
             $.get(root+"/all", function(res) {
                 var items = res.split("\n");
                 for(var i = 0; i < items.length; i++) {

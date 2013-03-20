@@ -1,7 +1,5 @@
 define(function(require, exports, module) {
-    var events = require("events");
-    var minimumDocuments = {"/settings.json": true, "/keys.json": true};
-
+    var events = require("../events");
     var emitter = new events.EventEmitter(false);
 
     function getKey(key, callback) {
@@ -47,22 +45,33 @@ define(function(require, exports, module) {
         });
     }
     
-    getKey("settings:", function(settings) {
-        if(!settings)
-            setKey("settings:", minimumDocuments);
-    });
-    
-    function filelist(callback) {
-        getKey("settings:", function(docs) {
-            callback(null, Object.keys(docs).filter(function(path) {
-                var parts = path.split('/');
-                for(var i = 0; i < parts.length; i++) {
-                    if(parts[i][0] === '.') {
-                        return false;
-                    }
+    function listFiles(callback) {
+        var files = [];
+        $.get("settings/all", function(text) {
+            var paths = text.split("\n");
+            paths.forEach(function(path) {
+                if(path) {
+                    files.push(path);
                 }
-                return true;
-            }));
+            });
+            getKey("settings:", function(docs) {
+                docs = docs || {};
+                Object.keys(docs).forEach(function(path) {
+                    if(!path) {
+                        return;
+                    }
+                    var parts = path.split('/');
+                    for(var i = 0; i < parts.length; i++) {
+                        if(parts[i][0] === '.') {
+                            return;
+                        }
+                    }
+                    if(files.indexOf(path) === -1) {
+                        files.push(path);
+                    }
+                });
+                callback(null, files);
+            });
         });
     }
 
@@ -74,7 +83,9 @@ define(function(require, exports, module) {
                     url: "settings" + path,
                     dataType: "text",
                     success: function(result) {
-                        callback(null, result);
+                        callback(null, result, {
+                            readOnly: path.indexOf(".default.") !== -1
+                        });
                     },
                     error: function(xhr) {
                         callback(xhr.status);
@@ -115,7 +126,7 @@ define(function(require, exports, module) {
     }
 
     module.exports = {
-        filelist: filelist,
+        listFiles: listFiles,
         readFile: readFile,
         writeFile: writeFile,
         deleteFile: deleteFile,
