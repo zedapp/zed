@@ -1,5 +1,13 @@
 {
     "name": "JSON",
     "highlighter": "ace/mode/json",
-    "extensions": ["json"]
+    "extensions": ["json"],
+    
+    "tool:beautify": {
+        "scriptUrl": "plugin/beautify/javascript.js"
+    },
+    
+    "tool:check": {
+        "scriptUrl": "plugin/check/json.js"
+    }
 }

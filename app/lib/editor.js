@@ -80,6 +80,7 @@ define(function(require, exports, module) {
             var mode = modes.getModeForPath(path);
             var session = ace.createEditSession(content);
             session.setUseWrapMode(settings.get("wordWrap"));
+            session.setUseWorker(false);
             modes.setSessionMode(session, mode);
             session.filename = path;
             return session;
@@ -89,9 +90,6 @@ define(function(require, exports, module) {
             edit.setSession(session);
             edit.setReadOnly(!!session.readOnly);
             eventbus.emit("switchsession", edit, session);
-        },
-        setMode: function(ext, modeModule) {
-            editor.extMapping[ext] = modeModule;
         },
         getActiveEditor: function() {
             return activeEditor;

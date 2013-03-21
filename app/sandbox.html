@@ -1,0 +1,25 @@
+<html>
+<body>
+<script src="require.js"></script>
+<script>
+window.addEventListener('message', function(event) {
+    var data = event.data;
+    var id = data.id;
+    var url = data.url;
+    var options = data.options;
+    var content = data.content;
+    if(!url) {
+        return;
+    }
+    
+    require([url], function(fn) {
+        fn(options, content, function(err, result) {
+            var message = {replyTo: id, err: err, result: result};
+            //console.log(message);
+            event.source.postMessage(message, "*");
+        });
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+    "name": "CSS",
+    "highlighter": "ace/mode/css",
+    "extensions": ["css"],
+    
+    "tool:beautify": {
+        "scriptUrl": "plugin/beautify/css.js"
+    },
+    
+    "tool:check": {
+        "scriptUrl": "plugin/check/css.js"
+    }
+}

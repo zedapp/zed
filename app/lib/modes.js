@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var command = require("./command");
     
     eventbus.declare("modesloaded");
+    eventbus.declare("modeset");
     
     var modes = bareMinimumModes();
     var extensionMapping = {};
@@ -39,6 +40,7 @@ define(function(require, exports, module) {
                     });
                 }
             } catch(e) {
+                console.error("Error loading mode:", e);
             } finally {
                 console.log("Loaded mode from", path);
                 callback && callback();
@@ -52,7 +54,6 @@ define(function(require, exports, module) {
                 return console.error("Could not load settings file list");
             }
             modes = bareMinimumModes();
-            var left = 0;
             // Sorting to ensure "default" comes before "user"
             paths.sort();
             async.forEach(paths, function(path, next) {
@@ -120,6 +121,7 @@ define(function(require, exports, module) {
         if(mode) {
             session.mode = mode;
             session.setMode(mode.highlighter);
+            eventbus.emit("modeset", session, mode);
         }
     };
 });

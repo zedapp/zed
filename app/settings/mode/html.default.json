@@ -1,5 +1,9 @@
 {
     "name": "HTML",
     "highlighter": "ace/mode/html",
-    "extensions": ["html"]
+    "extensions": ["html"],
+    
+    "tool:beautify": {
+        "scriptUrl": "plugin/beautify/html.js"
+    }
 }

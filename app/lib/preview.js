@@ -88,7 +88,7 @@ define(function(require, exports, module) {
         });
         window.addEventListener("message", function(event) {
             var data = event.data;
-            if(data.indexOf("preview-scroll: ") === 0) {
+            if(typeof data === "string" && data.indexOf("preview-scroll: ") === 0) {
                 previewScrollY = +data.substring("preview-scroll: ".length);
                 state.set("preview.scrollY", previewScrollY);
             }

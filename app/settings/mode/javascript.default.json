@@ -3,6 +3,37 @@
     "highlighter": "ace/mode/javascript",
     "extensions": ["js"],
     
+    "tool:beautify": {
+        "scriptUrl": "plugin/beautify/javascript.js"
+    },
+    
+    "tool:remotebeautify": {
+        "url": "http://webfs-js.herokuapp.com/beautify/js",
+        "method": "PUT"
+    },
+    
+    "tool:check": {
+        "scriptUrl": "plugin/check/javascript.js",
+        "options": {
+            "undef": true,
+            "unused": true,
+            "es5": true,
+            "esnext": true,
+            "devel": true,
+            "browser": true,
+            "node": true,
+            "laxcomma": true,
+            "laxbreak": true,
+            "lastsemic": true,
+            "onevar": false,
+            "passfail": false,
+            "maxerr": 100,
+            "expr": true,
+            "multistr": true,
+            "globalstrict": true
+        }
+    },
+    
     "snippet:log": "console.log({0})",
     "snippet:def": "define(function(require, exports, module) {\n\t{0}\n});",
     "snippet:require": "var {0} = require(\"{0}\");",
@@ -11,5 +42,6 @@
     "snippet:ifelse": "if({0}) {\n\t{1}\n} else {\n\t{2}\n}",
     "snippet:foreach": "for(var {0:i} = 0; {0:i} < {1:array}.length; {0:i}++) {\n\tvar {2:item} = {1:array}[{0:i}];\n\t{3}\n}",
     "snippet:forEach": "forEach(function({0:el}) {\n\t{1}\n});",
-    "snippet:setTimeout": "setTimeout(function() {\n\t{0}\n}, {1:0})"
+    "snippet:setTimeout": "setTimeout(function() {\n\t{0}\n}, {1:0})",
+    "snippet:iterkeys": "Object.keys({0:obj}).forEach(function({1:key}) {\n\t{2}\n});"
 }
