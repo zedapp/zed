@@ -4,6 +4,7 @@
 /mode/html.default.json
 /mode/javascript.default.json
 /mode/json.default.json
+/mode/markdown.default.json
 /mode/php.default.json
 /mode/python.default.json
 /mode/text.default.json

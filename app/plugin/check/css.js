@@ -11,5 +11,6 @@ define(function(require, exports, module) {
                 type: msg.type
             };
         }));
+        
     };
 });

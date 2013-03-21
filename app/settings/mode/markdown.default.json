@@ -1,0 +1,5 @@
+{
+    "name": "Markdown",
+    "highlighter": "ace/mode/markdown",
+    "extensions": ["md", "txt"]
+}
