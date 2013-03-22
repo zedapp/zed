@@ -5,7 +5,6 @@ define(function(require, exports, module) {
         "editbar",
         "settings",
         "eventbus",
-        "beautify",
         "goto",
         "sandbox",
         "tree",
@@ -14,11 +13,12 @@ define(function(require, exports, module) {
         "keys",
         "complete",
         "modes",
-        "check",
         "split",
-        "preview",
-        "compile",
         "window",
         "session_manager",
+        "tools/beautify",
+        "tools/check",
+        "tools/preview",
+        "tools/compile",
     ];
 });

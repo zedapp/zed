@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
-    var eventbus = require("./eventbus");
-    var tools = require("./tools");
+    var eventbus = require("../eventbus");
+    var tools = require("../tools");
     
     var defaultTimeout = 1000;
     var minTimeout = 500;

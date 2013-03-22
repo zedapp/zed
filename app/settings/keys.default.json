@@ -53,14 +53,18 @@
         "mac": "Command-0",
         "win": "Ctrl-0"
     },
-    "Split:Preview": {
-        "mac": "Command-P",
-        "win": "Ctrl-P"
-    },
     "Goto:Tree": "Alt-T",
-    "Edit:Beautify": {
+    "Tools:Beautify": {
         "mac": "Command-Shift-B",
         "win": "Ctrl-Shift-B"
+    },
+    "Tools:Compile": {
+        "mac": "Command-Shift-C",
+        "win": "Ctrl-Shift-C"
+    },
+    "Tools:Preview": {
+        "mac": "Command-P",
+        "win": "Ctrl-P"
     },
     "Edit:Complete": "Tab"
 }

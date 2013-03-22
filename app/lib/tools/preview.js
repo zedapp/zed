@@ -1,12 +1,12 @@
 /* global define $ */
 define(function(require, exports, module) {
-    var resetEditorDiv = require("./split").resetEditorDiv;
-    var state = require("./state");
-    var editor = require("./editor");
-    var command = require("./command");
-    var eventbus = require("./eventbus");
-    var tools = require("./tools");
-    var session_manager = require("./session_manager");
+    var resetEditorDiv = require("../split").resetEditorDiv;
+    var state = require("../state");
+    var editor = require("../editor");
+    var command = require("../command");
+    var eventbus = require("../eventbus");
+    var tools = require("../tools");
+    var session_manager = require("../session_manager");
     
     var previewWrapperEl;
     var previewEl;
@@ -83,7 +83,7 @@ define(function(require, exports, module) {
         });*/
     };
     
-    command.define("Split:Preview", {
+    command.define("Tools:Preview", {
         exec: function() {
             splitPreview();
         },

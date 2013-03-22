@@ -9,7 +9,7 @@ define(function(require, exports, module) {
     var async = require("./async");
 
     eventbus.declare("switchsession");
-    eventbus.declare("newfilesession");
+    eventbus.declare("newfilecreated");
     eventbus.declare("newsession");
     eventbus.declare("sessionsaved");
     eventbus.declare("sessionchanged");
@@ -131,7 +131,7 @@ define(function(require, exports, module) {
                     var session = editor.createSession(path, "");
                     setupSave(session)
                     show(session);
-                    eventbus.emit("newfilesession", session);
+                    eventbus.emit("newfilecreated", path);
                 } else {
                     eventbus.emit("newsession", session);
                     show(session);

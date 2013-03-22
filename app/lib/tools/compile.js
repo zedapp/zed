@@ -1,8 +1,9 @@
 define(function(require, exports, module) {
-    var command = require("./command");
-    var tools = require("./tools");
-    var project = require("./project");
-    var session_manager = require("./session_manager");
+    var command = require("../command");
+    var tools = require("../tools");
+    var project = require("../project");
+    var session_manager = require("../session_manager");
+    var eventbus = require("../eventbus");
     
     function compile(session) {
         tools.run(session, "compile", {path: session.filename}, session.getValue(), function(err, result) {
@@ -24,6 +25,7 @@ define(function(require, exports, module) {
                 }
                 console.log("Writing compiled file: ", result);
                 session_manager.handleChangedFile(outputPath);
+                eventbus.emit("newfilecreated", outputPath);
             });
         });
     }

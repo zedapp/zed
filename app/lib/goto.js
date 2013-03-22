@@ -151,8 +151,8 @@ define(function(require, exports, module) {
     exports.hook = function() {
         eventbus.on("ioavailable", fetchFileList);
         
-        eventbus.on("newfilesession", function(path) {
-            fileCache.push(path.filename);
+        eventbus.on("newfilecreated", function(path) {
+            fileCache.push(path);
         });
     };
     
