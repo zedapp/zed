@@ -1,5 +1,6 @@
 /keys.default.json
 /keys.user.json
+/mode/coffee.default.json
 /mode/css.default.json
 /mode/html.default.json
 /mode/javascript.default.json

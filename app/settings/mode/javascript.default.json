@@ -7,6 +7,10 @@
         "scriptUrl": "plugin/beautify/javascript.js"
     },
     
+    "tool:compile": {
+        "scriptUrl": "plugin/compile/javascript.js"
+    },
+    
     "tool:remotebeautify": {
         "url": "http://webfs-js.herokuapp.com/beautify/js",
         "method": "PUT"

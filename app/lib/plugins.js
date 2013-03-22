@@ -17,6 +17,7 @@ define(function(require, exports, module) {
         "check",
         "split",
         "preview",
+        "compile",
         "window",
         "session_manager",
     ];

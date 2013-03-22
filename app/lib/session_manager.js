@@ -83,6 +83,23 @@ define(function(require, exports, module) {
             callback(null, session);
         });
     }
+    
+    function handleChangedFile(path) {
+        var session = sessions[path];
+        if(!session) {
+            return;
+        }
+        project.readFile(path, function(err, text) {
+            if(err) {
+                return console.error("Could not load file:", path);
+            }
+            var cursor = session.selection.getCursor();
+            session.ignoreChange = true;
+            session.setValue(text);
+            session.selection.moveCursorToPosition(cursor);
+            session.ignoreChange = false;
+        });
+    }
 
     function go(path, edit, previousSession, previewSession) {
         edit = edit || editor.getActiveEditor();
@@ -145,15 +162,7 @@ define(function(require, exports, module) {
             // File watching
             session.watcherFn = function(path, kind) {
                 if(kind === "changed") {
-                    project.readFile(path, function(err, text) {
-                        if(err)
-                            return console.error("Could not load file:", path);
-                        var cursor = edit.getCursorPosition();
-                        session.ignoreChange = true;
-                        session.setValue(text);
-                        edit.moveCursorToPosition(cursor);
-                        session.ignoreChange = false;
-                    });
+                    handleChangedFile(path);
                 } else if(kind === "deleted") {
                     // TODO How to handle this case?
                     console.error("File deleted", path);
@@ -247,6 +256,7 @@ define(function(require, exports, module) {
     };
 
     exports.go = go;
+    exports.handleChangedFile = handleChangedFile;
     exports.getSessions = function() {
         return sessions;
     };

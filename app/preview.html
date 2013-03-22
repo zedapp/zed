@@ -1,0 +1,20 @@
+<html>
+<head>
+<script>
+window.addEventListener('message', function(event) {
+    var data = event.data;
+    if(data.scrollTo) {
+        scrollTo(0, data.scrollTo);
+    } else if(data.content) {
+        document.body.innerHTML = data.content;
+    }
+});
+window.addEventListener('scroll', function(event) {
+    //parent.postMessage('preview-scroll: ' + pageYOffset, '*');
+});
+</script>
+</head>
+<body>
+
+</body>
+</html>

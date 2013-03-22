@@ -5,5 +5,9 @@
     
     "tool:beautify": {
         "scriptUrl": "plugin/beautify/html.js"
+    },
+    
+    "tool:preview": {
+        "scriptUrl": "plugin/preview/html.js"
     }
 }
