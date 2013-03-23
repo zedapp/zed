@@ -6,9 +6,10 @@ define(function(require, exports, module) {
     var eventbus = require("../eventbus");
     
     function compile(session) {
+        eventbus.emit("sessionactivitystarted", session, "Compiling");
         tools.run(session, "compile", {path: session.filename}, session.getValue(), function(err, result) {
             if(err) {
-                return console.error("Compilation not supported.");
+                return eventbus.emit("sessionactivityfailed", session, "Compilation not supported.");
             }
             if(typeof result == "string") {
                 try {
@@ -19,11 +20,11 @@ define(function(require, exports, module) {
             }
             var outputPath = result.outputPath;
             var content = result.content;
-            project.writeFile(outputPath, content, function(err, result) {
+            project.writeFile(outputPath, content, function(err) {
                 if(err) {
-                    return console.error("Error writing to", outputPath, err);
+                    return eventbus.emit("sessionactivityfailed", session, "Could not write to file: " + err);
                 }
-                console.log("Writing compiled file: ", result);
+                eventbus.emit("sessionactivitycompleted", session);
                 session_manager.handleChangedFile(outputPath);
                 eventbus.emit("newfilecreated", outputPath);
             });

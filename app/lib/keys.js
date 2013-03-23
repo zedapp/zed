@@ -10,7 +10,6 @@ define(function(require, exports, module) {
     var userKeyJson = {};
     var keyboardHandler = null;
     var commands;
-    var keysJson = {};
 
     exports.update = function() {
         var CommandManager = ace.require("ace/commands/command_manager").CommandManager;
@@ -48,7 +47,14 @@ define(function(require, exports, module) {
     };
     
     exports.getCommandKeys = function() {
-        return keysJson;
+        var commandKeys = {};
+        Object.keys(defaultKeyJson).forEach(function(cmd) {
+            commandKeys[cmd] = defaultKeyJson[cmd];
+        });
+        Object.keys(userKeyJson).forEach(function(cmd) {
+            commandKeys[cmd] = userKeyJson[cmd];
+        });
+        return commandKeys;
     };
     
 

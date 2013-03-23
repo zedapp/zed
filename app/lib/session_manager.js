@@ -29,10 +29,15 @@ define(function(require, exports, module) {
             eventbus.emit("sessionchanged", session, delta);
             if (saveTimer) clearTimeout(saveTimer);
             saveTimer = setTimeout(function() {
-                console.log("Saving...");
+                eventbus.emit("sessionactivitystarted", session, "Saving");
                 project.writeFile(path, session.getValue(), function(err, res) {
-                    console.log("Result:", res);
-                    eventbus.emit("sessionsaved", session);
+                    console.log("Written", err, res);
+                    if(err) {
+                        eventbus.emit("sessionactivityfailed", session, "Failed to save");
+                    } else {
+                        eventbus.emit("sessionactivitycompleted", session);
+                        eventbus.emit("sessionsaved", session);
+                    }
                 });
             }, 1000);
         });

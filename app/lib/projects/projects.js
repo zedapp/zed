@@ -10,7 +10,7 @@ chrome.app.window.create('sandbox.html', {
                     height: 400
                 });
 */              
-require(["fs/web", "fuzzyfind", "messageapi"], function(webfs, fuzzyfind, messageapi) {
+require(["fs/web", "fuzzyfind"], function(webfs, fuzzyfind) {
     
     var projectWindows = {};
     

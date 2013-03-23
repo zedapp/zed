@@ -5,6 +5,7 @@ define(function(require, exports, module) {
     var tools = require("../tools");
 
     function beautify(session) {
+        eventbus.emit("sessionactivitystarted", session, "Beautifying");
         var range = session.getSelection().getRange();
         var edit = editor.getActiveEditor();
         var cursorPos = edit.getCursorPosition();
@@ -20,11 +21,12 @@ define(function(require, exports, module) {
         var text = session.getTextRange(range);
         tools.run(session, "beautify", {}, text, function(err, reformattedText) {
             if(err) {
-                return console.error("Beautify:", err);
+                return eventbus.emit("sessionactivityfailed", session, "Beautification not supported.");
             }
             session.replace(range, reformattedText);
             edit.clearSelection();
             edit.moveCursorToPosition(cursorPos);
+            eventbus.emit("sessionactivitycompleted", session);
         });
     }
 

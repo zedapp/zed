@@ -61,7 +61,7 @@ define(function(require, exports, module) {
                     callback(null, res);
                 },
                 error: function(xhr) {
-                    callback(xhr.status);
+                    callback(xhr.status || xhr.statusText);
                 }
             });
         }

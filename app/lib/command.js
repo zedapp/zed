@@ -47,10 +47,12 @@ define(function(require, exports, module) {
     
     exports.define("Command:Enter Command", {
         exec: function() {
-            require(["./ui", "./fuzzyfind", "./editor", "./keys"], function(ui, fuzzyfind, editor, keys) {
+            require(["./ui", "./fuzzyfind", "./editor", "./keys", "./state"], function(ui, fuzzyfind, editor, keys, state) {
+                var recentCommands = state.get("recent.commands") || {};
+                var commandKeys = keys.getCommandKeys();
+                
                 function filter(phrase) {
                     var results = fuzzyfind(exports.allCommands(), phrase);
-                    var commandKeys = keys.getCommandKeys();
                     results.forEach(function(result) {
                         var k = commandKeys[result.path];
                         if(k) {
@@ -61,12 +63,27 @@ define(function(require, exports, module) {
                             }
                         }
                     });
+                    results.sort(function(a, b) {
+                        if(a.score === b.score) {
+                            var lastUseA = recentCommands[a.name] || 0;
+                            var lastUseB = recentCommands[b.name] || 0;
+                            if(lastUseA === lastUseB) {
+                                return a.name < b.name ? -1 : 1;
+                            } else {
+                                return lastUseB - lastUseA;
+                            }
+                        } else {
+                            return b.score - a.score;
+                        }
+                    });
                     return results;
                 }
                 ui.filterBox({
                     placeholder: "Enter command",
                     filter: filter,
                     onSelect: function(cmd) {
+                        recentCommands[cmd] = Date.now();
+                        state.set("recent.commands", recentCommands);
                         exports.exec(cmd, editor.getActiveEditor());
                     }
                 });

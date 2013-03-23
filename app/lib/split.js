@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     var eventbus = require("./eventbus");
     var command = require("./command");
 
+    eventbus.declare("splitswitched");
     eventbus.declare("splitchange");
     
     function resetEditorDiv(el) {
@@ -54,6 +55,7 @@ define(function(require, exports, module) {
         var activeEditor = editor.getActiveEditor();
         var idx = editors.indexOf(activeEditor);
         editor.setActiveEditor(editors[(idx + 1) % editors.length]);
+        eventbus.emit("splitswitched", editor.getActiveEditor());
     }
 
     exports.hook = function() {
@@ -72,6 +74,7 @@ define(function(require, exports, module) {
                     splitThree();
                     break;
             }
+            eventbus.emit("splitswitched", editor.getActiveEditor());
         });
     };
     
@@ -79,5 +82,4 @@ define(function(require, exports, module) {
     command.define("Split:Vertical Two", {exec: splitTwo, readOnly: true});
     command.define("Split:Vertical Three", {exec: splitThree, readOnly: true});
     command.define("Split:Switch Focus", {exec: switchSplit, readOnly: true});
-    
 });

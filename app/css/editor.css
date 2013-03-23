@@ -149,6 +149,9 @@ div.editor-split-bottom {
     border: 1px solid #aaa;
     z-index: 999;
 }
+.editbar.active {
+    background-color: #ddd;
+}
 .editbar .path {
     font-family: Monaco, Menlo;
     font-size: 13px;
@@ -177,6 +180,9 @@ div.editor-split-bottom {
     line-height: 25px;
     padding-right: 5px;
     color: #777;
+}
+.editbar .error {
+    color: red;
 }
 .hidden {
     display: none;

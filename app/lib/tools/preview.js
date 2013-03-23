@@ -17,9 +17,13 @@ define(function(require, exports, module) {
         if(!previewSession) {
             return;
         }
+        eventbus.emit("sessionactivitystarted", previewSession, "Updating preview");
         tools.run(previewSession, "preview", {}, previewSession.getValue(), function(err, result) {
             if(err) {
                 result = "Not supported.";
+                eventbus.emit("sessionactivityfailed", previewSession, "No preview available");
+            } else {
+                eventbus.emit("sessionactivitycompleted", previewSession);
             }
             previewEl[0].contentWindow.postMessage({content: result}, "*");
         });
