@@ -66,24 +66,7 @@ div.preview-vsplit2-right {
     height: 100%;
     width: 100%;
 }
-/*
-div.editor-split-top {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-}
-div.editor-split-bottom {
-    position: absolute;
-    border-top: 1px solid black;
-    height: 50%;
-    right: 0;
-    left: 0;
-    bottom: 0;
-}
-*/
- #goto {
+#goto {
     position: fixed;
     border-left: solid 1px black;
     border-bottom: solid 1px black;

@@ -1,11 +1,11 @@
-var projectWin;
+var projectWin = null;
 
 function showProjects() {
-    if(projectWin) {
+    if (projectWin) {
         projectWin.show();
         return;
     }
-    chrome.app.window.create('projects.html', { //'editor.html#http://localhost:8080/server/php/?/', {
+    chrome.app.window.create('projects.html', {
         frame: 'none',
         width: 400,
         height: 400
