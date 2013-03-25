@@ -1,3 +1,4 @@
+/*global define $ ace */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
@@ -13,7 +14,7 @@ define(function(require, exports, module) {
 
     var editors = [];
     var activeEditor = null;
-    
+
     var editor = module.exports = {
         extMapping: defaultSettings.fileExtensions,
         themes: ["ace/theme/ambiance", "ace/theme/chaos",
@@ -74,7 +75,6 @@ define(function(require, exports, module) {
 
             editor.setActiveEditor(editors[0]);
             eventbus.emit("editorloaded", exports);
-
         },
         createSession: function(path, content) {
             var mode = modes.getModeForPath(path);
@@ -88,7 +88,7 @@ define(function(require, exports, module) {
         switchSession: function(session, edit) {
             edit = edit || editor.getActiveEditor();
             edit.setSession(session);
-            edit.setReadOnly(!!session.readOnly);
+            edit.setReadOnly( !! session.readOnly);
             eventbus.emit("switchsession", edit, session);
         },
         getActiveEditor: function() {
@@ -99,7 +99,9 @@ define(function(require, exports, module) {
             activeEditor.focus();
         },
         getEditors: function(all) {
-            if (all) return editors;
+            if (all) {
+                return editors;
+            }
 
             return editors.filter(function(edit) {
                 return $(edit.container).is(':visible');
@@ -139,6 +141,7 @@ define(function(require, exports, module) {
             session.setScrollLeft(state.scrollLeft);
             modes.setSessionMode(session, state.mode);
             session.lastUse = state.lastUse;
+
             var undoManager = session.getUndoManager();
             rangify(state.undo);
             rangify(state.redo);
@@ -159,8 +162,11 @@ define(function(require, exports, module) {
             var session = edit.getSession();
             var cursor = edit.getCursorPosition();
             var line = session.getLine(cursor.row);
+
             // If cursor is not on an identifier at all, return empty string
-            if (!regex.test(line[cursor.column])) return "";
+            if (!regex.test(line[cursor.column])) {
+                return "";
+            }
 
             for (var startCol = cursor.column; startCol >= 0; startCol--) {
                 if (!regex.test(line[startCol])) {
@@ -180,32 +186,82 @@ define(function(require, exports, module) {
         }
     };
 
-    command.define("Editor:Select All", {
+    command.define("Edit:Select All", {
         exec: function(editor) {
             editor.selectAll();
-        },
-        readOnly: true
+        }
     });
 
-    command.define("Editor:Center Selection", {
+    command.define("Edit:Center Selection", {
         exec: function(editor) {
             editor.centerSelection();
-        },
-        readOnly: true
+        }
     });
 
-    command.define("Editor:Goto Line", {
+    command.define("Edit:Goto Line", {
         exec: function(edit) {
             command.exec("File:Goto", edit, ":");
-        },
-        readOnly: true
+        }
     });
 
-    command.define("Editor:Find", {
+    command.define("Edit:Fold", {
+        exec: function(editor) {
+            editor.session.toggleFold(false);
+        }
+    });
+
+    command.define("Edit:Unfold", {
+        exec: function(editor) {
+            editor.session.toggleFold(true);
+        }
+    });
+
+    command.define("Edit:Fold All", {
+        exec: function(editor) {
+            editor.session.foldAll();
+        }
+    });
+
+    command.define("Edit:Find Next", {
+        exec: function(editor) {
+            editor.findNext();
+        }
+    });
+
+    command.define("Edit:Find Previous", {
+        exec: function(editor) {
+            editor.findPrevious();
+        }
+    });
+
+    command.define("Edit:Overwrite Mode", {
+        exec: function(editor) {
+            editor.toggleOverwrite();
+        }
+    });
+
+    command.define("Edit:Select To Start", {
+        exec: function(editor) {
+            editor.getSelection().selectFileStart();
+        }
+    });
+
+    command.define("Edit:Select To Start", {
+        exec: function(editor) {
+            editor.getSelection().selectFileStart();
+        }
+    });
+
+    command.define("Edit:Unfold All", {
+        exec: function(editor) {
+            editor.session.unfold();
+        }
+    });
+
+    command.define("Edit:Find", {
         exec: function(edit) {
             command.exec("File:Goto", edit, ":/");
-        },
-        readOnly: true
+        }
     });
 
     command.define("Settings:Toggle Word Wrap", {
@@ -244,7 +300,7 @@ define(function(require, exports, module) {
             edit.selectMore(1);
         }
     });
-    
+
     command.define("Cursor:Add At Previous Instance Of Identifier", {
         exec: function(edit) {
             if (edit.selection.isEmpty()) {

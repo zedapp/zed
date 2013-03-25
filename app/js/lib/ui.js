@@ -1,19 +1,20 @@
+/*global define $ _*/
 define(function(require, exports, module) {
     "use strict";
     var editor = require("../editor");
     var project = require("../project");
-    var string = require("./string");
+    var keyCode = require("./key_code");
 
     var visible = false;
 
     /**
      * Supported options
      * - placeholder
-     * - text
+     * - text (initial text in input)
      * - filter (function)
-     * - onSelect
-     * - onCancle
-     * - hint
+     * - hint (function)
+     * - onSelect (function)
+     * - onCancel (function)
      */
     exports.filterBox = function(options) {
         var placeholder = options.placeholder || "";
@@ -23,8 +24,9 @@ define(function(require, exports, module) {
         var onCancel = options.onCancel;
         var hint = options.hint;
         
-        if (visible)
+        if (visible) {
             return;
+        }
         
         var edit = editor.getActiveEditor();
         $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='" + placeholder + "'/><div id='gotohint'></div><ul id='results'>");
@@ -66,25 +68,20 @@ define(function(require, exports, module) {
         
         input.keyup(function(event) {
             switch (event.keyCode) {
-                case 27:
-                    // esc
+                case keyCode('Esc'):
                     onCancel && onCancel();
                     close();
                     break;
-                case 38:
-                    // up
+                case keyCode('Up'):
                     resultsEl.menu("previous");
                     break;
-                case 40:
-                    // down
+                case keyCode('Down'):
                     resultsEl.menu("next");
                     break;
-                case 13:
-                    // enter
+                case keyCode('Return'):
                     select();
                     break;
-                case 9:
-                    // tab
+                case keyCode('Tab'):
                     break;
                 default:
                     if (lastPhrase != input.val()) {
@@ -95,8 +92,7 @@ define(function(require, exports, module) {
         });
         input.keydown(function(event) {
             switch (event.keyCode) {
-                case 32:
-                    // space
+                case keyCode('Space'):
                     var phrase = input.val();
                     if (phrase) break;
                     var session = editor.getActiveSession();
@@ -105,7 +101,7 @@ define(function(require, exports, module) {
                         event.preventDefault();
                     }
                     break;
-                case 8:
+                case keyCode('Backspace'):
                     // backspace
                     var val = input.val();
                     var caret = input.caret();
@@ -116,7 +112,7 @@ define(function(require, exports, module) {
                         event.preventDefault();
                     }
                     break;
-                case 9:
+                case keyCode('Tab'):
                     // Tab
                     if (event.shiftKey) {
                         resultsEl.menu("previous");
@@ -174,9 +170,9 @@ define(function(require, exports, module) {
             var phrase = input.val();
             results = filter(phrase).slice(0, 100);
             var html = '';
-            results.forEach(function(r, idx) {
+            results.forEach(function(r) {
                 var meta = r.meta ? '<span class="meta">' + r.meta + '</meta>' : '';
-                html += '<li data-path="' + string.htmlEscape(r.path) + '"><a href="#">' + r.name + '</a>' + meta + '</li>';
+                html += '<li data-path="' + _.escape(r.path) + '"><a href="#">' + r.name + '</a>' + meta + '</li>';
             });
             resultsEl.html(html);
             resultsEl.menu("refresh");
@@ -189,5 +185,5 @@ define(function(require, exports, module) {
             updateHint();
             lastPhrase = phrase;
         }
-    }
+    };
 });

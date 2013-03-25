@@ -1,15 +1,15 @@
+/*global define ace */
 define(function(require, exports, module) {
     "use strict";
 
     var Map = require("../lib/collection").Map;
+    var Range = ace.require("ace/range").Range;
     
     var splitRegex = /[^a-zA-Z_0-9\$\-]+/;
 
     function getWordIndex(doc, pos) {
-        var textBefore = doc.getLines(0, pos.row - 1).join("\n") + "\n";
-        var line = doc.getLine(pos.row);
-        textBefore += line.substr(0, pos.column);
-        return textBefore.trim().split(splitRegex).length - 1;
+        var textBefore = doc.getTextRange(Range.fromPoints({row: 0, column:0}, pos));
+        return textBefore.split(splitRegex).length - 1;
     }
 
     // NOTE: Naive implementation O(n), can be O(log n) with binary search
@@ -20,7 +20,6 @@ define(function(require, exports, module) {
                 results.push(words[i]);
             }
         }
-
         return results;
     }
 
@@ -32,7 +31,7 @@ define(function(require, exports, module) {
         var prefixPos = getWordIndex(doc, pos);
         var words = doc.getValue().split(splitRegex);
         var wordScores = new Map();
-
+        
         var currentWord = words[prefixPos];
 
         words.forEach(function(word, idx) {
@@ -45,7 +44,6 @@ define(function(require, exports, module) {
             } else {
                 wordScores.set(word, score);
             }
-
         });
         return wordScores;
     }

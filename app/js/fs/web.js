@@ -1,7 +1,6 @@
+/*global define $ */
 define(function(require, exports, module) {
-    var events = require("../lib/events");
-
-    module.exports = function(url, username, password, pollInterval) {
+    return function(url, username, password, pollInterval) {
         pollInterval = pollInterval || 5000;
         
         var etagCache = window.etagCache =  {};
@@ -127,7 +126,7 @@ define(function(require, exports, module) {
                         }
                     }
                 });
-            })
+            });
         }
         
         setInterval(pollFiles, pollInterval);

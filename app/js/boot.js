@@ -1,3 +1,4 @@
+/*global _ */
 require.config({
     baseUrl: "js",
     paths: {
@@ -27,7 +28,6 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
         "./tool/beautify",
         "./tool/check",
         "./tool/preview",
-        "./tool/compile"
     ];
     require(modules, function() {
         var session_manager = require("./session_manager");
@@ -37,15 +37,14 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
             content: manual
         };
 
-        var pluginModules = Array.prototype.slice.call(arguments);
-        pluginModules.forEach(function(module) {
+        _.each(arguments, function(module) {
             if (module.hook) module.hook();
         });
-        pluginModules.forEach(function(module) {
+        _.each(arguments, function(module) {
             if (module.init) module.init();
         });
 
-        console.log("Zed loaded.");
+        console.log("Zed booted.");
     });
 
 });

@@ -1,3 +1,4 @@
+/*global define $ */
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var editor = require("./editor");

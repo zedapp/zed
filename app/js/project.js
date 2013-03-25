@@ -1,25 +1,24 @@
+/*global define*/
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
-    var state = require("./state");
     
     eventbus.declare('ioavailable');
     
-    function dirname(path) {
-        if(path[path.length-1] === '/')
+    exports.dirname = function(path) {
+        if(path[path.length-1] === '/') {
             path = path.substring(0, path.length-1);
+        }
         var parts = path.split("/");
         return parts.slice(0, parts.length - 1).join("/");
     }
     
-    function filename(path) {
-        if(path[path.length-1] === '/')
+    exports.filename = function(path) {
+        if(path[path.length-1] === '/') {
             path = path.substring(0, path.length-1);
+        }
         var parts = path.split("/");
         return parts[parts.length - 1];
     }
-    
-    exports.dirname = dirname;
-    exports.filename = filename;
     
     exports.hook = function() {
         var urlReq = location.search.substring(1);
@@ -32,6 +31,7 @@ define(function(require, exports, module) {
         
         console.log("URL:", options.url);
         var io;
+        // TODO: Generalize this
         if(options.url.indexOf("settings:") === 0) {
             io = require("./fs/settings");
         } else if(options.url.indexOf("manual:") === 0) {
@@ -39,6 +39,7 @@ define(function(require, exports, module) {
         } else {
             io = require('./fs/web')(options.url, options.username, options.password);
         }
+        
         exports.listFiles = io.listFiles;
         exports.readFile = io.readFile;
         exports.writeFile = io.writeFile;

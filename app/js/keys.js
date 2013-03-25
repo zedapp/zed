@@ -1,3 +1,4 @@
+/*global define ace _*/
 define(function(require, exports, module) {
     "use strict";
     var lang = ace.require("ace/lib/lang");
@@ -48,12 +49,7 @@ define(function(require, exports, module) {
     
     exports.getCommandKeys = function() {
         var commandKeys = {};
-        Object.keys(defaultKeyJson).forEach(function(cmd) {
-            commandKeys[cmd] = defaultKeyJson[cmd];
-        });
-        Object.keys(userKeyJson).forEach(function(cmd) {
-            commandKeys[cmd] = userKeyJson[cmd];
-        });
+        _.extend(commandKeys, defaultKeyJson, userKeyJson);
         return commandKeys;
     };
     

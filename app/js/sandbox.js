@@ -1,3 +1,4 @@
+/*global define $*/
 define(function(require, exports, module) {
     var command = require("./command");
     
@@ -27,7 +28,7 @@ define(function(require, exports, module) {
         }
         var err = data.err;
         var result = data.result;
-        //console.log("Got back", id, err, result);
+        
         if(waitingForReply[replyTo]) {
             waitingForReply[replyTo](err, result);
             delete waitingForReply[replyTo];

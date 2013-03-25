@@ -1,3 +1,4 @@
+/*global define */
 define(function(require, exports, module) {
     function Map() {
         this.items = {};

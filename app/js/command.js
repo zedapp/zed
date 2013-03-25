@@ -1,3 +1,4 @@
+/*global define ace _ */
 define(function(require, exports, module) {
     "use strict";
     var useragent = ace.require("ace/lib/useragent");
@@ -22,7 +23,7 @@ define(function(require, exports, module) {
     
     exports.exec = function(path) {
         var def = exports.lookup(path);
-        def.exec.apply(null, Array.prototype.slice.call(arguments, 1));
+        def.exec.apply(null, _.toArray(arguments).slice(1));
     };
     
     exports.allCommands = function() {
@@ -41,7 +42,7 @@ define(function(require, exports, module) {
                     results.forEach(function(result) {
                         var k = commandKeys[result.path];
                         if(k) {
-                            if(typeof k === "string") {
+                            if(_.isString(k)) {
                                 result.meta = k;
                             } else {
                                 result.meta = useragent.isMac ? k.mac : k.win;

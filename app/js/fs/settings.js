@@ -1,3 +1,4 @@
+/*global define chrome $ */
 define(function(require, exports, module) {
     var events = require("../lib/events");
     

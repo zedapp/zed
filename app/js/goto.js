@@ -1,3 +1,4 @@
+/*global define _*/
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var ctags = require("./ctags");
@@ -40,8 +41,7 @@ define(function(require, exports, module) {
         } else if(phrase[0] === '/') {
             var results = {};
             phrase = phrase.toLowerCase();
-            for(var i = 0; i < fileCache.length; i++) {
-                var file = fileCache[i];
+            fileCache.forEach(function(file) {
                 var fileNorm = file.toLowerCase();
                 var score = 1;
     
@@ -51,7 +51,7 @@ define(function(require, exports, module) {
     
                 if(fileNorm.substring(0, phrase.length) === phrase)
                     results[file] = score;
-            }
+            });
             var resultList = [];
             Object.keys(results).forEach(function(path) {
                 resultList.push({
@@ -69,6 +69,7 @@ define(function(require, exports, module) {
                 }
             });
         }
+        
         var editors = editor.getEditors();
         var activeEditor = editor.getActiveEditor();
         resultList = resultList.filter(function(result) {
@@ -96,10 +97,6 @@ define(function(require, exports, module) {
         return resultList;
     }
     
-    function esc(s) {
-        return s.replace(/</g, "&lt;");
-    }
-    
     function hint(phrase, results) {
         if(phrase[0] === ':') {
             if(phrase === ":") {
@@ -107,7 +104,7 @@ define(function(require, exports, module) {
             } else if(phrase == ":/") {
                 return "Type search phrase and press <tt>Enter</tt> to jump to first match.";
             } else if(phrase[1] === '/') {
-                return "<tt>Enter</tt> jumps to first match for '" + esc(phrase.substring(2)) + "'";
+                return "<tt>Enter</tt> jumps to first match for '" + _.escape(phrase.substring(2)) + "'";
             } else {
                 return "<tt>Enter</tt> jumps to line " + phrase.substring(1);
             }

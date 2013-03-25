@@ -1,3 +1,4 @@
+/*global define $*/
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
@@ -51,7 +52,7 @@ define(function(require, exports, module) {
                     children: objToDynaTree(entry, fullPath)
                 });
             }
-        })
+        });
         return elements;
     }
     

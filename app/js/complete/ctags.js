@@ -1,3 +1,4 @@
+/*global define*/
 define(function(require, exports, module) {
     "use strict";
     var Map = require("../lib/collection").Map;

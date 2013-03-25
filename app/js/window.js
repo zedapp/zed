@@ -1,3 +1,4 @@
+/*global define chrome*/
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");

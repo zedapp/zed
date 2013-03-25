@@ -1,3 +1,4 @@
+/*global define*/
 define(function(require, exports, module) {
     var eventbus = require("../lib/eventbus");
     var tools = require("../tools");
@@ -14,7 +15,6 @@ define(function(require, exports, module) {
                 return;
             }
             timeOuts[filename] = Math.max(minTimeout, (Date.now() - before) * 3);
-            //console.log("Time it took:", timeOuts[filename]);
             try {
                 var errors;
                 if(typeof errorsJson === "string") {

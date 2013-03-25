@@ -1,3 +1,4 @@
+/*global define*/
 define(function(require, exports, module) {
     "use strict";
     var async = require("./lib/async");
@@ -30,7 +31,7 @@ define(function(require, exports, module) {
             if (saveTimer) clearTimeout(saveTimer);
             saveTimer = setTimeout(function() {
                 eventbus.emit("sessionactivitystarted", session, "Saving");
-                project.writeFile(path, session.getValue(), function(err, res) {
+                project.writeFile(path, session.getValue(), function(err) {
                     if(err) {
                         eventbus.emit("sessionactivityfailed", session, "Failed to save");
                     } else {
@@ -47,12 +48,8 @@ define(function(require, exports, module) {
         state.set("session.current", editor.getEditors().map(function(e) {
             return e.getSession().filename;
         }));
-        var openDocumentList = [];
-        for (var path in sessions) {
-            if (sessions.hasOwnProperty(path)) {
-                openDocumentList.push(path);
-            }
-        }
+        
+        var openDocumentList = Object.keys(sessions);
 
         openDocumentList.sort(function(a, b) {
             var sessionA = sessions[a];
@@ -78,9 +75,10 @@ define(function(require, exports, module) {
 
     function loadFile(path, callback) {
         project.readFile(path, function(err, text, options) {
-            options = options || {};
-            if(err)
+            if(err) {
                 return callback(err);
+            }
+            options = options || {};
             var session = editor.createSession(path, text);
             session.readOnly = !!options.readOnly;
             setupSave(session);
@@ -176,6 +174,10 @@ define(function(require, exports, module) {
         }
     }
     
+    /**
+     * Simpler version of go that is used for previewing a file
+     * Does not save anything in a session or reuse existing sessions
+     */
     exports.previewGo = function(path, edit, callback) {
         if (!path) {
             return callback();
@@ -214,12 +216,20 @@ define(function(require, exports, module) {
     };
 
     exports.hook = function() {
-        sessions = {};
-
         async.waitForEvents(eventbus, ["stateloaded", "modesloaded"], function() {
+            var sessionStates = state.get("session.open") || {};
+            
             go("zed:start");
-
-            function done() {
+            
+            async.parForEach(Object.keys(sessionStates), function(path, next) {
+                var sessionState = sessionStates[path];
+                loadFile(path, function(err, session) {
+                    if(!err) {
+                        editor.setSessionState(session, sessionState);
+                    }
+                    next();
+                });
+            }, function done() {
                 console.log("All sessions loaded.");
                 var editors = editor.getEditors();
                 if(state.get("session.current")) {
@@ -228,20 +238,7 @@ define(function(require, exports, module) {
                     });
                 }
                 eventbus.emit("allsessionsloaded");
-            }
-            var sessions = state.get("session.open") || {};
-            var count = Object.keys(sessions).length;
-            Object.keys(sessions).forEach(function(path) {
-                var sessionState = sessions[path];
-                loadFile(path, function(err, session) {
-                    if(!err) {
-                        editor.setSessionState(session, sessionState);
-                    }
-                    count--;
-                    if (count === 0) done();
-                });
             });
-            if (count === 0) done();
         });
     };
 
@@ -255,12 +252,13 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
+    exports.go = go;
+    exports.handleChangedFile = handleChangedFile;
+    
     exports.init = function() {
         setInterval(updateState, 2500);
     };
-
-    exports.go = go;
-    exports.handleChangedFile = handleChangedFile;
+    
     exports.getSessions = function() {
         return sessions;
     };

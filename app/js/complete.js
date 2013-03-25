@@ -1,3 +1,4 @@
+/*global define ace $ */
 define(function(require, exports, module) {
     "use strict";
     
@@ -6,6 +7,7 @@ define(function(require, exports, module) {
     var command = require("./command");
     var string = require("./lib/string");
     var keyCode = require("./lib/key_code");
+    var async = require("./lib/async");
 
     // TODO figure out another way to do this
     var completers = [
@@ -39,27 +41,25 @@ define(function(require, exports, module) {
 
         var line = doc.getLine(pos.row);
         var prefix = retrievePreceedingIdentifier(line, pos.column);
-        if (!prefix) return false;
+        if (!prefix) {
+            return false;
+        }
 
         var matches = [];
-        var waiting = completers.length;
-
-        function done() {
+        async.parForEach(completers, function(completer, next) {
+            completer(session, pos, prefix, function(err, results) {
+                if (!err) {
+                    matches = matches.concat(results);
+                }
+                next();
+            });
+        }, function() {
             matches.sort(function(a, b) {
                 return b.score - a.score;
             });
             callback(null, {
                 prefix: prefix,
                 matches: matches
-            });
-        }
-        completers.forEach(function(completer) {
-            completer(session, pos, prefix, function(err, results) {
-                if (!err) {
-                    matches = matches.concat(results);
-                }
-                waiting--;
-                if (waiting === 0) done();
             });
         });
         return true;
@@ -153,6 +153,8 @@ define(function(require, exports, module) {
             if(ranges.length === 0) { // Not multiple matches
                 ranges = [session.selection.getRange()];
             }
+            
+            // TODO: Check if still in range of snippet text
             ranges.forEach(function(r) {
                 r = Range.fromPoints(r.start, r.end);
                 var start = r.start;
@@ -175,8 +177,6 @@ define(function(require, exports, module) {
     function renderCompletionBox(matches, prefix, edit) {
         var cursorLayer = edit.renderer.$cursorLayer;
         var cursorConfig = cursorLayer.config;
-        var oldOnCommandKey;
-        var oldOnTextInput;
 
         $("body").append('<ul id="complete-box">');
         var completionEl = $("#complete-box");
@@ -228,23 +228,19 @@ define(function(require, exports, module) {
 
         function keyHandler(event, passOnCallback) {
             switch (event.keyCode) {
-                case 27:
-                    // esc
+                case keyCode('Esc'):
                     close();
                     event.preventDefault();
                     return;
-                case 38:
-                    // up
+                case keyCode('Up'):
                     completionEl.menu("previous");
                     event.preventDefault();
                     break;
-                case 40:
-                    // down
+                case keyCode('Down'):
                     completionEl.menu("next");
                     event.preventDefault();
                     break;
-                case 13:
-                    // enter
+                case keyCode('Return'):
                     if (completionEl.find("a.ui-state-focus").length > 0) {
                         completionEl.menu("select");
                         event.preventDefault();
@@ -252,10 +248,12 @@ define(function(require, exports, module) {
                         passOnCallback();
                     }
                     break;
-                case 9:
-                    // tab
-                    if (event.shiftKey) completionEl.menu("previous");
-                    else completionEl.menu("next");
+                case keyCode('Tab'):
+                    if (event.shiftKey) {
+                        completionEl.menu("previous");
+                    } else {
+                        completionEl.menu("next");
+                    }
                     event.preventDefault();
                     break;
                 default:

@@ -1,19 +1,51 @@
 {
-    "Editor:Select All": {
+    "Edit:Select All": {
         "win": "Ctrl-A",
         "mac": "Command-A"
     },
-    "Editor:Center Selection": {
+    "Edit:Center Selection": {
         "mac": "Ctrl-L"
     },
-    "Editor:Goto Line": "Ctrl-G",
+    "Edit:Goto Line": {
+        "win": "Ctrl-L",
+        "mac": "Command-L"
+    },
     "File:Goto": {
         "mac": "Command-E",
         "win": "Ctrl-E"
     },
-    "Editor:Find": {
+    "Edit:Find": {
         "win": "Ctrl-F",
         "mac": "Command-F"
+    },
+    "Edit:Fold": {
+        "win": "Alt-L",
+        "mac": "Command-Alt-L"
+    },
+    "Edit:Unfold": {
+        "win": "Alt-Shift-L",
+        "mac": "Command-Alt-Shift-L"
+    },
+    "Edit:Fold All": {
+        "win": "Alt-0",
+        "mac": "Command-Option-0"
+    },
+    "Edit:Unfold All": {
+        "win": "Alt-Shift-0",
+        "mac": "Command-Option-Shift-0"
+    },
+    "Edit:Find Next": {
+        "win": "Ctrl-K",
+        "mac": "Command-G"
+    },
+    "Edit:Find Previous": {
+        "mac": "Command-Shift-G",
+        "win": "Ctrl-Shift-K"
+    },
+    "Edit:Overwrite Mode": "Insert",
+    "Edit:Select To Start": {
+        "win": "Ctrl-Shift-Home",
+        "mac": "Command-Shift-Up"
     },
     "File:Goto Symbol": {
         "win": "Ctrl-J",

@@ -1,4 +1,4 @@
-/* global define $ */
+/*global define $ */
 define(function(require, exports, module) {
     var resetEditorDiv = require("../split").resetEditorDiv;
     var state = require("../state");

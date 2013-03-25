@@ -1,11 +1,21 @@
+/*global define $ */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
     var state = require("./state");
     var editor = require("./editor");
     var command = require("./command");
-
+    
+    /**
+     * Triggered when the active editor has changed
+     * @param edit the new active editor
+     */
     eventbus.declare("splitswitched");
+    
+    /**
+     * Triggered when the split configuration has changed
+     * @param config (1, 2, 3 or preview)
+     */
     eventbus.declare("splitchange");
 
     function resetEditorDiv(el) {
