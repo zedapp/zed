@@ -11,9 +11,6 @@ define(function(require, exports, module) {
                 start: selectionRange || edit.getSelectionRange(),
                 wrap: true
             });
-        } if(locator[0] === "@") {
-            var path = edit.getSession().filename;
-            
         } else {
             try {
                 var lineNo = parseInt(locator, 10);

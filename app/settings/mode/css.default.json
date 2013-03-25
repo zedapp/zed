@@ -9,5 +9,9 @@
     
     "tool:check": {
         "scriptUrl": "plugin/check/css.js"
+    },
+    
+    "tool:ctags": {
+        "scriptUrl": "plugin/ctags/css.js"
     }
 }

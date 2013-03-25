@@ -1,4 +1,4 @@
-/*global define ace $ */
+/*global define ace $ _ */
 define(function(require, exports, module) {
     "use strict";
     
@@ -8,6 +8,7 @@ define(function(require, exports, module) {
     var string = require("./lib/string");
     var keyCode = require("./lib/key_code");
     var async = require("./lib/async");
+    var settings = require("./settings");
 
     // TODO figure out another way to do this
     var completers = [
@@ -130,6 +131,9 @@ define(function(require, exports, module) {
             indentCol++;
         }
         text = text.replace(/\n/g, "\n" + indent);
+        // TODO: Fix this TERRIBLE code
+        text = text.replace(/\t/g, _.times(settings.get("tabSize"), function() { return " "; }).join(""));
+        
         var match;
         while (match = placeholderRegex.exec(text)) {
             var id = match[2];

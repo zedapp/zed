@@ -104,7 +104,7 @@ define(function(require, exports, module) {
                         if(fileNorm.substring(0, phrase.length) === phrase)
                             results[file] = score;
                     });
-                    var resultList = [];
+                    resultList = [];
                     Object.keys(results).forEach(function(path) {
                         resultList.push({
                             path: path,
@@ -124,6 +124,8 @@ define(function(require, exports, module) {
                 
                 var editors = editor.getEditors();
                 var activeEditor = editor.getActiveEditor();
+                
+                // Filter out paths currently open in an editor
                 resultList = resultList.filter(function(result) {
                     for(var i = 0; i < editors.length; i++) {
                         if(editors[i] === activeEditor && beforeGotoSession) {
@@ -150,32 +152,31 @@ define(function(require, exports, module) {
             }
 
             ui.filterBox({
-                placeholder: "file path",
+                placeholder: "Path",
                 filter: filter,
                 text: text,
-                onChange: function(phrase, selection) {
+                onChange: function(phrase, selectedItem) {
                     var phraseParts = phrase.split(':');
                     var loc = phraseParts[1];
                     if(!phraseParts[0] && loc) {
-                        if(!selection && (!previewSession || previewSession.filename !== beforeGotoSession.filename)) {
+                        if(!selectedItem && (!previewSession || previewSession.filename !== beforeGotoSession.filename)) {
                             session_manager.previewGo(beforeGotoSession.filename, edit, function(err, session) {
                                 previewSession = session;
                                 locator.jump(loc, selectionRange);
                             });
                             return;
-                        } else if(!selection) {
+                        } else if(!selectedItem) {
                             locator.jump(loc, selectionRange);
                             return;
                         }
                     }
-                    if(selection) {
+                    if(selectedItem) {
                         // Let's delay this a little bit
                         if (jumpTimer) {
                             clearTimeout(jumpTimer);
                         }
                         jumpTimer = setTimeout(function() {
-                            // Let's not redownload a file that's already showing
-                            session_manager.previewGo(selection, edit, function(err, session) {
+                            session_manager.previewGo(selectedItem, edit, function(err, session) {
                                 previewSession = session;
                             });
                         }, 500);
