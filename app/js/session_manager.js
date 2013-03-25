@@ -155,7 +155,7 @@ define(function(require, exports, module) {
             }
             editor.switchSession(session, edit);
             
-            if(loc) {
+            if(loc && !previewSession) {
                 setTimeout(function() {
                     locator.jump(loc);
                 });
@@ -205,6 +205,10 @@ define(function(require, exports, module) {
         });
 
         function show(session) {
+            session.isPreview = true;
+            session.on("change", function() {
+                eventbus.emit("sessionactivityfailed", session, "Cannot save preview session");
+            });
             editor.switchSession(session, edit);
             if(loc) {
                 setTimeout(function() {

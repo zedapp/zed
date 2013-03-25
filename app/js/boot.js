@@ -28,6 +28,7 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
         "./tool/beautify",
         "./tool/check",
         "./tool/preview",
+        "./tool/ctags",
     ];
     require(modules, function() {
         var session_manager = require("./session_manager");

@@ -1,13 +1,44 @@
+/*global _ define */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
     var project = require("./project");
     
+    /**
+     * symbol:
+     * path:
+     * locator:
+     */
     var ctagsCache = [];
     
-    exports.getCTags = function() {
-        return ctagsCache;
+    exports.getCTags = function(path) {
+        if(!path) {
+            return ctagsCache;
+        } else {
+            return _.where(ctagsCache, {path: path});
+        }
     };
+    
+    exports.updateCTags = function(path, ctags) {
+        ctagsCache = ctagsCache.filter(function(ctag) {
+            return ctag.path !== path;
+        }).concat(ctags);
+        exports.writeCTags();
+    };
+    
+    exports.writeCTags = _.debounce(function() {
+        var tabbedCTags = ctagsCache.map(function(ctag) {
+            if(!ctag.path) {
+                console.log("Err", ctag);
+            }
+            return ctag.symbol + "\t" + ctag.path.substring(1) + "\t" + ctag.locator;
+        });
+        project.writeFile("/tags", tabbedCTags.join("\n"), function(err) {
+            if(err) {
+                console.error("Could not write /tags", err);
+            }
+        });
+    }, 1000);
     
     function fetchCTags() {
         console.log("Fetching CTags...");

@@ -7,8 +7,8 @@
         "scriptUrl": "plugin/beautify/javascript.js"
     },
     
-    "tool:compile": {
-        "scriptUrl": "plugin/compile/javascript.js"
+    "tool:ctags": {
+        "scriptUrl": "plugin/ctags/javascript.js"
     },
     
     "tool:remotebeautify": {

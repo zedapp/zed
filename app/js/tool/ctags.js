@@ -2,29 +2,34 @@
 define(function(require, exports, module) {
     var eventbus = require("../lib/eventbus");
     var tools = require("../tools");
+    var ctags = require("../ctags");
     
-    var defaultTimeout = 1000;
-    var minTimeout = 500;
+    var defaultTimeout = 2500;
+    var minTimeout = 1000;
     var timeOuts = {};
     
-    function check(session) {
+    function index(session) {
         var path = session.filename;
+        if(!path) {
+            return;
+        }
         var before = Date.now();
-        tools.run(session, "check", {}, session.getValue(), function(err, errorsJson) {
+        tools.run(session, "ctags", {}, session.getValue(), function(err, tags) {
             if(err) {
                 return;
             }
             timeOuts[path] = Math.max(minTimeout, (Date.now() - before) * 3);
-            try {
-                var errors;
-                if(typeof errorsJson === "string") {
-                    errors = JSON.parse(errorsJson);
-                } else {
-                    errors = errorsJson;
+            if(typeof tags === "string") {
+                try {
+                    tags = JSON.parse(tags);
+                } catch(e) {
+                    return console.error("Could not parse ctags:", tags);
                 }
-                session.setAnnotations(errors);
-            } catch(e) {
             }
+            tags.forEach(function(tag) {
+                tag.path = path;
+            });
+            ctags.updateCTags(path, tags);
         });
     }
     
@@ -34,11 +39,11 @@ define(function(require, exports, module) {
             if (changeTimer)
                 clearTimeout(changeTimer);
             changeTimer = setTimeout(function() {
-                check(session);
+                index(session);
             }, timeOuts[session.filename] || defaultTimeout);
         });
         eventbus.on("modeset", function(session) {
-            check(session);
+            index(session);
         });
     };
 });

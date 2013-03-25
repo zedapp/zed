@@ -1,7 +1,45 @@
 <html>
-<body>
+<head>
 <script src="dep/require.js"></script>
+<script src="dep/jquery.js"></script>
 <script>
+var debug = false;
+
+if(location.search) {
+    $(function() {
+        $("body").empty();
+        $("body").append('Plugin URL: <input id="url" value="plugin/" size="50"/><br/>');
+        $("body").append('<textarea id="code" rows="10" cols="60"></textarea><br/>');
+        $("body").append('<button id="test">Test</button><br/>');
+        $("body").append('<textarea id="output" rows="10" cols="60">Output here</textarea>');
+        
+        $(function() {
+            localStorage.url && $("#url").val(localStorage.url);
+            localStorage.code && $("#code").val(localStorage.code);
+            
+            $("#test").click(function(event) {
+                localStorage.url = $("#url").val();
+                localStorage.code = $("#code").val();
+                postMessage({id: 1, url: localStorage.url, options: {}, content: localStorage.code}, "*");
+                event.preventDefault();
+            });
+            window.addEventListener('message', function(event) {
+                var data = event.data;
+                var result = data.result;
+                if(event.data.replyTo) {
+                    if(data.err) {
+                        result = data.err;
+                    }
+                    if(typeof result === "object") {
+                        result = JSON.stringify(result, null, 4);
+                    }
+                    $("#output").val(result);
+                }
+            });
+        });
+    });
+}
+
 window.addEventListener('message', function(event) {
     var data = event.data;
     var id = data.id;
@@ -15,11 +53,16 @@ window.addEventListener('message', function(event) {
     require([url], function(fn) {
         fn(options, content, function(err, result) {
             var message = {replyTo: id, err: err, result: result};
-            //console.log(message);
+            if(debug) {
+                console.log(message);
+            }
             event.source.postMessage(message, "*");
         });
     });
 });
 </script>
+</head>
+<body>
+<a href="?test">Click here to switch to test mode</a>
 </body>
 </html>

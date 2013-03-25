@@ -70,6 +70,7 @@ define(function(require, exports, module) {
                 editor.setShowPrintMargin(false);
                 editor.on("focus", function() {
                     activeEditor = editor;
+                    eventbus.emit("splitswitched", editor);
                 });
             });
 
@@ -200,7 +201,7 @@ define(function(require, exports, module) {
 
     command.define("Edit:Goto Line", {
         exec: function(edit) {
-            command.exec("File:Goto", edit, ":");
+            command.exec("Navigate:Goto", edit, ":");
         }
     });
 
@@ -260,7 +261,7 @@ define(function(require, exports, module) {
 
     command.define("Edit:Find", {
         exec: function(edit) {
-            command.exec("File:Goto", edit, ":/");
+            command.exec("Navigate:Goto", edit, ":/");
         }
     });
 

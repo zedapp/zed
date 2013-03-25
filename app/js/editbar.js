@@ -50,6 +50,10 @@ define(function(require, exports, module) {
         });
         eventbus.on("splitswitched", function(activeEdit) {
             editor.getEditors(true).forEach(function(edit) {
+                if(!edit.editbarEl) {
+                    // Bit too early
+                    return;
+                }
                 if(edit !== activeEdit) {
                     edit.editbarEl.removeClass("active");
                 } else {

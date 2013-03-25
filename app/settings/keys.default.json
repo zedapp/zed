@@ -10,10 +10,6 @@
         "win": "Ctrl-L",
         "mac": "Command-L"
     },
-    "File:Goto": {
-        "mac": "Command-E",
-        "win": "Ctrl-E"
-    },
     "Edit:Find": {
         "win": "Ctrl-F",
         "mac": "Command-F"
@@ -47,13 +43,25 @@
         "win": "Ctrl-Shift-Home",
         "mac": "Command-Shift-Up"
     },
-    "File:Goto Symbol": {
+    "Navigate:Goto": {
+        "mac": "Command-E",
+        "win": "Ctrl-E"
+    },
+    "Navigate:Lookup Symbol": {
         "win": "Ctrl-J",
         "mac": "Command-J"
     },
-    "File:Goto Symbol Under Cursor": {
+    "Navigate:Lookup Symbol Under Cursor": {
         "win": "Ctrl-Shift-J",
         "mac": "Command-Shift-J"
+    },
+    "Navigate:Lookup Symbol In File": {
+        "win": "Ctrl-R",
+        "mac": "Command-R"
+    },
+    "Navigate:Path Under Cursor": {
+        "mac": "Command-Shift-E",
+        "win": "Ctrl-Shift-E"
     },
     "Navigate:Next Instance Of Identifier": "Ctrl-Shift-Right",
     "Navigate:Previous Instance Of Identifier": "Ctrl-Shift-Left",
@@ -61,10 +69,6 @@
     "Cursor:Add Below": "Ctrl-Alt-Down",
     "Cursor:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
     "Cursor:Add At Previous Instance Of Identifier": "Ctrl-Alt-Left",
-    "Edit:Goto Path Under Cursor": {
-        "mac": "Command-O",
-        "win": "Ctrl-O"
-    },
     "Command:Enter Command": {
         "mac": "Command-.",
         "win": "Ctrl-."

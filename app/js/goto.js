@@ -15,88 +15,6 @@ define(function(require, exports, module) {
     
     eventbus.declare("loadedfilelist");
 
-    // TODO: Solve this in a cleaner way
-    var beforeGotoSession = null;
-
-    function filter(phrase) {
-        var sessions = session_manager.getSessions();
-        var resultList;
-        var phraseParts = phrase.split(':');
-        phrase = phraseParts[0];
-        var loc = phraseParts[1];
-        
-        if(!phrase && loc !== undefined) {
-            resultList = [];
-        } else if(phrase[0] === "@") {
-            var tags = ctags.getCTags();
-            var symbols = tags.map(function(t) { return t.path + ":" + t.locator + "/" + t.symbol; });
-            resultList = fuzzyfind(symbols, phrase.substring(1));
-            resultList.forEach(function(result) {
-                var parts = result.path.split('/');
-                result.name = parts[parts.length-1];
-                result.path = parts.slice(0, -1).join("/");
-                parts = result.path.split(":")[0].split("/");
-                result.meta = parts[parts.length-1];
-            });
-        } else if(phrase[0] === '/') {
-            var results = {};
-            phrase = phrase.toLowerCase();
-            fileCache.forEach(function(file) {
-                var fileNorm = file.toLowerCase();
-                var score = 1;
-    
-                if(sessions[file]) {
-                    score = sessions[file].lastUse;
-                }
-    
-                if(fileNorm.substring(0, phrase.length) === phrase)
-                    results[file] = score;
-            });
-            var resultList = [];
-            Object.keys(results).forEach(function(path) {
-                resultList.push({
-                    path: path,
-                    name: path,
-                    score: results[path]
-                });
-            });
-        } else {
-            resultList = fuzzyfind(fileCache, phrase);
-            resultList.forEach(function(result) {
-                result.name = result.path;
-                if(sessions[result.path]) {
-                    result.score = sessions[result.path].lastUse;
-                }
-            });
-        }
-        
-        var editors = editor.getEditors();
-        var activeEditor = editor.getActiveEditor();
-        resultList = resultList.filter(function(result) {
-            for(var i = 0; i < editors.length; i++) {
-                if(editors[i] === activeEditor && beforeGotoSession) {
-                    if(beforeGotoSession.filename === result.path) {
-                        return false;
-                    }
-                } else {
-                    if(editors[i].getSession().filename === result.path) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        });
-        
-        resultList.sort(function(r1, r2) {
-            if(r1.score === r2.score) {
-                return r1.path < r2.path ? -1 : 1;
-            } else {
-                return r2.score - r1.score;
-            }
-        });
-        return resultList;
-    }
-    
     function hint(phrase, results) {
         if(phrase[0] === ':') {
             if(phrase === ":") {
@@ -105,6 +23,10 @@ define(function(require, exports, module) {
                 return "Type search phrase and press <tt>Enter</tt> to jump to first match.";
             } else if(phrase[1] === '/') {
                 return "<tt>Enter</tt> jumps to first match for '" + _.escape(phrase.substring(2)) + "'";
+            } else if(phrase == ":@") {
+                return "Type symbol name and press <tt>Enter</tt> to jump to it.";
+            } else if(phrase[1] === '@') {
+                return "<tt>Enter</tt> jumps to first definition of '" + _.escape(phrase.substring(2)) + "'";
             } else {
                 return "<tt>Enter</tt> jumps to line " + phrase.substring(1);
             }
@@ -131,13 +53,101 @@ define(function(require, exports, module) {
         });
     };
     
-    command.define("File:Goto", {
+    command.define("Navigate:Goto", {
         exec: function(edit, text) {
             var currentPos = edit.getCursorPosition();
             var selectionRange = edit.getSelectionRange();
-            beforeGotoSession = edit.getSession();
+            var beforeGotoSession = edit.getSession();
             var jumpTimer = null;
             var previewSession = null;
+            
+            function filterSymbols(phrase, path) {
+                var tags = ctags.getCTags(path);
+                var symbols = tags.map(function(t) { return t.path + ":" + t.locator + "/" + t.symbol; });
+                var resultList = fuzzyfind(symbols, phrase.substring(1));
+                resultList.forEach(function(result) {
+                    var parts = result.path.split('/');
+                    result.name = parts[parts.length-1];
+                    result.path = parts.slice(0, -1).join("/");
+                    parts = result.path.split(":")[0].split("/");
+                    result.meta = parts[parts.length-1];
+                });
+                return resultList;
+            }
+        
+            function filter(phrase) {
+                var sessions = session_manager.getSessions();
+                var resultList;
+                var phraseParts = phrase.split(':');
+                phrase = phraseParts[0];
+                var loc = phraseParts[1];
+                
+                if(!phrase && loc !== undefined) {
+                    if(loc[0] === "@") {
+                        resultList = filterSymbols(loc, beforeGotoSession.filename);
+                    } else {
+                        resultList = [];
+                    }
+                } else if(phrase[0] === "@") {
+                    resultList = filterSymbols(phrase);
+                } else if(phrase[0] === '/') {
+                    var results = {};
+                    phrase = phrase.toLowerCase();
+                    fileCache.forEach(function(file) {
+                        var fileNorm = file.toLowerCase();
+                        var score = 1;
+            
+                        if(sessions[file]) {
+                            score = sessions[file].lastUse;
+                        }
+            
+                        if(fileNorm.substring(0, phrase.length) === phrase)
+                            results[file] = score;
+                    });
+                    var resultList = [];
+                    Object.keys(results).forEach(function(path) {
+                        resultList.push({
+                            path: path,
+                            name: path,
+                            score: results[path]
+                        });
+                    });
+                } else {
+                    resultList = fuzzyfind(fileCache, phrase);
+                    resultList.forEach(function(result) {
+                        result.name = result.path;
+                        if(sessions[result.path]) {
+                            result.score = sessions[result.path].lastUse;
+                        }
+                    });
+                }
+                
+                var editors = editor.getEditors();
+                var activeEditor = editor.getActiveEditor();
+                resultList = resultList.filter(function(result) {
+                    for(var i = 0; i < editors.length; i++) {
+                        if(editors[i] === activeEditor && beforeGotoSession) {
+                            if(beforeGotoSession.filename === result.path) {
+                                return false;
+                            }
+                        } else {
+                            if(editors[i].getSession().filename === result.path) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                });
+                
+                resultList.sort(function(r1, r2) {
+                    if(r1.score === r2.score) {
+                        return r1.path < r2.path ? -1 : 1;
+                    } else {
+                        return r2.score - r1.score;
+                    }
+                });
+                return resultList;
+            }
 
             ui.filterBox({
                 placeholder: "file path",
@@ -147,7 +157,16 @@ define(function(require, exports, module) {
                     var phraseParts = phrase.split(':');
                     var loc = phraseParts[1];
                     if(!phraseParts[0] && loc) {
-                        locator.jump(loc, selectionRange);
+                        if(!selection && (!previewSession || previewSession.filename !== beforeGotoSession.filename)) {
+                            session_manager.previewGo(beforeGotoSession.filename, edit, function(err, session) {
+                                previewSession = session;
+                                locator.jump(loc, selectionRange);
+                            });
+                            return;
+                        } else if(!selection) {
+                            locator.jump(loc, selectionRange);
+                            return;
+                        }
                     }
                     if(selection) {
                         // Let's delay this a little bit
@@ -155,6 +174,7 @@ define(function(require, exports, module) {
                             clearTimeout(jumpTimer);
                         }
                         jumpTimer = setTimeout(function() {
+                            // Let's not redownload a file that's already showing
                             session_manager.previewGo(selection, edit, function(err, session) {
                                 previewSession = session;
                             });
@@ -164,24 +184,21 @@ define(function(require, exports, module) {
                 hint: hint,
                 onSelect: function(file, phrase) {
                     var fileOnly, locator, phraseParts;
+                    var currentPath = editor.getActiveSession().filename;
                     if(jumpTimer) {
                         clearTimeout(jumpTimer);
                     }
                     if(file !== phrase) {
                         phraseParts = phrase.split(':');
-                        fileOnly = file;
+                        fileOnly = file || currentPath;
                         locator = phraseParts[1];
-                        file = fileOnly + (locator ? ':' + locator : '');
                     } else {
                         phraseParts = file.split(':');
-                        fileOnly = phraseParts[0];
+                        fileOnly = phraseParts[0] || currentPath;
                         locator = phraseParts[1];
                     }
-                    if(!fileOnly && locator) {
-                        // Nothing to do, already there
-                    } else {
-                        session_manager.go(file, edit, beforeGotoSession, previewSession);
-                    }
+                    file = fileOnly + (locator ? ':' + locator : '');
+                    session_manager.go(file, edit, beforeGotoSession, previewSession);
                     beforeGotoSession = null;
                 },
                 onCancel: function() {
@@ -202,24 +219,30 @@ define(function(require, exports, module) {
         readOnly: true
     });
     
-    command.define("File:Goto File Under Cursor", {
+    command.define("Navigate:Path Under Cursor", {
         exec: function(edit) {
             var path = editor.getPathUnderCursor();
-            command.exec("File:Goto", edit, path);
+            command.exec("Navigate:Goto", edit, path);
         },
         readOnly: true
     });
     
-    command.define("File:Goto Symbol", {
+    command.define("Navigate:Lookup Symbol", {
         exec: function(edit) {
-            command.exec("File:Goto", edit, "@");
+            command.exec("Navigate:Goto", edit, "@");
         }
     });
-    
-    command.define("File:Goto Symbol Under Cursor", {
+
+    command.define("Navigate:Lookup Symbol In File", {
+        exec: function(edit) {
+            command.exec("Navigate:Goto", edit, ":@");
+        }
+    });
+
+    command.define("Navigate:Lookup Symbol Under Cursor", {
         exec: function(edit) {
             var ident = editor.getIdentifierUnderCursor();
-            command.exec("File:Goto", edit, "@" + ident);
+            command.exec("Navigate:Goto", edit, "@" + ident);
         }
     });
 
