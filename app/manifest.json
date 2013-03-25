@@ -29,9 +29,9 @@
     "commands": {
         "cmdNew": {
             "suggested_key": {
-                "default": "Ctrl+Shift+E"
+                "default": "Ctrl+Shift+Z"
             },
-            "description": "Create new window"
+            "description": "Zed Project list"
         }
     }
 }
