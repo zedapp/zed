@@ -20,7 +20,6 @@ define(function(require, exports, module) {
 
     function getListIndent(line) {
         var match = listRe.exec(line);
-        console.log(line, match);
         if(match) {
             var len = match[1].length;
             var s = "";
@@ -36,7 +35,6 @@ define(function(require, exports, module) {
     return function(options, content, callback) {
         var width = options.width || 80;
         var lines = content.split("\n");
-        console.log("Yello");
         
         for(var i = 0; i < lines.length; i++) {
             var line = lines[i];
