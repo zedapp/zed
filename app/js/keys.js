@@ -605,7 +605,7 @@ define(function(require, exports, module) {
             multiSelectAction: "forEach"
         }, {
             name: "splitline",
-            bindKey: bindKey(null, "Ctrl-O"),
+            bindKey: "Ctrl-O",
             exec: function(editor) {
                 editor.splitLine();
             },

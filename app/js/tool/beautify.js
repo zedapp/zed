@@ -10,6 +10,9 @@ define(function(require, exports, module) {
         var range = session.getSelection().getRange();
         var edit = editor.getActiveEditor();
         var cursorPos = edit.getCursorPosition();
+        var scrollTop = session.getScrollTop();
+        var scrollLeft = session.getScrollLeft();
+        
         if(range.isEmpty()) {
             range.start.row = 0;
             range.start.column = 0;
@@ -27,6 +30,8 @@ define(function(require, exports, module) {
             session.replace(range, reformattedText);
             edit.clearSelection();
             edit.moveCursorToPosition(cursorPos);
+            session.setScrollTop(scrollTop);
+            session.setScrollLeft(scrollLeft);
             eventbus.emit("sessionactivitycompleted", session);
         });
     }
