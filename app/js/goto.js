@@ -151,10 +151,12 @@ define(function(require, exports, module) {
                 return resultList;
             }
 
+            session_manager.flushPreviewCache();
             ui.filterBox({
                 placeholder: "Path",
                 filter: filter,
                 text: text,
+                currentPath: beforeGotoSession.filename,
                 onChange: function(phrase, selectedItem) {
                     var phraseParts = phrase.split(':');
                     var loc = phraseParts[1];

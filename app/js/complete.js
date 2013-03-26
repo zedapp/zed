@@ -27,12 +27,15 @@ define(function(require, exports, module) {
     };
 
     function retrievePreceedingIdentifier(text, pos) {
-        var buf = [];
+        var identBuf = [];
         for (var i = pos - 1; i >= 0; i--) {
-            if (identifierRegex.test(text[i])) buf.push(text[i]);
-            else break;
+            if (identifierRegex.test(text[i])) {
+                identBuf.push(text[i]);
+            } else {
+                break;
+            }
         }
-        return buf.reverse().join("");
+        return identBuf.reverse().join("");
     }
 
     function getCompletions(edit, callback) {
@@ -55,6 +58,7 @@ define(function(require, exports, module) {
                 next();
             });
         }, function() {
+            matches = _.uniq(matches, false, function(m) { return m.name; });
             matches.sort(function(a, b) {
                 return b.score - a.score;
             });

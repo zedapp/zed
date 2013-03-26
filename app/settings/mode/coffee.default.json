@@ -5,7 +5,7 @@
     "tool:preview": {
         "scriptUrl": "plugin/preview/coffee.js"
     },
-    "tool:compile": {
-        "scriptUrl": "plugin/compile/coffee.js"
+    "tool:ctags": {
+        "scriptUrl": "plugin/ctags/coffee.js"
     }
 }

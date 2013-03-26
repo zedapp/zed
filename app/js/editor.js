@@ -80,10 +80,10 @@ define(function(require, exports, module) {
         createSession: function(path, content) {
             var mode = modes.getModeForPath(path);
             var session = ace.createEditSession(content);
+            session.filename = path;
             session.setUseWrapMode(settings.get("wordWrap"));
             session.setUseWorker(false);
             modes.setSessionMode(session, mode);
-            session.filename = path;
             return session;
         },
         switchSession: function(session, edit) {

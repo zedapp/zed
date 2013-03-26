@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     var editor = require("../editor");
     var project = require("../project");
     var keyCode = require("./key_code");
+    var eventbus = require("../lib/eventbus");
 
     var visible = false;
 
@@ -11,11 +12,13 @@ define(function(require, exports, module) {
      * Supported options
      * - placeholder
      * - text (initial text in input)
+     * - currentPath
      * - filter (function)
      * - hint (function)
      * - onSelect (function)
      * - onCancel (function)
      */
+    // TODO: Clean up this mess
     exports.filterBox = function(options) {
         var placeholder = options.placeholder || "";
         var filter = options.filter;
@@ -23,6 +26,7 @@ define(function(require, exports, module) {
         var onChange = options.onChange;
         var onCancel = options.onCancel;
         var hint = options.hint;
+        var currentPath = options.currentPath;
         
         if (visible) {
             return;
@@ -41,7 +45,7 @@ define(function(require, exports, module) {
         if(options.text) {
             input.val(options.text);
         }
-
+        
         gotoEl.css("left", (editorEl.offset().left + 40) + "px");
         gotoEl.css("width", (editorEl.width() - 80) + "px");
         gotoEl.css("top", editorEl.offset().top + "px");
@@ -69,8 +73,7 @@ define(function(require, exports, module) {
         input.keyup(function(event) {
             switch (event.keyCode) {
                 case keyCode('Esc'):
-                    onCancel && onCancel();
-                    close();
+                    cancel();
                     break;
                 case keyCode('Up'):
                     resultsEl.menu("previous");
@@ -94,10 +97,11 @@ define(function(require, exports, module) {
             switch (event.keyCode) {
                 case keyCode('Space'):
                     var phrase = input.val();
-                    if (phrase) break;
-                    var session = editor.getActiveSession();
-                    if (session.filename) {
-                        input.val(project.dirname(session.filename) + "/");
+                    if (phrase) {
+                        break;
+                    }
+                    if (currentPath) {
+                        input.val(project.dirname(currentPath) + "/");
                         event.preventDefault();
                     }
                     break;
@@ -127,6 +131,8 @@ define(function(require, exports, module) {
         input.focus();
         updateResults();
         triggerOnChange();
+        eventbus.on("splitswitched", cancel);
+        
         
         function triggerOnChange() {
             onChange && onChange(input.val(), getCurrentHighlightedItem());
@@ -154,6 +160,7 @@ define(function(require, exports, module) {
         }
 
         function close() {
+            eventbus.removeListener("splitswitched", cancel);
             resultsEl.menu("destroy");
             box.remove();
             editor.getActiveEditor().focus();
@@ -164,6 +171,11 @@ define(function(require, exports, module) {
             if(hint) {
                 hintEl.html(hint(input.val(), results));
             }
+        }
+        
+        function cancel() {
+            onCancel && onCancel();
+            close();
         }
 
         function updateResults() {

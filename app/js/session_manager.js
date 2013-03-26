@@ -130,7 +130,7 @@ define(function(require, exports, module) {
             loadFile(path, function(err, session) {
                 if (err) {
                     console.log("Creating new, empty file", path);
-                    var session = editor.createSession(path, "");
+                    session = editor.createSession(path, "");
                     setupSave(session);
                     show(session);
                     eventbus.emit("newfilecreated", path);
@@ -174,6 +174,12 @@ define(function(require, exports, module) {
         }
     }
     
+    var previewSessionCache = {};
+    
+    exports.flushPreviewCache = function() {
+        previewSessionCache = {};
+    };
+    
     /**
      * Simpler version of go that is used for previewing a file
      * Does not save anything in a session or reuse existing sessions
@@ -190,25 +196,30 @@ define(function(require, exports, module) {
             // Normalize
             path = '/' + path;
         }
-        project.readFile(path, function(err, text) {
-            if (err) {
-                return show(editor.createSession(path, ""));
-            }
-            var session = editor.createSession(path, text);
-            if(sessions[path]) {
-                var existingSession = sessions[path];
-                session.setScrollTop(existingSession.getScrollTop());
-                session.setScrollLeft(existingSession.getScrollLeft());
-                session.selection.setRange(existingSession.selection.getRange());
-            }
-            show(session);
-        });
+        if(previewSessionCache[path]) {
+            show(previewSessionCache[path]);
+        } else {
+            project.readFile(path, function(err, text) {
+                if (err) {
+                    return show(editor.createSession(path, ""));
+                }
+                var session = editor.createSession(path, text);
+                if(sessions[path]) {
+                    var existingSession = sessions[path];
+                    session.setScrollTop(existingSession.getScrollTop());
+                    session.setScrollLeft(existingSession.getScrollLeft());
+                    session.selection.setRange(existingSession.selection.getRange());
+                }
+                previewSessionCache[path] = session;
+                session.isPreview = true;
+                session.on("change", function() {
+                    eventbus.emit("sessionactivityfailed", session, "Cannot save preview session");
+                });
+                show(session);
+            });
+        }
 
         function show(session) {
-            session.isPreview = true;
-            session.on("change", function() {
-                eventbus.emit("sessionactivityfailed", session, "Cannot save preview session");
-            });
             editor.switchSession(session, edit);
             if(loc) {
                 setTimeout(function() {
