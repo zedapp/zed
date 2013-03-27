@@ -21,10 +21,12 @@ to refer to `/home/zef/git/zed`.
 GET
 ---
 
-* Directory:
-  * Content-type: `text/directory`
-  * Body: List of files and directories, one per line, starting with `/` ending
-    with `/` in case of directories.
+* Directory (currently unused):
+    * Status code: 200
+    * Response content-type: `text/directory`
+    * Body: List of files and directories, one per line, always starting with `/`,
+      and ending with `/` in case of directories, so that it can be unambiguously
+      derived if an entry is a directory or a regular file.
 * File:
     * Status code: 200
     * Headers:
@@ -42,6 +44,7 @@ PUT
 DELETE
 ------
 * File: Deletes file
+    * Status code: 200
 
 POST
 ----
@@ -50,7 +53,10 @@ form-encoded, with an `action` argument that specifies the action. For instance:
 `action=filelist` in the POST body.
 
 * `filelist` action on a directory:
-  * Body: return one file-per-line listing of all files (not directories) on
-    this path and all sub-directories (does not include hidden files). Each
-    entry starts with a `/`. Similar to running a `find` on the path.
+    * Status code: 200
+    * Body: return one file-per-line listing of all files (not directories) on
+      this path and all sub-directories (does not include hidden files). Each
+      entry starts with a `/`. Similar to running a `find` on the path.
+
+
 
