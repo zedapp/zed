@@ -1,0 +1,9 @@
+{
+    "name": "XML",
+    "highlighter": "ace/mode/xml",
+    "extensions": ["xml"],
+    
+    "tool:beautify": {
+        "scriptUrl": "plugin/beautify/html.js"
+    }
+}

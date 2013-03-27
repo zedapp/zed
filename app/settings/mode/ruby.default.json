@@ -1,0 +1,5 @@
+{
+    "name": "Ruby",
+    "highlighter": "ace/mode/ruby",
+    "extensions": ["rb"]
+}

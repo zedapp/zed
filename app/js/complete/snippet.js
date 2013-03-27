@@ -5,6 +5,7 @@ define(function(require, exports, module) {
         var mode = session.mode;
         var matches = [];
         Object.keys(mode).forEach(function(key) {
+                console.log("Snippet:", key);
             if(key.indexOf("snippet:") === 0) {
                 var snippet = key.substring("snippet:".length);
                 if(snippet.indexOf(prefix) === 0) {

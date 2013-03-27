@@ -202,4 +202,80 @@ define(function(require, exports, module) {
             lastPhrase = phrase;
         }
     };
+    
+    function makeDialog(width, height) {
+        var dialogEl = $('<div id="dialog">');
+        dialogEl.css("height", height + "px");
+        dialogEl.css("margin-top", -Math.round(height/2) + "px");
+        dialogEl.css("width", width + "px");
+        dialogEl.css("margin-left", -Math.round(height/2) + "px");
+        
+        $("body").append(dialogEl);
+        return dialogEl;
+    };
+    
+    /**
+     * Options
+     * - width
+     * - height
+     * - message
+     * - input (if left undefined there's no input element)
+     */
+    exports.prompt = function(options, callback) {
+        var message = options.message || "";
+        var inputText = options.input;
+        var input;
+        
+        var dialogEl = makeDialog(options.width || 300, options.height || 100);
+        dialogEl.html("<div>" + _.escape(message) + "</div>");
+        var okButton = $("<button>OK</button>");
+        var cancelButton = $("<button>Cancel</button>");
+        
+        okButton.click(ok);
+        cancelButton.click(cancel);
+        
+        var buttonWrapEl = $("<div class='buttons'>");
+        buttonWrapEl.append(okButton);
+        buttonWrapEl.append(cancelButton);
+        
+        if(inputText !== undefined) {
+            input = $("<input type='text'>");
+            input.val(inputText);
+            dialogEl.append(input);
+            input.focus();
+        }
+        
+        dialogEl.append(buttonWrapEl);
+
+        editor.getActiveEditor().blur();
+        dialogEl.focus();
+        $("body").bind("keyup", keyHandler);
+        
+        function keyHandler(event) {
+            switch(event.keyCode) {
+                case keyCode('Return'):
+                    ok();
+                    break;
+                case keyCode('Esc'):
+                    cancel();
+                    break;
+            }
+        }
+        
+        function ok() {
+            close();
+            callback(input ? input.val() : true);
+        }
+        
+        function cancel() {
+            close();
+            callback();
+        }
+        
+        function close() {
+            dialogEl.remove();
+            editor.getActiveEditor().focus();
+            $("body").unbind("keyup", keyHandler);
+        }
+    };
 });

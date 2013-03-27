@@ -2,12 +2,17 @@
 /keys.user.json
 /mode/coffee.default.json
 /mode/css.default.json
+/mode/dart.default.json
 /mode/html.default.json
+/mode/java.default.json
 /mode/javascript.default.json
 /mode/json.default.json
+/mode/logiql.default.json
 /mode/markdown.default.json
 /mode/php.default.json
 /mode/python.default.json
+/mode/ruby.default.json
 /mode/text.default.json
+/mode/xml.default.json
 /settings.default.json
 /settings.user.json

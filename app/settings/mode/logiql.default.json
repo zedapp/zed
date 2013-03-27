@@ -1,0 +1,9 @@
+{
+    "name": "LogiQL",
+    "highlighter": "ace/mode/logiql",
+    "extensions": ["logic", "lql"],
+    "tool:ctags": {
+        "scriptUrl": "plugin/ctags/logiql.js"
+    },
+    "snippet:module": "block(`{0:mymodule}) {\n\texport(`{\n\t\t\n}),\n\tclauses(`{\n\t\t{1}\n\t})\n} <-- ."
+}

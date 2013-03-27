@@ -6,11 +6,11 @@ define(function(require, exports, module) {
     var project = require("./project");
     var editor = require("./editor");
     var state = require("./state");
-    var command = require("./command");
     var locator = require("./lib/locator");
 
     eventbus.declare("switchsession");
     eventbus.declare("newfilecreated");
+    eventbus.declare("filedeleted");
     eventbus.declare("newsession");
     eventbus.declare("sessionsaved");
     eventbus.declare("sessionchanged");
@@ -134,6 +134,7 @@ define(function(require, exports, module) {
                     setupSave(session);
                     show(session);
                     eventbus.emit("newfilecreated", path);
+                    project.writeFile(path, "", function() {});
                 } else {
                     eventbus.emit("newsession", session);
                     show(session);
@@ -166,8 +167,9 @@ define(function(require, exports, module) {
                 if(kind === "changed") {
                     handleChangedFile(path);
                 } else if(kind === "deleted") {
-                    // TODO How to handle this case?
-                    console.error("File deleted", path);
+                    console.log("File deleted", path);
+                    delete sessions[path];
+                    eventbus.emit("filedeleted", path);
                 }
             };
             project.watchFile(session.filename, session.watcherFn);
@@ -256,16 +258,6 @@ define(function(require, exports, module) {
             });
         });
     };
-
-    command.define("File:Reload", {
-        exec: function(edit) {
-            var session = edit.getSession();
-            project.readFile(session.filename, function(err, text) {
-                session.setValue(text);
-            });
-        },
-        readOnly: true
-    });
 
     exports.go = go;
     exports.handleChangedFile = handleChangedFile;

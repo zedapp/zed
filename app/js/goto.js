@@ -52,6 +52,12 @@ define(function(require, exports, module) {
         eventbus.on("newfilecreated", function(path) {
             fileCache.push(path);
         });
+        eventbus.on("filedeleted", function(path) {
+            var index = fileCache.indexOf(path);
+            if(index !== -1) {
+                fileCache.splice(index, 1);
+            }
+        });
     };
     
     command.define("Navigate:Goto", {
@@ -183,6 +189,8 @@ define(function(require, exports, module) {
                                 previewSession = session;
                             });
                         }, settings.get("previewDelay"));
+                    } else {
+                        editor.switchSession(beforeGotoSession, edit);
                     }
                 },
                 hint: hint,

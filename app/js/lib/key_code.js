@@ -8,6 +8,7 @@ define(function(require, exports, module) {
         Return: 13,
         Space: 32,
         Backspace: 8,
+        Delete: 46
     };
     
     return function(key) {

@@ -24,6 +24,7 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
         "./modes",
         "./split",
         "./window",
+        "./file",
         "./session_manager",
         "./tool/beautify",
         "./tool/check",

@@ -1,0 +1,5 @@
+{
+    "name": "Java",
+    "highlighter": "ace/mode/java",
+    "extensions": ["java"]
+}

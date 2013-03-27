@@ -220,3 +220,33 @@ div.preview-vsplit2-right {
     max-height: 80%;
     overflow: scroll;
 }
+#dialog {
+    position: fixed;
+    border: solid 1px #666;
+    font-family: Monaco, Menlo;
+    font-size: 14px;
+    padding: 10px;
+    left: 50%;
+    top: 50%;
+    background-color: white;
+    z-index: 100;
+}
+#dialog input {
+    font-size: 14px;
+    font-family: Monaco, Menlo;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    outline-width: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px dotted gray;
+    border-top: 0;
+}
+#dialog div.buttons {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}

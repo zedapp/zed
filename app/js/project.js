@@ -43,6 +43,7 @@ define(function(require, exports, module) {
         exports.listFiles = io.listFiles;
         exports.readFile = io.readFile;
         exports.writeFile = io.writeFile;
+        exports.deleteFile = io.deleteFile;
         exports.getUrl = io.getUrl;
         exports.watchFile = io.watchFile;
         exports.unwatchFile = io.unwatchFile;

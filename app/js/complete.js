@@ -58,10 +58,10 @@ define(function(require, exports, module) {
                 next();
             });
         }, function() {
-            matches = _.uniq(matches, false, function(m) { return m.name; });
             matches.sort(function(a, b) {
                 return b.score - a.score;
             });
+            matches = _.uniq(matches, false, function(m) { return m.name; });
             callback(null, {
                 prefix: prefix,
                 matches: matches

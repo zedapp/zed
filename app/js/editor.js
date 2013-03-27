@@ -57,6 +57,16 @@ define(function(require, exports, module) {
                     });
                 });
             });
+            
+            eventbus.on("filedeleted", function(path) {
+                require(["./session_manager"], function(session_manager) {
+                    editors.forEach(function(edit) {
+                        if(edit.getSession().filename === path) {
+                            session_manager.go("zed:start", edit);
+                        }
+                    });
+                });
+            });
         },
         init: function() {
             $("body").append("<div id='editor0' class='editor-single'>");
