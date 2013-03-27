@@ -9,6 +9,8 @@ define(function(require, exports, module) {
     var keyCode = require("./lib/key_code");
     var async = require("./lib/async");
     var settings = require("./settings");
+    
+    var snippetManager = ace.require("ace/snippets").SnippetManager;
 
     // TODO figure out another way to do this
     var completers = [
@@ -82,104 +84,8 @@ define(function(require, exports, module) {
     }
 
     function insertText(edit, text) {
-        var Range = ace.require("ace/range").Range;
         edit.removeWordLeft();
-        var cursor = edit.getCursorPosition();
-        var session = edit.getSession();
-        var doc = session.getDocument();
-        var line = edit.getSession().getLine(cursor.row);
-        var indentCol = 0;
-        var indent = '';
-        
-        // Placeholder management
-        var placeholders = [];
-        var placeholderIndex = 0;
-        
-        function keyHandler(event, passOnCallback) {
-            switch(event.keyCode) {
-                case keyCode('Tab'):
-                    placeholderIndex++;
-                    if(placeholderIndex >= placeholders.length - 1) {
-                        keys.resetTempRebindKeys();
-                    }
-                    activatePlaceholder(placeholders[placeholderIndex]);
-                    event.preventDefault();
-                    break;
-                case keyCode('Esc'):
-                case keyCode('Up'):
-                case keyCode('Down'):
-                case keyCode('Return'):
-                    passOnCallback();
-                    keys.resetTempRebindKeys();
-                    break;
-                default:
-                    passOnCallback();
-            }
-        }
-        
-        function activatePlaceholder(placeholder) {
-            edit.exitMultiSelectMode();
-            placeholder.anchors.forEach(function(anchor, idx) {
-                var anchorPos = anchor.getPosition();
-                var r = Range.fromPoints(anchorPos, {row: anchorPos.row, column: anchorPos.column + placeholder.length});
-                if(idx === 0) {
-                    edit.selection.setRange(r);
-                } else {
-                    edit.selection.addRange(r);
-                }
-            });
-        }
-        
-        while (indentCol < line.length && (line[indentCol] === " " || line[indentCol] === "\t")) {
-            indent += line[indentCol];
-            indentCol++;
-        }
-        text = text.replace(/\n/g, "\n" + indent);
-        // TODO: Fix this TERRIBLE code
-        text = text.replace(/\t/g, _.times(settings.get("tabSize"), function() { return " "; }).join(""));
-        
-        var match;
-        while (match = placeholderRegex.exec(text)) {
-            var id = match[2];
-            if(!placeholders[id]) {
-                placeholders[id] = {
-                    placeholder: match[4],
-                    wholeMatch: match[0]
-                };
-            }
-        }
-        edit.insert(text);
-        
-        function processPlaceholder(placeholder) {
-            var r = Range.fromPoints(cursor, edit.getCursorPosition());
-            edit.findAll(placeholder.wholeMatch, {
-                start: r
-            });
-            var replacementText = ""; // assumption all replacement texts have same length
-            placeholder.anchors = [];
-            var ranges = session.selection.getAllRanges();
-            if(ranges.length === 0) { // Not multiple matches
-                ranges = [session.selection.getRange()];
-            }
-            
-            // TODO: Check if still in range of snippet text
-            ranges.forEach(function(r) {
-                r = Range.fromPoints(r.start, r.end);
-                var start = r.start;
-                replacementText = placeholder.placeholder || "";
-                doc.replace(r, replacementText);
-                placeholder.anchors.push(doc.createAnchor(start));
-            });
-            placeholder.length = replacementText.length;
-        }
-        placeholders.forEach(processPlaceholder);
-        
-        if(placeholders.length > 0) {
-            activatePlaceholder(placeholders[0]);
-            if(placeholders.length > 1) {
-                keys.tempRebindKeys(keyHandler);
-            }
-        }
+        snippetManager.insertSnippet(edit, text);
     }
 
     function renderCompletionBox(matches, prefix, edit) {
