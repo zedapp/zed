@@ -31,15 +31,29 @@ GET
     * Status code: 200
     * Headers:
         * `ETag`: etag header (often `mtime` timestamp)
-    * Body: Contents of the file
+    * Body: Content of the file.
 * Not found:
     * Status code: 404
 
 PUT
 ---
+
 * File: saves body to path, creating any parent directories if necessary,
-  overwriting an existing file or creating a new one. Return ETag header
-  for new content.
+  overwriting an existing file or creating a new one.
+    * Status code: 200
+    * Headers:
+        * `ETag`: etag header (often `mtime` timestamp of new version of file)
+    * Body: Content of the file.
+
+OPTIONS
+-------
+Used for file watching.
+
+* File: Used to retrieve ETag for file (to detect file change).
+    * Status code: 200
+    * Headers:
+        * `ETag`: etag header
+    * Body: empty
 
 DELETE
 ------
