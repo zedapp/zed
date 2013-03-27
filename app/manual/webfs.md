@@ -1,0 +1,56 @@
+WebFS
+=====
+
+WebFS is a super simple protocol that Zed uses to communicate with a remote (or
+local) server. You can think of it as a super simplified version of WebDAV. It
+is designed to be minimal and easy to implement.
+
+Authentication
+--------------
+
+Authentication is optional and if supported, happens via HTTP BasicAuth.
+
+URL
+---
+
+All methods below apply to the path represented to the URL, for instance, if
+the root path of the WebFS file system is `/home/zef`, and WebFS runs on the
+`http://localhost:1338` URL, the URL `http://localhost:1338/git/zed` is expected
+to refer to `/home/zef/git/zed`.
+
+GET
+---
+
+* Directory:
+  * Content-type: `text/directory`
+  * Body: List of files and directories, one per line, starting with `/` ending
+    with `/` in case of directories.
+* File:
+    * Status code: 200
+    * Headers:
+        * `ETag`: etag header (often `mtime` timestamp)
+    * Body: Contents of the file
+* Not found:
+    * Status code: 404
+
+PUT
+---
+* File: saves body to path, creating any parent directories if necessary,
+  overwriting an existing file or creating a new one. Return ETag header
+  for new content.
+
+DELETE
+------
+* File: Deletes file
+
+POST
+----
+The `POST` method is used for various RPC-style calls. The request is
+form-encoded, with an `action` argument that specifies the action. For instance:
+`action=filelist` in the POST body.
+
+* `filelist` action on a directory:
+  * Body: return one file-per-line listing of all files (not directories) on
+    this path and all sub-directories (does not include hidden files). Each
+    entry starts with a `/`. Similar to running a `find` on the path.
+
