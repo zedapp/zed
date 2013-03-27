@@ -10,9 +10,6 @@ import sys
 import cgi
 import errno
 import urllib
-import StringIO
-import subprocess
-import json
 
 PORT_NUMBER = 1338
 ROOT = os.getenv("HOME")
@@ -114,24 +111,6 @@ class Handler(BaseHTTPRequestHandler):
                 files = [os.path.join(root, f)[len(filePath):] for f in files]
                 for fname in files:
                     self.wfile.write("%s\n" % fname)
-        elif action == "exec":
-            self.send_response(200)
-            self.send_header('Content-type', 'text/plain')
-            self.end_headers()
-            command_parts = json.loads(postvars["command"][0])
-            if(postvars.has_key("input")):
-                input = postvars["input"][0]
-            else:
-                input = ""
-            try:
-                p = subprocess.call(command_parts, stdin=subprocess.PIPE,
-                                                   stdout=self.wfile,
-                                                   stderr=self.wfile, cwd=filePath)
-                p.communicate(input)
-                p.stdin.close()
-                self.wfile("\nResult: %d\n" % p.wait())
-            except:
-                self.wfile.write("Result: 127")
 
     def error(self, resp, message):
         self.send_response(resp)

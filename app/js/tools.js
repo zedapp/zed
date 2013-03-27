@@ -52,4 +52,8 @@ define(function(require, exports, module) {
             runSandboxTool(config, allOptions, content, callback);
         }
     };
+    
+    exports.hasTool = function(mode, name) {
+        return !!mode["tool:" + name];
+    };
 });

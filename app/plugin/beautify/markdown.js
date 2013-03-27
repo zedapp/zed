@@ -51,10 +51,10 @@ define(function(require, exports, module) {
                         }
                         if(breakIndex === line.length) {
                             // Nothing we can do here
-                            break;
+                            continue;
                         }
                     } else {
-                        break;
+                        continue;
                     }
                 }
                 lines[i] = line.substring(0, breakIndex);

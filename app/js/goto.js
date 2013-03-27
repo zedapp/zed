@@ -10,6 +10,7 @@ define(function(require, exports, module) {
     var project = require("./project");
     var command = require("./command");
     var locator = require("./lib/locator");
+    var settings = require("./settings");
 
     var fileCache = [];
     
@@ -181,16 +182,17 @@ define(function(require, exports, module) {
                             session_manager.previewGo(selectedItem, edit, function(err, session) {
                                 previewSession = session;
                             });
-                        }, 500);
+                        }, settings.get("previewDelay"));
                     }
                 },
                 hint: hint,
                 onSelect: function(file, phrase) {
-                    var fileOnly, locator, phraseParts;
-                    var currentPath = editor.getActiveSession().filename;
                     if(jumpTimer) {
                         clearTimeout(jumpTimer);
                     }
+                    
+                    var currentPath = beforeGotoSession.filename;
+                    var fileOnly, locator, phraseParts;
                     if(file !== phrase) {
                         phraseParts = phrase.split(':');
                         fileOnly = file || currentPath;
@@ -202,15 +204,14 @@ define(function(require, exports, module) {
                     }
                     file = fileOnly + (locator ? ':' + locator : '');
                     session_manager.go(file, edit, beforeGotoSession, previewSession);
-                    beforeGotoSession = null;
                 },
                 onCancel: function() {
-                    var edit = editor.getActiveEditor();
+                    if (jumpTimer) {
+                        clearTimeout(jumpTimer);
+                    }
                     edit.moveCursorToPosition(currentPos);
                     edit.clearSelection();
-                    edit.centerSelection();
                     editor.switchSession(beforeGotoSession, edit);
-                    beforeGotoSession = null;
                 }
             });
         },
