@@ -24,6 +24,8 @@ possible. To enable this, Zed has:
 * Auto-updating preview split for various languages (including markdown and
   coffeescript).
 
+![Screenshot](http://zef.me/wp-content/uploads/2013/03/complete.png)
+
 Zed runs inside of Chrome and as such does not have free access to your local
 file system. Instead, it communicates via a simple protocol named
 [WebFS](https://github.com/zefhemel/zed/blob/master/app/manual/webfs.md). In the
