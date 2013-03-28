@@ -35,10 +35,10 @@ filesystem, the Python version is recommended.
 Screenshots
 -----------
 
+![Project picker](http://zef.me/wp-content/uploads/2013/03/Screen-Shot-2013-03-26-at-12.24.09.png)
 ![Goto](http://zef.me/wp-content/uploads/2013/03/goto.png)
 ![Screenshot](http://zef.me/wp-content/uploads/2013/03/Screen-Shot-2013-03-26-at-11.02.55.png)
 ![Screenshot](http://zef.me/wp-content/uploads/2013/03/complete.png)
-![Screenshot](http://zef.me/wp-content/uploads/2013/03/Screen-Shot-2013-03-26-at-12.24.09.png)
 
 Installation
 ------------
