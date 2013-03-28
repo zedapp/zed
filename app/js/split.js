@@ -29,36 +29,45 @@ define(function(require, exports, module) {
     exports.resetEditorDiv = resetEditorDiv;
 
     function splitOne() {
-        state.set("split", 1);
+        state.set("split", "1");
         resetEditorDiv($("#editor0")).addClass("editor-single");
         resetEditorDiv($("#editor1")).addClass("editor-disabled");
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
-        eventbus.emit("splitchange", 1);
+        eventbus.emit("splitchange", "1");
     }
 
-    function splitTwo() {
-        state.set("split", 2);
-        resetEditorDiv($("#editor0")).addClass("editor-vsplit2-left");
-        resetEditorDiv($("#editor1")).addClass("editor-vsplit2-right");
+    function splitTwo(style) {
+        if(style === undefined) {
+            var currentSplit = ""+state.get("split") || "1";
+            if(currentSplit.indexOf("2-") === 0) {
+                // Increase by one
+                style = (parseInt(currentSplit.substring(2), 10) + 1) % 3;
+            } else {
+                style = 0;
+            }
+        }
+        state.set("split", "2-" + style);
+        resetEditorDiv($("#editor0")).addClass("editor-vsplit2-left-" + style);
+        resetEditorDiv($("#editor1")).addClass("editor-vsplit2-right-" + style);
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
-        eventbus.emit("splitchange", 2);
+        eventbus.emit("splitchange", "2-" + style);
     }
 
     function splitThree() {
-        state.set("split", 3);
+        state.set("split", "3");
         resetEditorDiv($("#editor0")).addClass("editor-vsplit3-left");
         resetEditorDiv($("#editor1")).addClass("editor-vsplit3-middle");
         resetEditorDiv($("#editor2")).addClass("editor-vsplit3-right");
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
-        eventbus.emit("splitchange", 3);
+        eventbus.emit("splitchange", "3");
     }
 
     function switchSplit() {
@@ -75,13 +84,19 @@ define(function(require, exports, module) {
                 return splitOne();
             }
             switch (state.get("split")) {
-                case 1:
+                case "1":
                     splitOne();
                     break;
-                case 2:
-                    splitTwo();
+                case "2-0":
+                    splitTwo(0);
                     break;
-                case 3:
+                case "2-1":
+                    splitTwo(1);
+                    break;
+                case "2-2":
+                    splitTwo(2);
+                    break;
+                case "3":
                     splitThree();
                     break;
             }
@@ -94,7 +109,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
     command.define("Split:Vertical Two", {
-        exec: splitTwo,
+        exec: function() { splitTwo(); },
         readOnly: true
     });
     command.define("Split:Vertical Three", {

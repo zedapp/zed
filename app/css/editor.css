@@ -12,20 +12,50 @@ div.editor-single {
 div.editor-disabled {
     display: none;
 }
-div.editor-vsplit2-left {
+div.editor-vsplit2-left-0 {
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
     width: 50%;
 }
-div.editor-vsplit2-right {
+div.editor-vsplit2-right-0 {
     position: absolute;
     border-left: 1px solid #aaa;
     top: 0;
     right: 0;
     bottom: 0;
     width: 50%;
+}
+div.editor-vsplit2-left-1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 33.33%;
+}
+div.editor-vsplit2-right-1 {
+    position: absolute;
+    border-left: 1px solid #aaa;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 66.66%;
+}
+div.editor-vsplit2-left-2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 66.66%;
+}
+div.editor-vsplit2-right-2 {
+    position: absolute;
+    border-left: 1px solid #aaa;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 33.33%;
 }
 div.editor-vsplit3-left {
     position: absolute;
@@ -51,13 +81,29 @@ div.editor-vsplit3-right {
     bottom: 0;
     width: 33.3%;
 }
-div.preview-vsplit2-right {
+div.preview-vsplit2-right-0 {
     position: absolute;
     border-left: 1px solid #aaa;
     top: 0;
     right: 0;
     bottom: 0;
     width: 50%;
+}
+div.preview-vsplit2-right-1 {
+    position: absolute;
+    border-left: 1px solid #aaa;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 66.66%;
+}
+div.preview-vsplit2-right-2 {
+    position: absolute;
+    border-left: 1px solid #aaa;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 33.33%;
 }
 #preview {
     position: absolute;

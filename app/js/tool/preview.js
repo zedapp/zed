@@ -29,11 +29,21 @@ define(function(require, exports, module) {
         });
     }
     
-    function splitPreview(path) {
-        state.set("split", "preview");
-        resetEditorDiv($("#editor0")).addClass("editor-vsplit2-left");
+    function splitPreview(style, path) {
+        if(style === undefined) {
+            var currentSplit = ""+state.get("split") || "";
+            if(currentSplit.indexOf("preview-") === 0) {
+                // Increase by one
+                style = (parseInt(currentSplit.substring("preview-".length), 10) + 1) % 3;
+            } else {
+                style = 0;
+            }
+        }
+        state.set("split", "preview-" + style);
+        resetEditorDiv($("#editor0")).addClass("editor-vsplit2-left-" + style);
         resetEditorDiv($("#editor1")).addClass("editor-disabled");
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
+        previewWrapperEl.attr("class", "preview-vsplit2-right-" + style);
         previewWrapperEl.show();
         if(path) {
             previewSession = session_manager.getSessions()[path];
@@ -46,18 +56,21 @@ define(function(require, exports, module) {
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
-        eventbus.emit("splitchange", "preview");
+        eventbus.emit("splitchange", "preview-" + style);
     }
     
     exports.hook = function() {
         eventbus.on("allsessionsloaded", function() {
             previewScrollY = state.get("preview.scrollY") || 0;
-            if(state.get("split") === "preview") {
-                splitPreview(state.get('preview.path'));
+            var splitState = state.get("split");
+            if(splitState && (""+splitState).indexOf("preview-") === 0) {
+                splitPreview(parseInt(splitState.substring("preview-".length), 10),
+                             state.get('preview.path'));
             }
         });
         eventbus.on("splitchange", function(type) {
-            if(type !== "preview") {
+            if(type.indexOf("preview-") === -1) {
+                // Not a preview split, hide the preview
                 previewWrapperEl.hide();
                 previewSession = null;
             }
