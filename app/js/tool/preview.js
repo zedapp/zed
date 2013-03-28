@@ -1,4 +1,4 @@
-/*global define $ */
+/*global define $ _ */
 define(function(require, exports, module) {
     var resetEditorDiv = require("../split").resetEditorDiv;
     var state = require("../state");
@@ -29,7 +29,20 @@ define(function(require, exports, module) {
         });
     }
     
+    var delayedUpdate = _.debounce(update, 500);
+    
     function splitPreview(style, path) {
+        var oldPreviewSession = previewSession;
+        if(path) {
+            previewSession = session_manager.getSessions()[path];
+        } else {
+            previewSession = editor.getActiveSession();
+        }
+        if(oldPreviewSession !== previewSession) {
+            update();
+            return;
+        }
+        
         if(style === undefined) {
             var currentSplit = ""+state.get("split") || "";
             if(currentSplit.indexOf("preview-") === 0) {
@@ -45,12 +58,6 @@ define(function(require, exports, module) {
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
         previewWrapperEl.attr("class", "preview-vsplit2-right-" + style);
         previewWrapperEl.show();
-        if(path) {
-            previewSession = session_manager.getSessions()[path];
-        } else {
-            previewSession = editor.getActiveSession();
-        }
-        update();
         state.set('preview.path', previewSession.filename);
         
         editor.getEditors().forEach(function(editor) {
@@ -75,12 +82,7 @@ define(function(require, exports, module) {
                 previewSession = null;
             }
         });
-        var previewTimer = null;
-        eventbus.on("sessionchanged", function() {
-            if(previewTimer)
-                clearTimeout(previewTimer);
-            previewTimer = setTimeout(update, 500);
-        });
+        eventbus.on("sessionchanged", delayedUpdate);
         /*
         window.addEventListener("message", function(event) {
             var data = event.data;
