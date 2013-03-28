@@ -1,7 +1,7 @@
 All about cursors
 =================
 
-Zed has very powerful multiple cursor support.
+Zed has very powerful multiple cursor support inherited from ACE.
 
 Block selection (mouse)
 -----------------------
@@ -17,3 +17,11 @@ Adding cursors (keyboard)
   selection, or, if there's no selection, the next instance of the identifier
   under the cursor.
 * `Ctrl-Alt-Right`: same as `Ctrl-Alt-Left`, but in the reverse direction.
+
+#protip
+-------
+
+Zed does not have a find and replace feature. It doesn't it need it, the Zed way
+of doing it is searching for an instance of the string (or selecting it), then
+adding cursors on other instances using `Ctrl-Alt-Right` and `Ctrl-Alt-Left`,
+and then simply typing the replacement.

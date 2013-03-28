@@ -38,10 +38,10 @@ define(function(require, exports, module) {
         } else {
             previewSession = editor.getActiveSession();
         }
-        if(oldPreviewSession !== previewSession) {
-            update();
+        if(oldPreviewSession !== previewSession && arguments.length === 0) {
             return;
         }
+        update();
         
         if(style === undefined) {
             var currentSplit = ""+state.get("split") || "";
