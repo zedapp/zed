@@ -24,13 +24,14 @@ possible. To enable this, Zed has:
 * Auto-updating preview split for various languages (including markdown and
   coffeescript).
 
-
 Zed runs inside of Chrome and as such does not have free access to your local
-file system. Instead, it communicates via a simple protocol named
+file system. Therefore, it communicates via a simple protocol named
 [WebFS](https://github.com/zefhemel/zed/blob/master/app/manual/webfs.md). In the
-Zed repo, there's two implementations of WebFS, one in PHP, and another in
-Python. They both reside in the `server` directories. For accessing a local
-filesystem, the Python version is recommended.
+Zed repo, there are two implementations of WebFS: one in PHP, and another in
+Python. They both reside in the `server` directory. For accessing a local
+filesystem, the Python version is easiest to setup. Of course, you can
+also use these to edit files on remote servers. Just setup a WebFS servers,
+create a Zed project and off you go.
 
 Screenshots
 -----------
