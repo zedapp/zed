@@ -57,11 +57,11 @@ define(function(require, exports, module) {
                     });
                 });
             });
-            
+
             eventbus.on("filedeleted", function(path) {
                 require(["./session_manager"], function(session_manager) {
                     editors.forEach(function(edit) {
-                        if(edit.getSession().filename === path) {
+                        if (edit.getSession().filename === path) {
                             session_manager.go("zed:start", edit);
                         }
                     });
@@ -288,7 +288,10 @@ define(function(require, exports, module) {
                 var range = editor.getIdentifierUnderCursorRange();
                 edit.selection.setSelectionRange(range);
             }
-            edit.findNext();
+            edit.findNext({
+                caseSensitive: true,
+                wholeWord: true
+            });
         }
     });
 
@@ -298,9 +301,37 @@ define(function(require, exports, module) {
                 var range = editor.getIdentifierUnderCursorRange();
                 edit.selection.setSelectionRange(range);
             }
-            edit.findPrevious();
+            edit.findPrevious({
+                caseSensitive: true,
+                wholeWord: true
+            });
         }
     });
+
+    function find(session, needle, dir) {
+        var Search = ace.require("./search").Search;
+        var search = new Search();
+        search.$options.wrap = true;
+        search.$options.needle = needle;
+        search.$options.caseSensitive = true;
+        search.$options.wholeWord = true;
+        search.$options.backwards = dir == -1;
+        return search.find(session);
+    }
+    
+    function selectMore(edit, dir) {
+        var session = edit.getSession();
+        var sel = session.multiSelect;
+
+        var range = sel.toOrientedRange();
+        var needle = session.getTextRange(range);
+
+        var newRange = find(session, needle, dir);
+        if (newRange) {
+            newRange.cursor = dir == -1 ? newRange.start : newRange.end;
+            edit.multiSelect.addRange(newRange);
+        }
+    }
 
     command.define("Cursor:Add At Next Instance Of Identifier", {
         exec: function(edit) {
@@ -308,7 +339,7 @@ define(function(require, exports, module) {
                 var range = editor.getIdentifierUnderCursorRange();
                 edit.selection.setSelectionRange(range);
             }
-            edit.selectMore(1);
+            selectMore(edit, 1);
         }
     });
 
@@ -318,7 +349,7 @@ define(function(require, exports, module) {
                 var range = editor.getIdentifierUnderCursorRange();
                 edit.selection.setSelectionRange(range);
             }
-            edit.selectMore(-1);
+            selectMore(edit, -1);
         }
     });
 

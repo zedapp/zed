@@ -85,6 +85,8 @@ define(function(require, exports, module) {
 
     function insertText(edit, text) {
         edit.removeWordLeft();
+        // Support $ in completions
+        text = text.replace(/\$(?=[^{])/g, "\\$");
         snippetManager.insertSnippet(edit, text);
     }
 
