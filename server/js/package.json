@@ -1,0 +1,8 @@
+{
+  "name": "node-webfs",
+  "dependencies": {
+    "nak": "~0.2.4",
+    "mkdirp": "~0.3.5"
+  },
+  "scripts": {}
+}
