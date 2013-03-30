@@ -1,0 +1,13 @@
+.DS_Store
+*.swp
+*.tmp
+.*
+!.gitignore
+.*.gz
+node_modules/
+jam/
+ace
+* *
+.git-ref
+npm-debug.log
+deps/
