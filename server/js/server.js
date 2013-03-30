@@ -56,7 +56,7 @@ var webfs = {
                             return name + "/";
                         else
                             return name;
-                    })
+                    });
                     res.end(list.join("\n"));
                 });
                 return;
@@ -118,7 +118,7 @@ var webfs = {
                 fileList(filePath, function(lines) {
                     res.write(lines);
                 }, function() {
-                    console.log("fileList done")
+                    console.log("fileList done");
                     res.end();
                 });
             } else {
@@ -158,7 +158,7 @@ function postRequest(req, res, cb) {
         if (queryData.length > 1e6) {
             res = "";
             res.writeHead(413, {'Content-Type': 'text/plain'});
-            request.connection.destroy();
+            req.connection.destroy();
         }
     });
     req.on('end', function() {
@@ -168,8 +168,8 @@ function postRequest(req, res, cb) {
 }
 
 function fileList(root, ptint, end) {
-    var cache = ""
-    var count = 0
+    var cache = "";
+    var count = 0;
     var walk = function(dir, done) {
         fs.readdir(root + dir, function(err, list) {
             if (err) return done(err);
@@ -178,12 +178,12 @@ function fileList(root, ptint, end) {
             list.forEach(function(name) {
                 if (name[0] == ".") {
                     if (!--pending) done();
-                    return
+                    return;
                 }
                 var file = dir + '/' + name;
                 fs.stat(root + file, function(err, stat) {
                     if (stat && stat.isDirectory()) {
-                        walk(file, function(err, res) {
+                        walk(file, function() {
                             if (!--pending) done();
                         });
                     } else if (stat && stat.isFile()) {
@@ -202,5 +202,5 @@ function fileList(root, ptint, end) {
     walk("", function() {
         cache && ptint(cache);
         end();
-    })
+    });
 }
