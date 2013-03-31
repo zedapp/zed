@@ -28,7 +28,7 @@ if (arg[0])
 if (arg[1])
     PORT = parseInt(arg[1]);
 
-ROOT = pathlib.normalize(ROOT);
+ROOT = pathlib.resolve(ROOT);
 
 
 var webfs = {
@@ -78,22 +78,30 @@ var webfs = {
         });
     },
     doPUT: function(req, res, filePath) {
-        var parentDir = pathlib.dirname(filePath);
-        mkdirp(parentDir, function(err, made) {
-            var writeStream = fs.createWriteStream(filePath);
-            req.pipe(writeStream);
-            req.on('end', function () {
+        var data = "";
+        req.on("data", function(chunk) {
+            data += chunk;
+        });
+        req.on("error", function() {
+            webfs.error(res, 404, "Could't save file");
+        });
+        req.on("end", function() {
+            var parentDir = pathlib.dirname(filePath);
+            mkdirp(parentDir, function(err, made) {
+                try {
+                    fs.writeFileSync(filePath, data);                    
+                } catch(e) {
+                    console.log(e);
+                    return webfs.error(res, 404, "Could't save file");
+                }
                 fs.stat(filePath, function(err, stat){
                     if (err)
                         return webfs.error(res, 404, "Path not found");
-
+    
                     res.statusCode = 200;
                     webfs.sendEtagHeader(res, stat);
                     res.end("OK");
                 });
-            });
-            writeStream.on('error', function (err) {
-                webfs.error(res, 404, "Can't save file");
             });
         });
     },
@@ -130,9 +138,8 @@ var webfs = {
 
 http.createServer(function(req, res) {
     var filePath = decodeURIComponent(urllib.parse(req.url).path);
-    filePath = pathlib.join(ROOT, filePath);
-
     console.log(req.method, filePath);
+    filePath = pathlib.join(ROOT, filePath);
 
     if (filePath.lastIndexOf(ROOT, 0) != 0)
         return webfs.error(res, 500, "Hacker attempt?");
