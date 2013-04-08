@@ -13,7 +13,7 @@
 * Nix Mode
 * Save folds in .zedstate
 * Change all keyboard handlers to commands
-* Context-aware enable/disable with isAvailable() call
+* Context-aware command enable/disable with isAvailable() call
 * Test suite for WebFS
 * Better support for local projects (with path completion)
 * Implement Tree as generic alternative view of Goto
