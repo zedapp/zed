@@ -5,12 +5,11 @@
     * Cursor
     * Settings
     * Navigate
-* Per project settings zedconfig.json
+* Per project settings zedsettings.json
 * Proper HTML preview (loading via HTTP)
 * WebFS
     * Proper content-types for files from server
     * Option to use auth only for write, not for read
-    * node.js implementation
 * Nix Mode
 * Save folds in .zedstate
 * Change all keyboard handlers to commands
