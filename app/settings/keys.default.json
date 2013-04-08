@@ -63,8 +63,14 @@
         "mac": "Command-Shift-E",
         "win": "Ctrl-Shift-E"
     },
-    "Navigate:Next Instance Of Identifier": "Ctrl-Shift-Right",
-    "Navigate:Previous Instance Of Identifier": "Ctrl-Shift-Left",
+    "Navigate:Next Instance Of Identifier": {
+        "mac": "Ctrl-Shift-Right",
+        "win": "Alt-Right"
+    },
+    "Navigate:Previous Instance Of Identifier": {
+        "mac": "Ctrl-Shift-Left",
+        "win": "Alt-Left"
+    },
     "Cursor:Add Above": "Ctrl-Alt-Up",
     "Cursor:Add Below": "Ctrl-Alt-Down",
     "Cursor:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
