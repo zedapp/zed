@@ -3,7 +3,7 @@ Zed
 
 Welcome to Zed, a code editor built using web technologies, designed to rethink
 some of the assumptions that underly most editors today. Some of the editor's
-core features are the features it doesn't have:
+core features are the features it does **not** have:
 
 * Tabs
 * Always visible file tree
