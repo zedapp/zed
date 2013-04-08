@@ -10,7 +10,7 @@ define(function(require, exports, module) {
     var async = require("./lib/async");
     var settings = require("./settings");
     
-    var snippetManager = ace.require("ace/snippets").SnippetManager;
+    var snippetManager = ace.require("ace/snippets").snippetManager;
 
     // TODO figure out another way to do this
     var completers = [
