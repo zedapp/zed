@@ -1,0 +1,25 @@
+* Reorganize all commands in cleaner categories
+    * File
+    * Edit
+    * Cursor
+    * Settings
+    * Navigate
+* Per project settings zedconfig.json
+* Proper HTML preview (loading via HTTP)
+* WebFS
+    * Proper content-types for files from server
+    * Option to use auth only for write, not for read
+    * node.js implementation
+* Nix Mode
+* Save folds in .zedstate
+* Change all keyboard handlers to commands
+* Context-aware enable/disable with isAvailable() call
+* Test suite for WebFS
+* Better support for local projects (with path completion)
+* Implement Tree as generic alternative view of Goto
+* Add localstorage:// fs (scratchpad)
+
+Implement settings:
+
+    editor.getSession().setTabSize(4);
+    editor.getSession().setUseSoftTabs(value);
