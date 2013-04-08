@@ -120,7 +120,7 @@ div.preview-vsplit2-right-2 {
     background: #fff;
     padding: 0;
     z-index: 999;
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
 }
 #goto input {
@@ -135,7 +135,7 @@ div.preview-vsplit2-right-2 {
     border-right: 0;
     border-bottom: 1px dotted gray;
     border-top: 0;
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
 #goto ul {
     margin: 0;
@@ -182,7 +182,7 @@ div.preview-vsplit2-right-2 {
     background-color: #ddd;
 }
 .editbar .path {
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     line-height: 25px;
     padding-left: 5px;
@@ -195,7 +195,7 @@ div.preview-vsplit2-right-2 {
     outline-width: 0;
     border: 0;
     padding-left: 5px;
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     line-height: 21px;
     background-color: #eee;
@@ -204,7 +204,7 @@ div.preview-vsplit2-right-2 {
     position: absolute;
     right: 0;
     top: 0;
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 10px;
     line-height: 25px;
     padding-right: 5px;
@@ -218,7 +218,7 @@ div.preview-vsplit2-right-2 {
 }
 #complete-box {
     position: absolute;
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
     border: 1px solid black;
     background-color: white;
@@ -261,7 +261,7 @@ div.preview-vsplit2-right-2 {
     background: #fff;
     padding: 0;
     z-index: 999;
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
     max-height: 80%;
     overflow: scroll;
@@ -269,7 +269,7 @@ div.preview-vsplit2-right-2 {
 #dialog {
     position: fixed;
     border: solid 1px #666;
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
     padding: 10px;
     left: 50%;
@@ -279,7 +279,7 @@ div.preview-vsplit2-right-2 {
 }
 #dialog input {
     font-size: 14px;
-    font-family: Monaco, Menlo;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     width: 100%;
     box-sizing: border-box;
     padding: 5px;
