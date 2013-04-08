@@ -65,10 +65,15 @@ The server will now run on port `1338` and is accessible via
 `http://localhost:1338`, if you go to this URL, you should see a directory
 listing of your home directory.
 
-You can also run the PHP version, the `test.php` and `testauth.php` scripts show
-how to set it up. Once installed, the WebFS is accessible via
-`http://yourserver.com/somedir/test.php/` as root. The PHP version also supports
-authentication, the Python version does not yet.
+Other WebFS implementations
+---------------------------
+
+* PHP: the `test.php` and `testauth.php` scripts show how to set it up. Once
+  installed, the WebFS is accessible via `http://yourserver.com/somedir/test.php/`
+  as root. The PHP version also supports authentication.
+* Node.js: just `npm install` in the `server/js` directory, then run
+  `node server.js`.
+
 
 Creating a Zed project
 ----------------------
