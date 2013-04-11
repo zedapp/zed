@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var settings = require("./settings");
     var defaultSettings = JSON.parse(require("text!../settings/settings.default.json"));
     var modes = require("./modes");
+    var whitespace = ace.require("ace/ext/whitespace");
 
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
     var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-]+/;
@@ -94,6 +95,8 @@ define(function(require, exports, module) {
             session.setUseWrapMode(settings.get("wordWrap"));
             session.setUseWorker(false);
             modes.setSessionMode(session, mode);
+            // todo maybe add a setting to disable this?
+            whitespace.detectIndentation(session);
             return session;
         },
         switchSession: function(session, edit) {
