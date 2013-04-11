@@ -321,7 +321,7 @@ define(function(require, exports, module) {
         search.$options.backwards = dir == -1;
         return search.find(session);
     }
-    
+
     function selectMore(edit, dir) {
         var session = edit.getSession();
         var sel = session.multiSelect;
@@ -388,5 +388,25 @@ define(function(require, exports, module) {
             },
             readOnly: true
         });
+    });
+
+    command.define("Editor:Detect Indentation", {
+        exec: function(editor) {
+            whitespace.detectIndentation(editor.session);
+        },
+        readonly: true
+    });
+
+    command.define("Editor:Trim Trailing Space", {
+        exec: function(editor) {
+            whitespace.trimTrailingSpace(editor.session);
+        }
+    });
+
+    command.define("Editor:Convert Indentation", {
+        exec: function(editor) {
+            // todo this command needs a way to get values for tabChar and tabLength
+            whitespace.convertIndentation(editor.session);
+        }
     });
 });
