@@ -95,10 +95,12 @@ define(function(require, exports, module) {
             var session = ace.createEditSession(content);
             session.filename = path;
             session.setUseWrapMode(settings.get("wordWrap"));
+            session.setTabSize(settings.get("tabSize"));
+            session.setUseSoftTabs(settings.get("useSoftTabs"));
             session.setUseWorker(false);
             modes.setSessionMode(session, mode);
-            // todo maybe add a setting to disable this?
-            whitespace.detectIndentation(session);
+            if (settings.get("detectIndentation"))
+                whitespace.detectIndentation(session);
             return session;
         },
         switchSession: function(session, edit) {
