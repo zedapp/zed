@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var settings = require("./settings");
     var defaultSettings = JSON.parse(require("text!../settings/settings.default.json"));
     var modes = require("./modes");
+    var whitespace = ace.require("ace/ext/whitespace");
 
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
     var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-]+/;
@@ -53,6 +54,8 @@ define(function(require, exports, module) {
                 require(["./session_manager"], function(session_manager) {
                     var sessions = session_manager.getSessions();
                     Object.keys(sessions).forEach(function(path) {
+                        sessions[path].setTabSize(settings.get("tabSize"));
+                        sessions[path].setUseSoftTabs(settings.get("useSoftTabs"));
                         sessions[path].setUseWrapMode(settings.get("wordWrap"));
                     });
                 });
@@ -92,8 +95,12 @@ define(function(require, exports, module) {
             var session = ace.createEditSession(content);
             session.filename = path;
             session.setUseWrapMode(settings.get("wordWrap"));
+            session.setTabSize(settings.get("tabSize"));
+            session.setUseSoftTabs(settings.get("useSoftTabs"));
             session.setUseWorker(false);
             modes.setSessionMode(session, mode);
+            if (settings.get("detectIndentation"))
+                whitespace.detectIndentation(session);
             return session;
         },
         switchSession: function(session, edit) {
@@ -318,7 +325,7 @@ define(function(require, exports, module) {
         search.$options.backwards = dir == -1;
         return search.find(session);
     }
-    
+
     function selectMore(edit, dir) {
         var session = edit.getSession();
         var sel = session.multiSelect;
@@ -385,5 +392,25 @@ define(function(require, exports, module) {
             },
             readOnly: true
         });
+    });
+
+    command.define("Editor:Detect Indentation", {
+        exec: function(editor) {
+            whitespace.detectIndentation(editor.session);
+        },
+        readonly: true
+    });
+
+    command.define("Editor:Trim Trailing Space", {
+        exec: function(editor) {
+            whitespace.trimTrailingSpace(editor.session);
+        }
+    });
+
+    command.define("Editor:Convert Indentation", {
+        exec: function(editor) {
+            // todo this command needs a way to get values for tabChar and tabLength
+            whitespace.convertIndentation(editor.session);
+        }
     });
 });
