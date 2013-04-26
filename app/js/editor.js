@@ -53,6 +53,8 @@ define(function(require, exports, module) {
                 require(["./session_manager"], function(session_manager) {
                     var sessions = session_manager.getSessions();
                     Object.keys(sessions).forEach(function(path) {
+                        sessions[path].setTabSize(settings.get("tabSize"));
+                        sessions[path].setUseSoftTabs(settings.get("useSoftTabs"));
                         sessions[path].setUseWrapMode(settings.get("wordWrap"));
                     });
                 });
