@@ -3,6 +3,7 @@
     "highlightActiveLine": true,
     "highlightGutterLine": true,
     "defaultMode": "ace/mode/text",
+    "detectIndentation": true,
     "fontSize": 12,
     "showPrintMargin": true,
     "printMarginColumn": 80,
