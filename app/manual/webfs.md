@@ -45,8 +45,8 @@ PUT
         * `ETag`: etag header (often `mtime` timestamp of new version of file)
     * Body: Content of the file.
 
-OPTIONS
--------
+HEAD
+----
 Used for file watching.
 
 * File: Used to retrieve ETag for file (to detect file change).

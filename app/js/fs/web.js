@@ -105,7 +105,7 @@ define(function(require, exports, module) {
                     return;
                 
                 $.ajax(url + path, {
-                    type: 'OPTIONS',
+                    type: 'HEAD',
                     username: username,
                     password: password,
                     success: function(data, status, xhr) {

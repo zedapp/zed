@@ -53,7 +53,7 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(buf)
             f.close()
 
-    def do_OPTIONS(self):
+    def do_HEAD(self):
         filePath = self.safe_path(self.path)
         if not os.path.exists(filePath):
             return self.error(404, "Path not found")

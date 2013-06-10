@@ -26,7 +26,7 @@ if (arg[0] && !arg[1] && /^\d+$/.test(arg[0])) {
 if (arg[0])
     ROOT = arg[0];
 if (arg[1])
-    PORT = parseInt(arg[1]);
+    PORT = parseInt(arg[1], 10);
 
 ROOT = pathlib.resolve(ROOT);
 
@@ -67,7 +67,7 @@ var webfs = {
             stream.pipe(res);
         });
     },
-    doOPTIONS: function(req, res, filePath) {
+    doHEAD: function(req, res, filePath) {
         fs.stat(filePath, function(err, stat){
             if (err)
                 return webfs.error(res, 404, "Path not found");
@@ -141,7 +141,7 @@ http.createServer(function(req, res) {
     console.log(req.method, filePath);
     filePath = pathlib.join(ROOT, filePath);
 
-    if (filePath.lastIndexOf(ROOT, 0) != 0)
+    if (filePath.lastIndexOf(ROOT, 0) !== 0)
         return webfs.error(res, 500, "Hacker attempt?");
 
     var method = "do" + req.method;
