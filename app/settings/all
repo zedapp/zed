@@ -1,5 +1,6 @@
 /keys.default.json
 /keys.user.json
+/mode/c.default.json
 /mode/coffee.default.json
 /mode/css.default.json
 /mode/dart.default.json
@@ -12,6 +13,7 @@
 /mode/php.default.json
 /mode/python.default.json
 /mode/ruby.default.json
+/mode/sh.default.json
 /mode/text.default.json
 /mode/xml.default.json
 /settings.default.json
