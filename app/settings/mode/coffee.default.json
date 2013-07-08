@@ -1,7 +1,7 @@
 {
     "name": "CoffeeScript",
     "highlighter": "ace/mode/coffee",
-    "extensions": ["cs"],
+    "extensions": ["cs", "coffee"],
     "tool:preview": {
         "scriptUrl": "plugin/preview/coffee.js"
     },
