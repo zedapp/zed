@@ -48,5 +48,4 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
 
         console.log("Zed booted.");
     });
-
 });
