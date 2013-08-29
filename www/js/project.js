@@ -21,15 +21,8 @@ define(function(require, exports, module) {
     }
     
     exports.hook = function() {
-        var urlReq = location.search.substring(1);
-        var parts = urlReq.split("&");
-        var options = {};
-        parts.forEach(function(part) {
-            var spl = part.split('=');
-            options[spl[0]] = spl[1];
-        });
-        
-        console.log("URL:", options.url);
+        var options = window.opts;
+        console.log("Options", options);
         var io;
         // TODO: Generalize this
         if(options.url.indexOf("settings:") === 0) {

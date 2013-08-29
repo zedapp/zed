@@ -14,7 +14,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"code.google.com/p/go.net/websocket"
-	//"code.google.com/p/go-uuid/uuid"
+	"code.google.com/p/go-uuid/uuid"
 )
 
 type HttpError interface {
@@ -84,17 +84,22 @@ func handleRequest(requestChannel chan []byte, responseChannel chan []byte, clos
 
 	var err HttpError
 	commandParts := strings.Split(command, " ")
-	switch commandParts[0] {
+	method := commandParts[0]
+	path := strings.Join(commandParts[1:], "/")
+	if strings.HasPrefix(path, "/") {
+		path = path[1:]
+	}
+	switch method {
 	case "GET":
-		err = handleGet(commandParts[1], requestChannel, responseChannel)
+		err = handleGet(path, requestChannel, responseChannel)
 	case "HEAD":
-		err = handleHead(commandParts[1], requestChannel, responseChannel)
+		err = handleHead(path, requestChannel, responseChannel)
 	case "PUT":
-		err = handlePut(commandParts[1], requestChannel, responseChannel)
+		err = handlePut(path, requestChannel, responseChannel)
 	case "DELETE":
-		err = handleDelete(commandParts[1], requestChannel, responseChannel)
+		err = handleDelete(path, requestChannel, responseChannel)
 	case "POST":
-		err = handlePost(commandParts[1], requestChannel, responseChannel)
+		err = handlePost(path, requestChannel, responseChannel)
 	}
 	if err != nil {
 		sendError(responseChannel, err, commandParts[0] != "HEAD")
@@ -216,12 +221,12 @@ func handlePut(path string, requestChannel chan[] byte, responseChannel chan []b
 		dropUntilDelimiter(requestChannel)
 		return err.(HttpError)
 	}
-	dir := filepath.Base(safePath)
+	dir := filepath.Dir(safePath)
 	os.MkdirAll(dir, 0700)
 	f, err := os.Create(safePath)
 	if err != nil {
 		dropUntilDelimiter(requestChannel)
-		return NewHttpError(500, "Could not create file")
+		return NewHttpError(500, fmt.Sprintf("Could not create file: %s", safePath))
 	}
 	for {
 		buffer := <-requestChannel
@@ -332,14 +337,23 @@ func RunClient(args []string) {
 	var host string
 	var port int
 	var path string
+	var guid string
 	flagSet.StringVar(&host, "host", "localhost", "Host to connect to or bind to")
 	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
+	flagSet.StringVar(&guid, "guid", "<generated>", "UUID to bind to")
 	flagSet.Parse(args)
+	if guid == "<generated>" {
+		guid = uuid.New()
+	}
 	if flagSet.NArg() == 0 {
 		rootPath = "."
 	} else {
 		rootPath = args[len(args) - 1]
 	}
+
+	rootPath, _ = filepath.Abs(rootPath)
+
+	fmt.Println("Root path:", rootPath)
 
 	origin := fmt.Sprintf("http://%s", host)
 	url := fmt.Sprintf("ws://%s:%d/socket", host, port)
@@ -347,16 +361,15 @@ func RunClient(args []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	id := "random" // uuid.New()
 
-	buffer, _ := json.Marshal(HelloMessage{"0.1", id})
+	buffer, _ := json.Marshal(HelloMessage{"0.1", guid})
 
 	if _, err := ws.Write(buffer); err != nil {
 		log.Fatal(err)
 		return
 	}
 	rootPath = path
-	fmt.Println("ID:", id)
+	fmt.Printf("http://%s:%d/w/%s\n", host, port, guid)
 	//go PrintStats()
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
 	multiplexer.Multiplex()

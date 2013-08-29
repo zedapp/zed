@@ -9,6 +9,7 @@ import (
 	"strings"
 	"bytes"
 	"encoding/json"
+	"html/template"
 	"code.google.com/p/go.net/websocket"
 	"runtime"
 )
@@ -21,10 +22,10 @@ func (e *NoSuchClientError) Error() string {
 	return fmt.Sprintf("No such client connected: %s", e.uuid)
 }
 
-type HttpHandler struct {
+type WebFSHandler struct {
 }
 
-func (self *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *WebFSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 	id := parts[0]
 
@@ -78,6 +79,46 @@ func (self *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
+}
+
+type EditorHandler struct {
+
+}
+
+func (self *EditorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	uuid := r.URL.Path
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(200)
+	t, _ := template.New("page").Parse(`
+	<!doctype html>
+	<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>{{.}} [Caelum]</title></title>
+        <base href="/editor/">
+    </head>
+    <body>
+        Loading...
+        <script>
+        console.log("Setting options");
+          window.opts = {
+            url: "/fs/{{.}}"
+          };
+        </script>
+        <script src="/editor/dep/underscore-min.js"></script>
+        <script src="/editor/dep/require.js"></script>
+        <script src="/editor/dep/jquery.js"></script>
+        <script src="/editor/dep/jquery.caret.js"></script>
+        <script src="/editor/dep/jquery-ui.js"></script>
+        <script src='/editor/dep/jquery.dynatree.min.js'></script>
+        <script src="/editor/ace/ace.js"></script>
+        <script src="/editor/ace/ext-whitespace.js"></script>
+        <script src="/editor/js/boot.js"></script>
+        <link href="/editor/css/ui.dynatree.css" rel="stylesheet" type="text/css">
+        <link href="/editor/css/editor.css" rel="stylesheet" type="text/css">
+    </body>
+</html>`)
+	t.Execute(w, uuid)
 }
 
 var clients map[string]*Client = make(map[string]*Client)
@@ -206,14 +247,14 @@ func RunServer(args []string) {
 	var staticFilePath string
 	var host string
 	var port int
-	var staticFiles string
 	flagSet.StringVar(&host, "host", "0.0.0.0", "Host to bind to")
 	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
-	flagSet.StringVar(&staticFiles, "editorfiles", "../www/", "Location to editor files")
+	flagSet.StringVar(&staticFilePath, "editorfiles", "../www/", "Location to editor files")
 	flagSet.Parse(args)
 
 	http.Handle("/editor/", http.StripPrefix("/editor/", http.FileServer(http.Dir(staticFilePath))))
-	http.Handle("/fs/", http.StripPrefix("/fs/", &HttpHandler{}))
+	http.Handle("/fs/", http.StripPrefix("/fs/", &WebFSHandler{}))
+	http.Handle("/w/", http.StripPrefix("/w/", &EditorHandler{}))
 	http.Handle("/socket", websocket.Handler(socketServer))
 	//go PrintStats()
 	fmt.Printf("Now accepting connections on %s:%d\n", host, port)
