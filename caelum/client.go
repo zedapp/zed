@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"log"
 	"path/filepath"
@@ -326,9 +327,22 @@ func handlePost(path string, requestChannel chan[] byte, responseChannel chan []
 	return nil
 }
 
-func RunClient(hostname string, port int, path string) {
-	origin := fmt.Sprintf("http://%s", hostname)
-	url := fmt.Sprintf("ws://%s:%d/socket", hostname, port)
+func RunClient(args []string) {
+	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
+	var host string
+	var port int
+	var path string
+	flagSet.StringVar(&host, "host", "localhost", "Host to connect to or bind to")
+	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
+	flagSet.Parse(args)
+	if flagSet.NArg() == 0 {
+		rootPath = "."
+	} else {
+		rootPath = args[len(args) - 1]
+	}
+
+	origin := fmt.Sprintf("http://%s", host)
+	url := fmt.Sprintf("ws://%s:%d/socket", host, port)
 	ws, err := websocket.Dial(url, "", origin)
 	if err != nil {
 		log.Fatal(err)
@@ -343,7 +357,7 @@ func RunClient(hostname string, port int, path string) {
 	}
 	rootPath = path
 	fmt.Println("ID:", id)
-	go PrintStats()
+	//go PrintStats()
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
 	multiplexer.Multiplex()
 }

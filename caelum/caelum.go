@@ -1,24 +1,18 @@
 package main
 
 import (
-	"flag"
+	"os"
 )
 
 func main() {
-	var staticFilePath string
-	var serverMode bool
-	var serverHost string
-	var serverPort int
-	var path string
-	flag.StringVar(&staticFilePath, "clientfiles", "www/", "Path to client files")
-	flag.BoolVar(&serverMode, "server", false, "Whether to run this as a server")
-	flag.StringVar(&serverHost, "host", "localhost", "Host to connect to or bind to")
-	flag.IntVar(&serverPort, "port", 8080, "Port to listen to")
-	flag.StringVar(&path, "path", "/Users/zef/git/zed", "Path to edit")
-	flag.Parse()
+	serverMode := false
+	if len(os.Args) > 1 && os.Args[1] == "--server" {
+		serverMode = true
+	}
+
 	if serverMode {
-		RunServer(serverPort, staticFilePath)
+		RunServer(os.Args[2:])
 	} else {
-		RunClient(serverHost, serverPort, path)
+		RunClient(os.Args[1:])
 	}
 }

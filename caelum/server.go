@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"fmt"
+	"flag"
 	"time"
 	"strings"
 	"bytes"
@@ -20,11 +21,10 @@ func (e *NoSuchClientError) Error() string {
 	return fmt.Sprintf("No such client connected: %s", e.uuid)
 }
 
-type LocalFSHandler struct {
-	RootPath string
+type HttpHandler struct {
 }
 
-func (self *LocalFSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *HttpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 	id := parts[0]
 
@@ -142,13 +142,11 @@ func NewClientRequest(uuid string) (*ClientRequest, error) {
 }
 
 func socketServer(ws *websocket.Conn) {
-	fmt.Println("Client connected")
 	buffer := make([]byte, BUFFER_SIZE)
 	n, err := ws.Read(buffer)
-	fmt.Println("Read:", n)
 	var hello HelloMessage
 	err = json.Unmarshal(buffer[:n], &hello)
-	fmt.Println(hello, err)
+	fmt.Println("Client", hello.UUID, "connected")
 
 	client := NewClient(hello.UUID)
 
@@ -179,8 +177,6 @@ func socketServer(ws *websocket.Conn) {
 		delete(clients, hello.UUID)
 	}
 
-	//clients[hello.UUID] <- []byte("GET /")
-
 	for {
 		writeBuffer, request_ok := <-client.writeChannel
 		if !request_ok {
@@ -203,14 +199,24 @@ func PrintStats() {
 		fmt.Printf("Number of go-routines: %d Memory used: %dK\n", runtime.NumGoroutine(), memStats.Alloc / 1024)
 		time.Sleep(5e9)
 	}
-
 }
 
-func RunServer(port int, staticFilePath string) {
+func RunServer(args []string) {
+	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
+	var staticFilePath string
+	var host string
+	var port int
+	var staticFiles string
+	flagSet.StringVar(&host, "host", "0.0.0.0", "Host to bind to")
+	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
+	flagSet.StringVar(&staticFiles, "editorfiles", "../www/", "Location to editor files")
+	flagSet.Parse(args)
+
 	http.Handle("/editor/", http.StripPrefix("/editor/", http.FileServer(http.Dir(staticFilePath))))
-	http.Handle("/fs/", http.StripPrefix("/fs/", &LocalFSHandler{"/Users/zef/git/zed"}))
+	http.Handle("/fs/", http.StripPrefix("/fs/", &HttpHandler{}))
 	http.Handle("/socket", websocket.Handler(socketServer))
-	go PrintStats()
+	//go PrintStats()
+	fmt.Printf("Now accepting connections on %s:%d\n", host, port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
 
