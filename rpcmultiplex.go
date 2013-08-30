@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"runtime"
 )
 
 type Request struct {
@@ -32,7 +31,6 @@ func (m *RPCMultiplexer) writer() {
 	for {
 		buffer, ok := <-m.writeChannel
 		if !ok {
-			fmt.Println("Write channel closed")
 			break
 		}
 		err := WriteFrame(m.rw, buffer[0], buffer[1:])
@@ -48,7 +46,6 @@ func (m *RPCMultiplexer) responseListener(requestId byte, responseChannel chan [
 	for {
 		buffer, ok := <-responseChannel
 		if !ok {
-			fmt.Println("Response channel for", requestId, "was closed")
 			break
 		}
 		m.writeChannel <- addRequestId(requestId, buffer)
@@ -58,12 +55,11 @@ func (m *RPCMultiplexer) responseListener(requestId byte, responseChannel chan [
 func (m *RPCMultiplexer) closeListener(requestId byte, closeChannel chan bool) {
 	_ = <-closeChannel
 	req := m.OutstandingRequests[requestId]
-	fmt.Println("Now going to close stuff for", req)
+	//fmt.Println("Now going to close stuff for", req)
 	close(req.requestChannel)
 	close(req.responseChannel)
 	close(req.closeChannel)
 	m.OutstandingRequests[requestId] = nil
-	fmt.Println("Go routines", runtime.NumGoroutine())
 }
 
 func (m *RPCMultiplexer) Multiplex() {
@@ -80,7 +76,6 @@ func (m *RPCMultiplexer) Multiplex() {
 		}
 		req := m.OutstandingRequests[requestId]
 		if req == nil {
-			fmt.Println("Creating new request")
 			req = &Request {
 				requestChannel: make(chan []byte),
 				responseChannel: make(chan []byte),

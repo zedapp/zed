@@ -1,10 +1,7 @@
 package main
 
 import (
-	//"testing"
-	//"fmt"
 	"bytes"
-	//"runtime"
 )
 
 type testReadWriter struct {

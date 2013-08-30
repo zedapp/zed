@@ -1,0 +1,9 @@
+{
+    "name": "Go",
+    "highlighter": "ace/mode/golang",
+    "extensions": ["go"],
+    
+    "tool:ctags": {
+        "scriptUrl": "plugin/ctags/go.js"
+    }
+}

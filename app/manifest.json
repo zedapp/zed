@@ -1,6 +1,6 @@
 {
-    "name": "Zed",
-    "version": "0.1",
+    "name": "Caelum",
+    "version": "0.2",
     "manifest_version": 2,
     "minimum_chrome_version": "23",
     "description": "Code Editor.",
@@ -25,13 +25,5 @@
     },
     "sandbox": {
         "pages": ["sandbox.html", "preview.html"]
-    },
-    "commands": {
-        "cmdNew": {
-            "suggested_key": {
-                "default": "Ctrl+Shift+Z"
-            },
-            "description": "Zed Project list"
-        }
     }
 }

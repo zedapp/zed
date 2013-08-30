@@ -9,7 +9,6 @@ import (
 	"strings"
 	"bytes"
 	"encoding/json"
-	"html/template"
 	"code.google.com/p/go.net/websocket"
 	"runtime"
 )
@@ -81,46 +80,6 @@ func (self *WebFSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type EditorHandler struct {
-
-}
-
-func (self *EditorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	uuid := r.URL.Path
-	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(200)
-	t, _ := template.New("page").Parse(`
-	<!doctype html>
-	<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>{{.}} [Caelum]</title></title>
-        <base href="/editor/">
-    </head>
-    <body>
-        Loading...
-        <script>
-        console.log("Setting options");
-          window.opts = {
-            url: "/fs/{{.}}"
-          };
-        </script>
-        <script src="/editor/dep/underscore-min.js"></script>
-        <script src="/editor/dep/require.js"></script>
-        <script src="/editor/dep/jquery.js"></script>
-        <script src="/editor/dep/jquery.caret.js"></script>
-        <script src="/editor/dep/jquery-ui.js"></script>
-        <script src='/editor/dep/jquery.dynatree.min.js'></script>
-        <script src="/editor/ace/ace.js"></script>
-        <script src="/editor/ace/ext-whitespace.js"></script>
-        <script src="/editor/js/boot.js"></script>
-        <link href="/editor/css/ui.dynatree.css" rel="stylesheet" type="text/css">
-        <link href="/editor/css/editor.css" rel="stylesheet" type="text/css">
-    </body>
-</html>`)
-	t.Execute(w, uuid)
-}
-
 var clients map[string]*Client = make(map[string]*Client)
 
 type Client struct {
@@ -152,7 +111,7 @@ func addRequestId(requestId byte, buffer []byte) []byte {
 	}
 	return newBuffer
 }
-	
+
 func NewClientRequest(uuid string) (*ClientRequest, error) {
 	client, ok := clients[uuid]
 	if !ok {
@@ -238,25 +197,21 @@ func PrintStats() {
 	for {
 		runtime.ReadMemStats(&memStats)
 		fmt.Printf("Number of go-routines: %d Memory used: %dK\n", runtime.NumGoroutine(), memStats.Alloc / 1024)
-		time.Sleep(5e9)
+		time.Sleep(10e9) // Every 10 seconds
 	}
 }
 
 func RunServer(args []string) {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	var staticFilePath string
 	var host string
 	var port int
 	flagSet.StringVar(&host, "host", "0.0.0.0", "Host to bind to")
 	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
-	flagSet.StringVar(&staticFilePath, "editorfiles", "../www/", "Location to editor files")
 	flagSet.Parse(args)
 
-	http.Handle("/editor/", http.StripPrefix("/editor/", http.FileServer(http.Dir(staticFilePath))))
 	http.Handle("/fs/", http.StripPrefix("/fs/", &WebFSHandler{}))
-	http.Handle("/w/", http.StripPrefix("/w/", &EditorHandler{}))
-	http.Handle("/socket", websocket.Handler(socketServer))
-	//go PrintStats()
+	http.Handle("/clientsocket", websocket.Handler(socketServer))
+	go PrintStats()
 	fmt.Printf("Now accepting connections on %s:%d\n", host, port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }

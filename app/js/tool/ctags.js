@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var tools = require("../tools");
     var ctags = require("../ctags");
     var command = require("../command");
-    var async = require("../lib/async");
+    var async = require("../lib/async"); 
 
     var defaultTimeout = 2500;
     var minTimeout = 1000;

@@ -37,7 +37,7 @@ func (self *HandlingError) Error() string {
 
 func NewHandlingError(message string) HttpError {
 	return &HandlingError { message }
-}
+} 
 
 type httpError struct {
 	statusCode int
@@ -145,7 +145,6 @@ func statusCodeBuffer(code int) []byte {
 }
 
 func handleGet(path string, requestChannel chan[]byte, responseChannel chan []byte) HttpError {
-	fmt.Println("Requested:", path, rootPath)
 	dropUntilDelimiter(requestChannel)
 	safePath, err := safePath(rootPath, path)
 	if err != nil {
@@ -159,12 +158,10 @@ func handleGet(path string, requestChannel chan[]byte, responseChannel chan []by
 	if stat.IsDir() {
 		responseChannel <- headerBuffer(map[string]string {"Content-Type": "text/plain"})
 		files, _ := ioutil.ReadDir(safePath)
-		fmt.Println("Full path listing of", safePath)
 		for _, f := range files {
 			if f.Name()[0] == '.' {
 				continue
 			}
-			fmt.Println("Sending:", f.Name())
 			if f.IsDir() {
 				responseChannel <- []byte(fmt.Sprintf("%s/\n", f.Name()))
 			} else {
@@ -336,14 +333,13 @@ func RunClient(args []string) {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
 	var host string
 	var port int
-	var path string
 	var guid string
 	flagSet.StringVar(&host, "host", "localhost", "Host to connect to or bind to")
 	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
 	flagSet.StringVar(&guid, "guid", "<generated>", "UUID to bind to")
 	flagSet.Parse(args)
 	if guid == "<generated>" {
-		guid = uuid.New()
+		guid = strings.Replace(uuid.New(), "-", "", -1)
 	}
 	if flagSet.NArg() == 0 {
 		rootPath = "."
@@ -356,7 +352,7 @@ func RunClient(args []string) {
 	fmt.Println("Root path:", rootPath)
 
 	origin := fmt.Sprintf("http://%s", host)
-	url := fmt.Sprintf("ws://%s:%d/socket", host, port)
+	url := fmt.Sprintf("ws://%s:%d/clientsocket", host, port)
 	ws, err := websocket.Dial(url, "", origin)
 	if err != nil {
 		log.Fatal(err)
@@ -368,8 +364,7 @@ func RunClient(args []string) {
 		log.Fatal(err)
 		return
 	}
-	rootPath = path
-	fmt.Printf("http://%s:%d/w/%s\n", host, port, guid)
+	fmt.Printf("http://%s:%d/fs/%s\n", host, port, guid)
 	//go PrintStats()
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
 	multiplexer.Multiplex()
