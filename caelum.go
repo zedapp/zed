@@ -34,16 +34,16 @@ func main() {
 
 	switch mode {
 	case "server":
-		ip, port := ParseServerFlags(os.Args[2:])
-		RunServer(ip, port)
+		ip, port, sslCrt, sslKey := ParseServerFlags(os.Args[2:])
+		RunServer(ip, port, sslCrt, sslKey)
 	case "client":
-		host, port := ParseClientFlags(os.Args[1:])
+		url := ParseClientFlags(os.Args[1:])
 		id := strings.Replace(uuid.New(), "-", "", -1)
-		RunClient(host, port, id)
+		RunClient(url, id)
 	case "local":
 		host, port := ParseLocalFlags(os.Args[2:])
-		go RunServer(host, port)
-		RunClient(host, port, "local")
+		go RunServer(host, port, "", "")
+		RunClient(fmt.Sprintf("ws://%s:%d", host, port), "local")
 	case "help":
 		fmt.Println(`caelum runs in three possible modes: client, server and local:
 

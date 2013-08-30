@@ -201,20 +201,26 @@ func PrintStats() {
 	}
 }
 
-func ParseServerFlags(args []string) (ip string, port int) {
+func ParseServerFlags(args []string) (ip string, port int, sslCrt string, sslKey string) {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	flagSet.StringVar(&ip, "ip", "0.0.0.0", "IP to bind to")
-	flagSet.IntVar(&port, "port", 7337, "Port to listen on")
+	flagSet.StringVar(&ip, "h", "0.0.0.0", "IP to bind to")
+	flagSet.IntVar(&port, "p", 7337, "Port to listen on")
+	flagSet.StringVar(&sslCrt, "sslcrt", "", "Path to SSL certificate")
+	flagSet.StringVar(&sslKey, "sslkey", "", "Path to SSL key")
 	flagSet.Parse(args)
 	return
 }
 
-func RunServer(ip string, port int) {
+func RunServer(ip string, port int, sslCrt string, sslKey string) {
 	http.Handle("/fs/", http.StripPrefix("/fs/", &WebFSHandler{}))
 	http.Handle("/clientsocket", websocket.Handler(socketServer))
 	go PrintStats()
-	fmt.Printf("Caelum server now running on %s:%d\n", ip, port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", ip, port), nil))
-	//log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", ip, port), "caelum_cc.crt", "privateKey.key", nil))
+	if sslCrt != "" {
+		fmt.Printf("Caelum server now running on wss://%s:%d\n", ip, port)
+		log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", ip, port), sslCrt, sslKey, nil))
+	} else {
+		fmt.Printf("Caelum server now running on ws://%s:%d\n", ip, port)
+		log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", ip, port), nil))
+	}
 }
 

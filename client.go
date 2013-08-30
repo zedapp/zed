@@ -9,6 +9,7 @@ import (
 	"time"
 	"net/url"
 	"strings"
+	"crypto/tls"
 	"bytes"
 	"io/ioutil"
 	"mime"
@@ -330,30 +331,38 @@ func handlePost(path string, requestChannel chan[] byte, responseChannel chan []
 }
 
 // Side-effect: writes to rootPath
-func ParseClientFlags(args []string) (host string, port int) {
+func ParseClientFlags(args []string) string {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	flagSet.StringVar(&host, "host", "caelum.cc", "Host to connect to or bind to")
-	flagSet.IntVar(&port, "port", 7337, "Port to listen or bind to")
+	var url string
+	flagSet.StringVar(&url, "url", "wss://caelum.cc:7337", "URL to connect to")
 	flagSet.Parse(args)
 	if flagSet.NArg() == 0 {
 		rootPath = "."
 	} else {
 		rootPath = args[len(args) - 1]
 	}
-	return
+	return url
 }
 
-func RunClient(host string, port int, id string) {
+func RunClient(url string, id string) {
 	rootPath, _ = filepath.Abs(rootPath)
 	fmt.Println("Root path:", rootPath)
 
-	url := fmt.Sprintf("ws://%s:%d/clientsocket", host, port)
+	socketUrl := fmt.Sprintf("%s/clientsocket", url)
 	var ws *websocket.Conn
 	var timeout time.Duration = 1e8
+	config, err := websocket.NewConfig(socketUrl, socketUrl)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	config.TlsConfig = new(tls.Config)
+	// Disable this when getting a proper certificate
+	config.TlsConfig.InsecureSkipVerify = true
 	for {
 		time.Sleep(timeout)
 		var err error
-		ws, err = websocket.Dial(url, "", url)
+		ws, err = websocket.DialConfig(config)
 		timeout *= 2
 		if err != nil {
 			fmt.Println("Could not yet connect:", err.Error(), ", trying again in", timeout)
@@ -368,7 +377,9 @@ func RunClient(host string, port int, id string) {
 		log.Fatal(err)
 		return
 	}
-	fmt.Printf("URL to connect to: http://%s:%d/fs/%s\n", host, port, id)
+	connectUrl := strings.Replace(url, "ws://", "http://", 1)
+	connectUrl = strings.Replace(connectUrl, "wss://", "https://", 1)
+	fmt.Printf("URL to connect to: %s/fs/%s\n", connectUrl, id)
 	//go PrintStats()
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
 	multiplexer.Multiplex()
