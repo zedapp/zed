@@ -1,18 +1,10 @@
-/*global define ace $ _ */
+/*global define ace */
 define(function(require, exports, module) {
     "use strict";
     
-    var editor = require("./editor");
-    var keys = require("./keys");
     var command = require("./command");
-    var string = require("./lib/string");
-    var keyCode = require("./lib/key_code");
-    var async = require("./lib/async");
-    var settings = require("./settings");
     var Autocomplete = ace.require("ace/autocomplete").Autocomplete;
     
-    var snippetManager = ace.require("ace/snippets").snippetManager;
-
     var completers = [
         ace.require("ace/autocomplete/text_completer"),
         require("./complete/snippet"),
@@ -36,6 +28,7 @@ define(function(require, exports, module) {
         }
         
         return identBuf.reverse().join("");
+        
     }
     
     function shouldComplete(edit) {
