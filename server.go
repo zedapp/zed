@@ -204,7 +204,7 @@ func PrintStats() {
 func ParseServerFlags(args []string) (ip string, port int) {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
 	flagSet.StringVar(&ip, "ip", "0.0.0.0", "IP to bind to")
-	flagSet.IntVar(&port, "port", 7336, "Port to listen on")
+	flagSet.IntVar(&port, "port", 7337, "Port to listen on")
 	flagSet.Parse(args)
 	return
 }

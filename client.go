@@ -332,8 +332,8 @@ func handlePost(path string, requestChannel chan[] byte, responseChannel chan []
 // Side-effect: writes to rootPath
 func ParseClientFlags(args []string) (host string, port int) {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	flagSet.StringVar(&host, "host", "localhost", "Host to connect to or bind to")
-	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
+	flagSet.StringVar(&host, "host", "caelum.cc", "Host to connect to or bind to")
+	flagSet.IntVar(&port, "port", 7337, "Port to listen or bind to")
 	flagSet.Parse(args)
 	if flagSet.NArg() == 0 {
 		rootPath = "."
