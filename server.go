@@ -201,18 +201,20 @@ func PrintStats() {
 	}
 }
 
-func RunServer(args []string) {
+func ParseServerFlags(args []string) (ip string, port int) {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	var host string
-	var port int
-	flagSet.StringVar(&host, "host", "0.0.0.0", "Host to bind to")
-	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
+	flagSet.StringVar(&ip, "ip", "0.0.0.0", "IP to bind to")
+	flagSet.IntVar(&port, "port", 7336, "Port to listen on")
 	flagSet.Parse(args)
+	return
+}
 
+func RunServer(ip string, port int) {
 	http.Handle("/fs/", http.StripPrefix("/fs/", &WebFSHandler{}))
 	http.Handle("/clientsocket", websocket.Handler(socketServer))
 	go PrintStats()
-	fmt.Printf("Now accepting connections on %s:%d\n", host, port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
+	fmt.Printf("Caelum server now running on %s:%d\n", ip, port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", ip, port), nil))
+	//log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", ip, port), "server.crt", "server.key", nil))
 }
 

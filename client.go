@@ -6,6 +6,7 @@ import (
 	"log"
 	"path/filepath"
 	"fmt"
+	"time"
 	"net/url"
 	"strings"
 	"bytes"
@@ -14,7 +15,6 @@ import (
 	"net/http"
 	"encoding/json"
 	"code.google.com/p/go.net/websocket"
-	"code.google.com/p/go-uuid/uuid"
 )
 
 type HttpError interface {
@@ -329,42 +329,47 @@ func handlePost(path string, requestChannel chan[] byte, responseChannel chan []
 	return nil
 }
 
-func RunClient(args []string) {
+// Side-effect: writes to rootPath
+func ParseClientFlags(args []string) (host string, port int) {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	var host string
-	var port int
-	var guid string
 	flagSet.StringVar(&host, "host", "localhost", "Host to connect to or bind to")
 	flagSet.IntVar(&port, "port", 8080, "Port to listen or bind to")
-	flagSet.StringVar(&guid, "guid", "<generated>", "UUID to bind to")
 	flagSet.Parse(args)
-	if guid == "<generated>" {
-		guid = strings.Replace(uuid.New(), "-", "", -1)
-	}
 	if flagSet.NArg() == 0 {
 		rootPath = "."
 	} else {
 		rootPath = args[len(args) - 1]
 	}
+	return
+}
 
+func RunClient(host string, port int, id string) {
 	rootPath, _ = filepath.Abs(rootPath)
-
 	fmt.Println("Root path:", rootPath)
 
-	origin := fmt.Sprintf("http://%s", host)
+	//origin := fmt.Sprintf("http://%s", host)
 	url := fmt.Sprintf("ws://%s:%d/clientsocket", host, port)
-	ws, err := websocket.Dial(url, "", origin)
-	if err != nil {
-		log.Fatal(err)
+	var ws *websocket.Conn
+	var timeout time.Duration = 1e8
+	for {
+		time.Sleep(timeout)
+		var err error
+		ws, err = websocket.Dial(url, "", url)
+		timeout *= 2
+		if err != nil {
+			fmt.Println("Could not yet connect:", err.Error(), ", trying again in", timeout)
+		} else {
+			break
+		}
 	}
 
-	buffer, _ := json.Marshal(HelloMessage{"0.1", guid})
+	buffer, _ := json.Marshal(HelloMessage{"0.1", id})
 
 	if _, err := ws.Write(buffer); err != nil {
 		log.Fatal(err)
 		return
 	}
-	fmt.Printf("http://%s:%d/fs/%s\n", host, port, guid)
+	fmt.Printf("URL to connect to: http://%s:%d/fs/%s\n", host, port, id)
 	//go PrintStats()
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
 	multiplexer.Multiplex()

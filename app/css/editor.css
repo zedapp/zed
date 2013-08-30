@@ -216,6 +216,11 @@ div.preview-vsplit2-right-2 {
 .hidden {
     display: none;
 }
+
+.ace_autocomplete {
+    width: 300px;
+}
+
 #complete-box {
     position: absolute;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;

@@ -1,3 +1,5 @@
+
+/*global chrome*/
 var projectWin = null;
 
 function showProjects() {
@@ -5,7 +7,7 @@ function showProjects() {
         projectWin.show();
         return;
     }
-    chrome.app.window.create('projects.html', {
+    chrome.app.window.create('open.html', {
         frame: 'none',
         width: 400,
         height: 80
@@ -17,7 +19,3 @@ function showProjects() {
 }
 
 chrome.app.runtime.onLaunched.addListener(showProjects);
-
-chrome.commands.onCommand.addListener(function(command) {
-    showProjects();
-});
