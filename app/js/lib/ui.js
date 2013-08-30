@@ -212,7 +212,7 @@ define(function(require, exports, module) {
         
         $("body").append(dialogEl);
         return dialogEl;
-    };
+    }
     
     /**
      * Options

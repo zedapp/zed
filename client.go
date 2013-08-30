@@ -347,7 +347,6 @@ func RunClient(host string, port int, id string) {
 	rootPath, _ = filepath.Abs(rootPath)
 	fmt.Println("Root path:", rootPath)
 
-	//origin := fmt.Sprintf("http://%s", host)
 	url := fmt.Sprintf("ws://%s:%d/clientsocket", host, port)
 	var ws *websocket.Conn
 	var timeout time.Duration = 1e8

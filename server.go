@@ -215,6 +215,6 @@ func RunServer(ip string, port int) {
 	go PrintStats()
 	fmt.Printf("Caelum server now running on %s:%d\n", ip, port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", ip, port), nil))
-	//log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", ip, port), "server.crt", "server.key", nil))
+	//log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", ip, port), "caelum_cc.crt", "privateKey.key", nil))
 }
 
