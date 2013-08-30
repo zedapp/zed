@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+        <title>Open Caelum project</title>
+        <script src="dep/require.js"></script>
+        <script src="dep/underscore-min.js"></script>
+        <script src="dep/jquery.js"></script>
+        <script src="dep/jquery-ui.js"></script>
+<style>
+#status {
+    background: yellow;
+}
+
+body {
+    margin: 0;
+    font-family: Monaco, Menlo;
+}
+td {
+    font-size: 12px;
+}
+table {
+    width: 100%;
+}
+
+#goto {
+    width: 100%;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 14px;
+}
+input[type=text] {
+    font-size: 14px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    outline-width: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px dotted gray;
+    border-top: 0;
+}
+input[type=submit] {
+    visibility: hidden;
+    height: 0;
+}
+
+#hint {
+    font-size: 10px;
+    padding: 5px;
+}
+</style>
+    </head>
+    <body>
+    <div id="goto">
+        <input id="gotoinput" type="text" placeholder="Caelum project URL"/>
+    </div>
+    <div id="hint">After you ran the <tt>caelum</tt> client, you will get a URL, paste that into this box and press <tt>Enter</tt>.</div>
+    <script src="js/open.js"></script>
+</body>
+</html>
