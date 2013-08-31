@@ -12,22 +12,18 @@ require(["./fs/web", "./lib/fuzzyfind"], function(webfs, fuzzyfind) {
             frame: 'chrome',
             width: 720,
             height: 400,
-        }, function(win) {
-            
         });
-        close();
+        input.val("");
+        //close();
     }
     
     function close() {
-        chrome.app.window.current().hide();
-        input.val("");
+        chrome.app.window.current().close();
     }
     
     input.keyup(function(event) {
-        switch(event.keyCode) {
-            case 13: // Return
-                open(input.val());
-                break;
+        if(event.keyCode == 13) {
+            open(input.val());
         }
     });
     $(window).keyup(function(event) {
@@ -35,4 +31,7 @@ require(["./fs/web", "./lib/fuzzyfind"], function(webfs, fuzzyfind) {
             close();
         }
     });
+    
+    input.focus();
+    
 });

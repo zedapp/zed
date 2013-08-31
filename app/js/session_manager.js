@@ -236,7 +236,7 @@ define(function(require, exports, module) {
         async.waitForEvents(eventbus, ["stateloaded", "modesloaded"], function() {
             var sessionStates = state.get("session.open") || {};
             
-            go("zed:start");
+            go("caelum:start");
             
             async.parForEach(Object.keys(sessionStates), function(path, next) {
                 var sessionState = sessionStates[path];

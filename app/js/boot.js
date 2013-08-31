@@ -34,7 +34,7 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
     require(modules, function() {
         var session_manager = require("./session_manager");
 
-        session_manager.specialDocs['zed:start'] = {
+        session_manager.specialDocs['caelum:start'] = {
             mode: 'ace/mode/markdown',
             content: manual
         };
@@ -46,6 +46,6 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
             if (module.init) module.init();
         });
 
-        console.log("Zed booted.");
+        console.log("Caelum booted.");
     });
 });

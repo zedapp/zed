@@ -1,7 +1,7 @@
-Welcome to Zed
+Welcome to Caelum
 ==============
 
-Welcome to Zed, a code editor built using web technologies, designed to rethink
+Welcome to Caelum, a code editor built using web technologies, designed to rethink
 some of the assumptions that underly most editors today. Some of the editor's
 core features are the features it doesn't have:
 
@@ -11,14 +11,14 @@ core features are the features it doesn't have:
 
 What get instead is a bare bones, simple editor that focusses on what matters
 most: making you as productive at editing code and text as possible. To enable
-this, Zed has:
+this, Caelum has:
 
 * Multiple cursors. Once mastered, you will never edit code the same way again.
 * Code completion based on symbols defined in your project, current file and
   snippets.
 * Efficient project navigation at various levels of granularity:
     * Files, quickly jump to the file you want
-    * Symbols, Zed indexes all symbols defined in your project and lets you
+    * Symbols, Caelum indexes all symbols defined in your project and lets you
       quickly jump to the one you're interested in
 * (Vertical) split views, either 1, 2 or 3 vertical splits.
 * Auto-updating preview split for various languages (including markdown and

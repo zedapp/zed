@@ -1,24 +1,19 @@
 * Caelum server:
     * Go routine leaks (server-side)
     * Cleanly handle disconnects (server, client and web)
-    * Auto download UI pack
 * Caelum client
     * Auto reconnect on disconnect
     * Startup file (setting default server to attach to)
-* 
-* Implement settings fs URL (/settings)
-* Get rid of Chrome app stuff
-* Language analysis stuff in worker (?)
 * Reorganize all commands in cleaner categories
     * File
     * Edit
     * Cursor
     * Settings
     * Navigate
-* Per project settings zedsettings.json
+* Per project settings caelumsettings.json
 * Proper HTML preview (loading via HTTP)
 * Nix Mode
-* Save folds in .zedstate
+* Save folds in .caelumstate
 * Change all keyboard handlers to commands
 * Context-aware command enable/disable with isAvailable() call
 * Test suite for WebFS

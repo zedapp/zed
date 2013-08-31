@@ -1,4 +1,4 @@
-Zed Cheatsheet
+Caelum Cheatsheet
 ==============
 Replace `Command` with `Ctrl` if you're not using a Mac.
 

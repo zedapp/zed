@@ -21,7 +21,7 @@ define(function(require, exports, module) {
             return state[key];
         },
         load: function(callback) {
-            project.readFile("/.zedstate", function(err, json) {
+            project.readFile("/.caelumstate", function(err, json) {
                 if(err) {
                     // No worries, empty state!
                     json = "{}";
@@ -32,7 +32,7 @@ define(function(require, exports, module) {
             });
         },
         save: function(callback) {
-            project.writeFile("/.zedstate", this.toJSON(), callback || function() {});
+            project.writeFile("/.caelumstate", this.toJSON(), callback || function() {});
         },
         toJSON: function() {
             return JSON.stringify(state);

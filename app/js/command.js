@@ -1,4 +1,4 @@
-/*global define ace _ */
+/*global define ace _ chrome */
 define(function(require, exports, module) {
     "use strict";
     var useragent = ace.require("ace/lib/useragent");
@@ -76,5 +76,24 @@ define(function(require, exports, module) {
             });
         },
         readOnly: true
+    });
+    
+    exports.define("Settings:Set Preferences", {
+        exec: function() {
+            chrome.app.window.create('editor.html?url=settings:&chromeapp=true', {
+                frame: 'chrome',
+                width: 720,
+                height: 400,
+            });
+        }
+    });
+    exports.define("Help:Open Manual", {
+        exec: function() {
+            chrome.app.window.create('editor.html?url=manual:&chromeapp=true', {
+                frame: 'chrome',
+                width: 720,
+                height: 400,
+            });
+        }
     });
 });

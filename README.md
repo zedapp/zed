@@ -1,7 +1,7 @@
-Zed
+Caelum
 ===
 
-Welcome to Zed, a code editor built using web technologies, designed to rethink
+Welcome to Caelum, a code editor built using web technologies, designed to rethink
 some of the assumptions that underly most editors today. Some of the editor's
 core features are the features it does **not** have:
 
@@ -11,27 +11,27 @@ core features are the features it does **not** have:
 
 What you get instead is a bare bones, simple yet powerful editor that focusses
 on what matters most: making you as productive at editing code and text as
-possible. To enable this, Zed has:
+possible. To enable this, Caelum has:
 
 * Multiple cursors. Once mastered, you will never edit code the same way again.
 * Code completion based on symbols defined in your project, current file and
   snippets.
 * Efficient project navigation at various levels of granularity:
     * Files, quickly jump to the file you want
-    * Symbols, Zed indexes all symbols defined in your project and lets you
+    * Symbols, Caelum indexes all symbols defined in your project and lets you
       quickly jump to the one you're interested in
 * (Vertical) split views, either 1, 2 or 3 vertical splits.
 * Auto-updating preview split for various languages (including markdown and
   coffeescript).
 
-Zed runs inside of Chrome and as such does not have free access to your local
+Caelum runs inside of Chrome and as such does not have free access to your local
 file system. Therefore, it communicates via a simple protocol named
-[WebFS](https://github.com/zefhemel/zed/blob/master/app/manual/webfs.md). In the
-Zed repo, there are two implementations of WebFS: one in PHP, and another in
+[WebFS](https://github.com/zefhemel/caelum/blob/master/app/manual/webfs.md). In the
+Caelum repo, there are two implementations of WebFS: one in PHP, and another in
 Python. They both reside in the `server` directory. For accessing a local
 filesystem, the Python version is easiest to setup. Of course, you can
 also use these to edit files on remote servers. Just setup a WebFS servers,
-create a Zed project and off you go.
+create a Caelum project and off you go.
 
 Screenshots
 -----------
@@ -43,15 +43,15 @@ Screenshots
 
 Installation
 ------------
-Zed runs as a Chrome Package App. To install:
+Caelum runs as a Chrome Package App. To install:
 
-    $ git clone https://github.com/zefhemel/zed.git
-    $ cd zed
+    $ git clone https://github.com/zefhemel/caelum.git
+    $ cd caelum
     $ ./install-deps.sh
 
 Then, in (a recent version of) Chrome, go to the "three-lined" menu > Tools >
 Extensions and click the "Load unpacked extension..." button, navigate to the
-`app` directory inside the Zed repository checkout. Zed should now run!
+`app` directory inside the Caelum repository checkout. Caelum should now run!
 
 Running a WebFS server
 ----------------------
@@ -75,26 +75,26 @@ Other WebFS implementations
   `node server.js`.
 
 
-Creating a Zed project
+Creating a Caelum project
 ----------------------
 
-Now that the WebFS server is running, you can create a Zed project to access it.
-Launch the Zed project picker by pressing the Chrome-wide hotkey:
+Now that the WebFS server is running, you can create a Caelum project to access it.
+Launch the Caelum project picker by pressing the Chrome-wide hotkey:
 `Command-Shift-Z`/`Ctrl-Shift-Z`. This should show a picker with two default
 projects: `Settings` and `Manual`. To create a new project, just start typing
 its name, then press `Return`. Three more input fields will now appear. If you
-run the Python WebFS server and want to create a project around `~/git/zed`, you
-enter the URL: `http://localhost:1338/git/zed`, no username and password are
+run the Python WebFS server and want to create a project around `~/git/caelum`, you
+enter the URL: `http://localhost:1338/git/caelum`, no username and password are
 required. Press `Enter` again to create the project. Then, open the project.
-Welcome to Zed!
+Welcome to Caelum!
 
 For more documentation, look at the Manual project, or at the [files on
-github](https://github.com/zefhemel/zed/tree/master/app/manual).
+github](https://github.com/zefhemel/caelum/tree/master/app/manual).
 
 Inspiration
 -----------
 
-Inspiration for Zed comes from:
+Inspiration for Caelum comes from:
 
 * [Notational Velocity](http://notational.net): the goto bar combining search
   with new file creation

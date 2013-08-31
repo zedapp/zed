@@ -49,7 +49,7 @@ shortened version of `/mode/javascript.default.json` looks like:
     }
 
 The `name` should be self explanatory. The `highlighter` is a tricky one, for
-now Zed won't offer real extensibility at this level, but only support any of
+now Caelum won't offer real extensibility at this level, but only support any of
 the current [ACE](http://ace.ajax.org) highlighters. If you want to add one,
 contribute it to ACE and make more people happy.
 
@@ -77,7 +77,7 @@ In a tool object, you can specify either:
 In addition, snippets for completion can be specified with [multiple insertion
 points](http://screencast.com/t/AYCwS0ZKE).
 
-To develop your own tools, you can clone the Zed git repo and look in the
+To develop your own tools, you can clone the Caelum git repo and look in the
 `/app/plugin` directory for examples. To test them, open `sandbox.html` in your
 browser, which links to a simple playground for testing.
 

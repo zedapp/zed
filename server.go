@@ -202,11 +202,17 @@ func PrintStats() {
 }
 
 func ParseServerFlags(args []string) (ip string, port int, sslCrt string, sslKey string) {
+	var stats bool
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
 	flagSet.StringVar(&ip, "h", "0.0.0.0", "IP to bind to")
 	flagSet.IntVar(&port, "p", 7337, "Port to listen on")
 	flagSet.StringVar(&sslCrt, "sslcrt", "", "Path to SSL certificate")
 	flagSet.StringVar(&sslKey, "sslkey", "", "Path to SSL key")
+	flagSet.BoolVar(&stats, "stats", false, "Whether to print go-routine count and memory usage stats periodically.")
+	flagSet.Parse(args)
+	if stats {
+		go PrintStats()
+	}
 	flagSet.Parse(args)
 	return
 }
@@ -214,7 +220,6 @@ func ParseServerFlags(args []string) (ip string, port int, sslCrt string, sslKey
 func RunServer(ip string, port int, sslCrt string, sslKey string) {
 	http.Handle("/fs/", http.StripPrefix("/fs/", &WebFSHandler{}))
 	http.Handle("/clientsocket", websocket.Handler(socketServer))
-	go PrintStats()
 	if sslCrt != "" {
 		fmt.Printf("Caelum server now running on wss://%s:%d\n", ip, port)
 		log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", ip, port), sslCrt, sslKey, nil))
@@ -223,4 +228,3 @@ func RunServer(ip string, port int, sslCrt string, sslKey string) {
 		log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", ip, port), nil))
 	}
 }
-

@@ -334,8 +334,13 @@ func handlePost(path string, requestChannel chan[] byte, responseChannel chan []
 func ParseClientFlags(args []string) string {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
 	var url string
-	flagSet.StringVar(&url, "url", "wss://caelum.cc:7337", "URL to connect to")
+	var stats bool
+	flagSet.StringVar(&url, "u", "wss://caelum.cc:7337", "URL to connect to")
+	flagSet.BoolVar(&stats, "stats", false, "Whether to print go-routine count and memory usage stats periodically.")
 	flagSet.Parse(args)
+	if stats {
+		go PrintStats()
+	}
 	if flagSet.NArg() == 0 {
 		rootPath = "."
 	} else {
@@ -346,7 +351,7 @@ func ParseClientFlags(args []string) string {
 
 func RunClient(url string, id string) {
 	rootPath, _ = filepath.Abs(rootPath)
-	fmt.Println("Root path:", rootPath)
+	fmt.Println("Editing", rootPath)
 
 	socketUrl := fmt.Sprintf("%s/clientsocket", url)
 	var ws *websocket.Conn
@@ -379,8 +384,9 @@ func RunClient(url string, id string) {
 	}
 	connectUrl := strings.Replace(url, "ws://", "http://", 1)
 	connectUrl = strings.Replace(connectUrl, "wss://", "https://", 1)
-	fmt.Printf("URL to connect to: %s/fs/%s\n", connectUrl, id)
-	//go PrintStats()
+	fmt.Print("In the Caelum Chrome application copy and paste following URL to edit:\n\n")
+	fmt.Printf("  %s/fs/%s\n\n", connectUrl, id)
+	fmt.Println("Press Ctrl-c to quit.")
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
 	multiplexer.Multiplex()
 }

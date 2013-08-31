@@ -10,8 +10,8 @@ import (
 
 func ParseLocalFlags(args []string) (ip string, port int) {
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	flagSet.StringVar(&ip, "ip", "127.0.0.1", "IP to bind to")
-	flagSet.IntVar(&port, "port", 7336, "Port to listen or bind to")
+	flagSet.StringVar(&ip, "h", "127.0.0.1", "IP to bind to")
+	flagSet.IntVar(&port, "p", 7336, "Port to listen or bind to")
 	flagSet.Parse(args)
 	if flagSet.NArg() == 0 {
 		rootPath = "."
@@ -47,14 +47,15 @@ func main() {
 	case "help":
 		fmt.Println(`caelum runs in three possible modes: client, server and local:
 
-Usage: caelum [--host hostname] [--port port] <dir>
+Usage: caelum [-u url] <dir>
        Launches a Caelum client and attaches to a Caelum server exposing
        directory <dir> (or current directory if omitted).
        
-Usage: caelum --server [--ip ip] [--port port]
+Usage: caelum --server [-h ip] [-p port] [--sslcrt file.crt] [--sslkey file.key]
        Launches a Caelum server, binding to IP <ip> on port <port>.
+       If --sslcrt and --sslkey are provided, will run in TLS mode for more security.
 
-Usage: caelum --local  [--ip ip] [--port port] <dir>
+Usage: caelum --local  [-h ip] [-p port] <dir>
 	Launches a server and client in the same process exposing directory <dir> for editing.
 `)
 	}
