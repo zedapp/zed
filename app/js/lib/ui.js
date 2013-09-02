@@ -278,4 +278,21 @@ define(function(require, exports, module) {
             $("body").unbind("keyup", keyHandler);
         }
     };
+    
+    var blockedEl = null;
+    
+    exports.blockUI = function(message) {
+        if(blockedEl) {
+            return;
+        }
+        blockedEl = makeDialog(500, 400);
+        blockedEl.text(message);
+    };
+    
+    exports.unblockUI = function() {
+        if(blockedEl) {
+            blockedEl.remove();
+            blockedEl = null;
+        }
+    };
 });

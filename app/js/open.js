@@ -8,6 +8,9 @@ require(["./fs/web", "./lib/fuzzyfind"], function(webfs, fuzzyfind) {
     var input = $("#gotoinput");
     
     function open(url) {
+        if(url == "local") {
+            url = "http://127.0.0.1:7336/fs/local";
+        }
         chrome.app.window.create('editor.html?url=' + url + '&chromeapp=true', {
             frame: 'chrome',
             width: 720,

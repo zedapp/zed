@@ -62,6 +62,9 @@ define(function(require, exports, module) {
     
     command.define("Navigate:Goto", {
         exec: function(edit, text) {
+            if(typeof text !== "string") {
+                text = undefined;
+            }
             var currentPos = edit.getCursorPosition();
             var selectionRange = edit.getSelectionRange();
             var beforeGotoSession = edit.getSession();

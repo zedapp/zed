@@ -62,7 +62,7 @@ func (m *RPCMultiplexer) closeListener(requestId byte, closeChannel chan bool) {
 	m.OutstandingRequests[requestId] = nil
 }
 
-func (m *RPCMultiplexer) Multiplex() {
+func (m *RPCMultiplexer) Multiplex() error {
 	m.OutstandingRequests = make([]*Request, 255)
 	m.writeChannel = make(chan []byte)
 
@@ -71,8 +71,7 @@ func (m *RPCMultiplexer) Multiplex() {
 	for {
 		requestId, buffer, err := ReadFrame(m.rw)
 		if err != nil {
-			fmt.Println("Reading failed: ", err)
-			break
+			return err
 		}
 		req := m.OutstandingRequests[requestId]
 		if req == nil {

@@ -24,14 +24,22 @@ func (e *NoSuchClientError) Error() string {
 type WebFSHandler struct {
 }
 
+func quietPanicRecover() {
+	if r := recover(); r != nil {
+        fmt.Println("Recovered from panic", r)
+    }
+}
+
 func (self *WebFSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 	id := parts[0]
 
+	defer quietPanicRecover()
+
 	req, err := NewClientRequest(id)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		http.Error(w, err.Error(), http.StatusGone)
 		return
 	}
 	// First send request line
@@ -46,7 +54,6 @@ func (self *WebFSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	req.ch <- headerBuffer.Bytes()
 
 	// Send body
-	//fmt.Println("Reading body")
 	for {
 		buffer := make([]byte, BUFFER_SIZE)
 		n, _ := r.Body.Read(buffer)
@@ -56,20 +63,31 @@ func (self *WebFSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		req.ch <- buffer[:n]
 	}
 	req.ch <- DELIMITERBUFFER
-	//fmt.Println("Listening for status code")
-	statusCode := BytesToInt(<-req.ch)
-	//fmt.Println("Getting headers")
-	headers := strings.Split(string(<-req.ch), "\n")
+	statusCodeBuffer, ok := <-req.ch
+	if !ok {
+		http.Error(w, "Connection closed", http.StatusInternalServerError)
+		return
+	}
+	statusCode := BytesToInt(statusCodeBuffer)
+	headersBuffer, ok := <-req.ch
+	if !ok {
+		http.Error(w, "Connection close", http.StatusInternalServerError)
+		return
+	}
+	headers := strings.Split(string(headersBuffer), "\n")
 	for _, header := range headers {
 		headerParts := strings.Split(header, ": ")
 		w.Header().Set(headerParts[0], headerParts[1])
 	}
 	w.WriteHeader(statusCode)
 
-	//fmt.Println("Listening for body")
 	for {
 		buffer, ok := <-req.ch
 		if !ok {
+			w.Write([]byte("Connection closed"))
+			break
+		}
+		if IsDelimiter(buffer) {
 			break
 		}
 		_, err := w.Write(buffer)
@@ -88,6 +106,15 @@ type Client struct {
 	pendingRequests []*ClientRequest
 }
 
+func (c *Client) close() {
+	for i := range(c.pendingRequests) {
+		if c.pendingRequests[i] != nil {
+			c.pendingRequests[i].close()
+		}
+	}
+	close(c.writeChannel)
+}
+
 func NewClient(uuid string) *Client {
 	client := &Client {
 		writeChannel: make(chan []byte),
@@ -101,6 +128,10 @@ type ClientRequest struct {
 	requestId byte
 	// Reusing channel for reading and writing
 	ch chan[] byte
+}
+
+func (cr *ClientRequest) close() {
+	close(cr.ch)
 }
 
 func addRequestId(requestId byte, buffer []byte) []byte {
@@ -126,6 +157,7 @@ func NewClientRequest(uuid string) (*ClientRequest, error) {
 	client.pendingRequests[requestId] = req
 
 	go func() {
+		defer quietPanicRecover()
 		// Listen on req.ch and move messages over (after
 		// adding requestId to the write channel
 		// stop after the delimiter, no more reading will need
@@ -146,16 +178,28 @@ func socketServer(ws *websocket.Conn) {
 	n, err := ws.Read(buffer)
 	var hello HelloMessage
 	err = json.Unmarshal(buffer[:n], &hello)
+	if err != nil {
+		fmt.Println("Could not parse welcome message.")
+		return
+	}
 	fmt.Println("Client", hello.UUID, "connected")
 
 	client := NewClient(hello.UUID)
 
+	closeSocket := func() {
+		fmt.Println("Client disconnected", hello.UUID)
+		clients[hello.UUID].close()
+		delete(clients, hello.UUID)
+	}
+
 	// Read frame from socket and forward it to request channel
 	go func() {
+		defer quietPanicRecover()
 		for {
 			requestId, buffer, err := ReadFrame(ws)
 			if err != nil {
-				fmt.Println("Read error", err)
+				//fmt.Println("Read error", err)
+				closeSocket()
 				return
 			}
 			req := client.pendingRequests[requestId]
@@ -163,24 +207,14 @@ func socketServer(ws *websocket.Conn) {
 				fmt.Println("Got response for non-existent request", requestId, string(buffer))
 				continue
 			}
-			if IsDelimiter(buffer) {
-				close(req.ch)
-			} else {
-				req.ch <- buffer
-			}
+			req.ch <- buffer
 		}
 	}()
 
-	closeSocket := func() {
-		fmt.Print("Closed!")
-		// TODO clean up all requests, close all channels etc.
-		delete(clients, hello.UUID)
-	}
 
 	for {
 		writeBuffer, request_ok := <-client.writeChannel
 		if !request_ok {
-			closeSocket()
 			break
 		}
 		err = WriteFrame(ws, writeBuffer[0], writeBuffer[1:])

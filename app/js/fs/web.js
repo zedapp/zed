@@ -123,6 +123,10 @@ define(function(require, exports, module) {
                                 fn(path, "deleted");
                             });
                             fileWatchers[path] = [];
+                        } else if(xhr.status == 410) {
+                            fileWatchers[path].forEach(function(fn) {
+                                fn(path, "disconnected");
+                            });
                         }
                     }
                 });

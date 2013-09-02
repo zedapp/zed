@@ -37,14 +37,20 @@ define(function(require, exports, module) {
     };
 
     var bindCommand = exports.bindCommand = function(cmd, bindKey) {
-        commands.push({
-            name: cmd,
-            bindKey: bindKey,
-            exec: function(editor) {
-                return command.exec(cmd, editor);
-            },
-            readOnly: true //command.lookup(cmd).readOnly
-        });
+        try {
+            var c = command.lookup(cmd);
+            commands.push({
+                name: cmd,
+                bindKey: bindKey,
+                exec: function(editor, args) {
+                    return command.exec(cmd, editor, args);
+                },
+                multiSelectAction: c.multiSelectAction,
+                readOnly: c.readOnly
+            });
+        } catch(e) {
+            console.error("Failed to bind keys to command", cmd, "does it exist?", e);
+        }
     };
     
     exports.getCommandKeys = function() {
@@ -66,6 +72,7 @@ define(function(require, exports, module) {
     };
     
     exports.init = function() {
+        loadCommands();
         settingsfs.watchFile("/keys.user.json", loadKeys);
     };
     
@@ -112,148 +119,11 @@ define(function(require, exports, module) {
         });
     }
     
-    loadCommands();
+    //loadCommands();
     
     function loadCommands() {
         // TODO: Move these into keys.json
         commands = [{
-            name: "fold",
-            bindKey: bindKey("Alt-L|Ctrl-F1", "Command-Alt-L|Command-F1"),
-            exec: function(editor) {
-                editor.session.toggleFold(false);
-            },
-            readOnly: true
-        }, {
-            name: "unfold",
-            bindKey: bindKey("Alt-Shift-L|Ctrl-Shift-F1", "Command-Alt-Shift-L|Command-Shift-F1"),
-            exec: function(editor) {
-                editor.session.toggleFold(true);
-            },
-            readOnly: true
-        }, {
-            name: "foldall",
-            bindKey: bindKey("Alt-0", "Command-Option-0"),
-            exec: function(editor) {
-                editor.session.foldAll();
-            },
-            readOnly: true
-        }, {
-            name: "unfoldall",
-            bindKey: bindKey("Alt-Shift-0", "Command-Option-Shift-0"),
-            exec: function(editor) {
-                editor.session.unfold();
-            },
-            readOnly: true
-        }, {
-            name: "findnext",
-            bindKey: bindKey("Ctrl-K", "Command-G"),
-            exec: function(editor) {
-                editor.findNext();
-            },
-            readOnly: true
-        }, {
-            name: "findprevious",
-            bindKey: bindKey("Ctrl-Shift-K", "Command-Shift-G"),
-            exec: function(editor) {
-                editor.findPrevious();
-            },
-            readOnly: true
-        }, {
-            name: "overwrite",
-            bindKey: "Insert",
-            exec: function(editor) {
-                editor.toggleOverwrite();
-            },
-            readOnly: true
-        }, {
-            name: "selecttostart",
-            bindKey: bindKey("Ctrl-Shift-Home", "Command-Shift-Up"),
-            exec: function(editor) {
-                editor.getSelection().selectFileStart();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "gotostart",
-            bindKey: bindKey("Ctrl-Home", "Command-Home|Command-Up"),
-            exec: function(editor) {
-                editor.navigateFileStart();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "selectup",
-            bindKey: bindKey("Shift-Up", "Shift-Up"),
-            exec: function(editor) {
-                editor.getSelection().selectUp();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "golineup",
-            bindKey: bindKey("Up", "Up|Ctrl-P"),
-            exec: function(editor, args) {
-                editor.navigateUp(args.times);
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "selecttoend",
-            bindKey: bindKey("Ctrl-Shift-End", "Command-Shift-Down"),
-            exec: function(editor) {
-                editor.getSelection().selectFileEnd();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "gotoend",
-            bindKey: bindKey("Ctrl-End", "Command-End|Command-Down"),
-            exec: function(editor) {
-                editor.navigateFileEnd();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "selectdown",
-            bindKey: bindKey("Shift-Down", "Shift-Down"),
-            exec: function(editor) {
-                editor.getSelection().selectDown();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "golinedown",
-            bindKey: bindKey("Down", "Down|Ctrl-N"),
-            exec: function(editor, args) {
-                editor.navigateDown(args.times);
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "selectwordleft",
-            bindKey: bindKey("Ctrl-Shift-Left", "Option-Shift-Left"),
-            exec: function(editor) {
-                editor.getSelection().selectWordLeft();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "gotowordleft",
-            bindKey: bindKey("Ctrl-Left", "Option-Left"),
-            exec: function(editor) {
-                editor.navigateWordLeft();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "selecttolinestart",
-            bindKey: bindKey("Alt-Shift-Left", "Command-Shift-Left"),
-            exec: function(editor) {
-                editor.getSelection().selectLineStart();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
             name: "gotolinestart",
             bindKey: bindKey("Alt-Left|Home", "Command-Left|Home|Ctrl-A"),
             exec: function(editor) {
@@ -282,14 +152,6 @@ define(function(require, exports, module) {
             bindKey: bindKey("Ctrl-Shift-Right", "Option-Shift-Right"),
             exec: function(editor) {
                 editor.getSelection().selectWordRight();
-            },
-            multiSelectAction: "forEach",
-            readOnly: true
-        }, {
-            name: "gotowordright",
-            bindKey: bindKey("Ctrl-Right", "Option-Right"),
-            exec: function(editor) {
-                editor.navigateWordRight();
             },
             multiSelectAction: "forEach",
             readOnly: true
@@ -547,20 +409,6 @@ define(function(require, exports, module) {
             bindKey: bindKey("Alt-Delete", "Ctrl-K"),
             exec: function(editor) {
                 editor.removeToLineEnd();
-            },
-            multiSelectAction: "forEach"
-        }, {
-            name: "removewordleft",
-            bindKey: bindKey("Ctrl-Backspace", "Alt-Backspace|Ctrl-Alt-Backspace"),
-            exec: function(editor) {
-                editor.removeWordLeft();
-            },
-            multiSelectAction: "forEach"
-        }, {
-            name: "removewordright",
-            bindKey: bindKey("Ctrl-Delete", "Alt-Delete"),
-            exec: function(editor) {
-                editor.removeWordRight();
             },
             multiSelectAction: "forEach"
         }, {

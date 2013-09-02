@@ -38,7 +38,7 @@ func (self *HandlingError) Error() string {
 
 func NewHandlingError(message string) HttpError {
 	return &HandlingError { message }
-} 
+}
 
 type httpError struct {
 	statusCode int
@@ -388,5 +388,9 @@ func RunClient(url string, id string) {
 	fmt.Printf("  %s/fs/%s\n\n", connectUrl, id)
 	fmt.Println("Press Ctrl-c to quit.")
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
-	multiplexer.Multiplex()
+	err = multiplexer.Multiplex()
+	if err != nil {
+		// TODO do this in a cleaner way (reconnect, that is)
+		RunClient(url, id)
+	}
 }

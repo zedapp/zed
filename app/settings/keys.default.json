@@ -43,9 +43,43 @@
         "win": "Ctrl-Shift-Home",
         "mac": "Command-Shift-Up"
     },
+    "Edit:Remove Word Left": "Alt-Backspace",
+    "Edit:Remove Word Right": "Alt-D",
+    "Edit:Goto Beginning Of File": {
+        "mac": "Cmd-Up|Alt-Shift-,",
+        "win": "Ctrl-Home|Alt-Shift-,"
+    },
+    "Edit:Goto End Of File": {
+        "mac": "Cmd-End|Alt-Shift-.",
+        "win": "Ctrl-End|Alt-Shift-."
+    },
+    "Edit:Select Up": "Shift-Up",
+    "Edit:Go Line Up": "Up|Ctrl-P",
+    "Edit:Select To End Of File": {
+        "win": "Command-Shift-Down",
+        "mac": "Ctrl-Shift-End"
+    },
+    "Edit:Select Down": "Shift-Down",
+    "Edit:Go Line Down": "Down|Ctrl-N",
     "Navigate:Goto": {
         "mac": "Command-E",
         "win": "Ctrl-E"
+    },
+    "Edit:Goto Word Right": {
+        "mac": "Option-Right|Alt-F",
+        "win": "Ctrl-Right|Alt-F"
+    },
+    "Edit:Select Word Left": {
+        "mac": "Option-Shift-Left",
+        "win": "Ctrl-Shift-Left"
+    },
+    "Edit:Goto Word Left": {
+        "mac": "Option-Left|Alt-B",
+        "win": "Ctrl-Left|Alt-B"
+    },
+    "Edit:Select To Line Start": {
+        "mac": "Command-Shift-Left",
+        "win": "Alt-Shift-Left"
     },
     "Navigate:Lookup Symbol": {
         "win": "Ctrl-J",
@@ -99,10 +133,6 @@
     "Tools:Beautify": {
         "mac": "Command-Shift-B",
         "win": "Ctrl-Shift-B"
-    },
-    "Tools:Compile": {
-        "mac": "Command-Shift-C",
-        "win": "Ctrl-Shift-C"
     },
     "Tools:Preview": {
         "mac": "Command-P",

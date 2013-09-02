@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     var editor = require("./editor");
     var state = require("./state");
     var locator = require("./lib/locator");
+    var ui = require("./lib/ui");
 
     eventbus.declare("switchsession");
     eventbus.declare("newfilecreated");
@@ -164,12 +165,15 @@ define(function(require, exports, module) {
             
             // File watching
             session.watcherFn = function(path, kind) {
+                ui.unblockUI();
                 if(kind === "changed") {
                     handleChangedFile(path);
                 } else if(kind === "deleted") {
                     console.log("File deleted", path);
                     delete sessions[path];
                     eventbus.emit("filedeleted", path);
+                } else if(kind === "disconnected") {
+                    ui.blockUI("Disconnected, hang on... If this message doesn't disappear within a few seconds: close this window and restart your Caelum client.");
                 }
             };
             project.watchFile(session.filename, session.watcherFn);

@@ -1,8 +1,4 @@
-* Caelum server:
-    * Go routine leaks (server-side)
-    * Cleanly handle disconnects (server, client and web)
 * Caelum client
-    * Auto reconnect on disconnect
     * Startup file (setting default server to attach to)
 * Reorganize all commands in cleaner categories
     * File

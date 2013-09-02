@@ -230,6 +230,86 @@ define(function(require, exports, module) {
             editor.session.toggleFold(false);
         }
     });
+    
+    command.define("Edit:Select Up", {
+        exec: function(editor) {
+            editor.getSelection().selectUp();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Go Line Up", {
+        exec: function(editor, args) {
+            editor.navigateUp(args.times);
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Select To End Of File", {
+        exec: function(editor) {
+            editor.getSelection().selectFileEnd();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Select Down", {
+        exec: function(editor) {
+            editor.getSelection().selectDown();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Go Line Down", {
+        exec: function(editor, args) {
+            editor.navigateDown(args.times);
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Goto Beginning Of File", {
+        exec: function(editor) {
+            editor.navigateFileStart();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Goto End Of File", {
+        exec: function(editor) {
+            editor.navigateFileEnd();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Select Word Left", {
+        exec: function(editor) {
+            editor.getSelection().selectWordLeft();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Goto Word Left", {
+        exec: function(editor) {
+            editor.navigateWordLeft();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Edit:Select To Line Start", {
+        exec: function(editor) {
+            editor.getSelection().selectLineStart();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
 
     command.define("Edit:Unfold", {
         exec: function(editor) {
@@ -284,6 +364,28 @@ define(function(require, exports, module) {
             command.exec("Navigate:Goto", edit, ":/");
         }
     });
+    
+    command.define("Edit:Remove Word Left", {
+        exec: function(editor) {
+            editor.removeWordLeft();
+        },
+        multiSelectAction: "forEach"
+    });
+    
+    command.define("Edit:Remove Word Right", {
+        exec: function(editor) {
+            editor.removeWordRight();
+        },
+        multiSelectAction: "forEach"
+    });
+    
+    command.define("Edit:Goto Word Right", {
+        exec: function(editor) {
+            editor.navigateWordRight();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
 
     command.define("Settings:Toggle Word Wrap", {
         exec: function() {
@@ -317,7 +419,7 @@ define(function(require, exports, module) {
             });
         }
     });
-
+    
     function find(session, needle, dir) {
         var Search = ace.require("./search").Search;
         var search = new Search();
