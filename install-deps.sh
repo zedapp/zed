@@ -1,5 +1,8 @@
 #!/bin/sh
 
+go get code.google.com/p/go-uuid/uuid
+go get code.google.com/p/go.net/websocket
+
 cd `dirname $0`
 cd app
 curl -L https://github.com/zefhemel/ace-builds/archive/master.tar.gz | tar xzf -

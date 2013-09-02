@@ -230,7 +230,11 @@ func PrintStats() {
 	var memStats runtime.MemStats
 	for {
 		runtime.ReadMemStats(&memStats)
-		fmt.Printf("Number of go-routines: %d Memory used: %dK\n", runtime.NumGoroutine(), memStats.Alloc / 1024)
+		clientCount := 0
+		for _ = range clients {
+			clientCount++
+		}
+		fmt.Printf("Clients: %d Goroutines: %d Memory: %dK\n", clientCount, runtime.NumGoroutine(), memStats.Alloc / 1024)
 		time.Sleep(10e9) // Every 10 seconds
 	}
 }
