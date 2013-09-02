@@ -15,7 +15,7 @@ define(function(require, exports, module) {
 
     var editors = [];
     var activeEditor = null;
-
+    
     var editor = module.exports = {
         extMapping: defaultSettings.fileExtensions,
         themes: ["ace/theme/ambiance", "ace/theme/chaos",

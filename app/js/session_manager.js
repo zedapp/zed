@@ -104,7 +104,7 @@ define(function(require, exports, module) {
         });
     }
 
-    function go(path, edit, previousSession, previewSession) {
+    function go(path, edit, previousSession) {
         edit = edit || editor.getActiveEditor();
         if (!path) {
             return;
@@ -128,7 +128,9 @@ define(function(require, exports, module) {
         if (sessions[path]) {
             show(sessions[path]);
         } else {
+            eventbus.emit("sessionactivitystarted", previousSession, "Loading...");
             loadFile(path, function(err, session) {
+                eventbus.emit("sessionactivitycompleted", previousSession);
                 if (err) {
                     console.log("Creating new, empty file", path);
                     session = editor.createSession(path, "");
@@ -149,15 +151,9 @@ define(function(require, exports, module) {
             if(previousSession.watcherFn) {
                 project.unwatchFile(previousSession.filename, previousSession.watcherFn);
             }
-            if(previewSession) {
-                // Copy scroll position and selection from previewSession
-                session.setScrollTop(previewSession.getScrollTop());
-                session.setScrollLeft(previewSession.getScrollLeft());
-                session.selection.setRange(previewSession.selection.getRange());
-            }
             editor.switchSession(session, edit);
             
-            if(loc && !previewSession) {
+            if(loc) {
                 setTimeout(function() {
                     locator.jump(loc);
                 });
@@ -180,62 +176,6 @@ define(function(require, exports, module) {
         }
     }
     
-    var previewSessionCache = {};
-    
-    exports.flushPreviewCache = function() {
-        previewSessionCache = {};
-    };
-    
-    /**
-     * Simpler version of go that is used for previewing a file
-     * Does not save anything in a session or reuse existing sessions
-     */
-    exports.previewGo = function(path, edit, callback) {
-        if (!path) {
-            return callback();
-        }
-        
-        var pathParts = path.split(':');
-        path = pathParts[0];
-        var loc = pathParts[1];
-        if (path[0] !== '/') {
-            // Normalize
-            path = '/' + path;
-        }
-        if(previewSessionCache[path]) {
-            show(previewSessionCache[path]);
-        } else {
-            project.readFile(path, function(err, text) {
-                if (err) {
-                    return show(editor.createSession(path, ""));
-                }
-                var session = editor.createSession(path, text);
-                if(sessions[path]) {
-                    var existingSession = sessions[path];
-                    session.setScrollTop(existingSession.getScrollTop());
-                    session.setScrollLeft(existingSession.getScrollLeft());
-                    session.selection.setRange(existingSession.selection.getRange());
-                }
-                previewSessionCache[path] = session;
-                session.isPreview = true;
-                session.on("change", function() {
-                    eventbus.emit("sessionactivityfailed", session, "Cannot save preview session");
-                });
-                show(session);
-            });
-        }
-
-        function show(session) {
-            editor.switchSession(session, edit);
-            if(loc) {
-                setTimeout(function() {
-                    locator.jump(loc);
-                });
-            }
-            callback(null, session);
-        }
-    };
-
     exports.hook = function() {
         async.waitForEvents(eventbus, ["stateloaded", "modesloaded"], function() {
             var sessionStates = state.get("session.open") || {};
@@ -260,15 +200,19 @@ define(function(require, exports, module) {
                 }
                 eventbus.emit("allsessionsloaded");
             });
+            
+            setInterval(updateState, 2500);
+        });
+        
+        ui.blockUI("Loading...");
+        
+        eventbus.on("stateloaded", function() {
+            ui.unblockUI();
         });
     };
 
     exports.go = go;
     exports.handleChangedFile = handleChangedFile;
-    
-    exports.init = function() {
-        setInterval(updateState, 2500);
-    };
     
     exports.getSessions = function() {
         return sessions;

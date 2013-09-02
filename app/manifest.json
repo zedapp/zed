@@ -1,9 +1,9 @@
 {
     "name": "Caelum",
-    "version": "0.2.1",
+    "version": "0.2.4",
     "manifest_version": 2,
     "minimum_chrome_version": "23",
-    "description": "Code Editor.",
+    "description": "The opiniated text and code editor",
     "offline_enabled": true,
     "app": {
         "background": {
@@ -14,14 +14,10 @@
         "storage",
         "webview",
         "http://*/",
-        "https://*/", {
-        "fileSystem": ["write"]
-    }],
+        "https://*/"
+    ],
     "icons": {
-        "16": "img/16x16/file_edit.png",
-        "32": "img/32x32/file_edit.png",
-        "64": "img/64x64/file_edit.png",
-        "128": "img/128x128/file_edit.png"
+        "128": "Icon.png"
     },
     "sandbox": {
         "pages": ["sandbox.html", "preview.html"]

@@ -33,7 +33,7 @@ define(function(require, exports, module) {
     };
     
     EventEmitter.prototype.emit = function(type) {
-        //console.log("Emitting", type);
+        console.log("Emitting", type);
         // If there is no 'error' event listener then throw.
         if (type === 'error') {
             if (!this._events || !this._events.error ||

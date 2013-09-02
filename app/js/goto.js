@@ -67,9 +67,7 @@ define(function(require, exports, module) {
             }
             var currentPos = edit.getCursorPosition();
             var selectionRange = edit.getSelectionRange();
-            var beforeGotoSession = edit.getSession();
-            var jumpTimer = null;
-            var previewSession = null;
+            var session = edit.getSession();
             
             function filterSymbols(phrase, path) {
                 var tags = ctags.getCTags(path);
@@ -94,7 +92,7 @@ define(function(require, exports, module) {
                 
                 if(!phrase && loc !== undefined) {
                     if(loc[0] === "@") {
-                        resultList = filterSymbols(loc, beforeGotoSession.filename);
+                        resultList = filterSymbols(loc, session.filename);
                     } else {
                         resultList = [];
                     }
@@ -133,19 +131,12 @@ define(function(require, exports, module) {
                 }
                 
                 var editors = editor.getEditors();
-                var activeEditor = editor.getActiveEditor();
                 
                 // Filter out paths currently open in an editor
                 resultList = resultList.filter(function(result) {
                     for(var i = 0; i < editors.length; i++) {
-                        if(editors[i] === activeEditor && beforeGotoSession) {
-                            if(beforeGotoSession.filename === result.path) {
-                                return false;
-                            }
-                        } else {
-                            if(editors[i].getSession().filename === result.path) {
-                                return false;
-                            }
+                        if(editors[i].getSession().filename === result.path) {
+                            return false;
                         }
                     }
                     return true;
@@ -161,48 +152,24 @@ define(function(require, exports, module) {
                 return resultList;
             }
 
-            session_manager.flushPreviewCache();
             ui.filterBox({
                 placeholder: "Path",
                 filter: filter,
                 text: text,
-                currentPath: beforeGotoSession.filename,
+                currentPath: session.filename,
                 onChange: function(phrase, selectedItem) {
                     var phraseParts = phrase.split(':');
                     var loc = phraseParts[1];
                     if(!phraseParts[0] && loc) {
-                        if(!selectedItem && (!previewSession || previewSession.filename !== beforeGotoSession.filename)) {
-                            session_manager.previewGo(beforeGotoSession.filename, edit, function(err, session) {
-                                previewSession = session;
-                                locator.jump(loc, selectionRange);
-                            });
-                            return;
-                        } else if(!selectedItem) {
+                        if(!selectedItem) {
                             locator.jump(loc, selectionRange);
                             return;
                         }
                     }
-                    if(selectedItem) {
-                        // Let's delay this a little bit
-                        if (jumpTimer) {
-                            clearTimeout(jumpTimer);
-                        }
-                        jumpTimer = setTimeout(function() {
-                            session_manager.previewGo(selectedItem, edit, function(err, session) {
-                                previewSession = session;
-                            });
-                        }, settings.get("previewDelay"));
-                    } else {
-                        editor.switchSession(beforeGotoSession, edit);
-                    }
                 },
                 hint: hint,
                 onSelect: function(file, phrase) {
-                    if(jumpTimer) {
-                        clearTimeout(jumpTimer);
-                    }
-                    
-                    var currentPath = beforeGotoSession.filename;
+                    var currentPath = session.filename;
                     var fileOnly, locator, phraseParts;
                     if(file !== phrase) {
                         phraseParts = phrase.split(':');
@@ -214,15 +181,12 @@ define(function(require, exports, module) {
                         locator = phraseParts[1];
                     }
                     file = fileOnly + (locator ? ':' + locator : '');
-                    session_manager.go(file, edit, beforeGotoSession, previewSession);
+                    session_manager.go(file, edit, session);
                 },
                 onCancel: function() {
-                    if (jumpTimer) {
-                        clearTimeout(jumpTimer);
-                    }
                     edit.moveCursorToPosition(currentPos);
                     edit.clearSelection();
-                    editor.switchSession(beforeGotoSession, edit);
+                    editor.switchSession(session, edit);
                 }
             });
         },
