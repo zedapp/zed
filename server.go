@@ -31,6 +31,7 @@ func quietPanicRecover() {
 }
 
 func (self *WebFSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	parts := strings.Split(r.URL.Path, "/")
 	id := parts[0]
 
@@ -163,7 +164,10 @@ func NewClientRequest(uuid string) (*ClientRequest, error) {
 		// stop after the delimiter, no more reading will need
 		// to happen
 		for {
-			buffer := <-req.ch
+			buffer, ok := <-req.ch
+			if !ok {
+				break
+			}
 			clients[uuid].writeChannel <- addRequestId(requestId, buffer)
 			if IsDelimiter(buffer) {
 				break
@@ -174,6 +178,7 @@ func NewClientRequest(uuid string) (*ClientRequest, error) {
 }
 
 func socketServer(ws *websocket.Conn) {
+	defer ws.Close()
 	buffer := make([]byte, BUFFER_SIZE)
 	n, err := ws.Read(buffer)
 	var hello HelloMessage

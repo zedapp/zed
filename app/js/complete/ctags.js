@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var Map = require("../lib/collection").Map;
     var ctags = require("../ctags");
     
-    exports.getCompletions = function(edit, session, pos, prefix, callback) {
+    module.exports = function(session, pos, prefix, callback) {
         var tags = ctags.getCTags();
         var matches = [];
         var matchedSymbols = new Map();
@@ -17,7 +17,7 @@ define(function(require, exports, module) {
                 var pathParts = ctag.path.split('/');
                 matches.push({
                     name: ctag.symbol,
-                    value: ctag.symbol,
+                    text: ctag.symbol,
                     meta: pathParts[pathParts.length-1],
                     score: 0
                 });

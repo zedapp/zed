@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     "use strict";
     
-    exports.getCompletions = function(edit, session, pos, prefix, callback) {
+    module.exports = function(session, pos, prefix, callback) {
         var mode = session.mode;
         var matches = [];
         Object.keys(mode).forEach(function(key) {
@@ -10,8 +10,7 @@ define(function(require, exports, module) {
                 if(snippet.indexOf(prefix) === 0) {
                     matches.push({
                         name: snippet,
-                        value: snippet,
-                        snippet: mode[key],
+                        text: mode[key],
                         meta: "snippet",
                         score: 999
                     });

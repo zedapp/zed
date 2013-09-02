@@ -38,7 +38,43 @@ div.editor-vsplit2-right-1 {
     position: absolute;
     border-left: 1px solid #aaa;
     top: 0;
-    right: 0;
+    right: 0;#complete-box {
+    position: absolute;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 12px;
+    border: 1px solid black;
+    background-color: white;
+    z-index: 999;
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 200px;
+    width: 300px;
+    margin: 0;
+    padding: 0;
+}
+#complete-box li {
+    list-style-type: none;
+    position: relative;
+    padding: 0;
+}
+#complete-box a {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+    color: black;
+}
+#complete-box span.meta {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    color: #999;
+}
+#complete-box a.ui-state-focus {
+    background-color: #33CCFF;
+}
+#complete-box span.match {
+    text-decoration: underline;
+}
     bottom: 0;
     width: 66.66%;
 }
@@ -219,6 +255,44 @@ div.preview-vsplit2-right-2 {
 
 .ace_autocomplete {
     width: 300px;
+}
+
+#complete-box {
+    position: absolute;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 12px;
+    border: 1px solid black;
+    background-color: white;
+    z-index: 999;
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 200px;
+    width: 300px;
+    margin: 0;
+    padding: 0;
+}
+#complete-box li {
+    list-style-type: none;
+    position: relative;
+    padding: 0;
+}
+#complete-box a {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+    color: black;
+}
+#complete-box span.meta {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    color: #999;
+}
+#complete-box a.ui-state-focus {
+    background-color: #33CCFF;
+}
+#complete-box span.match {
+    text-decoration: underline;
 }
 
 #tree {
