@@ -118,6 +118,7 @@ define(function(require, exports, module) {
                         }
                     },
                     error: function(xhr) {
+                        etagCache[path] = null;
                         if(xhr.status === 404) {
                             fileWatchers[path].forEach(function(fn) {
                                 fn(path, "deleted");
@@ -126,6 +127,10 @@ define(function(require, exports, module) {
                         } else if(xhr.status == 410) {
                             fileWatchers[path].forEach(function(fn) {
                                 fn(path, "disconnected");
+                            });
+                        } else {
+                            fileWatchers[path].forEach(function(fn) {
+                                fn(path, "error");
                             });
                         }
                     }

@@ -285,12 +285,15 @@ define(function(require, exports, module) {
         if(blockedEl) {
             return;
         }
-        blockedEl = makeDialog(500, 400);
+        console.log("Blocking UI");
+        blockedEl = $("<div id='blockui'>");
+        $("body").append(blockedEl);
         blockedEl.text(message);
     };
     
     exports.unblockUI = function() {
         if(blockedEl) {
+            console.log("Unblocking UI again");
             blockedEl.remove();
             blockedEl = null;
         }

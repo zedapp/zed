@@ -272,9 +272,22 @@ div.preview-vsplit2-right-2 {
     max-height: 80%;
     overflow: scroll;
 }
+
+#blockui {
+    position: absolute;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 14px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: #fff;
+}
+
 #dialog {
     position: fixed;
-    border: solid 1px #666;
+    border: solid 1px #ccc;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
     padding: 10px;

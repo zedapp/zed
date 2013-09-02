@@ -10,7 +10,7 @@ define(function(require, exports, module) {
         }
         var parts = path.split("/");
         return parts.slice(0, parts.length - 1).join("/");
-    }
+    };
     
     exports.filename = function(path) {
         if(path[path.length-1] === '/') {
@@ -18,7 +18,7 @@ define(function(require, exports, module) {
         }
         var parts = path.split("/");
         return parts[parts.length - 1];
-    }
+    };
     
     exports.hook = function() {
         var urlReq = location.search.substring(1);

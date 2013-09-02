@@ -168,7 +168,8 @@ define(function(require, exports, module) {
                     console.log("File deleted", path);
                     delete sessions[path];
                     eventbus.emit("filedeleted", path);
-                } else if(kind === "disconnected") {
+                } else {
+                    console.log("Other kind", kind);
                     ui.blockUI("Disconnected, hang on... If this message doesn't disappear within a few seconds: close this window and restart your Caelum client.");
                 }
             };
