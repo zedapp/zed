@@ -87,4 +87,5 @@ func (m *RPCMultiplexer) Multiplex() error {
 		}
 		req.requestChannel <- buffer
 	}
+  return nil
 }

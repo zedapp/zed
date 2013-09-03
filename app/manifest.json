@@ -1,6 +1,6 @@
 {
     "name": "Caelum",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "manifest_version": 2,
     "minimum_chrome_version": "23",
     "description": "The opiniated text and code editor",

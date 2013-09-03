@@ -63,6 +63,7 @@ func IsDelimiter(buffer []byte) bool {
 	} else {
 		return bytes.Equal(buffer, DELIMITERBUFFER)
 	}
+  return false
 }
 
 func IntToBytes(n int) []byte {
