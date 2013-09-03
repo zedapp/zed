@@ -9,9 +9,10 @@ import (
 )
 
 func ParseLocalFlags(args []string) (ip string, port int) {
+	config := ParseConfig()
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	flagSet.StringVar(&ip, "h", "127.0.0.1", "IP to bind to")
-	flagSet.IntVar(&port, "p", 7336, "Port to listen or bind to")
+	flagSet.StringVar(&ip, "h", config.Local.Ip, "IP to bind to")
+	flagSet.IntVar(&port, "p", config.Local.Port, "Port to listen or bind to")
 	flagSet.Parse(args)
 	if flagSet.NArg() == 0 {
 		rootPath = "."

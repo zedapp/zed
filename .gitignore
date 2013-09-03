@@ -11,3 +11,4 @@ ace
 .git-ref
 npm-debug.log
 deps/
+release/

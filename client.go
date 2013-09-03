@@ -332,10 +332,12 @@ func handlePost(path string, requestChannel chan[] byte, responseChannel chan []
 
 // Side-effect: writes to rootPath
 func ParseClientFlags(args []string) string {
+	config := ParseConfig()
+
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
 	var url string
 	var stats bool
-	flagSet.StringVar(&url, "u", "wss://caelum.cc:7337", "URL to connect to")
+	flagSet.StringVar(&url, "u", config.Client.Url, "URL to connect to")
 	flagSet.BoolVar(&stats, "stats", false, "Whether to print go-routine count and memory usage stats periodically.")
 	flagSet.Parse(args)
 	if stats {

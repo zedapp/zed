@@ -246,11 +246,12 @@ func PrintStats() {
 
 func ParseServerFlags(args []string) (ip string, port int, sslCrt string, sslKey string) {
 	var stats bool
+	config := ParseConfig()
 	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	flagSet.StringVar(&ip, "h", "0.0.0.0", "IP to bind to")
-	flagSet.IntVar(&port, "p", 7337, "Port to listen on")
-	flagSet.StringVar(&sslCrt, "sslcrt", "", "Path to SSL certificate")
-	flagSet.StringVar(&sslKey, "sslkey", "", "Path to SSL key")
+	flagSet.StringVar(&ip, "h", config.Server.Ip, "IP to bind to")
+	flagSet.IntVar(&port, "p", config.Server.Port, "Port to listen on")
+	flagSet.StringVar(&sslCrt, "sslcrt", config.Server.Sslcert, "Path to SSL certificate")
+	flagSet.StringVar(&sslKey, "sslkey", config.Server.Sslkey, "Path to SSL key")
 	flagSet.BoolVar(&stats, "stats", false, "Whether to print go-routine count and memory usage stats periodically.")
 	flagSet.Parse(args)
 	if stats {

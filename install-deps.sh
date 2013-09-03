@@ -2,6 +2,7 @@
 
 go get code.google.com/p/go-uuid/uuid
 go get code.google.com/p/go.net/websocket
+go get code.google.com/p/gcfg
 
 cd `dirname $0`
 cd app
