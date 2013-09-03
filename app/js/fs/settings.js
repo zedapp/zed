@@ -32,7 +32,7 @@ define(function(require, exports, module) {
                 Object.keys(changes).forEach(function(key) {
                     if(key.indexOf("settings:") === 0) {
                         var path = key.substring("settings:".length);
-                        emitter.emit("filechanged:" + path, path);
+                        emitter.emit("filechanged:" + path, path, "changed");
                     }
                 });
             }
@@ -42,7 +42,7 @@ define(function(require, exports, module) {
             var key = event.key;
             if(key.indexOf("settings:") === 0) {
                 var path = key.substring("settings:".length);
-                emitter.emit("filechanged:" + path, path);
+                emitter.emit("filechanged:" + path, path, "changed");
             }
         });
     }
@@ -103,6 +103,7 @@ define(function(require, exports, module) {
         setKey("settings:" + path, content);
         emitter.emit("filechanged:" + path, path, "changed");
         getKey("settings:", function(allDocs) {
+            allDocs = allDocs || {};
             if(!allDocs[path]) {
                 allDocs[path] = true;
                 setKey("settings:", allDocs);
