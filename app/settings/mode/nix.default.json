@@ -1,0 +1,5 @@
+{
+    "name": "Nix",
+    "highlighter": "ace/mode/nix",
+    "extensions": ["nix"]
+}

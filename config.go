@@ -26,7 +26,7 @@ type Config struct {
 
 func ParseConfig() Config {
     var config Config
-    config.Client.Url = "wss://zed.cc:7337"
+    config.Client.Url = "ws://localhost:7336"
     config.Server.Ip = "0.0.0.0"
     config.Server.Port = 7337
     config.Local.Ip = "127.0.0.1"
