@@ -129,7 +129,10 @@
         "mac": "Command-0",
         "win": "Ctrl-0"
     },
-    "Goto:Tree": "Alt-T",
+    "Goto:Tree": {
+        "mac": "Alt-T|Cmd-T",
+        "win": "Alt-T|Ctrl-T"
+    },
     "Tools:Beautify": {
         "mac": "Command-Shift-B",
         "win": "Ctrl-Shift-B"

@@ -148,7 +148,7 @@ define(function(require, exports, module) {
             var selectedPath = getCurrentHighlightedItem();
             close();
             if (selection) {
-                if (selection[0] !== '/' && selection.indexOf("caelum:") !== 0 && selectedPath) {
+                if (selection[0] !== '/' && selection.indexOf("zed:") !== 0 && selectedPath) {
                     selection = selectedPath;
                 }
                 onSelect(selection, inputVal);

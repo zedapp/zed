@@ -3,8 +3,8 @@
 OS=`uname -s`
 PROC=`uname -m`
 
-curl http://get.caelum.cc/caelum-$OS-$PROC > caelum
-chmod +x caelum
+curl http://get.zed.cc/zed-$OS-$PROC > zed
+chmod +x zed
 
-echo "Done, caelum downloaded into current directory, to start: ./caelum"
-echo "For help: ./caelum --help"
+echo "Done, zed downloaded into current directory, to start: ./zed"
+echo "For help: ./zed --help"

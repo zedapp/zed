@@ -1,7 +1,7 @@
 WebFS
 =====
 
-WebFS is a super simple protocol that Caelum uses to communicate with a remote (or
+WebFS is a super simple protocol that Zed uses to communicate with a remote (or
 local) server. You can think of it as a super simplified version of WebDAV. It
 is designed to be minimal and easy to implement.
 
@@ -15,8 +15,8 @@ URL
 
 All methods below apply to the path represented to the URL, for instance, if
 the root path of the WebFS file system is `/home/zef`, and WebFS runs on the
-`http://localhost:1338` URL, the URL `http://localhost:1338/git/caelum` is expected
-to refer to `/home/zef/git/caelum`.
+`http://localhost:1338` URL, the URL `http://localhost:1338/git/zed` is expected
+to refer to `/home/zef/git/zed`.
 
 GET
 ---

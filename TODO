@@ -7,10 +7,10 @@
     * Cursor
     * Settings
     * Navigate
-* Per project settings caelumsettings.json
+* Per project settings zedsettings.json
 * Proper HTML preview (loading via HTTP)
 * Nix Mode
-* Save folds in .caelumstate
+* Save folds in .zedstate
 * Change all keyboard handlers to commands
 * Context-aware command enable/disable with isAvailable() call
 * Test suite for WebFS

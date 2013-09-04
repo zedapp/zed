@@ -1,7 +1,7 @@
 All about cursors
 =================
 
-Caelum has very powerful multiple cursor support inherited from ACE.
+Zed has very powerful multiple cursor support inherited from ACE.
 
 Block selection (mouse)
 -----------------------
@@ -21,7 +21,7 @@ Adding cursors (keyboard)
 #protip
 -------
 
-Caelum does not have a find and replace feature. It doesn't it need it, the Caelum way
+Zed does not have a find and replace feature. It doesn't it need it, the Zed way
 of doing it is searching for an instance of the string (or selecting it), then
 adding cursors on other instances using `Ctrl-Alt-Right` and `Ctrl-Alt-Left`,
 and then simply typing the replacement.

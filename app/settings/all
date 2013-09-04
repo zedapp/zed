@@ -11,6 +11,7 @@
 /mode/json.default.json
 /mode/logiql.default.json
 /mode/markdown.default.json
+/mode/nix.default.json
 /mode/php.default.json
 /mode/python.default.json
 /mode/ruby.default.json

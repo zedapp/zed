@@ -16,7 +16,7 @@ define(function(require, exports, module) {
             }, "text");
         },
         readFile: function(path, callback) {
-            if(path === "/.caelumstate") {
+            if(path === "/.zedstate") {
                 return callback(null, '{"session.current": ["/index.md"]}');
             }
             $.ajax({

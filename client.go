@@ -332,7 +332,7 @@ func handlePost(path string, requestChannel chan []byte, responseChannel chan []
 func ParseClientFlags(args []string) string {
 	config := ParseConfig()
 
-	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
+	flagSet := flag.NewFlagSet("zed", flag.ExitOnError)
 	var url string
 	var stats bool
 	flagSet.StringVar(&url, "u", config.Client.Url, "URL to connect to")
@@ -396,11 +396,11 @@ func RunClient(url string, id string, localClient bool) {
 
 	if localClient {
 		multiplexer.Multiplex()
-		fmt.Println("The Caelum Chrome App should now have opened a window to edit", rootPath)
+		fmt.Println("The Zed Chrome App should now have opened a window to edit", rootPath)
 	} else {
 		shouldKeepRunning := !NotifySignaller(rootPath)
 		if shouldKeepRunning {
-			fmt.Print("In the Caelum Chrome application copy and paste following URL to edit:\n\n")
+			fmt.Print("In the Zed Chrome application copy and paste following URL to edit:\n\n")
 			fmt.Printf("  %s/fs/%s\n\n", connectUrl, id)
 			fmt.Println("Press Ctrl-c to quit.")
 			err = multiplexer.Multiplex()

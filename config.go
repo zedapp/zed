@@ -26,17 +26,17 @@ type Config struct {
 
 func ParseConfig() Config {
     var config Config
-    config.Client.Url = "wss://caelum.cc:7337"
+    config.Client.Url = "wss://zed.cc:7337"
     config.Server.Ip = "0.0.0.0"
     config.Server.Port = 7337
     config.Local.Ip = "127.0.0.1"
     config.Local.Port = 7336
 
-    configFile := os.ExpandEnv("$HOME/.caelumrc")
+    configFile := os.ExpandEnv("$HOME/.zedrc")
     if _, err := os.Stat(configFile); err == nil {
         err = gcfg.ReadFileInto(&config, configFile)
         if err != nil {
-            fmt.Println("Could not read config file ~/.caelumrc", err);
+            fmt.Println("Could not read config file ~/.zedrc", err);
             os.Exit(4)
         }
     }

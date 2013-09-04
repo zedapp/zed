@@ -65,7 +65,7 @@ define(function(require, exports, module) {
                 require(["./session_manager"], function(session_manager) {
                     editors.forEach(function(edit) {
                         if (edit.getSession().filename === path) {
-                            session_manager.go("caelum:start", edit);
+                            session_manager.go("zed:start", edit);
                         }
                     });
                 });

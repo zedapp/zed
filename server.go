@@ -247,7 +247,7 @@ func PrintStats() {
 func ParseServerFlags(args []string) (ip string, port int, sslCrt string, sslKey string) {
 	var stats bool
 	config := ParseConfig()
-	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
+	flagSet := flag.NewFlagSet("zed", flag.ExitOnError)
 	flagSet.StringVar(&ip, "h", config.Server.Ip, "IP to bind to")
 	flagSet.IntVar(&port, "p", config.Server.Port, "Port to listen on")
 	flagSet.StringVar(&sslCrt, "sslcrt", config.Server.Sslcert, "Path to SSL certificate")
@@ -269,10 +269,10 @@ func RunServer(ip string, port int, sslCrt string, sslKey string, withSignaling 
 		http.HandleFunc("/signal", HandleSignal)
 	}
 	if sslCrt != "" {
-		fmt.Printf("Caelum server now running on wss://%s:%d\n", ip, port)
+		fmt.Printf("Zed server now running on wss://%s:%d\n", ip, port)
 		log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", ip, port), sslCrt, sslKey, nil))
 	} else {
-		fmt.Printf("Caelum server now running on ws://%s:%d\n", ip, port)
+		fmt.Printf("Zed server now running on ws://%s:%d\n", ip, port)
 		log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", ip, port), nil))
 	}
 }

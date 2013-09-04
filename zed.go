@@ -34,23 +34,23 @@ func main() {
 		go RunServer("127.0.0.1", 7336, "", "", true)
 		RunClient("ws://127.0.0.1:7336", "local", true)
 	case "help":
-		fmt.Println(`caelum runs in three possible modes: client, server and local:
+		fmt.Println(`zed runs in three possible modes: client, server and local:
 
-Usage: caelum [-u url] <dir>
-       Launches a Caelum client and attaches to a Caelum server exposing
+Usage: zed [-u url] <dir>
+       Launches a Zed client and attaches to a Zed server exposing
        directory <dir> (or current directory if omitted).
        
-Usage: caelum --server [-h ip] [-p port] [--sslcrt file.crt] [--sslkey file.key]
-       Launches a Caelum server, binding to IP <ip> on port <port>.
+Usage: zed --server [-h ip] [-p port] [--sslcrt file.crt] [--sslkey file.key]
+       Launches a Zed server, binding to IP <ip> on port <port>.
        If --sslcrt and --sslkey are provided, will run in TLS mode for more security.
 
-Usage: caelum --local <root-dir>
-       Launches a Caelum server in local mode binding to port 7336. <root-dir> defaults to $HOME
+Usage: zed --local <root-dir>
+       Launches a Zed server in local mode binding to port 7336. <root-dir> defaults to $HOME
        enforcing that no files can be edited outside the home directory, set it to "/" to enable
        editing of all files on the machine.
 	
-       When a local mode process is running on the machine, the Caelum ckuebt will detect this,
-       and if the Caelum app is running, will automatically open up a new window.
+       When a local mode process is running on the machine, the Zed ckuebt will detect this,
+       and if the Zed app is running, will automatically open up a new window.
 `)
 	}
 }

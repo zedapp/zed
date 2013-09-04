@@ -170,7 +170,7 @@ define(function(require, exports, module) {
                     eventbus.emit("filedeleted", path);
                 } else {
                     console.log("Other kind", kind);
-                    ui.blockUI("Disconnected, hang on... If this message doesn't disappear within a few seconds: close this window and restart your Caelum client.");
+                    ui.blockUI("Disconnected, hang on... If this message doesn't disappear within a few seconds: close this window and restart your Zed client.");
                 }
             };
             project.watchFile(session.filename, session.watcherFn);
@@ -181,7 +181,7 @@ define(function(require, exports, module) {
         async.waitForEvents(eventbus, ["stateloaded", "modesloaded"], function() {
             var sessionStates = state.get("session.open") || {};
             
-            go("caelum:start");
+            go("zed:start");
             
             async.parForEach(Object.keys(sessionStates), function(path, next) {
                 var sessionState = sessionStates[path];

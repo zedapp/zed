@@ -1,4 +1,4 @@
-Caelum Cheatsheet
+Zed Cheatsheet
 ==============
 Replace `Command` with `Ctrl` if you're not using a Mac.
 
@@ -10,7 +10,7 @@ Replace `Command` with `Ctrl` if you're not using a Mac.
         * When an item is selected, it will jump to the selected file
         * If no item is selected, it will create a new file with this path
 * `Command-.`: Run an editor command.
-* `Alt-T`: Show file tree (useful for exploring projects you're not familiar
+* `Cmd-T`: Show file tree (useful for exploring projects you're not familiar
   with). Keys within the tree:
     * `Up`: Move up in the tree
     * `Down`: Move down in the tree

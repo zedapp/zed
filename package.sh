@@ -1,4 +1,4 @@
 #!/bin/sh
-rm -f caelum.zip
+rm -f zed.zip
 cd app
-zip ../caelum.zip -r *
+zip ../zed.zip -r *

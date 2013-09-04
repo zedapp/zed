@@ -1,7 +1,7 @@
 Vision
 ======
 
-Caelum stems from some observations after 20 years of editing code.
+Zed stems from some observations after 20 years of editing code.
 
 **Tabs**: Whether you use them in an editor or in a browser, if you're like me,
 your open tabs quickly become unwieldy and pretty soon you are unable to find
