@@ -141,5 +141,9 @@
         "mac": "Command-P",
         "win": "Ctrl-P"
     },
-    "Edit:Complete": "Tab"
+    "Edit:Complete": "Tab",
+    "Settings:Preferences" : {
+        "mac": "Command-,",
+        "win": "Ctrl-,"
+    }
 }

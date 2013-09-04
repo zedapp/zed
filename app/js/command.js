@@ -78,7 +78,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
     
-    exports.define("Settings:Set Preferences", {
+    exports.define("Settings:Preferences", {
         exec: function() {
             chrome.app.window.create('editor.html?url=settings:&chromeapp=true', {
                 frame: 'chrome',

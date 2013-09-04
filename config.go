@@ -19,18 +19,16 @@ type Config struct {
     }
 
     Local struct {
-        Ip string
-        Port int
+        Root string
     }
 }
 
 func ParseConfig() Config {
     var config Config
-    config.Client.Url = "ws://localhost:7336"
+    config.Client.Url = "ws://server.zedapp.org:7337"
     config.Server.Ip = "0.0.0.0"
     config.Server.Port = 7337
-    config.Local.Ip = "127.0.0.1"
-    config.Local.Port = 7336
+    config.Local.Root = os.Getenv("HOME")
 
     configFile := os.ExpandEnv("$HOME/.zedrc")
     if _, err := os.Stat(configFile); err == nil {

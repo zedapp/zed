@@ -26,6 +26,10 @@ func HandleSignal(w http.ResponseWriter, r *http.Request) {
 func HandleSignalSocket(ws *websocket.Conn) {
 	defer ws.Close()
     fmt.Println("App connected to signaller.")
+    if signalChan != nil {
+        fmt.Println("Second client connected, not supported.")
+        return
+    }
     signalChan = make(chan string)
     endChan := make(chan bool)
 
