@@ -1,0 +1,5 @@
+{
+    "name": "Lua",
+    "highlighter": "ace/mode/lua",
+    "extensions": ["lua"]
+}

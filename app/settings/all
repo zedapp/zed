@@ -4,6 +4,7 @@
 /mode/coffee.default.json
 /mode/css.default.json
 /mode/dart.default.json
+/mode/lua.default.json
 /mode/go.default.json
 /mode/html.default.json
 /mode/java.default.json
