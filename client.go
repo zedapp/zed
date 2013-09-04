@@ -1,21 +1,21 @@
 package main
 
 import (
-	"flag"
-	"os"
-	"log"
-	"path/filepath"
-	"fmt"
-	"time"
-	"net/url"
-	"strings"
-	"crypto/tls"
 	"bytes"
+	"code.google.com/p/go.net/websocket"
+	"crypto/tls"
+	"encoding/json"
+	"flag"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"mime"
 	"net/http"
-	"encoding/json"
-	"code.google.com/p/go.net/websocket"
+	"net/url"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 type HttpError interface {
@@ -24,7 +24,7 @@ type HttpError interface {
 }
 
 // Errors
-type HandlingError struct { 
+type HandlingError struct {
 	message string
 }
 
@@ -37,12 +37,12 @@ func (self *HandlingError) Error() string {
 }
 
 func NewHandlingError(message string) HttpError {
-	return &HandlingError { message }
+	return &HandlingError{message}
 }
 
 type httpError struct {
 	statusCode int
-	message string
+	message    string
 }
 
 func (self *httpError) Error() string {
@@ -54,7 +54,7 @@ func (self *httpError) StatusCode() int {
 }
 
 func NewHttpError(statusCode int, message string) HttpError {
-	return &httpError { statusCode, message }
+	return &httpError{statusCode, message}
 }
 
 func safePath(rootPath string, path string) (string, error) {
@@ -113,10 +113,10 @@ func sendError(responseChannel chan []byte, err HttpError, withMessageInBody boo
 	responseChannel <- statusCodeBuffer(err.StatusCode())
 
 	if withMessageInBody {
-		responseChannel <- headerBuffer(map[string]string { "Content-Type": "text/plain"})
+		responseChannel <- headerBuffer(map[string]string{"Content-Type": "text/plain"})
 		responseChannel <- []byte(err.Error())
 	} else {
-		responseChannel <- headerBuffer(map[string]string { "Content-Length": "0"})
+		responseChannel <- headerBuffer(map[string]string{"Content-Length": "0"})
 	}
 }
 
@@ -145,7 +145,7 @@ func statusCodeBuffer(code int) []byte {
 	return IntToBytes(code)
 }
 
-func handleGet(path string, requestChannel chan[]byte, responseChannel chan []byte) HttpError {
+func handleGet(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
 	dropUntilDelimiter(requestChannel)
 	safePath, err := safePath(rootPath, path)
 	if err != nil {
@@ -157,7 +157,7 @@ func handleGet(path string, requestChannel chan[]byte, responseChannel chan []by
 	}
 	responseChannel <- statusCodeBuffer(200)
 	if stat.IsDir() {
-		responseChannel <- headerBuffer(map[string]string {"Content-Type": "text/plain"})
+		responseChannel <- headerBuffer(map[string]string{"Content-Type": "text/plain"})
 		files, _ := ioutil.ReadDir(safePath)
 		for _, f := range files {
 			if f.Name()[0] == '.' {
@@ -174,9 +174,9 @@ func handleGet(path string, requestChannel chan[]byte, responseChannel chan []by
 		if mimeType == "" {
 			mimeType = "application/octet-stream"
 		}
-		responseChannel <- headerBuffer(map[string]string {
+		responseChannel <- headerBuffer(map[string]string{
 			"Content-Type": mimeType,
-			"ETag": stat.ModTime().String(),
+			"ETag":         stat.ModTime().String(),
 		})
 		f, err := os.Open(safePath)
 		if err != nil {
@@ -195,7 +195,7 @@ func handleGet(path string, requestChannel chan[]byte, responseChannel chan []by
 	return nil
 }
 
-func handleHead(path string, requestChannel chan[] byte, responseChannel chan []byte) HttpError {
+func handleHead(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
 	safePath, err := safePath(rootPath, path)
 	dropUntilDelimiter(requestChannel)
 	if err != nil {
@@ -206,14 +206,14 @@ func handleHead(path string, requestChannel chan[] byte, responseChannel chan []
 		return NewHttpError(404, "Not found")
 	}
 	responseChannel <- statusCodeBuffer(200)
-	responseChannel <- headerBuffer(map[string]string {
-		"ETag": stat.ModTime().String(),
+	responseChannel <- headerBuffer(map[string]string{
+		"ETag":           stat.ModTime().String(),
 		"Content-Length": "0",
 	})
 	return nil
 }
 
-func handlePut(path string, requestChannel chan[] byte, responseChannel chan []byte) HttpError {
+func handlePut(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
 	safePath, err := safePath(rootPath, path)
 	if err != nil {
 		dropUntilDelimiter(requestChannel)
@@ -240,17 +240,15 @@ func handlePut(path string, requestChannel chan[] byte, responseChannel chan []b
 	f.Close()
 	stat, _ := os.Stat(safePath)
 	responseChannel <- statusCodeBuffer(200)
-	responseChannel <- headerBuffer(map[string]string {
+	responseChannel <- headerBuffer(map[string]string{
 		"Content-Type": "text/plain",
-		"ETag": stat.ModTime().String(),
+		"ETag":         stat.ModTime().String(),
 	})
 	responseChannel <- []byte("OK")
 	return nil
 }
 
-
-
-func handleDelete(path string, requestChannel chan[] byte, responseChannel chan []byte) HttpError {
+func handleDelete(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
 	safePath, err := safePath(rootPath, path)
 	dropUntilDelimiter(requestChannel)
 	if err != nil {
@@ -265,7 +263,7 @@ func handleDelete(path string, requestChannel chan[] byte, responseChannel chan 
 		return NewHttpError(500, "Could not delete")
 	}
 	responseChannel <- statusCodeBuffer(200)
-	responseChannel <- headerBuffer(map[string]string {
+	responseChannel <- headerBuffer(map[string]string{
 		"Content-Type": "text/plain",
 	})
 	responseChannel <- []byte("OK")
@@ -299,7 +297,7 @@ func readWholeBody(requestChannel chan []byte) []byte {
 	return byteBuffer.Bytes()
 }
 
-func handlePost(path string, requestChannel chan[] byte, responseChannel chan []byte) HttpError {
+func handlePost(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
 	safePath, err := safePath(rootPath, path)
 	body := string(readWholeBody(requestChannel))
 	if err != nil {
@@ -319,7 +317,7 @@ func handlePost(path string, requestChannel chan[] byte, responseChannel chan []
 	switch action {
 	case "filelist":
 		responseChannel <- statusCodeBuffer(200)
-		responseChannel <- headerBuffer(map[string]string {
+		responseChannel <- headerBuffer(map[string]string{
 			"Content-Type": "text/plain",
 		})
 		walkDirectory(responseChannel, safePath, "")
@@ -346,14 +344,22 @@ func ParseClientFlags(args []string) string {
 	if flagSet.NArg() == 0 {
 		rootPath = "."
 	} else {
-		rootPath = args[len(args) - 1]
+		rootPath = args[len(args)-1]
 	}
 	return url
 }
 
-func RunClient(url string, id string) {
+func NotifySignaller(connectUrl string) bool {
+	resp, err := http.PostForm("http://localhost:7336/signal", url.Values{"url": {connectUrl}})
+	if err != nil {
+		return false
+	}
+	return resp.StatusCode == 200
+}
+
+// localClient is only used in --local mode
+func RunClient(url string, id string, localClient bool) {
 	rootPath, _ = filepath.Abs(rootPath)
-	fmt.Println("Editing", rootPath)
 
 	socketUrl := fmt.Sprintf("%s/clientsocket", url)
 	var ws *websocket.Conn
@@ -386,13 +392,22 @@ func RunClient(url string, id string) {
 	}
 	connectUrl := strings.Replace(url, "ws://", "http://", 1)
 	connectUrl = strings.Replace(connectUrl, "wss://", "https://", 1)
-	fmt.Print("In the Caelum Chrome application copy and paste following URL to edit:\n\n")
-	fmt.Printf("  %s/fs/%s\n\n", connectUrl, id)
-	fmt.Println("Press Ctrl-c to quit.")
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
-	err = multiplexer.Multiplex()
-	if err != nil {
-		// TODO do this in a cleaner way (reconnect, that is)
-		RunClient(url, id)
+
+	if localClient {
+		multiplexer.Multiplex()
+		fmt.Println("The Caelum Chrome App should now have opened a window to edit", rootPath)
+	} else {
+		shouldKeepRunning := !NotifySignaller(rootPath)
+		if shouldKeepRunning {
+			fmt.Print("In the Caelum Chrome application copy and paste following URL to edit:\n\n")
+			fmt.Printf("  %s/fs/%s\n\n", connectUrl, id)
+			fmt.Println("Press Ctrl-c to quit.")
+			err = multiplexer.Multiplex()
+			if err != nil {
+				// TODO do this in a cleaner way (reconnect, that is)
+				RunClient(url, id, localClient)
+			}
+		}
 	}
 }

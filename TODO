@@ -1,5 +1,6 @@
-* Caelum client
-    * Startup file (setting default server to attach to)
+* Add local signaling
+* Smart tabs: https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/whitespace.js
+* Set tab size in language mode JSON
 * Reorganize all commands in cleaner categories
     * File
     * Edit

@@ -5,22 +5,7 @@ import (
 	"code.google.com/p/go-uuid/uuid"
 	"strings"
 	"fmt"
-	"flag"
 )
-
-func ParseLocalFlags(args []string) (ip string, port int) {
-	config := ParseConfig()
-	flagSet := flag.NewFlagSet("caelum", flag.ExitOnError)
-	flagSet.StringVar(&ip, "h", config.Local.Ip, "IP to bind to")
-	flagSet.IntVar(&port, "p", config.Local.Port, "Port to listen or bind to")
-	flagSet.Parse(args)
-	if flagSet.NArg() == 0 {
-		rootPath = "."
-	} else {
-		rootPath = args[len(args) - 1]
-	}
-	return
-}
 
 func main() {
 	mode := "client"
@@ -36,15 +21,18 @@ func main() {
 	switch mode {
 	case "server":
 		ip, port, sslCrt, sslKey := ParseServerFlags(os.Args[2:])
-		RunServer(ip, port, sslCrt, sslKey)
+		RunServer(ip, port, sslCrt, sslKey, false)
 	case "client":
 		url := ParseClientFlags(os.Args[1:])
 		id := strings.Replace(uuid.New(), "-", "", -1)
-		RunClient(url, id)
+		RunClient(url, id, false)
 	case "local":
-		host, port := ParseLocalFlags(os.Args[2:])
-		go RunServer(host, port, "", "")
-		RunClient(fmt.Sprintf("ws://%s:%d", host, port), "local")
+		rootPath = os.Getenv("HOME")
+		if len(os.Args) > 2 {
+			rootPath = os.Args[2]
+		}
+		go RunServer("127.0.0.1", 7336, "", "", true)
+		RunClient("ws://127.0.0.1:7336", "local", true)
 	case "help":
 		fmt.Println(`caelum runs in three possible modes: client, server and local:
 
@@ -56,8 +44,13 @@ Usage: caelum --server [-h ip] [-p port] [--sslcrt file.crt] [--sslkey file.key]
        Launches a Caelum server, binding to IP <ip> on port <port>.
        If --sslcrt and --sslkey are provided, will run in TLS mode for more security.
 
-Usage: caelum --local  [-h ip] [-p port] <dir>
-	Launches a server and client in the same process exposing directory <dir> for editing.
+Usage: caelum --local <root-dir>
+       Launches a Caelum server in local mode binding to port 7336. <root-dir> defaults to $HOME
+       enforcing that no files can be edited outside the home directory, set it to "/" to enable
+       editing of all files on the machine.
+	
+       When a local mode process is running on the machine, the Caelum ckuebt will detect this,
+       and if the Caelum app is running, will automatically open up a new window.
 `)
 	}
 }
