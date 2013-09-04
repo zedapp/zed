@@ -4,13 +4,13 @@
 /mode/coffee.default.json
 /mode/css.default.json
 /mode/dart.default.json
-/mode/lua.default.json
 /mode/go.default.json
 /mode/html.default.json
 /mode/java.default.json
 /mode/javascript.default.json
 /mode/json.default.json
 /mode/logiql.default.json
+/mode/lua.default.json
 /mode/markdown.default.json
 /mode/nix.default.json
 /mode/php.default.json
