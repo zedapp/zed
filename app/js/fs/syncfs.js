@@ -4,16 +4,16 @@ define(function(require, exports, module) {
     // As syncfs does not yet support creating directories, we'll use it as a flat namespace
     // https://groups.google.com/a/chromium.org/forum/#!topic/chromium-apps/v-uK6IPOCE8
     function decodePath(path) {
-        return "/" + path.replace(/__\-__/g, "/");
+        return "/" + path.replace(/\|/g, "/");
     }
 
     function encodePath(path) {
-        return path.substring(1).replace(/\//g, "__-__", path);
+        return path.substring(1).replace(/\//g, "|", path);
     }
 
     return function(callback) {
         chrome.syncFileSystem.requestFileSystem(function(fs) {
-            callback(null, {
+            var operations = {
                 listFiles: function(callback) {
                     var reader = fs.root.createReader();
                     reader.readEntries(function(entries) {
@@ -75,6 +75,12 @@ define(function(require, exports, module) {
                 },
                 unwatchFile: function() {
                     // TODO
+                }
+            };
+            callback(null, operations);
+            operations.writeFile("/welcome.md", require("text!../../notes.md"), function(err) {
+                if(err) {
+                    console.error(err);
                 }
             });
         });

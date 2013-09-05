@@ -34,7 +34,6 @@ require(["./fs/web"], function(webfs) {
         }
     });
     $(window).keyup(function(event) {
-        console.log(event);
         if (event.keyCode == 27) { // Esc
             close();
         }
