@@ -4,7 +4,7 @@ function showProjects() {
     chrome.app.window.create('open.html', {
         frame: 'chrome',
         width: 400,
-        height: 80
+        height: 180
     }, function(win) {
         win.focus();
         //win.show();

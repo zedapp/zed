@@ -26,7 +26,12 @@ define(function(require, exports, module) {
                     // No worries, empty state!
                     json = "{}";
                 }
-                state = JSON.parse(json);
+                try {
+                    state = JSON.parse(json);
+                } catch(e) {
+                    console.error("Could not parse state: ", e, json);
+                    state = {};
+                }
                 eventbus.emit("stateloaded", module.exports);
                 callback && callback(state);
             });
@@ -36,6 +41,10 @@ define(function(require, exports, module) {
         },
         toJSON: function() {
             return JSON.stringify(state);
+        },
+        reset: function() {
+            state = {};
+            module.exports.save();
         }
     };
     

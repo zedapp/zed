@@ -45,13 +45,33 @@ input[type=submit] {
     font-size: 12px;
     padding: 5px;
 }
+
+#projects {
+    border-top: 1px solid #aaa;
+}
+#projects a {
+    display: block;
+    text-decoration: none;
+    background-color: #eee;
+    color: #000;
+    font-size: 13px;
+    padding: 8px;
+    border-bottom: 1px solid #aaa;
+}
+#projects a:hover {
+    background-color: #33CCFF;
+}
 </style>
     </head>
     <body>
     <div id="goto">
         <input id="gotoinput" type="text" placeholder="Zed project URL" value=""/>
     </div>
-    <div id="hint">After you run the <tt>zed</tt> client, you will get a URL, paste that into this box and press <tt>Enter</tt>.</div>
+    <div id="hint">After you run the <tt>zed</tt> client, you will get a URL, paste that into this box and press <tt>Enter</tt>, or pick a project below.</div>
+    <div id="projects">
+        <a href="#" data-url="settings:">Settings</a>
+        <a href="#" data-url="syncfs:">Notes</a>
+    </div>
     <script src="js/open.js"></script>
 </body>
 </html>

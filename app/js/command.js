@@ -96,4 +96,12 @@ define(function(require, exports, module) {
             });
         }
     });
+    
+    exports.define("Reset State", {
+        exec: function() {
+            require(["./state"], function(state) {
+                state.reset();
+            });
+        }
+    });
 });
