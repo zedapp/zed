@@ -210,25 +210,29 @@ define(function(require, exports, module) {
     command.define("Edit:Select All", {
         exec: function(editor) {
             editor.selectAll();
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Center Selection", {
         exec: function(editor) {
             editor.centerSelection();
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Goto Line", {
         exec: function(edit) {
             command.exec("Navigate:Goto", edit, ":");
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Fold", {
         exec: function(editor) {
             editor.session.toggleFold(false);
-        }
+        },
+        readOnly: true
     });
     
     command.define("Edit:Select Up", {
@@ -314,25 +318,29 @@ define(function(require, exports, module) {
     command.define("Edit:Unfold", {
         exec: function(editor) {
             editor.session.toggleFold(true);
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Fold All", {
         exec: function(editor) {
             editor.session.foldAll();
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Find Next", {
         exec: function(editor) {
             editor.findNext();
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Find Previous", {
         exec: function(editor) {
             editor.findPrevious();
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Overwrite Mode", {
@@ -344,25 +352,29 @@ define(function(require, exports, module) {
     command.define("Edit:Select To Start", {
         exec: function(editor) {
             editor.getSelection().selectFileStart();
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Select To Start", {
         exec: function(editor) {
             editor.getSelection().selectFileStart();
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Unfold All", {
         exec: function(editor) {
             editor.session.unfold();
-        }
+        },
+        readOnly: true
     });
 
     command.define("Edit:Find", {
         exec: function(edit) {
             command.exec("Navigate:Goto", edit, ":/");
-        }
+        },
+        readOnly: true
     });
     
     command.define("Edit:Remove Word Left", {
@@ -404,7 +416,8 @@ define(function(require, exports, module) {
                 caseSensitive: true,
                 wholeWord: true
             });
-        }
+        },
+        readOnly: true
     });
 
     command.define("Navigate:Previous Instance Of Identifier", {
@@ -417,7 +430,8 @@ define(function(require, exports, module) {
                 caseSensitive: true,
                 wholeWord: true
             });
-        }
+        },
+        readOnly: true
     });
     
     function find(session, needle, dir) {
@@ -476,14 +490,12 @@ define(function(require, exports, module) {
         exec: function(editor) {
             editor.selectMoreLines(-1);
         },
-        readonly: true
     });
 
     command.define("Cursor:Add Below", {
         exec: function(editor) {
             editor.selectMoreLines(1);
         },
-        readonly: true
     });
 
     editor.themes.forEach(function(theme) {
@@ -502,8 +514,7 @@ define(function(require, exports, module) {
     command.define("Editor:Detect Indentation", {
         exec: function(editor) {
             whitespace.detectIndentation(editor.session);
-        },
-        readonly: true
+        }
     });
 
     command.define("Editor:Trim Trailing Space", {

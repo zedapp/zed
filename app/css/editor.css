@@ -221,6 +221,20 @@ div.preview-vsplit2-right-2 {
     width: 300px;
 }
 
+.ace_completion-highlight {
+    text-decoration: underline;
+    text-shadow: none !important;
+}
+
+.ace_line-hover {
+    border: 0 !important;
+    background: #33CCFF !important;
+}
+
+.ace_autocomplete .ace_active-line {
+    background-color: #33CCFF !important;
+}
+
 #complete-box {
     position: absolute;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;

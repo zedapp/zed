@@ -85,7 +85,8 @@ define(function(require, exports, module) {
                 width: 720,
                 height: 400,
             });
-        }
+        },
+        readOnly: true
     });
     exports.define("Help:Open Manual", {
         exec: function() {
@@ -94,7 +95,8 @@ define(function(require, exports, module) {
                 width: 720,
                 height: 400,
             });
-        }
+        },
+        readOnly: true
     });
     
     exports.define("Reset State", {
@@ -102,6 +104,7 @@ define(function(require, exports, module) {
             require(["./state"], function(state) {
                 state.reset();
             });
-        }
+        },
+        readOnly: true
     });
 });

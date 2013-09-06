@@ -18,11 +18,12 @@ define(function(require, exports, module) {
                     var reader = fs.root.createReader();
                     reader.readEntries(function(entries) {
                         var results = [];
-                        entries.forEach(function(entry) {
+                        for(var i = 0; i < entries.length; i++) {
+                            var entry = entries[i];
                             if(entry.name !== ".zedstate") {
                                 results.push(decodePath(entry.name));
                             }
-                        });
+                        }
                         callback(null, results);
                     }, callback);
                 },
