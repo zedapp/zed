@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd `dirname $0`/..
+
 if [ ! -d "golang-crosscompile" ]; then
     git clone https://github.com/davecheney/golang-crosscompile.git
 fi

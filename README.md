@@ -46,7 +46,7 @@ Zed runs as a Chrome Package App. To install:
 
     $ git clone https://github.com/zedapp/zed.git
     $ cd zed
-    $ ./install-deps.sh
+    $ script/install-deps.sh
 
 Then, in (a recent version of) Chrome, go to the "three-lined" menu > Tools >
 Extensions and click the "Load unpacked extension..." button, navigate to the
