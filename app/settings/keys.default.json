@@ -46,11 +46,11 @@
     "Edit:Remove Word Left": "Alt-Backspace",
     "Edit:Remove Word Right": "Alt-D",
     "Edit:Goto Beginning Of File": {
-        "mac": "Cmd-Up|Alt-Shift-,",
+        "mac": "Command-Up|Alt-Shift-,",
         "win": "Ctrl-Home|Alt-Shift-,"
     },
     "Edit:Goto End Of File": {
-        "mac": "Cmd-End|Alt-Shift-.",
+        "mac": "Command-End|Alt-Shift-.",
         "win": "Ctrl-End|Alt-Shift-."
     },
     "Edit:Select Up": "Shift-Up",
@@ -81,9 +81,117 @@
         "mac": "Command-Shift-Left",
         "win": "Alt-Shift-Left"
     },
+    "Edit:Goto To Line Start": {
+        "win": "Alt-Left|Home",
+        "mac": "Command-Left|Home|Ctrl-A"
+    },
     "Navigate:Lookup Symbol": {
         "win": "Ctrl-J",
         "mac": "Command-J"
+    },
+    "Edit:Select Left": "Shift-Left",
+    "Edit:Goto Left": "Left|Ctrl-B",
+    "Edit:Select Word Right": {
+        "win": "Ctrl-Shift-Right",
+        "mac": "Option-Shift-Right"
+    },
+    "Edit:Select To End Of Line": {
+        "win": "Alt-Shift-Right",
+        "mac": "Command-Shift-Right"
+    },
+    "Edit:Goto End Of Line": {
+        "win": "Alt-Right|End|Ctrl-E",
+        "mac": "Command-Right|End|Ctrl-E"
+    },
+    "Edit:Select Right": "Shift-Right",
+    "Edit:Goto Right": {
+        "win": "Right",
+        "mac": "Right|Ctrl-F"
+    },
+    "Edit:Select Page Down": "Shift-PageDown",
+    "Edit:Page Down": "Option-PageDown",
+    "Edit:Goto Page Down": {
+        "win": "PageDown",
+        "mac": "Ctrl-V"
+    },
+    "Edit:Select Page Up": "Shift-PageUp",
+    "Edit:Page Up": "Option-PageUp",
+    "Edit:Goto Page Up": {
+        "win": "PageUp",
+        "mac": "PageUp|Alt-V"
+    },
+    "Edit:Scroll Up": {
+        "win": "Ctrl-Up",
+        "mac": ""
+    },
+    "Edit:Scroll Down": {
+        "win": "Ctrl-Down",
+        "mac": ""
+    },
+    "Edit:Select To Line End": "Shift-End",
+    "Edit:Macro:Toggle Recording": {
+        "win": "Ctrl-Alt-E",
+        "mac": "Command-Option-E"
+    },
+    
+    "Edit:Macro:Replay": {
+        "win": "Ctrl-Shift-E",
+        "mac": "Command-Shift-E"
+    },
+    
+    "Edit:Jump To Matching Brace": "Ctrl-5",
+    "Edit:Select To Matching Brace": "Ctrl-Shift-5",
+    "Edit:Remove Line": {
+        "win": "Ctrl-D",
+        "mac": "Command-D"
+    }, 
+    "Edit:Duplicate Selection": {
+        "win": "Ctrl-Shift-D", 
+        "mac": "Command-Shift-D"
+    },
+    "Edit:Toggle Comment": {
+        "win": "Ctrl-/",
+        "mac": "Command-/"
+    },
+    "Edit:Number:Increase": {
+        "win": "Ctrl-Shift-Up",
+        "mac": "Alt-Shift-Up"
+    },
+    "Edit:Number:Decrease": {
+        "win": "Ctrl-Shift-Down",
+        "mac": "Alt-Shift-Down"
+    },
+    "Edit:Undo": {
+        "win": "Ctrl-Z",
+        "mac": "Command-Z"
+    },
+    "Edit:Redo": {
+        "win": "Ctrl-Shift-Z|Ctrl-Y",
+        "mac": "Command-Shift-Z|Command-Y"
+    },
+    "Edit:Copy Lines Up": {
+        "win": "Alt-Shift-Up",
+        "mac": "Command-Option-Up"
+    },
+    "Edit:Move Lines Up": {
+        "win": "Alt-Up",
+        "mac": "Option-Up"
+    },
+    "Edit:Copy Lines Down": {
+        "win": "Alt-Shift-Down", 
+        "mac": "Command-Option-Down"
+    },
+    "Edit:Move Lines Down": {
+        "win": "Alt-Down",
+        "mac": "Option-Down"
+    },
+    "Edit:Delete": {
+        "win": "Delete", 
+        "mac": "Delete|Ctrl-D"
+    },
+    "Edit:Backspace": {
+        "win": "Shift-Backspace|Backspace",
+        "mac": "Shift-Backspace|Backspace|Ctrl-H"
     },
     "Navigate:Lookup Symbol Under Cursor": {
         "win": "Ctrl-Shift-J",
@@ -130,7 +238,7 @@
         "win": "Ctrl-0"
     },
     "Goto:Tree": {
-        "mac": "Alt-T|Cmd-T",
+        "mac": "Alt-T|Command-T",
         "win": "Alt-T|Ctrl-T"
     },
     "Tools:Beautify": {

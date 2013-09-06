@@ -50,7 +50,7 @@ define(function(require, exports, module) {
                     edit.completers = completers;
                 }
                 edit.completer.showPopup(edit);
-                edit.completer.goTo("start");
+                //edit.completer.goTo("start");
                 edit.completer.cancelContextMenu();
             } else {
                 edit.indent();

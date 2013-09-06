@@ -321,6 +321,12 @@ func handlePost(path string, requestChannel chan []byte, responseChannel chan []
 			"Content-Type": "text/plain",
 		})
 		walkDirectory(responseChannel, safePath, "")
+	case "version":
+		responseChannel <- statusCodeBuffer(200)
+		responseChannel <- headerBuffer(map[string]string{
+			"Content-Type": "text/plain",
+		})
+		responseChannel <- []byte(PROTOCOL_VERSION)
 	default:
 		return NewHttpError(http.StatusNotImplemented, "No such action")
 	}

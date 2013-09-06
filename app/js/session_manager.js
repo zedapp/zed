@@ -186,7 +186,9 @@ define(function(require, exports, module) {
             async.parForEach(Object.keys(sessionStates), function(path, next) {
                 var sessionState = sessionStates[path];
                 loadFile(path, function(err, session) {
-                    if(!err) {
+                    if(err) {
+                        delete sessionStates[path];
+                    } else {
                         editor.setSessionState(session, sessionState);
                     }
                     next();

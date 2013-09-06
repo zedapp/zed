@@ -1,6 +1,7 @@
 /*global define*/
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
+    var options = require("./lib/options");
 
     eventbus.declare('ioavailable');
 
@@ -21,15 +22,7 @@ define(function(require, exports, module) {
     };
 
     exports.hook = function() {
-        var urlReq = location.search.substring(1);
-        var parts = urlReq.split("&");
-        var options = {};
-        parts.forEach(function(part) {
-            var spl = part.split('=');
-            options[spl[0]] = spl[1];
-        });
-
-        console.log("URL:", options.url);
+        var url = options.get("url");
 
         function setupMethods() {
             exports.listFiles = io.listFiles;
@@ -46,22 +39,20 @@ define(function(require, exports, module) {
 
         var io;
         // TODO: Generalize this
-        if (options.url.indexOf("settings:") === 0) {
+        if (url.indexOf("settings:") === 0) {
             io = require("./fs/settings");
             setupMethods();
-        } else if (options.url.indexOf("manual:") === 0) {
+        } else if (url.indexOf("manual:") === 0) {
             io = require("./fs/manual");
             setupMethods();
-        } else if (options.url.indexOf("syncfs:") === 0) {
+        } else if (url.indexOf("syncfs:") === 0) {
             require("./fs/syncfs")(function(err, io_) {
                 io = io_;
                 setupMethods();
             });
         } else {
-            io = require('./fs/web')(options.url, options.username, options.password);
+            io = require('./fs/web')(url, options.get('username'), options.get('password'));
             setupMethods();
         }
-
-
     };
 });

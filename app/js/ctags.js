@@ -2,6 +2,7 @@
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
+    var options = require("./lib/options");
     var project = require("./project");
     
     /**
@@ -10,6 +11,7 @@ define(function(require, exports, module) {
      * locator:
      */
     var ctagsCache = [];
+    var hygienicMode = options.get("hygienic");
     
     exports.getCTags = function(path) {
         if(!path) {
@@ -27,6 +29,9 @@ define(function(require, exports, module) {
     };
     
     exports.writeCTags = _.debounce(function() {
+        if(hygienicMode) {
+            return;
+        }
         var tabbedCTags = ctagsCache.map(function(ctag) {
             if(!ctag.path) {
                 console.log("Err", ctag);

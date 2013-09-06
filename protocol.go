@@ -10,9 +10,11 @@ type HelloMessage struct {
 	UUID string
 }
 
-const DELIMITER = "=======END======="
+const DELIMITER = "11~~~~~!!END!!~~~~~11"
 var DELIMITERBUFFER = []byte(DELIMITER)
-const BUFFER_SIZE = 1024 //4096
+const BUFFER_SIZE = 4096
+
+const PROTOCOL_VERSION = "1.0"
 
 func ReadFrame(r io.Reader) (requestId byte, buffer []byte, err error) {
 	buffer = nil
@@ -33,7 +35,6 @@ func ReadFrame(r io.Reader) (requestId byte, buffer []byte, err error) {
 	if err != nil {
 		return
 	}
-	//fmt.Println("Read buffer:", string(result))
 	return
 }
 

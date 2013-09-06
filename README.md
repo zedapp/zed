@@ -29,18 +29,9 @@ file system (this will likely happen in the future as Chrome adds these features
 Therefore, it communicates via a simple protocol named
 [WebFS](https://github.com/zedapp/zed/blob/master/app/manual/webfs.md). 
 
-Screenshots
------------
-
-![Goto](http://zef.me/wp-content/uploads/2013/03/goto.png)
-![Screenshot](http://zef.me/wp-content/uploads/2013/03/Screen-Shot-2013-03-26-at-11.02.55.png)
-![Screenshot](http://zef.me/wp-content/uploads/2013/03/complete.png)
-
 Installation
 ------------
 There are two ways to install Zed.
-
-
 
 Zed runs as a Chrome Package App. To install:
 

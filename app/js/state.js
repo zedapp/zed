@@ -2,10 +2,13 @@
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
+    var options = require("./lib/options");
     var project = require("./project");
     var state = {};
 
     eventbus.declare("stateloaded");
+    
+    var hygienicMode = options.get("hygienic");
 
     module.exports = {
         hook: function() {
@@ -21,6 +24,11 @@ define(function(require, exports, module) {
             return state[key];
         },
         load: function(callback) {
+            if(hygienicMode) {
+                state = {};
+                eventbus.emit("stateloaded", module.exports);
+                return callback && callback({});
+            }
             project.readFile("/.zedstate", function(err, json) {
                 if(err) {
                     // No worries, empty state!
@@ -37,7 +45,9 @@ define(function(require, exports, module) {
             });
         },
         save: function(callback) {
-            project.writeFile("/.zedstate", this.toJSON(), callback || function() {});
+            if(!hygienicMode) {
+                project.writeFile("/.zedstate", this.toJSON(), callback || function() {});
+            }
         },
         toJSON: function() {
             return JSON.stringify(state);

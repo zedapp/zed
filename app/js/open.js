@@ -4,19 +4,40 @@ require.config({
 });
 
 /*global $ chrome*/
-require(["./fs/web"], function(webfs) {
+$(function() {
     var input = $("#gotoinput");
+    var hygienic = $("#hygienic");
 
     function open(url) {
-        if (url == "local") {
-            url = "http://127.0.0.1:7336/fs/local";
-        }
-        chrome.app.window.create('editor.html?url=' + url + '&chromeapp=true', {
+        chrome.app.window.create('editor.html?url=' + url +
+         (hygienic.is(":checked") ? "&hygienic=true" : "") + '&chromeapp=true', {
             frame: 'chrome',
             width: 720,
             height: 400,
         });
-        input.val("");
+    }
+    
+    var defaultHint = $("#hint").html();
+
+    function openChecked(url) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                action: 'version'
+            },
+            success: function() {
+                open(url);
+                input.val("");
+            },
+            error: function() {
+                $("#hint").html("<span class='error'>ERROR</span>: URL does seem to run a (recent) Zed server.");
+                setTimeout(function() {
+                    $("#hint").html(defaultHint);
+                }, 5000);
+            },
+            dataType: "text"
+        });
     }
 
     function close() {
@@ -25,18 +46,29 @@ require(["./fs/web"], function(webfs) {
 
     function updateWindowSize() {
         var win = chrome.app.window.current();
-        win.resizeTo(400, $("body").height() + 20);
+        win.resizeTo(400, $("body").height() + 23);
     }
 
     input.keyup(function(event) {
         if (event.keyCode == 13) {
-            open(input.val());
+            openChecked(input.val());
         }
     });
+    
     $(window).keyup(function(event) {
         if (event.keyCode == 27) { // Esc
             close();
         }
+    });
+    
+    chrome.storage.sync.get("hygienicMode", function(results) {
+        if(results.hygienicMode) {
+            hygienic.attr("checked", "checked");
+        }
+    });
+    
+    hygienic.change(function() {
+        chrome.storage.sync.set({hygienicMode: hygienic.is(":checked")});
     });
 
     $("#projects a").click(function(event) {
@@ -45,6 +77,4 @@ require(["./fs/web"], function(webfs) {
 
     input.focus();
     updateWindowSize();
-    window.updateWindowSize = updateWindowSize;
-
 });

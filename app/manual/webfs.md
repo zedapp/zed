@@ -71,6 +71,8 @@ form-encoded, with an `action` argument that specifies the action. For instance:
     * Body: return one file-per-line listing of all files (not directories) on
       this path and all sub-directories (does not include hidden files). Each
       entry starts with a `/`. Similar to running a `find` on the path.
-
+* `version`:
+    * Status code: 200
+    * Body: protocol version (e.g. "1.0")
 
 
