@@ -303,8 +303,8 @@ div.preview-vsplit2-right-2 {
     border-left-width: 4px;
     -webkit-border-radius: 9px 4px;
     -webkit-box-shadow:
-      inset 0 0 0 1px rgba(128,128,128,0.5),
-      inset 0 0 0 4px rgba(128,128,128,0.5);
+      inset 0 0 0 1px rgba(128,128,128,0.2),
+      inset 0 0 0 4px rgba(128,128,128,0.2);
 }
 ::-webkit-scrollbar-thumb:horizontal {
     border-right-width: 0;
@@ -315,6 +315,6 @@ div.preview-vsplit2-right-2 {
 }
 ::-webkit-scrollbar-thumb:hover {
     -webkit-box-shadow:
-      inset 0 0 0 1px rgb(128,128,128),
-      inset 0 0 0 4px rgb(128,128,128);
+      inset 0 0 0 1px rgba(128,128,128,0.9),
+      inset 0 0 0 4px rgba(128,128,128,0.9);
 }
