@@ -1,4 +1,4 @@
-/*global _ */
+/*global _ $ ace */
 require.config({
     baseUrl: "js",
     paths: {
@@ -8,7 +8,9 @@ require.config({
 
 require(["text!../manual/cheatsheet.md"], function(manual) {
     "use strict";
-    
+
+    var useragent = ace.require("ace/lib/useragent");
+
     var modules = [
         "./command",
         "./editor",
@@ -29,10 +31,13 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
         "./tool/beautify",
         "./tool/check",
         "./tool/preview",
-        "./tool/ctags",
-    ];
+        "./tool/ctags"];
     require(modules, function() {
         var session_manager = require("./session_manager");
+
+        if (!useragent.isMac) {
+            $("body").addClass("non_mac");
+        }
 
         session_manager.specialDocs['zed:start'] = {
             mode: 'ace/mode/markdown',
