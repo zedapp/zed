@@ -195,7 +195,9 @@
         "win": "Alt-Backspace", 
         "mac": "Command-Backspace"
     },
-    "Edit:Remove To Line End": "Ctrl-K",
+    "Edit:Remove To Line End": {
+        "mac": "Ctrl-K"
+    },
     "Edit:Outdent": "Shift-Tab",
     "Edit:Block Indent": "Ctrl-]",
     "Edit:Block Outdent": "Ctrl-]",
