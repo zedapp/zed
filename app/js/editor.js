@@ -507,35 +507,100 @@ define(function(require, exports, module) {
     });
     command.define("Edit:Copy Lines Up", {
         exec: function(editor) {
-                editor.copyLinesUp();
-            }
+            editor.copyLinesUp();
+        }
     });
     command.define("Edit:Move Lines Up", {
         exec: function(editor) {
-                editor.moveLinesUp();
-            }
+            editor.moveLinesUp();
+        }
     });
     command.define("Edit:Copy Lines Down", {
         exec: function(editor) {
-                editor.copyLinesDown();
-            }
+            editor.copyLinesDown();
+        }
     });
     command.define("Edit:Move Lines Down", {
         exec: function(editor) {
-                editor.moveLinesDown();
-            }
+            editor.moveLinesDown();
+        }
     });
     command.define("Edit:Delete", {
         exec: function(editor) {
-                editor.remove("right");
-            },
-            multiSelectAction: "forEach"
+            editor.remove("right");
+        },
+        multiSelectAction: "forEach"
     });
     command.define("Edit:Backspace", {
         exec: function(editor) {
-                editor.remove("left");
-            },
-            multiSelectAction: "forEach"
+            editor.remove("left");
+        },
+        multiSelectAction: "forEach"
+    });
+
+    command.define("Edit:Remove To Line Start", {
+        exec: function(editor) {
+            editor.removeToLineStart();
+        },
+        multiSelectAction: "forEach"
+    });
+    command.define("Edit:Remove To Line End", {
+        exec: function(editor) {
+            editor.removeToLineEnd();
+        },
+        multiSelectAction: "forEach"
+    });
+    command.define("Edit:Outdent", {
+        exec: function(editor) {
+            editor.blockOutdent();
+        },
+        multiSelectAction: "forEach"
+    });
+    command.define("Edit:Indent", {
+        exec: function(editor) {
+            editor.indent();
+        },
+        multiSelectAction: "forEach"
+    });
+    command.define("Edit:Block Outdent", {
+        exec: function(editor) {
+            editor.blockOutdent();
+        },
+        multiSelectAction: "forEach"
+    });
+    command.define("Edit:Block Indent", {
+        exec: function(editor) {
+            editor.blockIndent();
+        },
+        multiSelectAction: "forEach"
+    });
+    command.define("Edit:Split Line", {
+        exec: function(editor) {
+            editor.splitLine();
+        },
+        multiSelectAction: "forEach"
+    });
+    command.define("Edit:Transpose Letters", {
+        exec: function(editor) {
+            editor.transposeLetters();
+        },
+        multiSelectAction: function(editor) {
+            editor.transposeSelections(1);
+        }
+    });
+
+    command.define("Edit:Uppercase", {
+        exec: function(editor) {
+            editor.toUpperCase();
+        },
+        multiSelectAction: "forEach"
+    });
+
+    command.define("Edit:Lowercase", {
+        exec: function(editor) {
+            editor.toLowerCase();
+        },
+        multiSelectAction: "forEach"
     });
 
     command.define("Edit:Unfold", {

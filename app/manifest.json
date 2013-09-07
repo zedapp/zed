@@ -1,6 +1,6 @@
 {
     "name": "Zed",
-    "version": "0.2.11",
+    "version": "0.2.12",
     "manifest_version": 2,
     "minimum_chrome_version": "23",
     "description": "The opiniated text and code editor",

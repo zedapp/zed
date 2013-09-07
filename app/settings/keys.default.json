@@ -133,20 +133,18 @@
         "win": "Ctrl-Alt-E",
         "mac": "Command-Option-E"
     },
-    
     "Edit:Macro:Replay": {
         "win": "Ctrl-Shift-E",
         "mac": "Command-Shift-E"
     },
-    
     "Edit:Jump To Matching Brace": "Ctrl-5",
     "Edit:Select To Matching Brace": "Ctrl-Shift-5",
     "Edit:Remove Line": {
         "win": "Ctrl-D",
         "mac": "Command-D"
-    }, 
+    },
     "Edit:Duplicate Selection": {
-        "win": "Ctrl-Shift-D", 
+        "win": "Ctrl-Shift-D",
         "mac": "Command-Shift-D"
     },
     "Edit:Toggle Comment": {
@@ -178,7 +176,7 @@
         "mac": "Option-Up"
     },
     "Edit:Copy Lines Down": {
-        "win": "Alt-Shift-Down", 
+        "win": "Alt-Shift-Down",
         "mac": "Command-Option-Down"
     },
     "Edit:Move Lines Down": {
@@ -186,13 +184,25 @@
         "mac": "Option-Down"
     },
     "Edit:Delete": {
-        "win": "Delete", 
+        "win": "Delete",
         "mac": "Delete|Ctrl-D"
     },
     "Edit:Backspace": {
         "win": "Shift-Backspace|Backspace",
         "mac": "Shift-Backspace|Backspace|Ctrl-H"
     },
+    "Edit:Remove To Line Start": {
+        "win": "Alt-Backspace", 
+        "mac": "Command-Backspace"
+    },
+    "Edit:Remove To Line End": "Ctrl-K",
+    "Edit:Outdent": "Shift-Tab",
+    "Edit:Block Indent": "Ctrl-]",
+    "Edit:Block Outdent": "Ctrl-]",
+    "Edit:Split Line": "Ctrl-O",
+    "Edit:Transpose Letters": "Ctrl-T",
+    "Edit:Uppercase": "Ctrl-U",
+    "Edit:Lowercase": "Ctrl-Shift-U",
     "Navigate:Lookup Symbol Under Cursor": {
         "win": "Ctrl-Shift-J",
         "mac": "Command-Shift-J"
@@ -250,7 +260,7 @@
         "win": "Ctrl-P"
     },
     "Edit:Complete": "Tab",
-    "Settings:Preferences" : {
+    "Settings:Preferences": {
         "mac": "Command-,",
         "win": "Ctrl-,"
     }
