@@ -83,7 +83,7 @@
     },
     "Edit:Goto To Line Start": {
         "win": "Alt-Left|Home",
-        "mac": "Command-Left|Home|Ctrl-A"
+        "mac": "Command-Left|Home"
     },
     "Navigate:Lookup Symbol": {
         "win": "Ctrl-J",
