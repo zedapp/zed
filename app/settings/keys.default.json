@@ -100,7 +100,7 @@
         "mac": "Command-Shift-Right"
     },
     "Edit:Goto End Of Line": {
-        "win": "Alt-Right|End|Ctrl-E",
+        "win": "Alt-Right|End",
         "mac": "Command-Right|End|Ctrl-E"
     },
     "Edit:Select Right": "Shift-Right",
