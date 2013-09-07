@@ -1,6 +1,7 @@
 body {
     font-family: Tahoma, Arial;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 div.editor-single {
     position: absolute;
