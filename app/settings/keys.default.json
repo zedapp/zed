@@ -121,12 +121,10 @@
         "mac": "PageUp|Alt-V"
     },
     "Edit:Scroll Up": {
-        "win": "Ctrl-Up",
-        "mac": ""
+        "win": "Ctrl-Up"
     },
     "Edit:Scroll Down": {
-        "win": "Ctrl-Down",
-        "mac": ""
+        "win": "Ctrl-Down"
     },
     "Edit:Select To Line End": "Shift-End",
     "Edit:Macro:Toggle Recording": {
@@ -134,8 +132,8 @@
         "mac": "Command-Option-E"
     },
     "Edit:Macro:Replay": {
-        "win": "Ctrl-Shift-E",
-        "mac": "Command-Shift-E"
+        "win": "Ctrl-Shift-R",
+        "mac": "Command-Option-R"
     },
     "Edit:Jump To Matching Brace": "Ctrl-5",
     "Edit:Select To Matching Brace": "Ctrl-Shift-5",
@@ -200,7 +198,7 @@
     },
     "Edit:Outdent": "Shift-Tab",
     "Edit:Block Indent": "Ctrl-]",
-    "Edit:Block Outdent": "Ctrl-]",
+    "Edit:Block Outdent": "Ctrl-[",
     "Edit:Split Line": "Ctrl-O",
     "Edit:Transpose Letters": "Ctrl-T",
     "Edit:Uppercase": "Ctrl-U",
@@ -251,7 +249,7 @@
     },
     "Goto:Tree": {
         "mac": "Alt-T|Command-T",
-        "win": "Alt-T|Ctrl-T"
+        "win": "Alt-T"
     },
     "Tools:Beautify": {
         "mac": "Command-Shift-B",
