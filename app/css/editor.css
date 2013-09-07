@@ -291,3 +291,13 @@ div.preview-vsplit2-right-2 {
     bottom: 5px;
     right: 5px;
 }
+
+::-webkit-scrollbar {
+  background: none;
+  width: 1rem;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.3);
+  border: 2px solid rgba(0,0,0,0.3);
+  border-radius: 1rem;
+}
