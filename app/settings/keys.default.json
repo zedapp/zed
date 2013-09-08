@@ -61,12 +61,12 @@
         "win": "Ctrl-Shift-Home"
     },
     "Edit:Go To File End": {
-        "mac": "Command-End",
+        "mac": "Command-Down",
         "win": "Ctrl-End"
     },
     "Edit:Select To File End": {
-        "win": "Command-Shift-Down",
-        "mac": "Ctrl-Shift-End"
+        "mac": "Command-Shift-Down",
+        "win": "Ctrl-Shift-End"
     },
     "Edit:Go Up": "Up|Ctrl-P",
     "Edit:Select Up": "Shift-Up",
