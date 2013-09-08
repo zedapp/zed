@@ -220,7 +220,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Goto Line", {
+    command.define("Edit:Go To Line", {
         exec: function(edit) {
             command.exec("Navigate:Goto", edit, ":");
         },
@@ -242,7 +242,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Go Line Up", {
+    command.define("Edit:Go Up", {
         exec: function(editor, args) {
             editor.navigateUp(args.times);
         },
@@ -250,7 +250,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Select To End Of File", {
+    command.define("Edit:Select To File End", {
         exec: function(editor) {
             editor.getSelection().selectFileEnd();
         },
@@ -266,7 +266,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Go Line Down", {
+    command.define("Edit:Go Down", {
         exec: function(editor, args) {
             editor.navigateDown(args.times);
         },
@@ -274,7 +274,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Goto Beginning Of File", {
+    command.define("Edit:Go To File Start", {
         exec: function(editor) {
             editor.navigateFileStart();
         },
@@ -282,7 +282,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Goto End Of File", {
+    command.define("Edit:Go To File End", {
         exec: function(editor) {
             editor.navigateFileEnd();
         },
@@ -298,7 +298,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Goto Word Left", {
+    command.define("Edit:Go Word Left", {
         exec: function(editor) {
             editor.navigateWordLeft();
         },
@@ -314,7 +314,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Goto To Line Start", {
+    command.define("Edit:Go To Line Start", {
         exec: function(editor) {
             editor.navigateLineStart();
         },
@@ -330,7 +330,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Goto Left", {
+    command.define("Edit:Go Left", {
         exec: function(editor, args) {
             editor.navigateLeft(args.times);
         },
@@ -346,7 +346,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Select To End Of Line", {
+    command.define("Edit:Select To Line End", {
         exec: function(editor) {
             editor.getSelection().selectLineEnd();
         },
@@ -354,7 +354,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Goto End Of Line", {
+    command.define("Edit:Go To Line End", {
         exec: function(editor) {
             editor.navigateLineEnd();
         },
@@ -370,7 +370,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Goto Right", {
+    command.define("Edit:Go Right", {
         exec: function(editor, args) {
             editor.navigateRight(args.times);
         },
@@ -385,14 +385,14 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Page Down", {
+    command.define("Edit:Scroll Page Down", {
         exec: function(editor) {
             editor.scrollPageDown();
         },
         readOnly: true
     });
 
-    command.define("Edit:Goto Page Down", {
+    command.define("Edit:Go Page Down", {
         exec: function(editor) {
             editor.gotoPageDown();
         },
@@ -406,14 +406,14 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Page Up", {
+    command.define("Edit:Scroll Page Up", {
         exec: function(editor) {
             editor.scrollPageUp();
         },
         readOnly: true
     });
 
-    command.define("Edit:Goto Page Up", {
+    command.define("Edit:Go Page Up", {
         exec: function(editor) {
             editor.gotoPageUp();
         },
@@ -430,13 +430,6 @@ define(function(require, exports, module) {
         exec: function(e) {
             e.renderer.scrollBy(0, -2 * e.renderer.layerConfig.lineHeight);
         },
-        readOnly: true
-    });
-    command.define("Edit:Select To Line End", {
-        exec: function(editor) {
-            editor.getSelection().selectLineEnd();
-        },
-        multiSelectAction: "forEach",
         readOnly: true
     });
     command.define("Edit:Macro:Toggle Recording", {
@@ -637,14 +630,7 @@ define(function(require, exports, module) {
         }
     });
 
-    command.define("Edit:Select To Start", {
-        exec: function(editor) {
-            editor.getSelection().selectFileStart();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Select To Start", {
+    command.define("Edit:Select To File Start", {
         exec: function(editor) {
             editor.getSelection().selectFileStart();
         },
@@ -679,7 +665,7 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach"
     });
 
-    command.define("Edit:Goto Word Right", {
+    command.define("Edit:Go Word Right", {
         exec: function(editor) {
             editor.navigateWordRight();
         },
