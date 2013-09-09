@@ -125,6 +125,13 @@ define(function(require, exports, module) {
             // Normalize
             path = '/' + path;
         }
+        
+        // Check if somebody is not trying to create a file ending with '/'
+        if(path[path.length-1] === '/') {
+            eventbus.emit("sessionactivityfailed", previousSession, "Cannot create files ending with /");
+            return;
+        }
+        
         if (sessions[path]) {
             show(sessions[path]);
         } else {
