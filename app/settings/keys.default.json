@@ -212,8 +212,6 @@
         "mac": "Ctrl-K"
     },
     "Edit:Outdent": "Shift-Tab",
-    "Edit:Block Indent": "Ctrl-]",
-    "Edit:Block Outdent": "Ctrl-[",
     "Edit:Split Line": "Ctrl-O",
     "Edit:Transpose Letters": "Ctrl-T",
     "Edit:Uppercase": "Ctrl-U",
@@ -232,12 +230,12 @@
         "win": "Ctrl-Shift-E"
     },
     "Find:Next Instance Of Identifier": {
-        "mac": "Ctrl-Shift-Right",
-        "win": "Ctrl-Alt-Shift-Right"
+        "mac": "Command-]",
+        "win": "Ctrl-]"
     },
     "Find:Previous Instance Of Identifier": {
-        "mac": "Ctrl-Shift-Left",
-        "win": "Ctrl-Alt-Shift-Left"
+        "mac": "Command-[",
+        "win": "Ctrl-["
     },
     "Command:Enter Command": {
         "mac": "Command-.",
