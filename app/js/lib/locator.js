@@ -2,7 +2,15 @@
 define(function(require, exports, module) {
     "use strict";
     var editor = require("../editor");
-    var ctags = require("../ctags");
+    
+    exports.parse = function(path) {
+        var parts = path.split(':');
+        if(parts.length === 1) {
+            return parts;
+        } else {
+            return [parts[0], parts.slice(1).join(":")];
+        }
+    };
     
     exports.jump = function(locator, selectionRange, selectedItem) {
         var edit = editor.getActiveEditor();

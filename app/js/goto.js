@@ -10,7 +10,6 @@ define(function(require, exports, module) {
     var project = require("./project");
     var command = require("./command");
     var locator = require("./lib/locator");
-    var settings = require("./settings");
 
     var fileCache = [];
     
@@ -86,7 +85,7 @@ define(function(require, exports, module) {
             function filter(phrase) {
                 var sessions = session_manager.getSessions();
                 var resultList;
-                var phraseParts = phrase.split(':');
+                var phraseParts = locator.parse(phrase);
                 phrase = phraseParts[0];
                 var loc = phraseParts[1];
                 
@@ -159,7 +158,7 @@ define(function(require, exports, module) {
                 text: text,
                 currentPath: session.filename,
                 onChange: function(phrase, selectedItem) {
-                    var phraseParts = phrase.split(':');
+                    var phraseParts = locator.parse(phrase);
                     var loc = phraseParts[1];
                     if(loc && (!phraseParts[0] || phraseParts[0] === session.filename)) {
                         locator.jump(loc, selectionRange, selectedItem);
@@ -170,11 +169,11 @@ define(function(require, exports, module) {
                     var currentPath = session.filename;
                     var fileOnly, loc, phraseParts;
                     if(file !== phrase) {
-                        phraseParts = phrase.split(':');
+                        phraseParts = locator.parse(phrase);
                         fileOnly = file || currentPath;
                         loc = phraseParts[1];
                     } else {
-                        phraseParts = file.split(':');
+                        phraseParts = locator.parse(phrase);
                         fileOnly = phraseParts[0] || currentPath;
                         loc = phraseParts[1];
                     }
