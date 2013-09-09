@@ -1,5 +1,9 @@
 {
     "name": "Lua",
     "highlighter": "ace/mode/lua",
-    "extensions": ["lua"]
+    "extensions": ["lua"],
+    
+    "tool:check": {
+        "scriptUrl": "plugin/check/lua.js"
+    }
 }
