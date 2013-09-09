@@ -2,7 +2,17 @@ body {
     font-family: Tahoma, Arial;
     overflow-x: hidden;
     overflow-y: hidden;
+    background-color: #eee;
 }
+
+body.black {
+    background-color: #000;
+}
+
+.inactive-editor {
+    opacity: 0.80;
+}
+
 div.editor-single {
     position: absolute;
     top: 0;
@@ -236,7 +246,7 @@ div.preview-vsplit2-right-2 {
     background-color: #33CCFF !important;
 }
 
-#tree {
+.tree {
     position: fixed;
     border-left: solid 1px black;
     border-bottom: solid 1px black;

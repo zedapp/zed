@@ -4,42 +4,43 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var goto = require("./goto");
     var command = require("./command");
+    var state = require("./state");
     var session_manager = require("./session_manager");
     var editor = require("./editor");
-    
-    function buildDirectoryObject() {
-        var fileList = goto.getFileCache();
-        
+
+    function buildDirectoryObject(list, sep) {
         var root = {};
-        
+
         function addEntry(path) {
-            var parts = path.split('/');
-            parts.shift();
+            var parts = path.split(sep);
+            if(parts[0] === '') {
+                parts.shift();
+            }
             var currentDir = root;
-            for(var i = 0; i < parts.length - 1; i++) {
+            for (var i = 0; i < parts.length - 1; i++) {
                 var p = parts[i];
-                if(!currentDir[p]) {
+                if (!currentDir[p]) {
                     currentDir[p] = {};
                 }
                 currentDir = currentDir[p];
             }
-            var lastPart = parts[parts.length-1];
+            var lastPart = parts[parts.length - 1];
             currentDir[lastPart] = true;
         }
-        
-        for(var i = 0; i < fileList.length; i++) {
-            addEntry(fileList[i]);
+
+        for (var i = 0; i < list.length; i++) {
+            addEntry(list[i]);
         }
-        
+
         return root;
     }
-    
-    function objToDynaTree(obj, path) {
+
+    function objToDynaTree(obj, sep, path) {
         var elements = [];
         Object.keys(obj).forEach(function(filename) {
             var entry = obj[filename];
-            var fullPath = path + '/' + filename;
-            if(entry === true) {
+            var fullPath = path + sep + filename;
+            if (entry === true) {
                 elements.push({
                     title: filename,
                     key: fullPath
@@ -49,88 +50,103 @@ define(function(require, exports, module) {
                     title: filename,
                     key: fullPath,
                     isFolder: true,
-                    children: objToDynaTree(entry, fullPath)
+                    children: objToDynaTree(entry, sep, fullPath)
                 });
             }
         });
         return elements;
     }
-    
-    var treeEl = null;
-    var ignoreActivate = true;
-    var lastFocusEl = null;
-    
-    function close() {
-        treeEl.hide();
-        editor.getActiveEditor().focus();
-    }
-    
-    function focusTree() {
-        setTimeout(function() {
-            editor.getActiveEditor().blur();
-            var tree = $("#tree").dynatree("getTree");
-            ignoreActivate = true;
-            tree.activateKey(editor.getActiveSession().filename);
-            if(!tree.getActiveNode()) {
-                $(lastFocusEl ? lastFocusEl.li : "#tree li:first").focus().click();
-            }
-            ignoreActivate = false;
-        }, 100);
-    }
-    
+
     exports.hook = function() {
         eventbus.on("loadedfilelist", function() {
-            if(treeEl) {
-                treeEl.remove();
-                treeEl = null;
-            }
+            $("#file-tree").remove();
         });
     };
-    
-    command.define("Goto:Tree", {
+
+    function showTree(treeId, edit, list, sep, onSelect) {
+        var editorEl = $(edit.container);
+        var treeEl = $("#" + treeId);
+        
+        var ignoreActivate = true;
+        var lastFocusEl = null;
+
+        function close() {
+            treeEl.hide();
+            editor.getActiveEditor().focus();
+        }
+        
+        function focusTree() {
+            setTimeout(function() {
+                editor.getActiveEditor().blur();
+                var tree = treeEl.dynatree("getTree");
+                ignoreActivate = true;
+                tree.activateKey(editor.getActiveSession().filename);
+                if (!tree.getActiveNode()) {
+                    $(lastFocusEl ? lastFocusEl.li : "#" + treeId +" li:first").focus().click();
+                }
+                ignoreActivate = false;
+            }, 100);
+        }
+        
+        
+        if(treeEl.length === 0) {
+            $("body").append("<div id='" + treeId + "' class='tree'>");
+
+            treeEl = $("#" + treeId);
+            treeEl.dynatree({
+                onActivate: function(node) {
+                    if (ignoreActivate) {
+                        return;
+                    }
+                    if (!node.data.isFolder) {
+                        close();
+                        onSelect(node.data.key);
+                        editor.getActiveEditor().focus();
+                    }
+                },
+                onKeydown: function(node, event) {
+                    if (event.keyCode === 27) {
+                        close();
+                    }
+                },
+                onFocus: function(node) {
+                    lastFocusEl = node;
+                },
+                keyboard: true,
+                autoFocus: true,
+                debugLevel: 0,
+                children: objToDynaTree(buildDirectoryObject(list.slice().sort(), sep), sep, "")
+            });
+            focusTree();
+        } else {
+            treeEl.show();
+            focusTree();
+        }
+        treeEl.css("left", (editorEl.offset().left + 40) + "px");
+        treeEl.css("width", (editorEl.width() - 80) + "px");
+        treeEl.css("top", editorEl.offset().top + "px");
+    }
+
+    command.define("Navigate:File Tree", {
         exec: function(edit) {
-            var editorEl = $(edit.container);
-            if(!treeEl) {
-                $("body").append("<div id='tree'>");
-                
-                treeEl = $("#tree");
-                treeEl.dynatree({
-                    onActivate: function(node) {
-                        console.log("On activate", node, ignoreActivate);
-                        if(ignoreActivate) {
-                            return;
-                        }
-                        if(!node.data.isFolder) {
-                            close();
-                            session_manager.go(node.data.key);
-                            editor.getActiveEditor().focus();
-                        }
-                    },
-                    onKeydown: function(node, event) {
-                        if(event.keyCode === 27) {
-                            close();
-                        }
-                    },
-                    onFocus: function(node) {
-                        lastFocusEl = node;
-                        window.node = node;
-                    },
-                    keyboard: true,
-                    autoFocus: true,
-                    debugLevel: 0,
-                    children: objToDynaTree(buildDirectoryObject(), "")
-                });
-                focusTree();
-            } else {
-                treeEl.show();
-                focusTree();
-            }
-            treeEl.css("left", (editorEl.offset().left + 40) + "px");
-            treeEl.css("width", (editorEl.width() - 80) + "px");
-            treeEl.css("top", editorEl.offset().top + "px");
+            showTree("file-tree", edit, goto.getFileCache(), "/", session_manager.go);
         },
         readOnly: true
     });
     
+    // TODO: Move this to command.js
+    command.define("Command:Command Tree", {
+        exec: function(edit) {
+            showTree("command-tree", edit, command.allCommands().sort(), ":", function(cmd) {
+                cmd = cmd.substring(1); // Strip leading ':'
+                var recentCommands = state.get("recent.commands") || {};
+                recentCommands[cmd] = Date.now();
+                state.set("recent.commands", recentCommands);
+                command.exec(cmd, edit);
+            });
+        },
+        readOnly: true
+    });
+
     exports.buildDirectoryObject = buildDirectoryObject;
 });

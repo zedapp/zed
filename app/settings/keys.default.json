@@ -7,42 +7,80 @@
         "win": "Ctrl-J",
         "mac": "Command-J"
     },
-    "Edit:Select All": {
+    "Select:All": {
         "win": "Ctrl-A",
         "mac": "Command-A"
     },
-    "Edit:Center Selection": {
-        "mac": "Ctrl-L"
+    "Select:Up": "Shift-Up",
+    "Select:To File Start": {
+        "mac": "Command-Shift-Up",
+        "win": "Ctrl-Shift-Home"
     },
-    "Edit:Go To Line": {
-        "win": "Ctrl-L",
-        "mac": "Command-L"
+    "Select:To File End": {
+        "mac": "Command-Shift-Down",
+        "win": "Ctrl-Shift-End"
     },
-    "Edit:Find": {
+    "Select:Word Right": {
+        "mac": "Option-Shift-Right",
+        "win": "Ctrl-Shift-Right"
+    },
+    "Select:Word Left": {
+        "mac": "Option-Shift-Left",
+        "win": "Ctrl-Shift-Left"
+    },
+    "Select:To Line Start": {
+        "mac": "Command-Shift-Left|Shift-Home",
+        "win": "Alt-Shift-Left|Shift-Home"
+    },
+    "Select:Down": "Shift-Down",
+    "Select:Left": "Shift-Left",
+    "Select:Right": "Shift-Right",
+    "Select:Page Down": "Shift-PageDown",
+    "Select:Page Up": "Shift-PageUp",
+    "Select:To Matching Brace": "Ctrl-Shift-5",
+    "Select:Duplicate": {
+        "win": "Ctrl-Shift-D",
+        "mac": "Command-Shift-D"
+    },
+    "Select:To Line End": {
+        "win": "Alt-Shift-Right|Shift-End",
+        "mac": "Command-Shift-Right|Shift-End"
+    },
+
+    
+    "Cursor:To Matching Brace": "Ctrl-5",
+
+    "Find:Find": {
         "win": "Ctrl-F",
         "mac": "Command-F"
     },
-    "Edit:Find Next": {
+    "Find:Next": {
         "win": "Ctrl-K",
         "mac": "Command-G"
     },
-    "Edit:Find Previous": {
+    "Find:Previous": {
         "mac": "Command-Shift-G",
         "win": "Ctrl-Shift-K"
     },
-    "Edit:Fold": {
+    
+    
+    "Navigate:Line": {
+        "win": "Ctrl-L",
+        "mac": "Command-L"
+    },
+    "Fold:Fold": {
         "win": "Alt-L",
         "mac": "Command-Alt-L"
     },
-    "Edit:Unfold": {
+    "Fold:Unfold": {
         "win": "Alt-Shift-L",
         "mac": "Command-Alt-Shift-L"
     },
-    "Edit:Fold All": {
+    "Fold:Fold All": {
         "win": "Alt-0",
         "mac": "Command-Option-0"
     },
-    "Edit:Unfold All": {
+    "Fold:Unfold All": {
         "win": "Alt-Shift-0",
         "mac": "Command-Option-Shift-0"
     },
@@ -52,84 +90,62 @@
         "mac": "Alt-Backspace"
     },
     "Edit:Remove Word Right": "Alt-D",
-    "Edit:Go To File Start": {
+    "Cursor:File Start": {
         "mac": "Command-Up",
         "win": "Ctrl-Home"
     },
-    "Edit:Select To File Start": {
-        "mac": "Command-Shift-Up",
-        "win": "Ctrl-Shift-Home"
-    },
-    "Edit:Go To File End": {
+    "Cursor:File End": {
         "mac": "Command-Down",
         "win": "Ctrl-End"
     },
-    "Edit:Select To File End": {
-        "mac": "Command-Shift-Down",
-        "win": "Ctrl-Shift-End"
-    },
-    "Edit:Go Up": "Up|Ctrl-P",
-    "Edit:Select Up": "Shift-Up",
-    "Edit:Go Down": "Down|Ctrl-N",
-    "Edit:Select Down": "Shift-Down",
-    "Edit:Go Word Right": {
+    "Cursor:Up": "Up|Ctrl-P",
+    "Cursor:Down": "Down|Ctrl-N",
+    "Cursor:Word Right": {
         "mac": "Option-Right|Alt-F",
         "win": "Ctrl-Right|Alt-F"
     },
-    "Edit:Select Word Right": {
-        "mac": "Option-Shift-Right",
-        "win": "Ctrl-Shift-Right"
-    },
-    "Edit:Go Word Left": {
+    "Cursor:Word Left": {
         "mac": "Option-Left|Alt-B",
         "win": "Ctrl-Left"
     },
-    "Edit:Select Word Left": {
-        "mac": "Option-Shift-Left",
-        "win": "Ctrl-Shift-Left"
-    },
-    "Edit:Go To Line Start": {
-        "mac": "Command-Left|Home",
+    "Cursor:Line Start": {
+        "mac": "Command-Left|Home|Ctrl-A",
         "win": "Alt-Left|Home"
     },
-    "Edit:Select To Line Start": {
-        "mac": "Command-Shift-Left|Shift-Home",
-        "win": "Alt-Shift-Left|Shift-Home"
-    },
-    "Edit:Go Left": {
+    "Cursor:Left": {
         "mac": "Left|Ctrl-B",
         "win": "Left"
     },
-    "Edit:Select Left": "Shift-Left",
-    "Edit:Go To Line End": {
+    "Cursor:Line End": {
         "win": "Alt-Right|End",
         "mac": "Command-Right|End|Ctrl-E"
     },
-    "Edit:Select To Line End": {
-        "win": "Alt-Shift-Right|Shift-End",
-        "mac": "Command-Shift-Right|Shift-End"
-    },
-    "Edit:Select Right": "Shift-Right",
-    "Edit:Go Right": {
+    "Cursor:Right": {
         "win": "Right",
         "mac": "Right|Ctrl-F"
     },
-    "Edit:Select Page Down": "Shift-PageDown",
-    "Edit:Scroll Page Down": "Option-PageDown",
-    "Edit:Go Page Down": {
+    "Cursor:Page Down": {
         "win": "PageDown",
         "mac": "PageDown|Ctrl-V"
     },
-    "Edit:Select Page Up": "Shift-PageUp",
-    "Edit:Scroll Page Up": "Option-PageUp",
-    "Edit:Go Page Up": {
+    "Cursor:Page Up": {
         "win": "PageUp",
         "mac": "PageUp|Alt-V"
     },
-    "Edit:Scroll Up": {
+    "Cursor:Center": {
+        "mac": "Ctrl-L"
+    },
+    
+    "Cursor:Multiple:Add Above": "Ctrl-Alt-Up",
+    "Cursor:Multiple:Add Below": "Ctrl-Alt-Down",
+    "Cursor:Multiple:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
+    "Cursor:Multiple:Add At Previous Instance Of Identifier": "Ctrl-Alt-Left",
+    "Scroll:Page Up": "Option-PageUp",
+    "Scroll:Page Down": "Option-PageDown",
+    "Scroll:Up": {
         "win": "Ctrl-Up"
     },
-    "Edit:Scroll Down": {
+    "Scroll:Down": {
         "win": "Ctrl-Down"
     },
     "Edit:Copy Lines Up": {
@@ -148,23 +164,17 @@
         "win": "Alt-Down",
         "mac": "Option-Down"
     },
-    "Edit:Macro:Toggle Recording": {
+    "Macro:Toggle Recording": {
         "win": "Ctrl-Alt-E",
         "mac": "Command-Option-E"
     },
-    "Edit:Macro:Replay": {
+    "Macro:Replay": {
         "win": "Ctrl-Shift-R",
         "mac": "Command-Option-R"
     },
-    "Edit:Jump To Matching Brace": "Ctrl-5",
-    "Edit:Select To Matching Brace": "Ctrl-Shift-5",
     "Edit:Remove Line": {
         "win": "Ctrl-D",
         "mac": "Command-D"
-    },
-    "Edit:Duplicate Selection": {
-        "win": "Ctrl-Shift-D",
-        "mac": "Command-Shift-D"
     },
     "Edit:Toggle Comment": {
         "win": "Ctrl-/",
@@ -221,21 +231,21 @@
         "mac": "Command-Shift-E",
         "win": "Ctrl-Shift-E"
     },
-    "Navigate:Next Instance Of Identifier": {
+    "Find:Next Instance Of Identifier": {
         "mac": "Ctrl-Shift-Right",
         "win": "Ctrl-Alt-Shift-Right"
     },
-    "Navigate:Previous Instance Of Identifier": {
+    "Find:Previous Instance Of Identifier": {
         "mac": "Ctrl-Shift-Left",
         "win": "Ctrl-Alt-Shift-Left"
     },
-    "Cursor:Add Above": "Ctrl-Alt-Up",
-    "Cursor:Add Below": "Ctrl-Alt-Down",
-    "Cursor:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
-    "Cursor:Add At Previous Instance Of Identifier": "Ctrl-Alt-Left",
     "Command:Enter Command": {
         "mac": "Command-.",
         "win": "Ctrl-."
+    },
+    "Command:Command Tree": {
+        "mac": "Command-Shift-.",
+        "win": "Ctrl-Shift-."
     },
     "Split:One": {
         "mac": "Command-1",
@@ -253,7 +263,7 @@
         "mac": "Command-0",
         "win": "Ctrl-0"
     },
-    "Goto:Tree": {
+    "Navigate:File Tree": {
         "mac": "Alt-T|Command-T",
         "win": "Alt-T"
     },

@@ -49,7 +49,7 @@ define(function(require, exports, module) {
         });
     };
 
-    command.define("Tool:Reindex CTags", {
+    command.define("Tools:Reindex CTags", {
         exec: function(edit) {
             // Used purely for notification
             var session = edit.getSession();

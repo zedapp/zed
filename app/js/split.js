@@ -74,8 +74,20 @@ define(function(require, exports, module) {
         var editors = editor.getEditors();
         var activeEditor = editor.getActiveEditor();
         var idx = editors.indexOf(activeEditor);
-        editor.setActiveEditor(editors[(idx + 1) % editors.length]);
-        eventbus.emit("splitswitched", editor.getActiveEditor());
+        activeEditor = editors[(idx + 1) % editors.length];
+        editor.setActiveEditor(activeEditor);
+        eventbus.emit("splitswitched", activeEditor);
+    }
+    
+    function updateActiveEditorStyling() {
+        var activeEditor = editor.getActiveEditor();
+        editor.getEditors().forEach(function(edit) {
+            if(edit === activeEditor) {
+                $(edit.container).removeClass("inactive-editor");
+            } else {
+                $(edit.container).addClass("inactive-editor");
+            }
+        });
     }
 
     exports.hook = function() {
@@ -102,6 +114,8 @@ define(function(require, exports, module) {
             }
             eventbus.emit("splitswitched", editor.getActiveEditor());
         });
+        
+        eventbus.on("splitswitched", updateActiveEditorStyling);
     };
 
     command.define("Split:One", {

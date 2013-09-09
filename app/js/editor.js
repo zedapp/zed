@@ -36,6 +36,14 @@ define(function(require, exports, module) {
             eventbus.on("settingschanged", function(settings) {
                 editor.getEditors(true).forEach(function(edit) {
                     edit.setTheme(settings.get("theme"));
+                    edit.renderer.once("themeLoaded", function(event) {
+                        var theme = event.theme;
+                        if(theme.isDark) {
+                            $("body").addClass("black");
+                        } else {
+                            $("body").removeClass("black");
+                        }
+                    });
                     edit.setHighlightActiveLine(settings.get("highlightActiveLine"));
                     edit.setHighlightGutterLine(settings.get("highlightGutterLine"));
                     edit.setFontSize(settings.get("fontSize"));
@@ -205,52 +213,93 @@ define(function(require, exports, module) {
             return editor.getIdentifierUnderCursor(edit, PATH_REGEX);
         }
     };
+    
+    function find(session, needle, dir) {
+        var Search = ace.require("./search").Search;
+        var search = new Search();
+        search.$options.wrap = true;
+        search.$options.needle = needle;
+        search.$options.caseSensitive = true;
+        search.$options.wholeWord = true;
+        search.$options.backwards = dir == -1;
+        return search.find(session);
+    }
 
-    command.define("Edit:Select All", {
-        exec: function(editor) {
-            editor.selectAll();
-        },
-        readOnly: true
-    });
+    function selectMore(edit, dir) {
+        var session = edit.getSession();
+        var sel = session.multiSelect;
 
-    command.define("Edit:Center Selection", {
-        exec: function(editor) {
-            editor.centerSelection();
-        },
-        readOnly: true
-    });
+        var range = sel.toOrientedRange();
+        var needle = session.getTextRange(range);
 
-    command.define("Edit:Go To Line", {
+        var newRange = find(session, needle, dir);
+        if (newRange) {
+            newRange.cursor = dir == -1 ? newRange.start : newRange.end;
+            edit.multiSelect.addRange(newRange);
+        }
+    }
+
+    command.define("Navigate:Line", {
         exec: function(edit) {
             command.exec("Navigate:Goto", edit, ":");
         },
         readOnly: true
     });
+    
+    command.define("Navigate:Path Under Cursor", {
+        exec: function(edit) {
+            var path = editor.getPathUnderCursor();
+            command.exec("Navigate:Goto", edit, path);
+        }
+    });
 
-    command.define("Edit:Fold", {
+    // FOLD
+    command.define("Fold:Fold", {
         exec: function(editor) {
             editor.session.toggleFold(false);
         },
         readOnly: true
     });
+    
+    command.define("Fold:Unfold", {
+        exec: function(editor) {
+            editor.session.toggleFold(true);
+        },
+        readOnly: true
+    });
 
-    command.define("Edit:Select Up", {
+    command.define("Fold:Fold All", {
+        exec: function(editor) {
+            editor.session.foldAll();
+        },
+        readOnly: true
+    });
+    
+    command.define("Fold:Unfold All", {
+        exec: function(editor) {
+            editor.session.unfold();
+        },
+        readOnly: true
+    });
+
+
+    // SELECT
+    command.define("Select:Up", {
         exec: function(editor) {
             editor.getSelection().selectUp();
         },
         multiSelectAction: "forEach",
         readOnly: true
     });
-
-    command.define("Edit:Go Up", {
-        exec: function(editor, args) {
-            editor.navigateUp(args.times);
+    
+    command.define("Select:All", {
+        exec: function(editor) {
+            editor.selectAll();
         },
-        multiSelectAction: "forEach",
         readOnly: true
     });
-
-    command.define("Edit:Select To File End", {
+    
+    command.define("Select:To File End", {
         exec: function(editor) {
             editor.getSelection().selectFileEnd();
         },
@@ -258,7 +307,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Select Down", {
+    command.define("Select:Down", {
         exec: function(editor) {
             editor.getSelection().selectDown();
         },
@@ -266,47 +315,15 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Go Down", {
-        exec: function(editor, args) {
-            editor.navigateDown(args.times);
-        },
-        multiSelectAction: "forEach",
-        readOnly: true
-    });
-
-    command.define("Edit:Go To File Start", {
-        exec: function(editor) {
-            editor.navigateFileStart();
-        },
-        multiSelectAction: "forEach",
-        readOnly: true
-    });
-
-    command.define("Edit:Go To File End", {
-        exec: function(editor) {
-            editor.navigateFileEnd();
-        },
-        multiSelectAction: "forEach",
-        readOnly: true
-    });
-
-    command.define("Edit:Select Word Left", {
+    command.define("Select:Word Left", {
         exec: function(editor) {
             editor.getSelection().selectWordLeft();
         },
         multiSelectAction: "forEach",
         readOnly: true
     });
-
-    command.define("Edit:Go Word Left", {
-        exec: function(editor) {
-            editor.navigateWordLeft();
-        },
-        multiSelectAction: "forEach",
-        readOnly: true
-    });
-
-    command.define("Edit:Select To Line Start", {
+    
+    command.define("Select:To Line Start", {
         exec: function(editor) {
             editor.getSelection().selectLineStart();
         },
@@ -314,15 +331,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Go To Line Start", {
-        exec: function(editor) {
-            editor.navigateLineStart();
-        },
-        multiSelectAction: "forEach",
-        readOnly: true
-    });
-
-    command.define("Edit:Select Left", {
+    command.define("Select:Left", {
         exec: function(editor) {
             editor.getSelection().selectLeft();
         },
@@ -330,15 +339,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Go Left", {
-        exec: function(editor, args) {
-            editor.navigateLeft(args.times);
-        },
-        multiSelectAction: "forEach",
-        readOnly: true
-    });
-
-    command.define("Edit:Select Word Right", {
+    command.define("Select:Word Right", {
         exec: function(editor) {
             editor.getSelection().selectWordRight();
         },
@@ -346,7 +347,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Select To Line End", {
+    command.define("Select:To Line End", {
         exec: function(editor) {
             editor.getSelection().selectLineEnd();
         },
@@ -354,7 +355,116 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Go To Line End", {
+    command.define("Select:Right", {
+        exec: function(editor) {
+            editor.getSelection().selectRight();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    command.define("Select:Page Down", {
+        exec: function(editor) {
+            editor.selectPageDown();
+        },
+        readOnly: true
+    });
+
+    command.define("Select:To Matching Brace", {
+        exec: function(editor) {
+            editor.jumpToMatching(true);
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+
+    command.define("Select:Page Up", {
+        exec: function(editor) {
+            editor.selectPageDown();
+        },
+        readOnly: true
+    });
+    
+    command.define("Select:To File Start", {
+        exec: function(editor) {
+            editor.getSelection().selectFileStart();
+        },
+        readOnly: true
+    });
+    
+    command.define("Select:Duplicate", {
+        exec: function(editor) {
+            editor.duplicateSelection();
+        },
+        multiSelectAction: "forEach"
+    });
+
+
+    // CURSOR
+    command.define("Cursor:Up", {
+        exec: function(editor, args) {
+            editor.navigateUp(args.times);
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+
+    command.define("Cursor:Down", {
+        exec: function(editor, args) {
+            editor.navigateDown(args.times);
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+
+    command.define("Cursor:File Start", {
+        exec: function(editor) {
+            editor.navigateFileStart();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+
+    command.define("Cursor:File End", {
+        exec: function(editor) {
+            editor.navigateFileEnd();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+
+    command.define("Cursor:Word Left", {
+        exec: function(editor) {
+            editor.navigateWordLeft();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Cursor:Word Right", {
+        exec: function(editor) {
+            editor.navigateWordRight();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+
+    command.define("Cursor:Line Start", {
+        exec: function(editor) {
+            editor.navigateLineStart();
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+
+    command.define("Cursor:Left", {
+        exec: function(editor, args) {
+            editor.navigateLeft(args.times);
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
+    });
+
+    command.define("Cursor:Line End", {
         exec: function(editor) {
             editor.navigateLineEnd();
         },
@@ -362,15 +472,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Select Right", {
-        exec: function(editor) {
-            editor.getSelection().selectRight();
-        },
-        multiSelectAction: "forEach",
-        readOnly: true
-    });
-
-    command.define("Edit:Go Right", {
+    command.define("Cursor:Right", {
         exec: function(editor, args) {
             editor.navigateRight(args.times);
         },
@@ -378,98 +480,119 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Edit:Select Page Down", {
-        exec: function(editor) {
-            editor.selectPageDown();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Scroll Page Down", {
-        exec: function(editor) {
-            editor.scrollPageDown();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Go Page Down", {
+    command.define("Cursor:Page Down", {
         exec: function(editor) {
             editor.gotoPageDown();
         },
         readOnly: true
     });
 
-    command.define("Edit:Select Page Up", {
-        exec: function(editor) {
-            editor.selectPageDown();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Scroll Page Up", {
-        exec: function(editor) {
-            editor.scrollPageUp();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Go Page Up", {
+    command.define("Cursor:Page Up", {
         exec: function(editor) {
             editor.gotoPageUp();
         },
         readOnly: true
     });
-
-    command.define("Edit:Scroll Down", {
-        exec: function(e) {
-            e.renderer.scrollBy(0, 2 * e.renderer.layerConfig.lineHeight);
-        },
-        readOnly: true
-    });
-    command.define("Edit:Scroll Up", {
-        exec: function(e) {
-            e.renderer.scrollBy(0, -2 * e.renderer.layerConfig.lineHeight);
-        },
-        readOnly: true
-    });
-    command.define("Edit:Macro:Toggle Recording", {
-        exec: function(editor) {
-            editor.commands.toggleRecording(editor);
-        },
-        readOnly: true
-    });
-    command.define("Edit:Macro:Replay", {
-        exec: function(editor) {
-            editor.commands.replay(editor);
-        },
-        readOnly: true
-    });
-    command.define("Edit:Jump To Matching Brace", {
+    
+    command.define("Cursor:To Matching Brace", {
         exec: function(editor) {
             editor.jumpToMatching();
         },
         multiSelectAction: "forEach",
         readOnly: true
     });
-    command.define("Edit:Select To Matching Brace", {
+    
+    command.define("Cursor:Center", {
         exec: function(editor) {
-            editor.jumpToMatching(true);
+            editor.centerSelection();
         },
-        multiSelectAction: "forEach",
         readOnly: true
     });
+
+    // Cursor: Multiple
+    command.define("Cursor:Multiple:Add At Next Instance Of Identifier", {
+        exec: function(edit) {
+            if (edit.selection.isEmpty()) {
+                var range = editor.getIdentifierUnderCursorRange();
+                edit.selection.setSelectionRange(range);
+            }
+            selectMore(edit, 1);
+        }
+    });
+
+    command.define("Cursor:Multiple:Add At Previous Instance Of Identifier", {
+        exec: function(edit) {
+            if (edit.selection.isEmpty()) {
+                var range = editor.getIdentifierUnderCursorRange();
+                edit.selection.setSelectionRange(range);
+            }
+            selectMore(edit, -1);
+        }
+    });
+    
+    command.define("Cursor:Multiple:Add Above", {
+        exec: function(editor) {
+            editor.selectMoreLines(-1);
+        },
+    });
+
+    command.define("Cursor:Multiple:Add Below", {
+        exec: function(editor) {
+            editor.selectMoreLines(1);
+        },
+    });
+    
+    // SCROLL
+    
+    command.define("Scroll:Page Down", {
+        exec: function(editor) {
+            editor.scrollPageDown();
+        },
+        readOnly: true
+    });
+    command.define("Scroll:Page Up", {
+        exec: function(editor) {
+            editor.scrollPageUp();
+        },
+        readOnly: true
+    });
+
+    command.define("Scroll:Down", {
+        exec: function(e) {
+            e.renderer.scrollBy(0, 2 * e.renderer.layerConfig.lineHeight);
+        },
+        readOnly: true
+    });
+    command.define("Scroll:Up", {
+        exec: function(e) {
+            e.renderer.scrollBy(0, -2 * e.renderer.layerConfig.lineHeight);
+        },
+        readOnly: true
+    });
+    
+    // MACRO
+    command.define("Macro:Toggle Recording", {
+        exec: function(editor) {
+            editor.commands.toggleRecording(editor);
+        },
+        readOnly: true
+    });
+    
+    command.define("Macro:Replay", {
+        exec: function(editor) {
+            editor.commands.replay(editor);
+        },
+        readOnly: true
+    });
+    
+    // EDIT
     command.define("Edit:Remove Line", {
         exec: function(editor) {
             editor.removeLines();
         },
         multiSelectAction: "forEach"
     });
-    command.define("Edit:Duplicate Selection", {
-        exec: function(editor) {
-            editor.duplicateSelection();
-        },
-        multiSelectAction: "forEach"
-    });
+    
     command.define("Edit:Toggle Comment", {
         exec: function(editor) {
             editor.toggleCommentLines();
@@ -537,42 +660,49 @@ define(function(require, exports, module) {
         },
         multiSelectAction: "forEach"
     });
+    
     command.define("Edit:Remove To Line End", {
         exec: function(editor) {
             editor.removeToLineEnd();
         },
         multiSelectAction: "forEach"
     });
+    
     command.define("Edit:Outdent", {
         exec: function(editor) {
             editor.blockOutdent();
         },
         multiSelectAction: "forEach"
     });
+    
     command.define("Edit:Indent", {
         exec: function(editor) {
             editor.indent();
         },
         multiSelectAction: "forEach"
     });
+    
     command.define("Edit:Block Outdent", {
         exec: function(editor) {
             editor.blockOutdent();
         },
         multiSelectAction: "forEach"
     });
+    
     command.define("Edit:Block Indent", {
         exec: function(editor) {
             editor.blockIndent();
         },
         multiSelectAction: "forEach"
     });
+    
     command.define("Edit:Split Line", {
         exec: function(editor) {
             editor.splitLine();
         },
         multiSelectAction: "forEach"
     });
+    
     command.define("Edit:Transpose Letters", {
         exec: function(editor) {
             editor.transposeLetters();
@@ -596,61 +726,6 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach"
     });
 
-    command.define("Edit:Unfold", {
-        exec: function(editor) {
-            editor.session.toggleFold(true);
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Fold All", {
-        exec: function(editor) {
-            editor.session.foldAll();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Find Next", {
-        exec: function(editor) {
-            editor.findNext();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Find Previous", {
-        exec: function(editor) {
-            editor.findPrevious();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Overwrite Mode", {
-        exec: function(editor) {
-            editor.toggleOverwrite();
-        }
-    });
-
-    command.define("Edit:Select To File Start", {
-        exec: function(editor) {
-            editor.getSelection().selectFileStart();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Unfold All", {
-        exec: function(editor) {
-            editor.session.unfold();
-        },
-        readOnly: true
-    });
-
-    command.define("Edit:Find", {
-        exec: function(edit) {
-            command.exec("Navigate:Goto", edit, ":/");
-        },
-        readOnly: true
-    });
-
     command.define("Edit:Remove Word Left", {
         exec: function(editor) {
             editor.removeWordLeft();
@@ -665,22 +740,55 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach"
     });
 
-    command.define("Edit:Go Word Right", {
+    command.define("Edit:Overwrite Mode", {
         exec: function(editor) {
-            editor.navigateWordRight();
+            editor.toggleOverwrite();
+        }
+    });
+    
+    command.define("Edit:Detect Indentation", {
+        exec: function(editor) {
+            whitespace.detectIndentation(editor.session);
+        }
+    });
+
+    command.define("Edit:Trim Trailing Space", {
+        exec: function(editor) {
+            whitespace.trimTrailingSpace(editor.session);
+        }
+    });
+
+    command.define("Edit:Convert Indentation", {
+        exec: function(editor) {
+            // todo this command needs a way to get values for tabChar and tabLength
+            whitespace.convertIndentation(editor.session);
+        }
+    });
+
+
+    // FIND
+    command.define("Find:Find", {
+        exec: function(edit) {
+            command.exec("Navigate:Goto", edit, ":/");
         },
-        multiSelectAction: "forEach",
+        readOnly: true
+    });
+    
+    command.define("Find:Next", {
+        exec: function(editor) {
+            editor.findNext();
+        },
         readOnly: true
     });
 
-    command.define("Settings:Toggle Word Wrap", {
-        exec: function() {
-            settings.set("wordWrap", !settings.get("wordWrap"));
+    command.define("Find:Previous", {
+        exec: function(editor) {
+            editor.findPrevious();
         },
         readOnly: true
     });
-
-    command.define("Navigate:Next Instance Of Identifier", {
+    
+    command.define("Find:Next Instance Of Identifier", {
         exec: function(edit) {
             if (edit.selection.isEmpty()) {
                 var range = editor.getIdentifierUnderCursorRange();
@@ -694,7 +802,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Navigate:Previous Instance Of Identifier", {
+    command.define("Find:Previous Instance Of Identifier", {
         exec: function(edit) {
             if (edit.selection.isEmpty()) {
                 var range = editor.getIdentifierUnderCursorRange();
@@ -707,69 +815,13 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-
-    function find(session, needle, dir) {
-        var Search = ace.require("./search").Search;
-        var search = new Search();
-        search.$options.wrap = true;
-        search.$options.needle = needle;
-        search.$options.caseSensitive = true;
-        search.$options.wholeWord = true;
-        search.$options.backwards = dir == -1;
-        return search.find(session);
-    }
-
-    function selectMore(edit, dir) {
-        var session = edit.getSession();
-        var sel = session.multiSelect;
-
-        var range = sel.toOrientedRange();
-        var needle = session.getTextRange(range);
-
-        var newRange = find(session, needle, dir);
-        if (newRange) {
-            newRange.cursor = dir == -1 ? newRange.start : newRange.end;
-            edit.multiSelect.addRange(newRange);
-        }
-    }
-
-    command.define("Cursor:Add At Next Instance Of Identifier", {
-        exec: function(edit) {
-            if (edit.selection.isEmpty()) {
-                var range = editor.getIdentifierUnderCursorRange();
-                edit.selection.setSelectionRange(range);
-            }
-            selectMore(edit, 1);
-        }
-    });
-
-    command.define("Cursor:Add At Previous Instance Of Identifier", {
-        exec: function(edit) {
-            if (edit.selection.isEmpty()) {
-                var range = editor.getIdentifierUnderCursorRange();
-                edit.selection.setSelectionRange(range);
-            }
-            selectMore(edit, -1);
-        }
-    });
-
-    command.define("Edit:Goto Path Under Cursor", {
-        exec: function(edit) {
-            var path = editor.getPathUnderCursor();
-            command.exec("File:Goto", edit, path);
-        }
-    });
-
-    command.define("Cursor:Add Above", {
-        exec: function(editor) {
-            editor.selectMoreLines(-1);
+    
+    // SETTINGS
+    command.define("Settings:Toggle Word Wrap", {
+        exec: function() {
+            settings.set("wordWrap", !settings.get("wordWrap"));
         },
-    });
-
-    command.define("Cursor:Add Below", {
-        exec: function(editor) {
-            editor.selectMoreLines(1);
-        },
+        readOnly: true
     });
 
     editor.themes.forEach(function(theme) {
@@ -785,22 +837,5 @@ define(function(require, exports, module) {
         });
     });
 
-    command.define("Editor:Detect Indentation", {
-        exec: function(editor) {
-            whitespace.detectIndentation(editor.session);
-        }
-    });
-
-    command.define("Editor:Trim Trailing Space", {
-        exec: function(editor) {
-            whitespace.trimTrailingSpace(editor.session);
-        }
-    });
-
-    command.define("Editor:Convert Indentation", {
-        exec: function(editor) {
-            // todo this command needs a way to get values for tabChar and tabLength
-            whitespace.convertIndentation(editor.session);
-        }
-    });
+    
 });

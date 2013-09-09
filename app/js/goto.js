@@ -152,6 +152,7 @@ define(function(require, exports, module) {
                 return resultList;
             }
 
+            // TODO: Clean this up, has gotten messy over time
             ui.filterBox({
                 placeholder: "Path",
                 filter: filter,
@@ -182,7 +183,7 @@ define(function(require, exports, module) {
                     }
                     // Actual jumping only needs to happen if it's non-local
                     // i.e. if we're not already there (as is the case with local locators)
-                    if(phraseParts[0]) {
+                    if(phraseParts[0] || !locator) {
                         file = fileOnly + (locator ? ':' + locator : '');
                         session_manager.go(file, edit, session);
                     }
@@ -197,7 +198,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
     
-    command.define("File:Reload Filelist", {
+    command.define("Navigate:Reload Filelist", {
         exec: fetchFileList,
         readOnly: true
     });
