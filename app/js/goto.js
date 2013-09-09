@@ -161,30 +161,27 @@ define(function(require, exports, module) {
                 onChange: function(phrase, selectedItem) {
                     var phraseParts = phrase.split(':');
                     var loc = phraseParts[1];
-                    if(!phraseParts[0] && loc) {
-                        if(!selectedItem) {
-                            locator.jump(loc, selectionRange);
-                            return;
-                        }
+                    if(loc && (!phraseParts[0] || phraseParts[0] === session.filename)) {
+                        locator.jump(loc, selectionRange, selectedItem);
                     }
                 },
                 hint: hint,
                 onSelect: function(file, phrase) {
                     var currentPath = session.filename;
-                    var fileOnly, locator, phraseParts;
+                    var fileOnly, loc, phraseParts;
                     if(file !== phrase) {
                         phraseParts = phrase.split(':');
                         fileOnly = file || currentPath;
-                        locator = phraseParts[1];
+                        loc = phraseParts[1];
                     } else {
                         phraseParts = file.split(':');
                         fileOnly = phraseParts[0] || currentPath;
-                        locator = phraseParts[1];
+                        loc = phraseParts[1];
                     }
                     // Actual jumping only needs to happen if it's non-local
                     // i.e. if we're not already there (as is the case with local locators)
-                    if(phraseParts[0] || !locator) {
-                        file = fileOnly + (locator ? ':' + locator : '');
+                    if(phraseParts[0] || !loc) {
+                        file = fileOnly + (loc ? ':' + loc : '');
                         session_manager.go(file, edit, session);
                     }
                 },
