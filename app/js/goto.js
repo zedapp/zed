@@ -180,8 +180,12 @@ define(function(require, exports, module) {
                         fileOnly = phraseParts[0] || currentPath;
                         locator = phraseParts[1];
                     }
-                    file = fileOnly + (locator ? ':' + locator : '');
-                    session_manager.go(file, edit, session);
+                    // Actual jumping only needs to happen if it's non-local
+                    // i.e. if we're not already there (as is the case with local locators)
+                    if(phraseParts[0]) {
+                        file = fileOnly + (locator ? ':' + locator : '');
+                        session_manager.go(file, edit, session);
+                    }
                 },
                 onCancel: function() {
                     edit.moveCursorToPosition(currentPos);
