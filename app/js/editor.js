@@ -78,6 +78,12 @@ define(function(require, exports, module) {
                     });
                 });
             });
+            
+            eventbus.on("sessionbeforesave", function() {
+                if(settings.get("trimTrailingWhiteSpaceOnSave")) {
+                    editor.trimTrailingWhitespace(editor.getActiveEditor());
+                }
+            });
         },
         init: function() {
             $("body").append("<div id='editor0' class='editor-single'>");
@@ -100,6 +106,25 @@ define(function(require, exports, module) {
 
             editor.setActiveEditor(editors[0]);
             eventbus.emit("editorloaded", exports);
+        },
+        trimTrailingWhitespace: function(edit) {
+            var currentLine = edit.getCursorPosition().row;
+            var session = edit.getSession();
+            var doc = session.getDocument();
+            var lines = doc.getAllLines();
+            
+            var min = settings.get("trimEmptyLines") ? -1 : 0;
+        
+            for (var i = 0, l=lines.length; i < l; i++) {
+                if(i === currentLine) {
+                    continue;
+                }
+                var line = lines[i];
+                var index = line.search(/\s+$/);
+        
+                if (index > min)
+                    doc.removeInLine(i, index, line.length);
+            }
         },
         createSession: function(path, content) {
             var mode = modes.getModeForPath(path);
@@ -747,24 +772,23 @@ define(function(require, exports, module) {
     });
     
     command.define("Edit:Detect Indentation", {
-        exec: function(editor) {
-            whitespace.detectIndentation(editor.session);
+        exec: function(edit) {
+            whitespace.detectIndentation(edit.session);
         }
     });
 
     command.define("Edit:Trim Trailing Space", {
-        exec: function(editor) {
-            whitespace.trimTrailingSpace(editor.session);
+        exec: function(edit) {
+            editor.trimTrailingWhitespace(edit, true);
         }
     });
 
     command.define("Edit:Convert Indentation", {
-        exec: function(editor) {
+        exec: function(edit) {
             // todo this command needs a way to get values for tabChar and tabLength
-            whitespace.convertIndentation(editor.session);
+            whitespace.convertIndentation(edit.session);
         }
     });
-
 
     // FIND
     command.define("Find:Find", {
@@ -822,6 +846,12 @@ define(function(require, exports, module) {
             settings.set("wordWrap", !settings.get("wordWrap"));
         },
         readOnly: true
+    });
+    
+    command.define("Settings:Toggle Trim Trailing Whitespace On Save", {
+        exec: function() {
+            settings.set("trimTrailingWhiteSpaceOnSave", !settings.get("trimTrailingWhiteSpaceOnSave"));
+        }
     });
 
     editor.themes.forEach(function(theme) {

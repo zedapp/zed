@@ -19,5 +19,7 @@
     "behaviorsEnabled": true,
     "wrapBehaviorsEnabled": false,
     "wordWrap": false,
-    "previewDelay": 500
+    "previewDelay": 500,
+    "trimTrailingWhiteSpaceOnSave": false,
+    "trimEmptyLines": true
 }

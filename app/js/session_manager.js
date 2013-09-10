@@ -13,6 +13,7 @@ define(function(require, exports, module) {
     eventbus.declare("newfilecreated");
     eventbus.declare("filedeleted");
     eventbus.declare("newsession");
+    eventbus.declare("sessionbeforesave");
     eventbus.declare("sessionsaved");
     eventbus.declare("sessionchanged");
     eventbus.declare("allsessionsloaded");
@@ -32,6 +33,7 @@ define(function(require, exports, module) {
             if (saveTimer) clearTimeout(saveTimer);
             saveTimer = setTimeout(function() {
                 eventbus.emit("sessionactivitystarted", session, "Saving");
+                eventbus.emit("sessionbeforesave", session);
                 project.writeFile(path, session.getValue(), function(err) {
                     if(err) {
                         eventbus.emit("sessionactivityfailed", session, "Failed to save");
