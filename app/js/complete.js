@@ -1,20 +1,20 @@
 /*global define ace $ _ */
 define(function(require, exports, module) {
     "use strict";
-    
+
     var command = require("./command");
     var Autocomplete = ace.require("ace/autocomplete").Autocomplete;
-    
+
     var completers = [
         ace.require("ace/autocomplete/text_completer"),
         require("./complete/snippet"),
         require("./complete/ctags")
     ];
-    
+
     exports.addCompleter = function(completer) {
         completers.push(completer);
     };
-    
+
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
 
     function retrievePreceedingIdentifier(text, pos) {
@@ -26,10 +26,10 @@ define(function(require, exports, module) {
                 break;
             }
         }
-        
+
         return identBuf.reverse().join("");
     }
-    
+
     function shouldComplete(edit) {
         var session = edit.getSession();
         var doc = session.getDocument();
@@ -38,7 +38,7 @@ define(function(require, exports, module) {
         var line = doc.getLine(pos.row);
         return retrievePreceedingIdentifier(line, pos.column);
     }
-    
+
     Autocomplete.prototype.commands["Tab"] = function(editor) { editor.completer.goTo("down"); };
     Autocomplete.prototype.commands["Shift-Tab"] = function(editor) { editor.completer.goTo("up"); };
 
@@ -50,7 +50,7 @@ define(function(require, exports, module) {
                     edit.completers = completers;
                 }
                 edit.completer.showPopup(edit);
-                //edit.completer.goTo("start");
+                edit.completer.goTo("start");
                 edit.completer.cancelContextMenu();
             } else {
                 edit.indent();
