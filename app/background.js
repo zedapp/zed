@@ -24,6 +24,24 @@ function tryAgainLater() {
     }, 10000);
 }
 
+var MAX_RECENT_PROJECTS = 5;
+
+function addToRecentProjects(url) {
+    chrome.storage.local.get("recentProjects", function(results) {
+        var projects = results.recentProjects || [];
+        if(projects.indexOf(url) !== -1) {
+            projects.splice(projects.indexOf(url), 1);
+            projects.splice(0, 0, url);
+        } else {
+            projects.splice(0, 0, url);
+            if(projects.length > MAX_RECENT_PROJECTS) {
+                projects.splice(projects.length - 1, 1);
+            }
+        }
+        chrome.storage.local.set({recentProjects: projects});
+    });
+}
+
 function listenOnLocalSocket() {
     var ws = new WebSocket("ws://localhost:7336/signalsocket");
     ws.onerror = tryAgainLater;
@@ -36,6 +54,7 @@ function listenOnLocalSocket() {
         }, function(win) {
             win.drawAttention();
         });
+        addToRecentProjects(event.data);
     };
 }
 

@@ -192,10 +192,15 @@ func socketServer(ws *websocket.Conn) {
 	client := NewClient(hello.UUID)
 
 	closeSocket := func() {
-		fmt.Println("Client disconnected", hello.UUID)
-		clients[hello.UUID].close()
-		delete(clients, hello.UUID)
+		client, ok := clients[hello.UUID];
+		if ok {
+			fmt.Println("Client disconnected", hello.UUID)
+			client.close()
+			delete(clients, hello.UUID)
+		} // else was already closed before
 	}
+
+	defer closeSocket()
 
 	// Read frame from socket and forward it to request channel
 	go func() {
@@ -220,13 +225,12 @@ func socketServer(ws *websocket.Conn) {
 	for {
 		writeBuffer, request_ok := <-client.writeChannel
 		if !request_ok {
-			break
+			return
 		}
 		err = WriteFrame(ws, writeBuffer[0], writeBuffer[1:])
 		if err != nil {
 			fmt.Println("Got error", err)
-			closeSocket()
-			break
+			return
 		}
 	}
 }

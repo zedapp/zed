@@ -8,29 +8,31 @@ import (
 )
 
 // For now we'll only support a single connected client
-var signalChan chan string
+var signalChan chan string = make(chan string, 25)
+var signalAppConnected bool
 
 func HandleSignal(w http.ResponseWriter, r *http.Request) {
     defer r.Body.Close()
     w.Header().Set("Content-type", "text/plain")
-    if signalChan == nil {
+    signalChan <- r.FormValue("url")
+    if signalAppConnected {
+        w.WriteHeader(200)
+        w.Write([]byte("OK"))
+        return
+    } else {
         w.WriteHeader(500)
         w.Write([]byte("App not connected."))
-        return
     }
-    signalChan <- r.FormValue("url")
-    w.WriteHeader(200)
-    w.Write([]byte("OK"))
 }
 
 func HandleSignalSocket(ws *websocket.Conn) {
 	defer ws.Close()
     fmt.Println("App connected to signaller.")
-    if signalChan != nil {
+    if signalAppConnected {
         fmt.Println("Second client connected, not supported.")
         return
     }
-    signalChan = make(chan string)
+    signalAppConnected = true
     endChan := make(chan bool)
 
     go func() {
@@ -38,7 +40,7 @@ func HandleSignalSocket(ws *websocket.Conn) {
         for {
             _, err := ws.Read(buffer)
             if err != nil {
-                signalChan = nil
+                signalAppConnected = false
                 endChan <- true
                 break
             }
@@ -61,7 +63,7 @@ func HandleSignalSocket(ws *websocket.Conn) {
             }
         case <-endChan:
             fmt.Println("Connection closed")
-            break
+            return
         }
     }
 }

@@ -12,7 +12,6 @@
 #status {
     background: yellow;
 }
-
 body {
     margin: 0;
     font-family: Monaco, Menlo;
@@ -49,10 +48,11 @@ input[type=submit] {
     color: red;
 }
 
-#projects {
+.projects {
     border-top: 1px solid #aaa;
 }
-#projects a {
+
+.projects a {
     display: block;
     text-decoration: none;
     background-color: #eee;
@@ -60,10 +60,16 @@ input[type=submit] {
     font-size: 13px;
     padding: 8px;
     border-bottom: 1px solid #aaa;
+    overflow: hidden;
+    direction: rtl;
+    text-align: left;
+    white-space: nowrap;
 }
-#projects a:hover {
+
+.projects a:hover {
     background-color: #33CCFF;
 }
+
 </style>
     </head>
     <body>
@@ -73,9 +79,12 @@ input[type=submit] {
     <label><input type="checkbox" id="hygienic" value="true"/> Hygienic mode (don't create .zedstate file)</label>
     <div id="hint">After you run the <tt>zed</tt> client, you will get a URL, paste that into this box and press <tt>Enter</tt>, or pick a project below.</div>
     <div id="projects">
-        <a href="#" data-url="syncfs:">Notes</a>
-        <a href="#" data-url="settings:">Settings</a>
-        <a href="#" data-url="manual:">Manual</a>
+        <div id="recent" class="projects"></div>
+        <div class="projects">
+            <a href="#" data-url="syncfs:">Notes</a>
+            <a href="#" data-url="settings:">Settings</a>
+            <a href="#" data-url="manual:">Manual</a>
+        </div>
     </div>
     <script src="js/open.js"></script>
 </body>

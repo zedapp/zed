@@ -362,7 +362,7 @@ func NotifySignaller(connectUrl string) bool {
 	}
 	if resp.StatusCode == 500 {
 		fmt.Println("Zed local is up, but the Zed Chrome App is not running.")
-		fmt.Println("Please start the Zed Chrome App, then try again.")
+		fmt.Println("Please start the Zed Chrome App to automatically open this project.")
 		os.Exit(2)
 	}
 	return resp.StatusCode == 200

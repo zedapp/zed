@@ -3,7 +3,7 @@ require.config({
     waitSeconds: 15
 });
 
-/*global $ chrome*/
+/*global $ chrome _*/
 $(function() {
     var input = $("#gotoinput");
     var hygienic = $("#hygienic");
@@ -16,7 +16,7 @@ $(function() {
             height: 400,
         });
     }
-    
+
     var defaultHint = $("#hint").html();
 
     function openChecked(url) {
@@ -49,29 +49,54 @@ $(function() {
         win.resizeTo(400, $("body").height() + 23);
     }
 
+    // We're storing recent projects in local storage
+    var projectCache = [];
+    function updateRecentProjects() {
+        chrome.storage.local.get("recentProjects", function(results) {
+            var projects = results.recentProjects || [];
+            if(_.isEqual(projects, projectCache)) {
+                return;
+            }
+            var recentEl = $("#recent");
+            recentEl.empty();
+            projects.forEach(function(url) {
+                var el = $("<a href='#'>");
+                var title = url.replace("http://localhost:7336/fs/local/", "");
+                el.text(title);
+                el.data("url", url);
+                recentEl.append(el);
+            });
+            projectCache = projects;
+            updateWindowSize();
+        });
+    }
+
+    updateRecentProjects();
+    chrome.storage.onChanged.addListener(updateRecentProjects);
+
     input.keyup(function(event) {
         if (event.keyCode == 13) {
             openChecked(input.val());
         }
     });
-    
+
     $(window).keyup(function(event) {
         if (event.keyCode == 27) { // Esc
             close();
         }
     });
-    
+
     chrome.storage.sync.get("hygienicMode", function(results) {
         if(results.hygienicMode) {
             hygienic.attr("checked", "checked");
         }
     });
-    
+
     hygienic.change(function() {
         chrome.storage.sync.set({hygienicMode: hygienic.is(":checked")});
     });
 
-    $("#projects a").click(function(event) {
+    $("#projects").on("click", ".projects a", function(event) {
         open($(event.target).data("url"));
     });
 
