@@ -1,10 +1,8 @@
 { config, pkgs, ... }:
-
 with pkgs.lib;
-
 let
   cfg = config.services.zed;
-  zed = import ../default.nix { inherit pkgs };
+  zed = import ../default.nix { inherit pkgs; };
 in
 {
 
@@ -34,6 +32,7 @@ in
         description = "Root path that is editable";
       };
 
+    };
   };
 
 
@@ -52,5 +51,6 @@ in
           User = cfg.user;
         };
       };
+      
   };
 }
