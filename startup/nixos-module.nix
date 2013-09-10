@@ -24,12 +24,12 @@ in
 
       user = mkOption {
         default = "root";
-        description = "User account under which Zed runs";
+        description = "User account under which Zed runs. You may want to set this to your user account.";
       };
 
       rootPath = mkOption {
         default = "/";
-        description = "Root path that is editable";
+        description = "Root path that is editable. You may want to set this to your user's home directory.";
       };
 
     };
@@ -51,6 +51,6 @@ in
           User = cfg.user;
         };
       };
-      
+
   };
 }
