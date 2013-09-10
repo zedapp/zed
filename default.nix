@@ -2,17 +2,18 @@
 , stdenv ? pkgs.stdenv
 }:
 let
-    gopkg = { name, path, src }:
+    gopkg = { name, rootPackagePath, src }:
         stdenv.mkDerivation {
             inherit name src;
+
             installPhase = ''
-                mkdir -p $out/src/${path}
-                cp -r * $out/src/${path}/
+                mkdir -p $out/src/${rootPackagePath}
+                cp -r * $out/src/${rootPackagePath}/
             '';
         };
     websocket = gopkg {
         name = "go.net";
-        path = "code.google.com/p/go.net";
+        rootPackagePath = "code.google.com/p/go.net";
         src = pkgs.fetchhg {
             url = https://code.google.com/p/go.net;
             tag = "bc411e2ac33f";
@@ -20,7 +21,7 @@ let
     };
     gcfg = gopkg {
         name = "gcfg";
-        path = "code.google.com/p/gcfg";
+        rootPackagePath = "code.google.com/p/gcfg";
         src = pkgs.fetchgit {
             url = https://code.google.com/p/gcfg/;
             rev = "4bedf9880f04908ce2c654950503e40563291f52";
@@ -28,7 +29,7 @@ let
     };
     uuid = gopkg {
         name = "uuid";
-        path = "code.google.com/p/go-uuid";
+        rootPackagePath = "code.google.com/p/go-uuid";
         src = pkgs.fetchhg {
             url = https://code.google.com/p/go-uuid/;
             tag = "5fac954758f5";
