@@ -78,7 +78,7 @@ define(function(require, exports, module) {
                     });
                 });
             });
-            
+
             eventbus.on("sessionbeforesave", function() {
                 if(settings.get("trimTrailingWhiteSpaceOnSave")) {
                     editor.trimTrailingWhitespace(editor.getActiveEditor());
@@ -112,16 +112,16 @@ define(function(require, exports, module) {
             var session = edit.getSession();
             var doc = session.getDocument();
             var lines = doc.getAllLines();
-            
+
             var min = settings.get("trimEmptyLines") ? -1 : 0;
-        
+
             for (var i = 0, l=lines.length; i < l; i++) {
                 if(i === currentLine) {
                     continue;
                 }
                 var line = lines[i];
                 var index = line.search(/\s+$/);
-        
+
                 if (index > min)
                     doc.removeInLine(i, index, line.length);
             }
@@ -238,7 +238,7 @@ define(function(require, exports, module) {
             return editor.getIdentifierUnderCursor(edit, PATH_REGEX);
         }
     };
-    
+
     function find(session, needle, dir) {
         var Search = ace.require("./search").Search;
         var search = new Search();
@@ -270,7 +270,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Navigate:Path Under Cursor", {
         exec: function(edit) {
             var path = editor.getPathUnderCursor();
@@ -285,7 +285,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Fold:Unfold", {
         exec: function(editor) {
             editor.session.toggleFold(true);
@@ -299,7 +299,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Fold:Unfold All", {
         exec: function(editor) {
             editor.session.unfold();
@@ -316,14 +316,14 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach",
         readOnly: true
     });
-    
+
     command.define("Select:All", {
         exec: function(editor) {
             editor.selectAll();
         },
         readOnly: true
     });
-    
+
     command.define("Select:To File End", {
         exec: function(editor) {
             editor.getSelection().selectFileEnd();
@@ -347,7 +347,7 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach",
         readOnly: true
     });
-    
+
     command.define("Select:To Line Start", {
         exec: function(editor) {
             editor.getSelection().selectLineStart();
@@ -404,18 +404,18 @@ define(function(require, exports, module) {
 
     command.define("Select:Page Up", {
         exec: function(editor) {
-            editor.selectPageDown();
+            editor.selectPageUp();
         },
         readOnly: true
     });
-    
+
     command.define("Select:To File Start", {
         exec: function(editor) {
             editor.getSelection().selectFileStart();
         },
         readOnly: true
     });
-    
+
     command.define("Select:Duplicate", {
         exec: function(editor) {
             editor.duplicateSelection();
@@ -464,7 +464,7 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach",
         readOnly: true
     });
-    
+
     command.define("Cursor:Word Right", {
         exec: function(editor) {
             editor.navigateWordRight();
@@ -518,7 +518,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Cursor:To Matching Brace", {
         exec: function(editor) {
             editor.jumpToMatching();
@@ -526,7 +526,7 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach",
         readOnly: true
     });
-    
+
     command.define("Cursor:Center", {
         exec: function(editor) {
             editor.centerSelection();
@@ -554,7 +554,7 @@ define(function(require, exports, module) {
             selectMore(edit, -1);
         }
     });
-    
+
     command.define("Cursor:Multiple:Add Above", {
         exec: function(editor) {
             editor.selectMoreLines(-1);
@@ -566,9 +566,9 @@ define(function(require, exports, module) {
             editor.selectMoreLines(1);
         },
     });
-    
+
     // SCROLL
-    
+
     command.define("Scroll:Page Down", {
         exec: function(editor) {
             editor.scrollPageDown();
@@ -594,7 +594,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     // MACRO
     command.define("Macro:Toggle Recording", {
         exec: function(editor) {
@@ -602,14 +602,14 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Macro:Replay", {
         exec: function(editor) {
             editor.commands.replay(editor);
         },
         readOnly: true
     });
-    
+
     // EDIT
     command.define("Edit:Remove Line", {
         exec: function(editor) {
@@ -617,7 +617,7 @@ define(function(require, exports, module) {
         },
         multiSelectAction: "forEach"
     });
-    
+
     command.define("Edit:Toggle Comment", {
         exec: function(editor) {
             editor.toggleCommentLines();
@@ -685,49 +685,49 @@ define(function(require, exports, module) {
         },
         multiSelectAction: "forEach"
     });
-    
+
     command.define("Edit:Remove To Line End", {
         exec: function(editor) {
             editor.removeToLineEnd();
         },
         multiSelectAction: "forEach"
     });
-    
+
     command.define("Edit:Outdent", {
         exec: function(editor) {
             editor.blockOutdent();
         },
         multiSelectAction: "forEach"
     });
-    
+
     command.define("Edit:Indent", {
         exec: function(editor) {
             editor.indent();
         },
         multiSelectAction: "forEach"
     });
-    
+
     command.define("Edit:Block Outdent", {
         exec: function(editor) {
             editor.blockOutdent();
         },
         multiSelectAction: "forEach"
     });
-    
+
     command.define("Edit:Block Indent", {
         exec: function(editor) {
             editor.blockIndent();
         },
         multiSelectAction: "forEach"
     });
-    
+
     command.define("Edit:Split Line", {
         exec: function(editor) {
             editor.splitLine();
         },
         multiSelectAction: "forEach"
     });
-    
+
     command.define("Edit:Transpose Letters", {
         exec: function(editor) {
             editor.transposeLetters();
@@ -770,7 +770,7 @@ define(function(require, exports, module) {
             editor.toggleOverwrite();
         }
     });
-    
+
     command.define("Edit:Detect Indentation", {
         exec: function(edit) {
             whitespace.detectIndentation(edit.session);
@@ -797,7 +797,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Find:Next", {
         exec: function(editor) {
             editor.findNext();
@@ -811,7 +811,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Find:Next Instance Of Identifier", {
         exec: function(edit) {
             if (edit.selection.isEmpty()) {
@@ -839,7 +839,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     // SETTINGS
     command.define("Settings:Toggle Word Wrap", {
         exec: function() {
@@ -847,7 +847,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Settings:Toggle Trim Trailing Whitespace On Save", {
         exec: function() {
             settings.set("trimTrailingWhiteSpaceOnSave", !settings.get("trimTrailingWhiteSpaceOnSave"));
@@ -867,5 +867,5 @@ define(function(require, exports, module) {
         });
     });
 
-    
+
 });
