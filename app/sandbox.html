@@ -12,11 +12,11 @@ if(location.search) {
         $("body").append('<textarea id="code" rows="10" cols="60"></textarea><br/>');
         $("body").append('<button id="test">Test</button><br/>');
         $("body").append('<textarea id="output" rows="10" cols="60">Output here</textarea>');
-        
+
         $(function() {
             localStorage.url && $("#url").val(localStorage.url);
             localStorage.code && $("#code").val(localStorage.code);
-            
+
             $("#test").click(function(event) {
                 localStorage.url = $("#url").val();
                 localStorage.code = $("#code").val();
@@ -49,7 +49,7 @@ window.addEventListener('message', function(event) {
     if(!url) {
         return;
     }
-    
+
     require([url], function(fn) {
         fn(options, content, function(err, result) {
             var message = {replyTo: id, err: err, result: result};

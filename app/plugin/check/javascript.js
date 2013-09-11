@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2010, Ajax.org B.V.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -16,7 +16,7 @@
  *     * Neither the name of Ajax.org B.V. nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,17 +29,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ***** END LICENSE BLOCK ***** */
+
 define(function(require, exports, module) {
     var lint = require("./jshint.js").JSHINT;
-    
+
     function startRegex(arr) {
         return RegExp("^(" + arr.join("|") + ")");
     }
-    
+
     var disabledWarningsRe = startRegex([
         "Bad for in variable '(.+)'.",
-        'Missing "use strict"'
-    ]);
+        'Missing "use strict"']);
     var errorsRe = startRegex([
         "Unexpected",
         "Expected ",
@@ -50,8 +50,7 @@ define(function(require, exports, module) {
         "Unbegun comment",
         "Bad invocation",
         "Missing space after",
-        "Missing operator at"
-    ]);
+        "Missing operator at"]);
     var infoRe = startRegex([
         "Expected an assignment",
         "Bad escapement of EOL",
@@ -60,16 +59,14 @@ define(function(require, exports, module) {
         "Missing radix parameter.",
         "A leading decimal point can",
         "\\['{a}'\\] is better written in dot notation.",
-        "'{a}' used out of scope"
-    ]);
-    
-     function isValidJS(str) {
+        "'{a}' used out of scope"]);
+
+    function isValidJS(str) {
         try {
             // evaluated code can only create variables in this function
             eval("throw 0;" + str);
-        } catch(e) {
-            if (e === 0)
-                return true;
+        } catch (e) {
+            if (e === 0) return true;
         }
         return false
     }
@@ -93,8 +90,7 @@ define(function(require, exports, module) {
 
         for (var i = 0; i < results.length; i++) {
             var error = results[i];
-            if (!error)
-                continue;
+            if (!error) continue;
             var raw = error.raw;
             var type = "warning";
 
@@ -107,26 +103,21 @@ define(function(require, exports, module) {
                 } else {
                     type = "info";
                 }
-            }
-            else if (disabledWarningsRe.test(raw)) {
+            } else if (disabledWarningsRe.test(raw)) {
                 continue;
-            }
-            else if (infoRe.test(raw)) {
+            } else if (infoRe.test(raw)) {
                 type = "info"
-            }
-            else if (errorsRe.test(raw)) {
+            } else if (errorsRe.test(raw)) {
                 type = maxErrorLevel;
-            }
-            else if (raw == "'{a}' is not defined.") {
+            } else if (raw == "'{a}' is not defined.") {
                 type = "warning";
-            }
-            else if (raw == "'{a}' is defined but never used.") {
+            } else if (raw == "'{a}' is defined but never used.") {
                 type = "info";
             }
 
             errors.push({
-                row: error.line-1,
-                column: error.character-1,
+                row: error.line - 1,
+                column: error.character - 1,
                 text: error.reason,
                 type: type,
                 raw: raw
