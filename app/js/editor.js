@@ -1,4 +1,4 @@
-/*global define $ ace */
+/*global define, $, ace */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");

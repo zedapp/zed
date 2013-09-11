@@ -31,7 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 define(function(require, exports, module) {
-    var lint = require("./jshint.js").JSHINT;
+    var lint = require("./jshint.js");
 
     function startRegex(arr) {
         return RegExp("^(" + arr.join("|") + ")");
