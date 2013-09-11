@@ -1,0 +1,5 @@
+{
+    "name": "Ini",
+    "highlighter": "ace/mode/ini",
+    "extensions": ["ini"]
+}

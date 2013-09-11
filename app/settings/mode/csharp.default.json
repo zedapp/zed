@@ -1,0 +1,5 @@
+{
+    "name": "C#",
+    "highlighter": "ace/mode/csharp",
+    "extensions": ["cs"]
+}

@@ -1,11 +1,17 @@
 /keys.default.json
 /keys.user.json
 /mode/c.default.json
+/mode/clojure.default.json
 /mode/coffee.default.json
+/mode/csharp.default.json
 /mode/css.default.json
 /mode/dart.default.json
+/mode/erlang.default.json
 /mode/go.default.json
+/mode/haml.default.json
+/mode/haskell.default.json
 /mode/html.default.json
+/mode/ini.default.json
 /mode/java.default.json
 /mode/javascript.default.json
 /mode/json.default.json
@@ -14,6 +20,7 @@
 /mode/markdown.default.json
 /mode/nix.default.json
 /mode/php.default.json
+/mode/protobuf.default.json
 /mode/python.default.json
 /mode/ruby.default.json
 /mode/sh.default.json

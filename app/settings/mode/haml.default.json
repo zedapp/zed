@@ -1,0 +1,5 @@
+{
+    "name": "Haml",
+    "highlighter": "ace/mode/haml",
+    "extensions": ["haml"]
+}

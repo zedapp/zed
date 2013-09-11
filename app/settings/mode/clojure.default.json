@@ -1,0 +1,5 @@
+{
+    "name": "Clojure",
+    "highlighter": "ace/mode/clojure",
+    "extensions": ["clj"]
+}
