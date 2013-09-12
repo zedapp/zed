@@ -195,7 +195,6 @@ div.preview-vsplit2-right-2 {
 .editbar .path {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
-    /*padding-top: 3px;*/
     padding-right: 3px;
     padding-left: 5px;
 }
@@ -205,8 +204,6 @@ div.preview-vsplit2-right-2 {
     top: 0;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
-    /*padding-top: 3px;*/
-    /*padding-bottom: 3px;*/
     padding-right: 8px;
     color: #777;
 }
