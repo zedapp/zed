@@ -47,7 +47,7 @@
         "mac": "Command-Shift-Right|Shift-End"
     },
 
-    
+
     "Cursor:To Matching Brace": "Ctrl-5",
 
     "Find:Find": {
@@ -62,8 +62,8 @@
         "mac": "Command-Shift-G",
         "win": "Ctrl-Shift-K"
     },
-    
-    
+
+
     "Navigate:Line": {
         "win": "Ctrl-L",
         "mac": "Command-L"
@@ -135,7 +135,7 @@
     "Cursor:Center": {
         "mac": "Ctrl-L"
     },
-    
+
     "Cursor:Multiple:Add Above": "Ctrl-Alt-Up",
     "Cursor:Multiple:Add Below": "Ctrl-Alt-Down",
     "Cursor:Multiple:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
@@ -205,7 +205,7 @@
         "mac": "Shift-Backspace|Backspace|Ctrl-H"
     },
     "Edit:Remove To Line Start": {
-        "win": "Alt-Backspace", 
+        "win": "Alt-Backspace",
         "mac": "Command-Backspace"
     },
     "Edit:Remove To Line End": {
