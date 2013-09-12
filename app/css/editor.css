@@ -184,7 +184,7 @@ div.preview-vsplit2-right-2 {
 .editbar {
     position: absolute;
     bottom: 0;
-    height: 25px;
+    /*height: 25px;*/
     background-color: #eee;
     border: 1px solid #aaa;
     z-index: 999;
@@ -195,30 +195,19 @@ div.preview-vsplit2-right-2 {
 .editbar .path {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
-    line-height: 25px;
+    /*padding-top: 3px;*/
+    padding-right: 3px;
     padding-left: 5px;
-}
-.editbar input {
-    width: 100%;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    outline-width: 0;
-    border: 0;
-    padding-left: 5px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    font-size: 13px;
-    line-height: 21px;
-    background-color: #eee;
 }
 .editbar .info {
     position: absolute;
     right: 0;
     top: 0;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    font-size: 10px;
-    line-height: 25px;
-    padding-right: 5px;
+    font-size: 13px;
+    /*padding-top: 3px;*/
+    /*padding-bottom: 3px;*/
+    padding-right: 8px;
     color: #777;
 }
 .editbar .error {

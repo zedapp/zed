@@ -1,16 +1,16 @@
-/*global define $ */
+/*global define, $ */
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var editor = require("./editor");
-    
+
     eventbus.declare("sessionactivitystarted"); // session, name
     eventbus.declare("sessionactivitycompleted"); // session, name
     eventbus.declare("sessionactivityfailed"); // session, error
-    
+
     exports.hook = function() {
         eventbus.on("splitchange", update);
         eventbus.on("switchsession", switchSession);
-        
+
         eventbus.once("editorloaded", function() {
             editor.getEditors(true).forEach(function(edit, idx) {
                 $(edit.container).css("bottom", "25px");
@@ -18,7 +18,7 @@ define(function(require, exports, module) {
                 edit.editbarEl = $("#editbar" + idx);
             });
         });
-        
+
         eventbus.on("sessionactivitystarted", function(session, description) {
             editor.getEditors().forEach(function(edit) {
                 if(edit.getSession() === session) {
@@ -61,6 +61,18 @@ define(function(require, exports, module) {
                 }
             });
         });
+        eventbus.on("settingschanged", function(settings) {
+            var fontSize = settings.get("fontSize");
+            editor.getEditors(true).forEach(function(edit) {
+                var editBarHeight = fontSize + 13;
+                edit.editbarEl.height(editBarHeight);
+                edit.editbarEl.find(".path").css("font-size", fontSize + "px")
+                                            .css("line-height", (editBarHeight - 2) + "px");
+                edit.editbarEl.find(".info").css("font-size", (fontSize-3) + "px")
+                                            .css("line-height", (editBarHeight - 2) + "px");
+                $(edit.container).css("bottom",  (editBarHeight+2) + "px");
+            });
+        });
     };
 
     function update() {
@@ -76,9 +88,9 @@ define(function(require, exports, module) {
             }
         });
     }
-    
+
     $(window).resize(update);
-    
+
     function switchSession(edit, session) {
         var filename = session.filename;
         edit.editbarEl.find('.path').text(filename);

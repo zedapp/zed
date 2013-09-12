@@ -848,6 +848,20 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
+    command.define("Settings:Increase Font Size", {
+        exec: function() {
+            settings.set("fontSize", settings.get("fontSize") + 1);
+        },
+        readOnly: true
+    });
+
+    command.define("Settings:Decrease Font Size", {
+        exec: function() {
+            settings.set("fontSize", settings.get("fontSize") - 1);
+        },
+        readOnly: true
+    });
+
     command.define("Settings:Toggle Trim Trailing Whitespace On Save", {
         exec: function() {
             settings.set("trimTrailingWhiteSpaceOnSave", !settings.get("trimTrailingWhiteSpaceOnSave"));
