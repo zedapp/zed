@@ -31,6 +31,9 @@ define(function(require, exports, module) {
     }
 
     function shouldComplete(edit) {
+        if(edit.getSelectedText()) {
+            return false;
+        }
         var session = edit.getSession();
         var doc = session.getDocument();
         var pos = edit.getCursorPosition();
