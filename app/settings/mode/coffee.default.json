@@ -2,6 +2,9 @@
     "name": "CoffeeScript",
     "highlighter": "ace/mode/coffee",
     "extensions": ["cs", "coffee"],
+    "tool:check": {
+        "scriptUrl": "plugin/check/coffee.js"
+    },
     "tool:preview": {
         "scriptUrl": "plugin/preview/coffee.js"
     },

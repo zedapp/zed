@@ -1,0 +1,5 @@
+{
+    "name": "Apple Plist",
+    "highlighter": "ace/mode/xml",
+    "extensions": ["plist"]
+}
