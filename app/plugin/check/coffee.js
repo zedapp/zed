@@ -30,21 +30,23 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+/*global define*/
 define(function(require, exports, module) {
-    var coffee = require("./coffee/coffee-script");
+    var coffee = require("../preview/coffee-script");
+
+    var lineRegex = /on line (\d+)/;
 
     return function(options, content, callback) {
         try {
-            coffee.parse(content).compile();
+            coffee.compile(content);
         } catch(e) {
-            var loc = e.location;
-            if (loc) {
+            var message = e.message;
+            var match = lineRegex.exec(message);
+            if(match) {
+                var line = parseInt(match[1], 10);
                 callback(null, [{
-                    row: loc.first_line,
-                    column: loc.first_column,
-                    endRow: loc.last_line,
-                    endColumn: loc.last_column,
-                    text: e.message,
+                    row: line,
+                    text: message.slice(0, match.index),
                     type: "error"
                 }]);
                 return;
