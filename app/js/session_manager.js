@@ -51,7 +51,7 @@ define(function(require, exports, module) {
         state.set("session.current", editor.getEditors().map(function(e) {
             return e.getSession().filename;
         }));
-        
+
         var openDocumentList = Object.keys(sessions);
 
         openDocumentList.sort(function(a, b) {
@@ -88,7 +88,7 @@ define(function(require, exports, module) {
             callback(null, session);
         });
     }
-    
+
     function handleChangedFile(path) {
         var session = sessions[path];
         if(!session) {
@@ -111,7 +111,7 @@ define(function(require, exports, module) {
         if (!path) {
             return;
         }
-        
+
         if (exports.specialDocs[path]) {
             var doc = exports.specialDocs[path];
             var session = editor.createSession(path, doc.content);
@@ -127,13 +127,13 @@ define(function(require, exports, module) {
             // Normalize
             path = '/' + path;
         }
-        
+
         // Check if somebody is not trying to create a file ending with '/'
         if(path[path.length-1] === '/') {
             eventbus.emit("sessionactivityfailed", previousSession, "Cannot create files ending with /");
             return;
         }
-        
+
         if (sessions[path]) {
             show(sessions[path]);
         } else {
@@ -146,7 +146,11 @@ define(function(require, exports, module) {
                     setupSave(session);
                     show(session);
                     eventbus.emit("newfilecreated", path);
-                    project.writeFile(path, "", function() {});
+                    project.writeFile(path, "", function(err) {
+                        if(err) {
+                            eventbus.emit("sessionactivityfailed", session, "Could not create file");
+                        }
+                    });
                 } else {
                     eventbus.emit("newsession", session);
                     show(session);
@@ -161,13 +165,13 @@ define(function(require, exports, module) {
                 project.unwatchFile(previousSession.filename, previousSession.watcherFn);
             }
             editor.switchSession(session, edit);
-            
+
             if(loc) {
                 setTimeout(function() {
                     locator.jump(loc);
                 });
             }
-            
+
             // File watching
             session.watcherFn = function(path, kind) {
                 ui.unblockUI();
@@ -185,13 +189,13 @@ define(function(require, exports, module) {
             project.watchFile(session.filename, session.watcherFn);
         }
     }
-    
+
     exports.hook = function() {
         async.waitForEvents(eventbus, ["stateloaded", "modesloaded"], function() {
             var sessionStates = state.get("session.open") || {};
-            
+
             go("zed:start");
-            
+
             async.parForEach(Object.keys(sessionStates), function(path, next) {
                 var sessionState = sessionStates[path];
                 loadFile(path, function(err, session) {
@@ -212,12 +216,12 @@ define(function(require, exports, module) {
                 }
                 eventbus.emit("allsessionsloaded");
             });
-            
+
             setInterval(updateState, 2500);
         });
-        
+
         ui.blockUI("Loading...");
-        
+
         eventbus.on("stateloaded", function() {
             ui.unblockUI();
         });
@@ -225,7 +229,7 @@ define(function(require, exports, module) {
 
     exports.go = go;
     exports.handleChangedFile = handleChangedFile;
-    
+
     exports.getSessions = function() {
         return sessions;
     };

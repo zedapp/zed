@@ -51,8 +51,10 @@ define(function(require, exports, module) {
                 setupMethods();
             });
         } else {
-            io = require('./fs/web')(url, options.get('username'), options.get('password'));
-            setupMethods();
+            io = require('./fs/web')(url, options.get('username'), options.get('password'), function(err, io_) {
+                io = io_;
+                setupMethods();
+            });
         }
     };
 });

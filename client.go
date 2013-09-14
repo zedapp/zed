@@ -206,9 +206,14 @@ func handleHead(path string, requestChannel chan []byte, responseChannel chan []
 		return NewHttpError(404, "Not found")
 	}
 	responseChannel <- statusCodeBuffer(200)
+	fileType := "file"
+	if stat.IsDir() {
+		fileType = "directory"
+	}
 	responseChannel <- headerBuffer(map[string]string{
 		"ETag":           stat.ModTime().String(),
 		"Content-Length": "0",
+		"X-Type": fileType,
 	})
 	return nil
 }
