@@ -3,7 +3,7 @@ require.config({
     waitSeconds: 15
 });
 
-/*global $ chrome _*/
+/*global $, chrome, _*/
 $(function() {
     var input = $("#gotoinput");
     var hygienic = $("#hygienic");
@@ -54,16 +54,20 @@ $(function() {
     function updateRecentProjects() {
         chrome.storage.local.get("recentProjects", function(results) {
             var projects = results.recentProjects || [];
+            // sanity check projects array
+            if(projects.length > 0 && !projects[0].url) {
+                projects = [];
+            }
             if(_.isEqual(projects, projectCache)) {
                 return;
             }
             var recentEl = $("#recent");
             recentEl.empty();
-            projects.forEach(function(url) {
+            projects.forEach(function(project) {
                 var el = $("<a href='#'>");
-                var title = url.replace("http://localhost:7336/fs/local/", "");
+                var title = project.name || project.url.replace("http://localhost:7336/fs/local/", "");
                 el.text(title);
-                el.data("url", url);
+                el.data("url", project.url);
                 recentEl.append(el);
             });
             projectCache = projects;

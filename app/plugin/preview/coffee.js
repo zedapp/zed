@@ -1,4 +1,6 @@
 define(function(require, exports, module) {
+    require("ace/ace.js");
+    require("ace/ext-static_highlight.js");
     var coffee = require("./coffee-script.js");
     require("./rainbow-custom.min.js");
     return function(options, content, callback) {

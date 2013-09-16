@@ -44,17 +44,24 @@ define(function(require, exports, module) {
                     fs.root.getFile(encodedPath, {
                         create: true
                     }, function(fileEntry) {
-                        fileEntry.createWriter(function(fileWriter) {
-                            fileWriter.onwriteend = function() {
-                                callback();
-                            };
-                            fileWriter.onerror = function(e) {
-                                callback(e.toString());
-                            };
+                        // For whatever we need to truncate in a separate step
+                        // Otherwise we'll end up overwriting the start of the file only.
+                        fileEntry.createWriter(function(fileTruncater) {
+                            fileTruncater.onwriteend = function() {
+                                fileEntry.createWriter(function(fileWriter) {
+                                    fileWriter.onwriteend = function() {
+                                        callback();
+                                    };
+                                    fileWriter.onerror = function(e) {
+                                        callback(e.toString());
+                                    };
 
-                            var blob = new Blob([content]);
-                            fileWriter.write(blob);
-                        }, callback);
+                                    var blob = new Blob([content]);
+                                    fileWriter.write(blob);
+                                }, callback);
+                            };
+                            fileTruncater.truncate(0);
+                        });
                     }, callback);
                 },
                 deleteFile: function(path, callback) {
