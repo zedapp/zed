@@ -20,6 +20,11 @@ $(function() {
     var defaultHint = $("#hint").html();
 
     function openChecked(url) {
+        // Only check http(s) links
+        if(url.indexOf("http") !== 0) {
+            input.val("");
+            return open(url);
+        }
         $.ajax({
             type: "POST",
             url: url,

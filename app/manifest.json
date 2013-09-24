@@ -13,6 +13,7 @@
     "permissions": [
         "storage",
         "webview",
+        "identity",
         "syncFileSystem",
         "http://*/",
         "https://*/"

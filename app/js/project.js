@@ -84,6 +84,13 @@ define(function(require, exports, module) {
                 io = io_;
                 setupMethods();
             });
+        } else if (url.indexOf("dropbox:") === 0) {
+            require(["./fs/dropbox"], function(dropbox) {
+                dropbox(url.substring("dropbox:".length), function(err, io_) {
+                    io = io_;
+                    setupMethods();
+                });
+            });
         } else if (url.indexOf("local:") === 0) {
             var id = url.substring("local:".length);
             // We're opening a specific previously opened directory here
