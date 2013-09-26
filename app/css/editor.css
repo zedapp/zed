@@ -254,8 +254,13 @@ div.preview-vsplit2-right-2 {
     left: 0;
     right: 0;
     bottom: 0;
+    text-align: center;
+    padding-top: 100px;
+    background-color: #eee;
     z-index: 9999;
-    background: #fff;
+}
+
+#blockui img {
 }
 
 #dialog {

@@ -27,11 +27,11 @@ define(function(require, exports, module) {
         var onCancel = options.onCancel;
         var hint = options.hint;
         var currentPath = options.currentPath;
-        
+
         if (visible) {
             return;
         }
-        
+
         var edit = editor.getActiveEditor();
         $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='" + placeholder + "'/><div id='gotohint'></div><ul id='results'>");
 
@@ -41,11 +41,11 @@ define(function(require, exports, module) {
         var box = $("#goto");
         var input = $("#gotoinput");
         var resultsEl = $("#results");
-        
+
         if(options.text) {
             input.val(options.text);
         }
-        
+
         gotoEl.css("left", (editorEl.offset().left + 40) + "px");
         gotoEl.css("width", (editorEl.width() - 80) + "px");
         gotoEl.css("top", editorEl.offset().top + "px");
@@ -56,7 +56,7 @@ define(function(require, exports, module) {
         var results = [];
 
         var ignoreFocus = false;
-        
+
         resultsEl.menu({
             select: select,
             focus: function(event, ui) {
@@ -69,7 +69,7 @@ define(function(require, exports, module) {
                 updateHint();
             }
         });
-        
+
         input.keyup(function(event) {
             switch (event.keyCode) {
                 case keyCode('Esc'):
@@ -132,12 +132,12 @@ define(function(require, exports, module) {
         updateResults();
         triggerOnChange();
         eventbus.on("splitswitched", cancel);
-        
-        
+
+
         function triggerOnChange() {
             onChange && onChange(input.val(), getCurrentHighlightedItem());
         }
-        
+
         function getCurrentHighlightedItem() {
             return resultsEl.find("a.ui-state-focus").parent().data("path");
         }
@@ -170,13 +170,13 @@ define(function(require, exports, module) {
             editor.getActiveEditor().focus();
             visible = false;
         }
-        
+
         function updateHint() {
             if(hint) {
                 hintEl.html(hint(input.val(), results));
             }
         }
-        
+
         function cancel() {
             onCancel && onCancel();
             close();
@@ -202,18 +202,18 @@ define(function(require, exports, module) {
             lastPhrase = phrase;
         }
     };
-    
+
     function makeDialog(width, height) {
         var dialogEl = $('<div id="dialog">');
         dialogEl.css("height", height + "px");
         dialogEl.css("margin-top", -Math.round(height/2) + "px");
         dialogEl.css("width", width + "px");
         dialogEl.css("margin-left", -Math.round(height/2) + "px");
-        
+
         $("body").append(dialogEl);
         return dialogEl;
     }
-    
+
     /**
      * Options
      * - width
@@ -225,32 +225,32 @@ define(function(require, exports, module) {
         var message = options.message || "";
         var inputText = options.input;
         var input;
-        
+
         var dialogEl = makeDialog(options.width || 300, options.height || 100);
         dialogEl.html("<div>" + _.escape(message) + "</div>");
         var okButton = $("<button>OK</button>");
         var cancelButton = $("<button>Cancel</button>");
-        
+
         okButton.click(ok);
         cancelButton.click(cancel);
-        
+
         var buttonWrapEl = $("<div class='buttons'>");
         buttonWrapEl.append(okButton);
         buttonWrapEl.append(cancelButton);
-        
+
         if(inputText !== undefined) {
             input = $("<input type='text'>");
             input.val(inputText);
             dialogEl.append(input);
             input.focus();
         }
-        
+
         dialogEl.append(buttonWrapEl);
 
         editor.getActiveEditor().blur();
         dialogEl.focus();
         $("body").bind("keyup", keyHandler);
-        
+
         function keyHandler(event) {
             switch(event.keyCode) {
                 case keyCode('Return'):
@@ -261,26 +261,26 @@ define(function(require, exports, module) {
                     break;
             }
         }
-        
+
         function ok() {
             close();
             callback(input ? input.val() : true);
         }
-        
+
         function cancel() {
             close();
             callback();
         }
-        
+
         function close() {
             dialogEl.remove();
             editor.getActiveEditor().focus();
             $("body").unbind("keyup", keyHandler);
         }
     };
-    
+
     var blockedEl = null;
-    
+
     exports.blockUI = function(message) {
         if(blockedEl) {
             return;
@@ -288,9 +288,9 @@ define(function(require, exports, module) {
         console.log("Blocking UI");
         blockedEl = $("<div id='blockui'>");
         $("body").append(blockedEl);
-        blockedEl.text(message);
+        blockedEl.html(message + " <img src='img/loader.gif'/>");
     };
-    
+
     exports.unblockUI = function() {
         if(blockedEl) {
             console.log("Unblocking UI again");

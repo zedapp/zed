@@ -25,9 +25,8 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         var url = options.get("url");
-        var io;
 
-        function setupMethods() {
+        function setupMethods(io) {
             exports.listFiles = io.listFiles;
             exports.readFile = io.readFile;
             exports.writeFile = io.writeFile;
@@ -43,21 +42,17 @@ define(function(require, exports, module) {
 
         // TODO: Generalize this
         if (url.indexOf("settings:") === 0) {
-            io = require("./fs/settings");
-            setupMethods();
+            setupMethods(require("./fs/settings"));
         } else if (url.indexOf("manual:") === 0) {
-            io = require("./fs/manual");
-            setupMethods();
+            setupMethods(require("./fs/manual"));
         } else if (url.indexOf("syncfs:") === 0) {
-            require("./fs/syncfs")(function(err, io_) {
-                io = io_;
-                setupMethods();
+            require("./fs/syncfs")(function(err, io) {
+                setupMethods(io);
             });
         } else if (url.indexOf("dropbox:") === 0) {
             require(["./fs/dropbox"], function(dropbox) {
-                dropbox(url.substring("dropbox:".length), function(err, io_) {
-                    io = io_;
-                    setupMethods();
+                dropbox(url.substring("dropbox:".length), function(err, io) {
+                    setupMethods(io);
                 });
             });
         } else if (url.indexOf("local:") === 0) {
@@ -66,8 +61,7 @@ define(function(require, exports, module) {
             if (id) {
                 chrome.fileSystem.restoreEntry(id, function(dir) {
                     history.pushProject(dir.fullPath, "local:" + id);
-                    io = require("./fs/localfs")(dir);
-                    setupMethods();
+                    setupMethods(require("./fs/manual"));
                 });
             } else {
                 // Show pick directory
@@ -75,15 +69,13 @@ define(function(require, exports, module) {
                     type: "openDirectory"
                 }, function(dir) {
                     var id = chrome.fileSystem.retainEntry(dir);
-                    saveRecentLocalProject(dir.fullPath, "local:" + id);
-                    io = require("./fs/localfs")(dir);
-                    setupMethods();
+                    history.pushProject(dir.fullPath, "local:" + id);
+                    setupMethods(require("./fs/localfs")(dir));
                 });
             }
         } else {
-            io = require('./fs/web')(url, options.get('username'), options.get('password'), function(err, io_) {
-                io = io_;
-                setupMethods();
+            require('./fs/web')(url, options.get('username'), options.get('password'), function(err, io) {
+                setupMethods(io);
             });
         }
     };
