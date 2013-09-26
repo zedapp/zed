@@ -220,9 +220,9 @@ define(function(require, exports, module) {
             setInterval(updateState, 2500);
         });
 
-        ui.blockUI("Loading...");
+        ui.blockUI("Loading project and file list. One moment please...");
 
-        eventbus.on("stateloaded", function() {
+        eventbus.on("loadedfilelist", function() {
             ui.unblockUI();
         });
     };

@@ -1,12 +1,9 @@
 /*global define, Dropbox, chrome */
 define(function(require, exports, module) {
-    require("dep/dropbox.min.js");
+    var dropbox = require("lib/dropbox");
 
     var async = require("../lib/async");
 
-    Dropbox.AuthDriver.Chrome.prototype.expandUrl = function(url) {
-        return url;
-    };
     return function(rootPath, callback) {
         // Normalize
         rootPath = rootPath || "/";
@@ -14,19 +11,8 @@ define(function(require, exports, module) {
             rootPath = "/" + rootPath;
         }
 
-        var callbackUrl = "https://" + chrome.runtime.id + ".chromiumapp.org/dropbox_receiver.html";
         var pollInterval = 10000;
         var tagCache = window.tagCache = {};
-
-        console.log("Requires in oAuth paths:", callbackUrl);
-
-        var dropbox = new Dropbox.Client({
-            key: "g2qi3iece6qlu2n"
-        });
-
-        dropbox.authDriver(new Dropbox.AuthDriver.Chrome({
-            receiverPath: callbackUrl
-        }));
 
         dropbox.authenticate(function(err, dropbox) {
             if (err) {

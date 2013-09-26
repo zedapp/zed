@@ -2,8 +2,7 @@
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var options = require("./lib/options");
-
-    var MAX_RECENT_PROJECTS = 5;
+    var history = require("./lib/history");
 
     eventbus.declare('ioavailable');
 
@@ -23,36 +22,6 @@ define(function(require, exports, module) {
         return parts[parts.length - 1];
     };
 
-    function saveRecentLocalProject(name, url) {
-        chrome.storage.local.get("recentProjects", function(results) {
-            var projects = results.recentProjects || [];
-            // sanity check projects array
-            if (projects.length > 0 && !projects[0].url) {
-                projects = [];
-            }
-            var existing = _.where(projects, {
-                url: url
-            });
-            if (existing.length === 0) {
-                projects.splice(0, 0, {
-                    name: name,
-                    url: url
-                });
-                if (projects.length > MAX_RECENT_PROJECTS) {
-                    projects.splice(projects.length - 1, 1);
-                }
-            } else {
-                projects.splice(projects.indexOf(existing[0]), 1);
-                projects.splice(0, 0, {
-                    name: name,
-                    url: url
-                });
-            }
-            chrome.storage.local.set({
-                recentProjects: projects
-            });
-        });
-    }
 
     exports.hook = function() {
         var url = options.get("url");
@@ -96,7 +65,7 @@ define(function(require, exports, module) {
             // We're opening a specific previously opened directory here
             if (id) {
                 chrome.fileSystem.restoreEntry(id, function(dir) {
-                    saveRecentLocalProject(dir.fullPath, "local:" + id);
+                    history.pushProject(dir.fullPath, "local:" + id);
                     io = require("./fs/localfs")(dir);
                     setupMethods();
                 });

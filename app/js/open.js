@@ -4,7 +4,7 @@ require.config({
 });
 
 /*global $, chrome, _*/
-$(function() {
+require(["lib/history"], function(history) {
     var input = $("#gotoinput");
     var hygienic = $("#hygienic");
 
@@ -57,12 +57,7 @@ $(function() {
     // We're storing recent projects in local storage
     var projectCache = [];
     function updateRecentProjects() {
-        chrome.storage.local.get("recentProjects", function(results) {
-            var projects = results.recentProjects || [];
-            // sanity check projects array
-            if(projects.length > 0 && !projects[0].url) {
-                projects = [];
-            }
+        history.getProjects(function(err, projects) {
             if(_.isEqual(projects, projectCache)) {
                 return;
             }
@@ -70,8 +65,7 @@ $(function() {
             recentEl.empty();
             projects.forEach(function(project) {
                 var el = $("<a href='#'>");
-                var title = project.name || project.url.replace("http://localhost:7336/fs/local/", "");
-                el.text(title);
+                el.text(project.name);
                 el.data("url", project.url);
                 recentEl.append(el);
             });
@@ -106,7 +100,18 @@ $(function() {
     });
 
     $("#projects").on("click", ".projects a", function(event) {
-        open($(event.target).data("url"));
+        var url = $(event.target).data("url");
+        if(url) {
+            open(url);
+        }
+    });
+
+    $("#dropbox-open").click(function() {
+        chrome.app.window.create('dropbox/open.html', {
+            frame: 'chrome',
+            width: 600,
+            height: 400,
+        });
     });
 
     input.focus();
