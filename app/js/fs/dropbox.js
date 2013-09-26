@@ -19,12 +19,42 @@ define(function(require, exports, module) {
                 return callback(err);
             }
 
+            // Copy and paste from project.js, but cannot important that due to
+            // recursive imports.
+            function dirname(path) {
+                if (path[path.length - 1] === '/') {
+                    path = path.substring(0, path.length - 1);
+                }
+                var parts = path.split("/");
+                return parts.slice(0, parts.length - 1).join("/");
+            }
+
             function stripRoot(filename) {
                 return filename.substring(rootPath.length);
             }
 
             function addRoot(filename) {
                 return rootPath + filename;
+            }
+
+            function mkdirs(path, callback) {
+                var parts = path.split("/");
+                if (parts.length === 1) {
+                    callback();
+                } else {
+                    mkdirs(parts.slice(0, parts.length - 1).join("/"), function(err) {
+                        if (err) {
+                            return callback(err);
+                        }
+                        dropbox.stat(path, function(err, result) {
+                            if(err || result.isRemoved) {
+                                dropbox.mkdir(path, callback);
+                            } else {
+                                callback();
+                            }
+                        });
+                    });
+                }
             }
 
             function listFiles(callback) {
@@ -69,12 +99,17 @@ define(function(require, exports, module) {
 
             function writeFile(path, content, callback) {
                 var fullPath = addRoot(path);
-                dropbox.writeFile(fullPath, content, function(err, stat) {
+                mkdirs(dirname(fullPath), function(err) {
                     if (err) {
                         return callback(err);
                     }
-                    tagCache[path] = stat.versionTag;
-                    callback();
+                    dropbox.writeFile(fullPath, content, function(err, stat) {
+                        if (err) {
+                            return callback(err);
+                        }
+                        tagCache[path] = stat.versionTag;
+                        callback();
+                    });
                 });
             }
 
