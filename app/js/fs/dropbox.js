@@ -47,7 +47,7 @@ define(function(require, exports, module) {
                             return callback(err);
                         }
                         dropbox.stat(path, function(err, result) {
-                            if(err || result.isRemoved) {
+                            if (err || result.isRemoved) {
                                 dropbox.mkdir(path, callback);
                             } else {
                                 callback();
@@ -99,10 +99,8 @@ define(function(require, exports, module) {
 
             function writeFile(path, content, callback) {
                 var fullPath = addRoot(path);
-                mkdirs(dirname(fullPath), function(err) {
-                    if (err) {
-                        return callback(err);
-                    }
+
+                function doWrite(callback) {
                     dropbox.writeFile(fullPath, content, function(err, stat) {
                         if (err) {
                             return callback(err);
@@ -110,6 +108,19 @@ define(function(require, exports, module) {
                         tagCache[path] = stat.versionTag;
                         callback();
                     });
+                }
+
+                doWrite(function(err) {
+                    if (err) {
+                        // Presumably directory did not yet exist
+                        mkdirs(dirname(fullPath), function(err) {
+                            if (err) {
+                                return callback(err);
+                            }
+                            doWrite(callback);
+                        });
+                    }
+                    callback();
                 });
             }
 
