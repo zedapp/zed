@@ -42,7 +42,7 @@ define(function(require, exports, module) {
         var input = $("#gotoinput");
         var resultsEl = $("#results");
 
-        if(options.text) {
+        if (options.text) {
             input.val(options.text);
         }
 
@@ -172,7 +172,7 @@ define(function(require, exports, module) {
         }
 
         function updateHint() {
-            if(hint) {
+            if (hint) {
                 hintEl.html(hint(input.val(), results));
             }
         }
@@ -206,9 +206,9 @@ define(function(require, exports, module) {
     function makeDialog(width, height) {
         var dialogEl = $('<div id="dialog">');
         dialogEl.css("height", height + "px");
-        dialogEl.css("margin-top", -Math.round(height/2) + "px");
+        dialogEl.css("margin-top", -Math.round(height / 2) + "px");
         dialogEl.css("width", width + "px");
-        dialogEl.css("margin-left", -Math.round(height/2) + "px");
+        dialogEl.css("margin-left", -Math.round(height / 2) + "px");
 
         $("body").append(dialogEl);
         return dialogEl;
@@ -238,7 +238,7 @@ define(function(require, exports, module) {
         buttonWrapEl.append(okButton);
         buttonWrapEl.append(cancelButton);
 
-        if(inputText !== undefined) {
+        if (inputText !== undefined) {
             input = $("<input type='text'>");
             input.val(inputText);
             dialogEl.append(input);
@@ -252,7 +252,7 @@ define(function(require, exports, module) {
         $("body").bind("keyup", keyHandler);
 
         function keyHandler(event) {
-            switch(event.keyCode) {
+            switch (event.keyCode) {
                 case keyCode('Return'):
                     ok();
                     break;
@@ -282,7 +282,7 @@ define(function(require, exports, module) {
     var blockedEl = null;
 
     exports.blockUI = function(message) {
-        if(blockedEl) {
+        if (blockedEl) {
             return;
         }
         console.log("Blocking UI");
@@ -292,9 +292,11 @@ define(function(require, exports, module) {
     };
 
     exports.unblockUI = function() {
-        if(blockedEl) {
+        if (blockedEl) {
             console.log("Unblocking UI again");
-            blockedEl.remove();
+            blockedEl.fadeOut(function() {
+                this.remove();
+            });
             blockedEl = null;
         }
     };
