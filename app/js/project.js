@@ -42,37 +42,48 @@ define(function(require, exports, module) {
 
         // TODO: Generalize this
         if (url.indexOf("settings:") === 0) {
-            setupMethods(require("./fs/settings"));
+            require(["./fs/settings"], function(settingsfs) {
+                setupMethods(settingsfs);
+            });
         } else if (url.indexOf("manual:") === 0) {
-            setupMethods(require("./fs/manual"));
+            require(["./fs/manual"], function(manualfs) {
+                setupMethods(manualfs);
+            });
         } else if (url.indexOf("syncfs:") === 0) {
-            require("./fs/syncfs")(function(err, io) {
-                setupMethods(io);
+            require(["./fs/sync"], function(syncfs) {
+                syncfs(function(err, io) {
+                    setupMethods(io);
+                });
             });
         } else if (url.indexOf("dropbox:") === 0) {
-            require(["./fs/dropbox"], function(dropbox) {
-                dropbox(url.substring("dropbox:".length), function(err, io) {
+            require(["./fs/dropbox"], function(dropboxfs) {
+                dropboxfs(url.substring("dropbox:".length), function(err, io) {
                     setupMethods(io);
                 });
             });
         } else if (url.indexOf("local:") === 0) {
-            var id = url.substring("local:".length);
-            // We're opening a specific previously opened directory here
-            if (id) {
-                chrome.fileSystem.restoreEntry(id, function(dir) {
-                    history.pushProject(dir.fullPath, "local:" + id);
-                    setupMethods(require("./fs/manual"));
-                });
-            } else {
-                // Show pick directory
-                chrome.fileSystem.chooseEntry({
-                    type: "openDirectory"
-                }, function(dir) {
-                    var id = chrome.fileSystem.retainEntry(dir);
-                    history.pushProject(dir.fullPath, "local:" + id);
-                    setupMethods(require("./fs/localfs")(dir));
-                });
-            }
+            require(["./fs/local"], function(localfs) {
+                var id = url.substring("local:".length);
+                // We're opening a specific previously opened directory here
+                if (id) {
+                    chrome.fileSystem.restoreEntry(id, function(dir) {
+                        history.pushProject(dir.fullPath, "local:" + id);
+                        setupMethods(localfs(dir));
+                    });
+                } else {
+                    // Show pick directory
+                    chrome.fileSystem.chooseEntry({
+                        type: "openDirectory"
+                    }, function(dir) {
+                        if(!dir) {
+                            return chrome.app.window.current().close();
+                        }
+                        var id = chrome.fileSystem.retainEntry(dir);
+                        history.pushProject(dir.fullPath, "local:" + id);
+                        setupMethods(localfs(dir));
+                    });
+                }
+            });
         } else {
             require('./fs/web')(url, options.get('username'), options.get('password'), function(err, io) {
                 setupMethods(io);

@@ -54,6 +54,16 @@ require(["lib/history"], function(history) {
         win.resizeTo(400, $("body").height() + 23);
     }
 
+    function protocolIcon(url) {
+        var protocol = url.split(":")[0];
+        switch(protocol) {
+            case "dropbox":
+                return "img/dropbox.png";
+            default:
+                return "img/project.png";
+        }
+    }
+
     // We're storing recent projects in local storage
     var projectCache = [];
     function updateRecentProjects() {
@@ -65,7 +75,7 @@ require(["lib/history"], function(history) {
             recentEl.empty();
             projects.forEach(function(project) {
                 var el = $("<a href='#'>");
-                el.text(project.name);
+                el.html("<img src='" + protocolIcon(project.url) + "'/>" + project.name);
                 el.data("url", project.url);
                 recentEl.append(el);
             });
@@ -99,6 +109,14 @@ require(["lib/history"], function(history) {
         chrome.storage.sync.set({hygienicMode: hygienic.is(":checked")});
     });
 
+    try {
+        var chromeVersion = parseInt(/Chrome\/(\d+)/.exec(navigator.userAgent)[1], 10);
+        if(chromeVersion < 31) {
+            $("#open-local").hide();
+        }
+    } catch(e) {
+    }
+
     $("#projects").on("click", ".projects a", function(event) {
         var url = $(event.target).data("url");
         if(url) {
@@ -116,4 +134,10 @@ require(["lib/history"], function(history) {
 
     input.focus();
     updateWindowSize();
+
+    // Hide dropbox option for non-registered oAuth ids:
+    var dropboxOauthAppId = ["fkjcgamnceomfnbcaedlhhopcchmnlkj", "pfmjnmeipppmcebplngmhfkleiinphhp"];
+    if(dropboxOauthAppId.indexOf(chrome.runtime.id) === -1) {
+        $("#dropbox-open").hide();
+    }
 });

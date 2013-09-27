@@ -65,7 +65,7 @@ define(function(require, exports, module) {
                         if (err) {
                             return callback(err);
                         }
-                        async.forEach(entries, function(entry, next) {
+                        async.parForEach(entries, function(entry, next) {
                             if (entry.name[0] === ".") {
                                 return next();
                             }

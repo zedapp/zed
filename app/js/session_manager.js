@@ -222,7 +222,7 @@ define(function(require, exports, module) {
 
         ui.blockUI("Loading project and file list. One moment please...");
 
-        eventbus.on("loadedfilelist", function() {
+        async.waitForEvents(eventbus, ["loadedfilelist", "stateloaded"], function() {
             ui.unblockUI();
         });
     };
