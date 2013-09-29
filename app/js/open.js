@@ -74,10 +74,10 @@ require(["lib/history"], function(history) {
             var recentEl = $("#recent");
             recentEl.empty();
             projects.forEach(function(project) {
-                var el = $("<a href='#'>");
-                el.html("<img src='" + protocolIcon(project.url) + "'/>" + project.name);
-                el.data("url", project.url);
-                recentEl.append(el);
+             var el = $("<a href='#'>");
+             el.html("<img src='" + protocolIcon(project.url) + "'/>" + project.name);
+             el.data("url", project.url);
+             recentEl.append(el);
             });
             projectCache = projects;
             updateWindowSize();
@@ -113,6 +113,7 @@ require(["lib/history"], function(history) {
 
     try {
         var chromeVersion = parseInt(/Chrome\/(\d+)/.exec(navigator.userAgent)[1], 10);
+        
         if (chromeVersion < 31) {
             $("#open-local").hide();
         }

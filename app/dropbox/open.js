@@ -50,7 +50,7 @@ require(["lib/dropbox", "lib/history"], function(dropbox, history) {
                 },
                 onLazyRead: function(node) {
                     readDir(node.data.key, function(err, dirs) {
-                        if(err) {
+                        if (err) {
                             return console.error(err);
                         }
                         dirs.forEach(function(dir) {

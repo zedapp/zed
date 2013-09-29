@@ -19,7 +19,7 @@ How to
 General topics
 --------------
 
-* Features: features.md
+* Zed's features: features.md
 * Essential keyboard shortcuts: cheatsheet.md
 * Split-view editing: split.md
 * CTags: ctags.md
