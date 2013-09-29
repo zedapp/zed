@@ -9,8 +9,7 @@ require(["lib/history"], function(history) {
     var hygienic = $("#hygienic");
 
     function open(url) {
-        chrome.app.window.create('editor.html?url=' + url +
-         (hygienic.is(":checked") ? "&hygienic=true" : "") + '&chromeapp=true', {
+        chrome.app.window.create('editor.html?url=' + url + (hygienic.is(":checked") ? "&hygienic=true" : "") + '&chromeapp=true', {
             frame: 'chrome',
             width: 720,
             height: 400,
@@ -21,7 +20,7 @@ require(["lib/history"], function(history) {
 
     function openChecked(url) {
         // Only check http(s) links
-        if(url.indexOf("http") !== 0) {
+        if (url.indexOf("http") !== 0) {
             input.val("");
             return open(url);
         }
@@ -56,7 +55,7 @@ require(["lib/history"], function(history) {
 
     function protocolIcon(url) {
         var protocol = url.split(":")[0];
-        switch(protocol) {
+        switch (protocol) {
             case "dropbox":
                 return "img/dropbox.png";
             default:
@@ -66,9 +65,10 @@ require(["lib/history"], function(history) {
 
     // We're storing recent projects in local storage
     var projectCache = [];
+
     function updateRecentProjects() {
         history.getProjects(function(err, projects) {
-            if(_.isEqual(projects, projectCache)) {
+            if (_.isEqual(projects, projectCache)) {
                 return;
             }
             var recentEl = $("#recent");
@@ -100,26 +100,27 @@ require(["lib/history"], function(history) {
     });
 
     chrome.storage.sync.get("hygienicMode", function(results) {
-        if(results.hygienicMode) {
+        if (results.hygienicMode) {
             hygienic.attr("checked", "checked");
         }
     });
 
     hygienic.change(function() {
-        chrome.storage.sync.set({hygienicMode: hygienic.is(":checked")});
+        chrome.storage.sync.set({
+            hygienicMode: hygienic.is(":checked")
+        });
     });
 
     try {
         var chromeVersion = parseInt(/Chrome\/(\d+)/.exec(navigator.userAgent)[1], 10);
-        if(chromeVersion < 31) {
+        if (chromeVersion < 31) {
             $("#open-local").hide();
         }
-    } catch(e) {
-    }
+    } catch (e) {}
 
     $("#projects").on("click", ".projects a", function(event) {
         var url = $(event.target).data("url");
-        if(url) {
+        if (url) {
             open(url);
         }
     });
@@ -136,8 +137,9 @@ require(["lib/history"], function(history) {
     updateWindowSize();
 
     // Hide dropbox option for non-registered oAuth ids:
-    var dropboxOauthAppId = ["fkjcgamnceomfnbcaedlhhopcchmnlkj", "pfmjnmeipppmcebplngmhfkleiinphhp"];
-    if(dropboxOauthAppId.indexOf(chrome.runtime.id) === -1) {
+    var dropboxOauthAppId = ["fkjcgamnceomfnbcaedlhhopcchmnlkj",
+                             "pfmjnmeipppmcebplngmhfkleiinphhp"];
+    if (dropboxOauthAppId.indexOf(chrome.runtime.id) === -1) {
         $("#dropbox-open").hide();
     }
 });

@@ -3,8 +3,10 @@ Navigation
 
 The goto box is your swiss army knife of project navigation. To access it, press
 `Command-E`/`Ctrl-E`. This will pop up an input box with a list of files in your
-project. Alternatively, `Alt-T` shows a tree representation of the project.
-However, the rest of this document focusses on the goto box.
+project. Alternatively, `Alt-T` shows a tree representation of the project, this
+is more useful in the exploration stages of working on a project.
+
+The rest of this document focusses on the goto box.
 
 Basics
 ------
@@ -24,7 +26,7 @@ two files a very quick `Command-E`/`Ctrl-E` followed by `Return`.
 
 Filtering
 ---------
-There are a few special symbols you can use to alter the mode and meaning of
+There some special syntax you can use to alter the mode and meaning of
 your filter query.
 
 * `/` starting your query with `/` only matches paths with your query as
