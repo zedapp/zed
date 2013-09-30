@@ -21,5 +21,8 @@
     "wordWrap": false,
     "previewDelay": 500,
     "trimTrailingWhiteSpaceOnSave": false,
-    "trimEmptyLines": true
+    "trimEmptyLines": true,
+    "hygienicMode": false,
+    "hygienicModeRemote": true,
+    "recentFolderHistory": 5
 }

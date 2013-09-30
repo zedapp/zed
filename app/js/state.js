@@ -4,11 +4,14 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var options = require("./lib/options");
     var project = require("./project");
+    var settings = require("./settings");
     var state = {};
 
     eventbus.declare("stateloaded");
     
-    var hygienicMode = options.get("hygienic");
+    function isHygienic() {
+        return settings.get("hygienicMode") || (settings.get("hygienicModeRemote") && options.get("url").indexOf("http") === 0);
+    }
 
     module.exports = {
         hook: function() {
@@ -24,7 +27,7 @@ define(function(require, exports, module) {
             return state[key];
         },
         load: function(callback) {
-            if(hygienicMode) {
+            if(isHygienic()) {
                 state = {};
                 eventbus.emit("stateloaded", module.exports);
                 return callback && callback({});
@@ -45,7 +48,7 @@ define(function(require, exports, module) {
             });
         },
         save: function(callback) {
-            if(!hygienicMode) {
+            if(!isHygienic()) {
                 project.writeFile("/.zedstate", this.toJSON(), callback || function() {});
             }
         },

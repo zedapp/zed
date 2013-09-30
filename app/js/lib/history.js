@@ -1,7 +1,7 @@
 /*global chrome, define, _*/
 define(function(require, exports, module) {
 
-    var MAX_RECENT_PROJECTS = 5;
+    var settings = require("../settings");
 
     return {
         pushProject: function(name, url) {
@@ -19,8 +19,9 @@ define(function(require, exports, module) {
                         name: name,
                         url: url
                     });
-                    if (projects.length > MAX_RECENT_PROJECTS) {
-                        projects.splice(projects.length - 1, 1);
+                    if (projects.length > settings.get("recentFolderHistory")) {
+                        var numToRemove = projects.length - settings.get("recentFolderHistory");
+                        projects.splice(projects.length - numToRemove, numToRemove);
                     }
                 } else {
                     projects.splice(projects.indexOf(existing[0]), 1);

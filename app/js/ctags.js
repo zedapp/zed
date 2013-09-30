@@ -1,9 +1,10 @@
-/*global _ define */
+/*global _, define */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
     var options = require("./lib/options");
     var project = require("./project");
+    var settings = require("./settings");
     
     /**
      * symbol:
@@ -11,7 +12,6 @@ define(function(require, exports, module) {
      * locator:
      */
     var ctagsCache = [];
-    var hygienicMode = options.get("hygienic");
     
     exports.getCTags = function(path) {
         if(!path) {
@@ -29,7 +29,8 @@ define(function(require, exports, module) {
     };
     
     exports.writeCTags = _.debounce(function() {
-        if(hygienicMode) {
+        if(settings.get("hygienicMode") || 
+           (settings.get("hygienicModeRemote") && options.get("url").indexOf("http") === 0)) {
             return;
         }
         var tabbedCTags = ctagsCache.map(function(ctag) {

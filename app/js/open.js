@@ -1,6 +1,8 @@
 require.config({
     baseUrl: "js",
-    waitSeconds: 15
+    paths: {
+        "text": "../dep/text"
+    },
 });
 
 /*global $, chrome, _*/
@@ -8,7 +10,7 @@ require(["lib/history"], function(history) {
     var input = $("#gotoinput");
 
     function open(url) {
-        chrome.app.window.create('editor.html?url=' + url + (hygienic.is(":checked") ? "&hygienic=true" : "") + '&chromeapp=true', {
+        chrome.app.window.create('editor.html?url=' + url + '&chromeapp=true', {
             frame: 'chrome',
             width: 720,
             height: 400,

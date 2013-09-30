@@ -89,6 +89,60 @@ define(function(require, exports, module) {
         readOnly: true
     });
     
+    exports.define("Settings:Toggle Highlight Active Line", {
+        exec: function() {
+            require(["./settings"], function(settings) {
+                settings.set("highlightActiveLine", !settings.get("highlightActiveLine"));
+            });
+        },
+        readOnly: true
+    });
+    
+    exports.define("Settings:Toggle Highlight Gutter Line", {
+        exec: function() {
+            require(["./settings"], function(settings) {
+                settings.set("highlightGutterLine", !settings.get("highlightGutterLine"));
+            });
+        },
+        readOnly: true
+    });
+    
+    exports.define("Settings:Toggle Show Print Margin", {
+        exec: function() {
+            require(["./settings"], function(settings) {
+                settings.set("showPrintMargin", !settings.get("showPrintMargin"));
+            });
+        },
+        readOnly: true
+    });
+    
+    exports.define("Settings:Toggle Show Invisibles", {
+        exec: function() {
+            require(["./settings"], function(settings) {
+                settings.set("showInvisibles", !settings.get("showInvisibles"));
+            });
+        },
+        readOnly: true
+    });
+    
+    exports.define("Settings:Toggle Display Indent Guides", {
+        exec: function() {
+            require(["./settings"], function(settings) {
+                settings.set("displayIndentGuides", !settings.get("displayIndentGuides"));
+            });
+        },
+        readOnly: true
+    });
+    
+    exports.define("Settings:Toggle Show Gutter", {
+        exec: function() {
+            require(["./settings"], function(settings) {
+                settings.set("showGutter", !settings.get("showGutter"));
+            });
+        },
+        readOnly: true
+    });
+    
     exports.define("Editor:Reset State", {
         exec: function() {
             require(["./state"], function(state) {

@@ -1,10 +1,15 @@
 require.config({
     baseUrl: "../js",
-    waitSeconds: 15
+    paths: {
+        "text": "../../dep/text"
+    },
 });
 
 /*global chrome, $ */
-require(["lib/dropbox", "lib/history"], function(dropbox, history) {
+require(["lib/dropbox", "lib/history", "settings"], function(dropbox, history, settings) {
+    
+    settings.init();
+    
     dropbox.authenticate(function(err, dropbox) {
         var treeEl = $("#tree");
 
