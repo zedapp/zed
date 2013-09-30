@@ -30,6 +30,7 @@ input[type=text] {
     -webkit-box-sizing: border-box;
     outline-width: 0;
     border: 0;
+    border-top: 1px dotted #ccc;
 }
 input[type=submit] {
     visibility: hidden;
@@ -86,16 +87,8 @@ input[type=submit] {
 </style>
     </head>
     <body>
-    <div id="goto">
-        <input id="gotoinput" type="text" placeholder="URL to edit remotely" value=""/>
-    </div>
-    <!--
-    <label><input type="checkbox" id="hygienic" value="true"/> Hygienic mode (don't create .zedstate file)</label>
-    -->
-    <!--
-    <div id="hint">After you run the <tt>zed</tt> client, you will get a URL, paste that into this box and press <tt>Enter</tt>, or pick a project below.</div>
-    -->
     <div id="projects">
+        <h1>Zed &raquo;</h1>
         <div class="projects">
             <a href="#" data-url="local:" id="open-local"><img src="img/project.png"/>Open Local Folder</a>
             <a href="#" id="dropbox-open"><img src="img/dropbox.png"/>Open Dropbox Folder</a>
@@ -103,9 +96,14 @@ input[type=submit] {
             <a href="#" data-url="settings:"><img src="img/settings.png"/>Settings</a>
             <a href="#" data-url="manual:"><img src="img/manual.png"/>Manual</a>
         </div>
-        <h1>Recent projects &raquo;</h1>
+        <h1>Recent Folders &raquo;</h1>
         <div id="recent" class="projects"></div>
+        <h1>Edit Remote Files &raquo;</h1>
     </div>
+    <div id="goto">
+        <input id="gotoinput" type="text" placeholder="URL to edit remotely" value=""/>
+    </div>
+    <div id="hint">To edit remote files, run <tt>zed</tt> on the server. Paste the URL <tt>zed</tt> returns into this box and press <tt>Enter</tt>.</div>
     <script src="js/open.js"></script>
 </body>
 </html>

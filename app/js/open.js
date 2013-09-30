@@ -6,7 +6,6 @@ require.config({
 /*global $, chrome, _*/
 require(["lib/history"], function(history) {
     var input = $("#gotoinput");
-    var hygienic = $("#hygienic");
 
     function open(url) {
         chrome.app.window.create('editor.html?url=' + url + (hygienic.is(":checked") ? "&hygienic=true" : "") + '&chromeapp=true', {
@@ -19,6 +18,9 @@ require(["lib/history"], function(history) {
     var defaultHint = $("#hint").html();
 
     function openChecked(url) {
+        if(!url) {
+            return;
+        }
         // Only check http(s) links
         if (url.indexOf("http") !== 0) {
             input.val("");
@@ -97,18 +99,6 @@ require(["lib/history"], function(history) {
         if (event.keyCode == 27) { // Esc
             close();
         }
-    });
-
-    chrome.storage.sync.get("hygienicMode", function(results) {
-        if (results.hygienicMode) {
-            hygienic.attr("checked", "checked");
-        }
-    });
-
-    hygienic.change(function() {
-        chrome.storage.sync.set({
-            hygienicMode: hygienic.is(":checked")
-        });
     });
 
     try {
