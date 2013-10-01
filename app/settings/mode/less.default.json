@@ -1,0 +1,5 @@
+{
+    "name": "Less",
+    "highlighter": "ace/mode/less",
+    "extensions": ["less"]
+}
