@@ -10,8 +10,12 @@ require(["lib/dropbox", "lib/history", "settings"], function(dropbox, history, s
     
     settings.init();
     
+    
     dropbox.authenticate(function(err, dropbox) {
         var treeEl = $("#tree");
+        $("#logout").click(function() {
+            dropbox.signOut(close);
+        });
 
         function open(path) {
             var url = "dropbox:" + path;

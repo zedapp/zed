@@ -1,1 +1,0 @@
-Dropbox.AuthDriver.Chrome.oauthReceiver()

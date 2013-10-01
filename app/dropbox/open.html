@@ -18,15 +18,12 @@ body {
     padding: 0;
 }
 #tree {
-    height: 330px;
+    height: 310px;
 }
 h1 {
-    display: block;
-    font-family: Tahoma, Arial;
-    font-size: 15px;
-    background-color: #eee;
-    padding: 10px;
-    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 8px;
 }
 button {
     margin-top: 15px;
@@ -35,8 +32,9 @@ button {
 </style>
     </head>
     <body>
-    <h1>Pick a Dropbox folder to edit</h1>
-    <div id="tree">Authenticating...</div>
+    <h1>Pick a Dropbox Folder &raquo;</h1>
+    <div id="tree">Authenticating... <img src="../img/loader.gif"/></div>
+    <button id="logout">Logout</button>
     <script src="open.js"></script>
 </body>
 </html>
