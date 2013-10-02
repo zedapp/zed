@@ -22,7 +22,8 @@ define(function(require, exports, module) {
         if(showContextBar && !barEl) {
             barEl = $("<div id='contextbar'>");
             var url = options.get('url');
-            var friendlyUrl = url.split(':')[1];
+            var friendlyUrl = url.indexOf("http") === 0 ? url : url.split(':')[1];
+            
             barEl.html("<img src='" + icons.protocolIcon(url) + "'/>" + friendlyUrl + " &raquo;");
             $("body").append(barEl);
         } else if(!showContextBar && barEl) {

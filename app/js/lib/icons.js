@@ -11,6 +11,10 @@ define(function(require, exports, module) {
                 return "img/manual.png";
             case "settings":
                 return "img/settings.png";
+            case "http":
+                return "img/remote.png";
+            case "https":
+                return "img/remote.png";
             default:
                 return "img/project.png";
         }

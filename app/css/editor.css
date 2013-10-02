@@ -218,6 +218,7 @@ div.preview-vsplit2-right-2 {
     right: 0;
     height: 25px;
     line-height: 25px;
+    background-color: #fff;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     border-bottom: 1px solid #000;
