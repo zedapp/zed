@@ -15,6 +15,7 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
         "./command",
         "./editor",
         "./editbar",
+        "./contextbar",
         "./settings",
         "./goto",
         "./sandbox",

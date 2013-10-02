@@ -6,7 +6,7 @@ require.config({
 });
 
 /*global $, chrome, _*/
-require(["lib/history"], function(history) {
+require(["lib/history", "lib/icons"], function(history, icons) {
     var input = $("#gotoinput");
 
     function open(url) {
@@ -57,16 +57,6 @@ require(["lib/history"], function(history) {
         win.resizeTo(400, $("body").height() + 23);
     }
 
-    function protocolIcon(url) {
-        var protocol = url.split(":")[0];
-        switch (protocol) {
-            case "dropbox":
-                return "img/dropbox.png";
-            default:
-                return "img/project.png";
-        }
-    }
-
     // We're storing recent projects in local storage
     var projectCache = [];
 
@@ -79,7 +69,7 @@ require(["lib/history"], function(history) {
             recentEl.empty();
             projects.forEach(function(project) {
              var el = $("<a href='#'>");
-             el.html("<img src='" + protocolIcon(project.url) + "'/>" + project.name);
+             el.html("<img src='" + icons.protocolIcon(project.url) + "'/>" + project.name);
              el.data("url", project.url);
              recentEl.append(el);
             });

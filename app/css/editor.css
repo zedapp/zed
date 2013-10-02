@@ -210,6 +210,30 @@ div.preview-vsplit2-right-2 {
 .editbar .error {
     color: red;
 }
+
+#contextbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 25px;
+    line-height: 25px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 13px;
+    border-bottom: 1px solid #000;
+    z-index: 1000;
+    border-bottom: 1px solid #ccc;
+    padding-left: 35px;
+    font-weight: bold;
+}
+
+#contextbar img {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    height: 13px;
+}
+
 .hidden {
     display: none;
 }
