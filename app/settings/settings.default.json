@@ -24,5 +24,6 @@
     "trimEmptyLines": true,
     "hygienicMode": false,
     "hygienicModeRemote": true,
-    "recentFolderHistory": 5
+    "recentFolderHistory": 5,
+    "showContextBar": false
 }
