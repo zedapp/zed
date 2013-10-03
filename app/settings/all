@@ -12,6 +12,7 @@
 /mode/haskell.default.json
 /mode/html.default.json
 /mode/ini.default.json
+/mode/jack.default.json
 /mode/java.default.json
 /mode/javascript.default.json
 /mode/json.default.json
