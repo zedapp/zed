@@ -1,5 +1,5 @@
 {
     "name": "Jack",
     "highlighter": "ace/mode/jack",
-    "extensions": ["jack"]
+    "extensions": ["jack", "jk"]
 }
