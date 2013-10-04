@@ -1,4 +1,4 @@
-/*global define, chrome, _*/
+/*global define, chrome*/
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var options = require("./lib/options");
@@ -80,6 +80,7 @@ define(function(require, exports, module) {
                         }
                         var id = chrome.fileSystem.retainEntry(dir);
                         history.pushProject(dir.fullPath, "local:" + id);
+                        options.set("title", dir.fullPath);
                         setupMethods(localfs(dir));
                     });
                 }

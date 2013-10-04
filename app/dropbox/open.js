@@ -20,7 +20,7 @@ require(["lib/dropbox", "lib/history", "settings"], function(dropbox, history, s
         function open(path) {
             var url = "dropbox:" + path;
             history.pushProject(path, url);
-            chrome.app.window.create('editor.html?url=' + url + '&chromeapp=true', {
+            chrome.app.window.create('editor.html?url=' + url + "&title=" + path + '&chromeapp=true', {
                 frame: 'chrome',
                 width: 720,
                 height: 400,

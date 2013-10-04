@@ -7,10 +7,14 @@ define(function(require, exports, module) {
     
     parts.forEach(function(part) {
         var spl = part.split('=');
-        options[spl[0]] = spl[1];
+        options[spl[0]] = decodeURIComponent(spl[1]);
     });
     
     exports.get = function(name) {
         return options[name];
+    };
+    
+    exports.set = function(name, value) {
+        options[name] = value;
     };
 });

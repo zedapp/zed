@@ -11,6 +11,7 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.once("editorloaded", update);
+        eventbus.once("ioavailable", update);
         eventbus.on("settingschanged", update);
     };
     
@@ -21,10 +22,6 @@ define(function(require, exports, module) {
         
         if(showContextBar && !barEl) {
             barEl = $("<div id='contextbar'>");
-            var url = options.get('url');
-            var friendlyUrl = url.indexOf("http") === 0 ? url : url.split(':')[1];
-            
-            barEl.html("<img src='" + icons.protocolIcon(url) + "'/>" + friendlyUrl + " &raquo;");
             $("body").append(barEl);
         } else if(!showContextBar && barEl) {
             barEl.remove();
@@ -32,6 +29,11 @@ define(function(require, exports, module) {
         }
         
         if(showContextBar) {
+            var url = options.get('url');
+            var title = options.get('title');
+            
+            barEl.html("<img src='" + icons.protocolIcon(url) + "'/>" + title + " &raquo;");
+            
             barEl.height(barHeight)
                  .css("font-size",   fontSize + "px")
                  .css("line-height", barHeight + "px")

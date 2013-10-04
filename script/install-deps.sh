@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 cd `dirname $0`/..
 cd app

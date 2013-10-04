@@ -9,8 +9,8 @@ require.config({
 require(["lib/history", "lib/icons"], function(history, icons) {
     var input = $("#gotoinput");
 
-    function open(url) {
-        chrome.app.window.create('editor.html?url=' + url + '&chromeapp=true', {
+    function open(url, title) {
+        chrome.app.window.create('editor.html?url=' + url + "&title=" + title + '&chromeapp=true', {
             frame: 'chrome',
             width: 720,
             height: 400,
@@ -26,7 +26,7 @@ require(["lib/history", "lib/icons"], function(history, icons) {
         // Only check http(s) links
         if (url.indexOf("http") !== 0) {
             input.val("");
-            return open(url);
+            return open(url, url);
         }
         $.ajax({
             type: "POST",
@@ -35,7 +35,7 @@ require(["lib/history", "lib/icons"], function(history, icons) {
                 action: 'version'
             },
             success: function() {
-                open(url);
+                open(url, url);
                 input.val("");
             },
             error: function() {
@@ -71,6 +71,7 @@ require(["lib/history", "lib/icons"], function(history, icons) {
              var el = $("<a href='#'>");
              el.html("<img src='" + icons.protocolIcon(project.url) + "'/>" + project.name);
              el.data("url", project.url);
+             el.data("title", project.name);
              recentEl.append(el);
             });
             projectCache = projects;
@@ -103,8 +104,9 @@ require(["lib/history", "lib/icons"], function(history, icons) {
 
     $("#projects").on("click", ".projects a", function(event) {
         var url = $(event.target).data("url");
+        var title = $(event.target).data("title");
         if (url) {
-            open(url);
+            open(url, title);
         }
     });
 

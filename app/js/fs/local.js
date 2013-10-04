@@ -7,7 +7,6 @@
 define(function(require, exports, module) {
     var async = require("../lib/async");
 
-
     return function(root) {
         var pollInterval = 5000;
         var tagCache = window.tagCache = {};
