@@ -58,7 +58,8 @@ function listenOnLocalSocket() {
     ws.onerror = tryAgainLater;
     ws.onclose = tryAgainLater;
     ws.onmessage = function(event) {
-        chrome.app.window.create('editor.html?url=' + event.data + '&chromeapp=true', {
+        var title = event.data.substring("http://localhost:7336/fs/local".length);
+        chrome.app.window.create('editor.html?url=' + event.data + '&title=' + title + '&chromeapp=true', {
             frame: 'chrome',
             width: 720,
             height: 400,
