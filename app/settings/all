@@ -1,3 +1,5 @@
+/commands.default.json
+/commands.user.json
 /keys.default.json
 /keys.user.json
 /mode/c.default.json
@@ -16,9 +18,9 @@
 /mode/java.default.json
 /mode/javascript.default.json
 /mode/json.default.json
+/mode/less.default.json
 /mode/logiql.default.json
 /mode/lua.default.json
-/mode/less.default.json
 /mode/markdown.default.json
 /mode/nix.default.json
 /mode/php.default.json
@@ -29,5 +31,6 @@
 /mode/sh.default.json
 /mode/text.default.json
 /mode/xml.default.json
+/mode/yaml.default.json
 /settings.default.json
 /settings.user.json

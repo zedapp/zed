@@ -2,25 +2,36 @@
 <head>
 <script src="dep/require.js"></script>
 <script src="dep/jquery.js"></script>
+<script src="ace/ace.js"></script>
 <script>
 var debug = false;
 
 if(location.search) {
-    $(function() {
+
+    require(["js/lib/custom_command"], function(custom_command) {
         $("body").empty();
         $("body").append('Plugin URL: <input id="url" value="plugin/" size="50"/><br/>');
-        $("body").append('<textarea id="code" rows="10" cols="60"></textarea><br/>');
+        $("body").append('<input type="checkbox" id="command" value="yes"/> Command<br/>')
+        $("body").append('<div id="code" style="width: 100%; height: 200px;"></div><br/>');
         $("body").append('<button id="test">Test</button><br/>');
         $("body").append('<textarea id="output" rows="10" cols="60">Output here</textarea>');
 
+        var code = ace.edit("code");
+
         $(function() {
             localStorage.url && $("#url").val(localStorage.url);
-            localStorage.code && $("#code").val(localStorage.code);
+            localStorage.code && code.setValue(localStorage.code);
+            localStorage.command && $("#command").attr("checked", "checked");
 
             $("#test").click(function(event) {
                 localStorage.url = $("#url").val();
-                localStorage.code = $("#code").val();
-                postMessage({id: 1, url: localStorage.url, options: {}, content: localStorage.code}, "*");
+                localStorage.code = code.getValue();
+                localStorage.command = $("#command").is(":checked");
+                if(localStorage.command) {
+                    postMessage({id: 1, url: localStorage.url, data: custom_command.buildCustomCommandRequest(code) }, "*");
+                } else {
+                    postMessage({id: 1, url: localStorage.url, options: {}, content: localStorage.code}, "*");
+                }
                 event.preventDefault();
             });
             window.addEventListener('message', function(event) {
@@ -29,6 +40,9 @@ if(location.search) {
                 if(event.data.replyTo) {
                     if(data.err) {
                         result = data.err;
+                    }
+                    if(result.length) {
+                        custom_command.applyInstructions(code, result);
                     }
                     if(typeof result === "object") {
                         result = JSON.stringify(result, null, 4);
@@ -46,18 +60,29 @@ window.addEventListener('message', function(event) {
     var url = data.url;
     var options = data.options;
     var content = data.content;
+    var reqData = data.data;
     if(!url) {
         return;
     }
 
     require([url], function(fn) {
-        fn(options, content, function(err, result) {
-            var message = {replyTo: id, err: err, result: result};
-            if(debug) {
-                console.log(message);
-            }
-            event.source.postMessage(message, "*");
-        });
+        if(options)  {
+            fn(options, content, function(err, result) {
+                var message = {replyTo: id, err: err, result: result};
+                if(debug) {
+                    console.log(message);
+                }
+                event.source.postMessage(message, "*");
+            });
+        } else if(reqData) {
+            fn(reqData, function(err, result) {
+                var message = {replyTo: id, err: err, result: result};
+                if(debug) {
+                    console.log(message);
+                }
+                event.source.postMessage(message, "*");
+            });
+        }
     });
 });
 </script>

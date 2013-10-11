@@ -27,3 +27,4 @@ General topics
 * Managing settings: settings.md
 * Multiple cursors: cursors.md
 * Language modes: languages.md
+* Custom commands: custom_commands.md

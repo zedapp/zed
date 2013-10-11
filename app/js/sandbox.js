@@ -1,13 +1,13 @@
-/*global define $*/
+/*global define, $*/
 define(function(require, exports, module) {
     var command = require("./command");
-    
+
     var sandboxEl;
     var id;
     var waitingForReply;
-    
+
     function resetSandbox() {
-        if(sandboxEl) {
+        if (sandboxEl) {
             sandboxEl.remove();
         }
         $("body").append('<iframe src="sandbox.html" id="sandbox" style="display: none;">');
@@ -15,28 +15,28 @@ define(function(require, exports, module) {
         waitingForReply = {};
         id = 0;
     }
-    
+
     exports.hook = function() {
         resetSandbox();
     };
-    
+
     window.addEventListener('message', function(event) {
         var data = event.data;
         var replyTo = data.replyTo;
-        if(!replyTo) {
+        if (!replyTo) {
             return;
         }
         var err = data.err;
         var result = data.result;
-        
-        if(waitingForReply[replyTo]) {
+
+        if (waitingForReply[replyTo]) {
             waitingForReply[replyTo](err, result);
             delete waitingForReply[replyTo];
         } else {
             console.error("Got response to unknown message id:", replyTo);
         }
     });
-    
+
 
     exports.exec = function(url, options, content, callback) {
         id++;
@@ -48,7 +48,17 @@ define(function(require, exports, module) {
             id: id
         }, '*');
     };
-    
+
+    exports.execCommand = function(url, data, callback) {
+        id++;
+        waitingForReply[id] = callback;
+        sandboxEl[0].contentWindow.postMessage({
+            url: url,
+            data: data,
+            id: id
+        }, '*');
+    };
+
     command.define("Sandbox:Reset", {
         exec: resetSandbox,
         readOnly: true
