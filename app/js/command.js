@@ -10,13 +10,13 @@ define(function(require, exports, module) {
             var cmds = JSON.parse(commandsStr);
             settingsfs.readFile("/commands.user.json", function(err, commandsStr) {
                 try {
-                    cmds = cmds.concat(JSON.parse(commandsStr));
+                    cmds = _.extend(cmds, JSON.parse(commandsStr));
                     userCommandNames.forEach(function(cmd) {
                         delete commands[cmd];
                     });
                     userCommandNames = [];
-                    cmds.forEach(function(cmd) {
-                        exports.define(cmd.command, {
+                    _.each(cmds, function(cmd, name) {
+                        exports.define(name, {
                             exec: function(edit) {
                                 require(["./sandbox", "./lib/custom_command"], function(sandbox, custom_command) {
                                     sandbox.execCommand(cmd.scriptUrl, custom_command.buildCustomCommandRequest(edit, cmd), function(err, instructions) {
@@ -29,7 +29,7 @@ define(function(require, exports, module) {
                             },
                             readOnly: cmd.readOnly
                         });
-                        userCommandNames.push(cmd.command);
+                        userCommandNames.push(name);
                     });
                 } catch (e) {}
             });

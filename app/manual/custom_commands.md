@@ -7,8 +7,7 @@ on any server anywhere loadable via HTTP. To do this,
 add an entry to /commands.users.json in your settings. Each command is specified
 as follows:
 
-    {
-        "command": "Command:Name",
+    "Command:Name": {
         "scriptUrl": "http://bla.js",
         "readOnly": true, // Works in readOnly mode
     }
@@ -80,10 +79,9 @@ selection, or if nothing is selected the entire document:
         };
     });
 
-To register this command, add to /commands.user.json:
+To register this command, add to /commands.user.json object:
 
-    {
-        "command": "My Commands:Uppercase",
+    "My Commands:Uppercase": {
         "scriptUrl": "http://myserver.com/uppercase.js"
     }
 

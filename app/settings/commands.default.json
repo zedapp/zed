@@ -1,6 +1,5 @@
-[
-    {
-        "command": "Edit:Sort Lines",
+{
+    "Edit:Sort Lines": {
         "scriptUrl": "plugin/command/sort_lines.js"
     }
-]
+}
