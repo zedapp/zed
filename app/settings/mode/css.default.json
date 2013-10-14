@@ -7,11 +7,13 @@
         "scriptUrl": "plugin/beautify/css.js"
     },
 
-    "tool:check": {
+    "command:Tools:Check": {
         "scriptUrl": "plugin/check/css.js"
     },
 
-    "tool:ctags": {
+    "command:Tools:CTags": {
         "scriptUrl": "plugin/ctags/css.js"
-    }
+    },
+
+    "on:textchange": ["Tools:Check", "Tools:CTags"]
 }

@@ -29,10 +29,7 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
         "./window",
         "./file",
         "./session_manager",
-        "./tool/beautify",
-        "./tool/check",
-        "./tool/preview",
-        "./tool/ctags"];
+        "./tool/preview"];
     require(modules, function() {
         var session_manager = require("./session_manager");
 

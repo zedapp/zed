@@ -7,7 +7,9 @@
         "scriptUrl": "plugin/beautify/javascript.js"
     },
 
-    "tool:check": {
+    "command:Tools:Check": {
         "scriptUrl": "plugin/check/json.js"
-    }
+    },
+
+    "on:textchange": ["Tools:Check"]
 }

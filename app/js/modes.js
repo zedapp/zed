@@ -1,4 +1,4 @@
-/*global define */
+/*global define, _ */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
@@ -30,17 +30,17 @@ define(function(require, exports, module) {
                 var parts = filename.split(".");
                 var language = parts[0];
                 var type = parts[1];
-                if(type === "default") {
+                if (type === "default") {
                     json.language = language;
                     // Overwrite existing mode
                     modes[language] = json;
-                } else if(type === "user") {
+                } else if (type === "user") {
                     var mode = modes[language];
                     Object.keys(json).forEach(function(key) {
                         mode[key] = json[key];
                     });
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error("Error loading mode:", e);
             } finally {
                 console.log("Loaded mode from", path);
@@ -51,14 +51,14 @@ define(function(require, exports, module) {
 
     function loadModes() {
         settingsfs.listFiles(function(err, paths) {
-            if(err) {
+            if (err) {
                 return console.error("Could not load settings file list");
             }
             modes = bareMinimumModes();
             // Sorting to ensure "default" comes before "user"
             paths.sort();
             async.forEach(paths, function(path, next) {
-                if(path.indexOf("/mode/") === 0) {
+                if (path.indexOf("/mode/") === 0) {
                     loadMode(path, next);
                 } else {
                     next();
@@ -67,7 +67,7 @@ define(function(require, exports, module) {
                 extensionMapping = {};
                 Object.keys(modes).forEach(function(language) {
                     var mode = modes[language];
-                    if(mode.extensions) {
+                    if (mode.extensions) {
                         mode.extensions.forEach(function(ext) {
                             extensionMapping[ext] = language;
                         });
@@ -80,6 +80,7 @@ define(function(require, exports, module) {
                 });
                 eventbus.emit("modesloaded", exports);
                 declareModeCommands();
+                declareModeEvents();
             });
         });
     }
@@ -96,11 +97,11 @@ define(function(require, exports, module) {
             });
 
             Object.keys(mode).forEach(function(key) {
-                if(key.indexOf("command:") === 0) {
+                if (key.indexOf("command:") === 0) {
                     var name = key.substring("command:".length);
                     var cmd = mode[key];
                     var existingCommand = command.lookup(name);
-                    if(!existingCommand) {
+                    if (!existingCommand) {
                         var modeCommands = {};
                         modeCommands[mode.name] = cmd;
                         var commandSpec = {
@@ -108,14 +109,14 @@ define(function(require, exports, module) {
                                 require(["./sandbox"], function(sandbox) {
                                     var session = edit.getSession();
                                     var cmd = commandSpec.modeCommand[session.mode.name];
-                                    if(cmd) {
+                                    if (cmd) {
                                         sandbox.execCommand(cmd, edit.getSession(), function(err) {
                                             if (err) {
                                                 return console.error(err);
                                             }
                                         });
                                     } else {
-                                        eventbus.emit("sessionactivityfailed", session, "Command not supported for this mode.");
+                                        eventbus.emit("sessionactivityfailed", session, "Command " + name + " not supported for this mode");
                                     }
                                 });
                             },
@@ -132,6 +133,59 @@ define(function(require, exports, module) {
         eventbus.emit("commandsloaded");
     }
 
+    var eventHandlerFn;
+    var lastEventPath;
+
+    function triggerSessionCommandEvent(session, eventname, debounceTimeout) {
+        var mode = session.mode;
+        if(!mode) {
+            return;
+        }
+        var path = session.filename;
+        var commandNames = mode["on:" + eventname];
+
+        function runCommands() {
+            require(["./editor"], function(editor) {
+                var edit = editor.getActiveEditor();
+                commandNames.forEach(function(commandName) {
+                    command.exec(commandName, edit);
+                });
+            });
+        }
+
+        if (commandNames) {
+            if (debounceTimeout) {
+                if (path !== lastEventPath) {
+                    eventHandlerFn = _.debounce(runCommands, debounceTimeout);
+                    lastEventPath = path;
+                }
+                eventHandlerFn();
+            } else {
+                runCommands();
+            }
+        }
+    }
+
+    function declareModeEvents() {
+        eventbus.on("sessionchanged", function(session) {
+            require(["./editor"], function(editor) {
+                if(editor.getActiveSession() === session) {
+                    triggerSessionCommandEvent(session, "textchange", 1000);
+                }
+            });
+        });
+        eventbus.on("modeset", function(session) {
+            require(["./editor"], function(editor) {
+                if(editor.getActiveSession() === session) {
+                    triggerSessionCommandEvent(session, "textchange");
+                }
+            });
+        });
+        eventbus.on("switchsession", function(session) {
+            triggerSessionCommandEvent(session, "textchange");
+        });
+    }
+
     exports.hook = function() {
         loadModes();
     };
@@ -143,7 +197,7 @@ define(function(require, exports, module) {
     exports.getModeForPath = function(path) {
         var parts = path.split(".");
         var ext = parts[parts.length - 1];
-        if(extensionMapping[ext]) {
+        if (extensionMapping[ext]) {
             return modes[extensionMapping[ext]];
         } else {
             return modes.text;
@@ -151,10 +205,10 @@ define(function(require, exports, module) {
     };
 
     exports.setSessionMode = function(session, mode) {
-        if(typeof mode === "string") {
+        if (typeof mode === "string") {
             mode = exports.get(mode);
         }
-        if(mode) {
+        if (mode) {
             session.mode = mode;
             session.setMode(mode.highlighter);
             eventbus.emit("modeset", session, mode);

@@ -53,8 +53,10 @@ define(function(require, exports, module) {
                     edit.completers = completers;
                 }
                 edit.completer.showPopup(edit);
-                edit.completer.goTo("start");
-                edit.completer.cancelContextMenu();
+                if(edit.completer.popup) {
+                    edit.completer.goTo("start");
+                    edit.completer.cancelContextMenu();
+                }
             } else {
                 edit.indent();
             }

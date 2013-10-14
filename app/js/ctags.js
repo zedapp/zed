@@ -5,14 +5,14 @@ define(function(require, exports, module) {
     var options = require("./lib/options");
     var project = require("./project");
     var settings = require("./settings");
-    
+
     /**
      * symbol:
      * path:
      * locator:
      */
     var ctagsCache = [];
-    
+
     exports.getCTags = function(path) {
         if(!path) {
             return ctagsCache;
@@ -20,16 +20,16 @@ define(function(require, exports, module) {
             return _.where(ctagsCache, {path: path});
         }
     };
-    
+
     exports.updateCTags = function(path, ctags) {
         ctagsCache = ctagsCache.filter(function(ctag) {
             return ctag.path !== path;
         }).concat(ctags);
         exports.writeCTags();
     };
-    
+
     exports.writeCTags = _.debounce(function() {
-        if(settings.get("hygienicMode") || 
+        if(settings.get("hygienicMode") ||
            (settings.get("hygienicModeRemote") && options.get("url").indexOf("http") === 0)) {
             return;
         }
@@ -44,8 +44,8 @@ define(function(require, exports, module) {
                 console.error("Could not write /tags", err);
             }
         });
-    }, 1000);
-    
+    }, 5000);
+
     function fetchCTags() {
         console.log("Fetching CTags...");
         project.readFile("/tags", function(err, text) {
@@ -60,16 +60,16 @@ define(function(require, exports, module) {
                     return;
                 if(!line)
                     return;
-                    
+
                 var parts = line.split("\t");
                 var symbol = parts[0];
                 var path = parts[1];
                 var locator = parts[2].substring(0, 50);
-                
+
                 // Normalize
                 if(path[0] !== "/")
                     path = "/" + path;
-                
+
                 if(locator[0] === "/" && locator[1] === "^") {
                     // Ditch the ^
                     locator = "/" + locator.substring(2);
@@ -86,7 +86,7 @@ define(function(require, exports, module) {
             });
         });
     }
-    
+
     eventbus.once("ioavailable", function() {
         fetchCTags();
         project.watchFile("/tags", function(path, change) {

@@ -10,11 +10,11 @@ shortened version of `/mode/javascript.default.json` looks like:
         "highlighter": "ace/mode/javascript",
         "extensions": ["js"],
 
-        "tool:ctags": {
+        "command:Tools:CTags": {
             "scriptUrl": "plugin/ctags/javascript.js"
         },
 
-        "tool:check": {
+        "command:Tools:Check": {
             "scriptUrl": "plugin/check/javascript.js",
             "options": {
                 "undef": true,
@@ -36,6 +36,8 @@ shortened version of `/mode/javascript.default.json` looks like:
             }
         },
 
+        "on:textchange": ["Tools:CTags", "Tools:Check"],
+
         "snippet:log": "console.log(${1})"
     }
 
@@ -43,6 +45,8 @@ The `name` should be self explanatory. The `highlighter` is a tricky one, for
 now Zed won't offer real extensibility at this level, but only support any of
 the current [ACE](http://ace.ajax.org) highlighters. If you want to add one,
 contribute it to ACE and make more people happy.
+
+TODO: This is out of date!
 
 The `tool:*` settings are used to implement various useful editor features:
 
