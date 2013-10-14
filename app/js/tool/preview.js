@@ -7,18 +7,18 @@ define(function(require, exports, module) {
     var eventbus = require("../lib/eventbus");
     var tools = require("../tools");
     var session_manager = require("../session_manager");
-    
+
     var previewWrapperEl;
     var previewEl;
     var previewSession;
     var previewScrollY = 0;
-    
+
     function update() {
         if(!previewSession) {
             return;
         }
         eventbus.emit("sessionactivitystarted", previewSession, "Updating preview");
-        tools.run(previewSession, "preview", {}, previewSession.getValue(), function(err, result) {
+        tools.run(previewSession, "preview", {}, function(err, result) {
             if(err) {
                 result = "Not supported.";
                 eventbus.emit("sessionactivityfailed", previewSession, "No preview available");
@@ -28,9 +28,9 @@ define(function(require, exports, module) {
             previewEl[0].contentWindow.postMessage({content: result}, "*");
         });
     }
-    
+
     var delayedUpdate = _.debounce(update, 500);
-    
+
     function splitPreview(style, path) {
         var oldPreviewSession = previewSession;
         if(path) {
@@ -42,7 +42,7 @@ define(function(require, exports, module) {
             return;
         }
         update();
-        
+
         if(style === undefined) {
             var currentSplit = ""+state.get("split") || "";
             if(currentSplit.indexOf("preview-") === 0) {
@@ -59,13 +59,13 @@ define(function(require, exports, module) {
         previewWrapperEl.attr("class", "preview-vsplit2-right-" + style);
         previewWrapperEl.show();
         state.set('preview.path', previewSession.filename);
-        
+
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
         eventbus.emit("splitchange", "preview-" + style);
     }
-    
+
     exports.hook = function() {
         eventbus.on("allsessionsloaded", function() {
             previewScrollY = state.get("preview.scrollY") || 0;
@@ -92,7 +92,7 @@ define(function(require, exports, module) {
             }
         });*/
     };
-    
+
     exports.init = function() {
         previewWrapperEl = $("<div class='preview-vsplit2-right'><iframe id='preview' src='preview.html'>").hide();
         $("body").append(previewWrapperEl);
@@ -101,7 +101,7 @@ define(function(require, exports, module) {
             previewEl[0].contentWindow.postMessage(previewScrollY, "*");
         });*/
     };
-    
+
     command.define("Tools:Preview", {
         exec: function() {
             splitPreview();

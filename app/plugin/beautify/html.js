@@ -1,7 +1,8 @@
 define(function(require, exports, module) {
-    var beautify = require("./beautify-html.js");
-    
-    return function(options, content, callback) {
-        callback(null, beautify(content, options));
+    var beautifier = require("./beautify-html.js");
+    var beautify = require("zed/lib/beautify");
+
+    return function(data, callback) {
+        beautify(beautifier, callback);
     };
 });

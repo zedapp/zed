@@ -1,15 +1,25 @@
 /*global define*/
 define(function(require, exports, module) {
+    var editor = require("zed/editor");
+    var ctags = require("zed/ctags");
+
     var FN_REGEX = /([a-zA-Z0-9_\-\$]+)\s*[=:]\s*\([a-zA-Z0-9_\-\$]+/g;
     var indexToLine = require("./util.js").indexToLine;
-    
-    return function(options, content, callback) {
+
+    return function(data, callback) {
         var match;
+        var path = data.path;
         var tags = [];
-        // Regular old functions
-        while(match = FN_REGEX.exec(content)) {
-            tags.push({symbol: match[1], locator: indexToLine(content, match.index)});
-        }
-        callback(null, tags);
+        editor.getText(function(err, text) {
+            // Regular old functions
+            while (match = FN_REGEX.exec(text)) {
+                tags.push({
+                    path: path,
+                    symbol: match[1],
+                    locator: indexToLine(text, match.index)
+                });
+            }
+            ctags.updateCTags(path, tags, callback);
+        });
     };
 });

@@ -32,6 +32,7 @@
 
 define(function(require, exports, module) {
     var lint = require("./jshint.js");
+    var editor = require("zed/editor");
 
     function startRegex(arr) {
         return RegExp("^(" + arr.join("|") + ")");
@@ -68,61 +69,80 @@ define(function(require, exports, module) {
         } catch (e) {
             if (e === 0) return true;
         }
-        return false
+        return false;
     }
 
 
-    return function(options, content, callback) {
-        var value = content;
-        value = value.replace(/^#!.*\n/, "\n");
-        if (!value) {
-            return callback(null, []);
-        }
-        var errors = [];
+    return function(data, callback) {
+        editor.getText(function(err, value) {
+            value = value.replace(/^#!.*\n/, "\n");
+            if (!value) {
+                return callback(null, []);
+            }
+            var errors = [];
 
-        // js hint reports many false errors
-        // report them as error only if code is actually invalid
-        var maxErrorLevel = isValidJS(value) ? "warning" : "error";
+            // js hint reports many false errors
+            // report them as error only if code is actually invalid
+            var maxErrorLevel = isValidJS(value) ? "warning" : "error";
 
-        // var start = new Date();
-        lint(value, options);
-        var results = lint.errors;
+            // var start = new Date();
+            var options = {
+                "undef": true,
+                "unused": true,
+                "es5": true,
+                "esnext": true,
+                "devel": true,
+                "browser": true,
+                "node": true,
+                "laxcomma": true,
+                "laxbreak": true,
+                "lastsemic": true,
+                "onevar": false,
+                "passfail": false,
+                "maxerr": 100,
+                "expr": true,
+                "multistr": true,
+                "globalstrict": true
+            };
+            lint(value, options);
+            var results = lint.errors;
 
-        for (var i = 0; i < results.length; i++) {
-            var error = results[i];
-            if (!error) continue;
-            var raw = error.raw;
-            var type = "warning";
+            for (var i = 0; i < results.length; i++) {
+                var error = results[i];
+                if (!error) continue;
+                var raw = error.raw;
+                var type = "warning";
 
-            if (raw == "Missing semicolon.") {
-                var str = error.evidence.substr(error.character);
-                str = str.charAt(str.search(/\S/));
-                if (maxErrorLevel == "error" && str && /[\w\d{(['"]/.test(str)) {
-                    error.reason = 'Missing ";" before statement';
-                    type = "error";
-                } else {
+                if (raw == "Missing semicolon.") {
+                    var str = error.evidence.substr(error.character);
+                    str = str.charAt(str.search(/\S/));
+                    if (maxErrorLevel == "error" && str && /[\w\d{(['"]/.test(str)) {
+                        error.reason = 'Missing ";" before statement';
+                        type = "error";
+                    } else {
+                        type = "info";
+                    }
+                } else if (disabledWarningsRe.test(raw)) {
+                    continue;
+                } else if (infoRe.test(raw)) {
+                    type = "info";
+                } else if (errorsRe.test(raw)) {
+                    type = maxErrorLevel;
+                } else if (raw == "'{a}' is not defined.") {
+                    type = "warning";
+                } else if (raw == "'{a}' is defined but never used.") {
                     type = "info";
                 }
-            } else if (disabledWarningsRe.test(raw)) {
-                continue;
-            } else if (infoRe.test(raw)) {
-                type = "info"
-            } else if (errorsRe.test(raw)) {
-                type = maxErrorLevel;
-            } else if (raw == "'{a}' is not defined.") {
-                type = "warning";
-            } else if (raw == "'{a}' is defined but never used.") {
-                type = "info";
-            }
 
-            errors.push({
-                row: error.line - 1,
-                column: error.character - 1,
-                text: error.reason,
-                type: type,
-                raw: raw
-            });
-        }
-        callback(null, errors);
+                errors.push({
+                    row: error.line - 1,
+                    column: error.character - 1,
+                    text: error.reason,
+                    type: type,
+                    raw: raw
+                });
+            }
+            editor.setAnnotations(errors, callback);
+        });
     };
 });

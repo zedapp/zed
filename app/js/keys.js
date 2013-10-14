@@ -1,10 +1,11 @@
-/*global define ace _*/
+/*global define, ace, _*/
 define(function(require, exports, module) {
     "use strict";
     var lang = ace.require("ace/lib/lang");
 
     var settingsfs = require("./fs/settings");
     var eventbus = require("./lib/eventbus");
+    var async = require("./lib/async");
     var editor = require("./editor");
     var command = require("./command");
     var defaultKeyJson = JSON.parse(require("text!../settings/keys.default.json"));
@@ -59,16 +60,12 @@ define(function(require, exports, module) {
         return commandKeys;
     };
 
-
-    function bindKey(win, mac) {
-        return {
-            win: win,
-            mac: mac
-        };
-    }
-
     exports.hook = function() {
-        eventbus.once("editorloaded", loadKeys);
+        async.waitForEvents(eventbus, ["editorloaded", "commandsloaded"], loadKeys);
+        eventbus.on("commandsloaded", function() {
+            loadCommands();
+            exports.update();
+        });
     };
 
     exports.init = function() {

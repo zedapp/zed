@@ -27,8 +27,9 @@ form:
 
     {
         path: "/path/to/file.txt",
-        lines: ["Document content", "lines"],
-        cursorPos, {row: 0, column: 0},
+        modeName: "Markdown",
+        text: "Document content",
+        cursor: {row: 0, column: 0},
         selection: {
             text: "selectedText",
             start: {row: 0, column: 0},
@@ -47,12 +48,58 @@ argument an array of:
         <<instruction specific options>>
     }
 
-Supported are:
+Supported commands are:
 
     {
         "type": "replaceText",
-        "what": "document|selection",
-        "content": "Text to replace it with"
+        "what": "document|selection|line",
+        "text": "Text to replace it with"
+    }
+
+    {
+        "type": "moveCursor",
+        "row": 0,
+        "column": 0
+    }
+
+    {
+        "type": "flashMessage",
+        "text: "Hello world!",
+        "timeOut": 1000 // in ms
+    }
+
+    {
+        "type": "writeFile",
+        "path: "/iwashere.txt",
+        "text": "Hello"
+    }
+
+    {
+        "type": "gotoFile",
+        "path: "/iwashere.txt"
+    }
+
+    {
+        "type": "setAnnotations",
+        "annotations": [
+            {
+                row: 0
+                text: "This is wrong",
+                type: "error|warning|info",
+            }
+        ]
+    }
+
+    {
+        "type": "updateCTags",
+        "path": "/myfile.txt",
+        "tags": [
+            {
+              symbol: "myfun",
+              locator: 10,
+              path: "/myfile.txt"
+            }
+        ]
     }
 
 Example custom command: uppercase

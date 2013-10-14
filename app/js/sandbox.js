@@ -1,6 +1,7 @@
 /*global define, $*/
 define(function(require, exports, module) {
     var command = require("./command");
+    var custom_command = require("./lib/custom_command");
 
     var sandboxEl;
     var id;
@@ -20,9 +21,31 @@ define(function(require, exports, module) {
         resetSandbox();
     };
 
+    function handleApiRequest(event) {
+        var data = event.data;
+        require(["./sandbox/impl/" + data.module], function(mod) {
+            if(!mod[data.call]) {
+                return event.source.postMessage({
+                    replyTo: data.id,
+                    err: "No such method: " + mod
+                }, "*");
+            }
+            mod[data.call].apply(this, data.args.concat([function(err, result) {
+                event.source.postMessage({
+                    replyTo: data.id,
+                    err: err,
+                    result: result
+                }, "*");
+            }]));
+        });
+    }
+
     window.addEventListener('message', function(event) {
         var data = event.data;
         var replyTo = data.replyTo;
+        if(data.type === "request") {
+            return handleApiRequest(event);
+        }
         if (!replyTo) {
             return;
         }
@@ -49,12 +72,12 @@ define(function(require, exports, module) {
         }, '*');
     };
 
-    exports.execCommand = function(url, data, callback) {
+    exports.execCommand = function(spec, session, callback) {
         id++;
         waitingForReply[id] = callback;
         sandboxEl[0].contentWindow.postMessage({
-            url: url,
-            data: data,
+            url: spec.scriptUrl,
+            data: {path: session.filename},
             id: id
         }, '*');
     };

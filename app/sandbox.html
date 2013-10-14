@@ -6,6 +6,35 @@
 <script>
 var debug = false;
 
+require.config({
+    //baseUrl: "js",
+    paths: {
+        "zed": "js/sandbox/interface/zed"
+    },
+});
+
+var source;
+var id = 0;
+var waitingForReply = {};
+
+window.sandboxRequest = function(module, call, args, callback) {
+    id++;
+    waitingForReply[id] = callback;
+    source.postMessage({
+        type: "request",
+        id: id,
+        module: module,
+        call: call,
+        args: args
+    }, "*");
+}
+
+function handleApiResponse(event) {
+    var data = event.data;
+    waitingForReply[data.replyTo](data.err, data.result);
+    delete waitingForReply[data.replyTo];
+}
+
 if(location.search) {
 
     require(["js/lib/custom_command"], function(custom_command) {
@@ -17,6 +46,7 @@ if(location.search) {
         $("body").append('<textarea id="output" rows="10" cols="60">Output here</textarea>');
 
         var code = ace.edit("code");
+        code.session.mode = {name: "Plain Text"};
 
         $(function() {
             localStorage.url && $("#url").val(localStorage.url);
@@ -28,7 +58,7 @@ if(location.search) {
                 localStorage.code = code.getValue();
                 localStorage.command = $("#command").is(":checked");
                 if(localStorage.command) {
-                    postMessage({id: 1, url: localStorage.url, data: custom_command.buildCustomCommandRequest(code) }, "*");
+                    postMessage({id: 1, url: localStorage.url, data: custom_command.buildCustomCommandRequest(code.session) }, "*");
                 } else {
                     postMessage({id: 1, url: localStorage.url, options: {}, content: localStorage.code}, "*");
                 }
@@ -60,12 +90,16 @@ window.addEventListener('message', function(event) {
     var url = data.url;
     var options = data.options;
     var content = data.content;
-    var reqData = data.data;
+
+    if(data.replyTo) {
+        return handleApiResponse(event);
+    }
     if(!url) {
         return;
     }
 
     require([url], function(fn) {
+        source = event.source;
         if(options)  {
             fn(options, content, function(err, result) {
                 var message = {replyTo: id, err: err, result: result};
@@ -74,8 +108,8 @@ window.addEventListener('message', function(event) {
                 }
                 event.source.postMessage(message, "*");
             });
-        } else if(reqData) {
-            fn(reqData, function(err, result) {
+        } else {
+            fn(data.data, function(err, result) {
                 var message = {replyTo: id, err: err, result: result};
                 if(debug) {
                     console.log(message);

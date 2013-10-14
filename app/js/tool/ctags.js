@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var tools = require("../tools");
     var ctags = require("../ctags");
     var command = require("../command");
-    var async = require("../lib/async"); 
+    var async = require("../lib/async");
 
     var defaultTimeout = 2500;
     var minTimeout = 1000;
@@ -16,22 +16,11 @@ define(function(require, exports, module) {
             return;
         }
         var before = Date.now();
-        tools.run(session, "ctags", {}, session.getValue(), function(err, tags) {
+        tools.run(session, "ctags", {}, function(err) {
             if (err) {
                 return callback && callback(err);
             }
             timeOuts[path] = Math.max(minTimeout, (Date.now() - before) * 3);
-            if (typeof tags === "string") {
-                try {
-                    tags = JSON.parse(tags);
-                } catch (e) {
-                    return callback && callback(e);
-                }
-            }
-            tags.forEach(function(tag) {
-                tag.path = path;
-            });
-            ctags.updateCTags(path, tags);
             callback && callback();
         });
     }

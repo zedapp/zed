@@ -2,8 +2,11 @@
 define(function(require, exports, module) {
     "use strict";
     var useragent = ace.require("ace/lib/useragent");
+    var eventbus = require("./lib/eventbus");
     var commands = {};
     var userCommandNames = [];
+
+    eventbus.declare("commandsloaded");
 
     function loadCustomCommands(settingsfs) {
         settingsfs.readFile("/commands.default.json", function(err, commandsStr) {
@@ -18,12 +21,11 @@ define(function(require, exports, module) {
                     _.each(cmds, function(cmd, name) {
                         exports.define(name, {
                             exec: function(edit) {
-                                require(["./sandbox", "./lib/custom_command"], function(sandbox, custom_command) {
-                                    sandbox.execCommand(cmd.scriptUrl, custom_command.buildCustomCommandRequest(edit, cmd), function(err, instructions) {
+                                require(["./sandbox"], function(sandbox) {
+                                    sandbox.execCommand(cmd, edit.getSession(), function(err) {
                                         if (err) {
                                             return console.error(err);
                                         }
-                                        custom_command.applyInstructions(edit, instructions);
                                     });
                                 });
                             },
@@ -32,6 +34,7 @@ define(function(require, exports, module) {
                         userCommandNames.push(name);
                     });
                 } catch (e) {}
+                eventbus.emit("commandsloaded");
             });
         });
     }

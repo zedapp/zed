@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var ctags = require("./ctags");
     var fuzzyfind = require("./lib/fuzzyfind");
     var ui = require("./lib/ui");
-    
+
     var editor = require("./editor");
     var session_manager = require("./session_manager");
     var project = require("./project");
@@ -12,7 +12,7 @@ define(function(require, exports, module) {
     var locator = require("./lib/locator");
 
     var fileCache = [];
-    
+
     eventbus.declare("loadedfilelist");
 
     function hint(phrase, results) {
@@ -36,7 +36,7 @@ define(function(require, exports, module) {
             return "<tt>Return</tt> opens the selected file.";
         }
     }
-    
+
     function fetchFileList() {
         console.log("Fetching file list...");
         project.listFiles(function(err, files) {
@@ -47,9 +47,11 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.on("ioavailable", fetchFileList);
-        
+
         eventbus.on("newfilecreated", function(path) {
-            fileCache.push(path);
+            if(fileCache.indexOf(path) === -1) {
+                fileCache.push(path);
+            }
         });
         eventbus.on("filedeleted", function(path) {
             var index = fileCache.indexOf(path);
@@ -58,7 +60,7 @@ define(function(require, exports, module) {
             }
         });
     };
-    
+
     command.define("Navigate:Goto", {
         exec: function(edit, text) {
             if(typeof text !== "string") {
@@ -67,7 +69,7 @@ define(function(require, exports, module) {
             var currentPos = edit.getCursorPosition();
             var selectionRange = edit.getSelectionRange();
             var session = edit.getSession();
-            
+
             function filterSymbols(phrase, path) {
                 var tags = ctags.getCTags(path);
                 var symbols = tags.map(function(t) { return t.path + ":" + t.locator + "/" + t.symbol; });
@@ -81,14 +83,14 @@ define(function(require, exports, module) {
                 });
                 return resultList;
             }
-        
+
             function filter(phrase) {
                 var sessions = session_manager.getSessions();
                 var resultList;
                 var phraseParts = locator.parse(phrase);
                 phrase = phraseParts[0];
                 var loc = phraseParts[1];
-                
+
                 if(!phrase && loc !== undefined) {
                     if(loc[0] === "@") {
                         resultList = filterSymbols(loc, session.filename);
@@ -103,11 +105,11 @@ define(function(require, exports, module) {
                     fileCache.forEach(function(file) {
                         var fileNorm = file.toLowerCase();
                         var score = 1;
-            
+
                         if(sessions[file]) {
                             score = sessions[file].lastUse;
                         }
-            
+
                         if(fileNorm.substring(0, phrase.length) === phrase)
                             results[file] = score;
                     });
@@ -128,9 +130,9 @@ define(function(require, exports, module) {
                         }
                     });
                 }
-                
+
                 var editors = editor.getEditors();
-                
+
                 // Filter out paths currently open in an editor
                 resultList = resultList.filter(function(result) {
                     for(var i = 0; i < editors.length; i++) {
@@ -140,7 +142,7 @@ define(function(require, exports, module) {
                     }
                     return true;
                 });
-                
+
                 resultList.sort(function(r1, r2) {
                     if(r1.score === r2.score) {
                         return r1.path < r2.path ? -1 : 1;
@@ -193,12 +195,12 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Navigate:Reload Filelist", {
         exec: fetchFileList,
         readOnly: true
     });
-    
+
     command.define("Navigate:Path Under Cursor", {
         exec: function(edit) {
             var path = editor.getPathUnderCursor();
@@ -206,7 +208,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Navigate:Lookup Symbol", {
         exec: function(edit) {
             command.exec("Navigate:Goto", edit, "@");
