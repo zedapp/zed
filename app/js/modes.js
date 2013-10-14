@@ -5,13 +5,13 @@ define(function(require, exports, module) {
     var async = require("./lib/async");
     var settingsfs = require("./fs/settings");
     var command = require("./command");
-    
+
     eventbus.declare("modesloaded");
     eventbus.declare("modeset");
-    
+
     var modes = bareMinimumModes();
     var extensionMapping = {};
-    
+
     function bareMinimumModes() {
         return {
             text: {
@@ -21,7 +21,7 @@ define(function(require, exports, module) {
             }
         };
     }
-    
+
     function loadMode(path, callback) {
         settingsfs.readFile(path, function(err, text) {
             try {
@@ -48,7 +48,7 @@ define(function(require, exports, module) {
             }
         });
     }
-    
+
     function loadModes() {
         settingsfs.listFiles(function(err, paths) {
             if(err) {
@@ -71,7 +71,7 @@ define(function(require, exports, module) {
                         mode.extensions.forEach(function(ext) {
                             extensionMapping[ext] = language;
                         });
-                        
+
                     }
                     var userModePath = "/mode/" + language + ".user.json";
                     settingsfs.watchFile(userModePath, function() {
@@ -83,28 +83,63 @@ define(function(require, exports, module) {
             });
         });
     }
-    
+
     function declareModeCommands() {
         Object.keys(modes).forEach(function(language) {
             var mode = modes[language];
-    
+
             command.define("Editor:Mode:" + mode.name, {
                 exec: function(edit) {
                     exports.setSessionMode(edit.getSession(), mode);
                 },
                 readOnly: true
             });
+
+            Object.keys(mode).forEach(function(key) {
+                if(key.indexOf("command:") === 0) {
+                    var name = key.substring("command:".length);
+                    var cmd = mode[key];
+                    var existingCommand = command.lookup(name);
+                    if(!existingCommand) {
+                        var modeCommands = {};
+                        modeCommands[mode.name] = cmd;
+                        var commandSpec = {
+                            exec: function(edit) {
+                                require(["./sandbox"], function(sandbox) {
+                                    var session = edit.getSession();
+                                    var cmd = commandSpec.modeCommand[session.mode.name];
+                                    if(cmd) {
+                                        sandbox.execCommand(cmd, edit.getSession(), function(err) {
+                                            if (err) {
+                                                return console.error(err);
+                                            }
+                                        });
+                                    } else {
+                                        eventbus.emit("sessionactivityfailed", session, "Command not supported for this mode.");
+                                    }
+                                });
+                            },
+                            readOnly: true,
+                            modeCommand: modeCommands
+                        };
+                        command.define(name, commandSpec);
+                    } else {
+                        existingCommand.modeCommand[mode.name] = cmd;
+                    }
+                }
+            });
         });
+        eventbus.emit("commandsloaded");
     }
 
     exports.hook = function() {
         loadModes();
     };
-    
+
     exports.get = function(language) {
         return modes[language];
     };
-    
+
     exports.getModeForPath = function(path) {
         var parts = path.split(".");
         var ext = parts[parts.length - 1];
@@ -114,7 +149,7 @@ define(function(require, exports, module) {
             return modes.text;
         }
     };
-    
+
     exports.setSessionMode = function(session, mode) {
         if(typeof mode === "string") {
             mode = exports.get(mode);

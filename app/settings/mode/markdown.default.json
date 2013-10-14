@@ -2,7 +2,7 @@
     "name": "Markdown",
     "highlighter": "ace/mode/markdown",
     "extensions": ["md", "txt", "markdown"],
-    "tool:beautify": {
+    "command:Tools:Beautify": {
         "scriptUrl": "plugin/beautify/markdown.js"
     },
     "tool:preview": {

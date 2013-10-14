@@ -2,20 +2,20 @@
     "name": "JavaScript",
     "highlighter": "ace/mode/javascript",
     "extensions": ["js"],
-    
+
     "tool:beautify": {
         "scriptUrl": "plugin/beautify/javascript.js"
     },
-    
+
     "tool:ctags": {
         "scriptUrl": "plugin/ctags/javascript.js"
     },
-    
+
     "tool:remotebeautify": {
         "url": "http://webfs-js.herokuapp.com/beautify/js",
         "method": "PUT"
     },
-    
+
     "tool:check": {
         "scriptUrl": "plugin/check/javascript.js",
         "options": {
@@ -37,7 +37,11 @@
             "globalstrict": true
         }
     },
-    
+
+    "command:Tools:Beautify": {
+        "scriptUrl": "plugin/beautify/javascript.js"
+    },
+
     "snippet:log": "console.log(${1})",
     "snippet:def": "define(function(require, exports, module) {\n\t${1}\n});",
     "snippet:fn": "function ${1}(${2}) {\n\t${3}\n}",

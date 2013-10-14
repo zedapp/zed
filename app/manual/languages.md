@@ -9,20 +9,11 @@ shortened version of `/mode/javascript.default.json` looks like:
         "name": "JavaScript",
         "highlighter": "ace/mode/javascript",
         "extensions": ["js"],
-        
-        "tool:beautify": {
-            "scriptUrl": "plugin/beautify/javascript.js"
-        },
-        
+
         "tool:ctags": {
             "scriptUrl": "plugin/ctags/javascript.js"
         },
-        
-        "tool:remotebeautify": {
-            "url": "http://webfs-js.herokuapp.com/beautify/js",
-            "method": "PUT"
-        },
-        
+
         "tool:check": {
             "scriptUrl": "plugin/check/javascript.js",
             "options": {
@@ -44,7 +35,7 @@ shortened version of `/mode/javascript.default.json` looks like:
                 "globalstrict": true
             }
         },
-        
+
         "snippet:log": "console.log(${1})"
     }
 
@@ -65,14 +56,11 @@ The `tool:*` settings are used to implement various useful editor features:
 * `ctags`: analyze this piece of code and give me back a list of symbols (for
   navigation and completion)
 
-In a tool object, you can specify either:
+In a tool object, you can specify:
 
 * a `scriptUrl`, which can be a local path, or a remote URL of a
   [require.js](http://requirejs.org) module that exports a single function that
   implements the tool in question and returns the result.
-* a `url` in conjunction with some additional options (like the
-  `tool:remotebeautify` example). In this scenario the code that is operated on
-  is submitted to the web service at this URL.
 
 In addition, snippets for completion can be specified with [multiple insertion
 points](http://screencast.com/t/AYCwS0ZKE).

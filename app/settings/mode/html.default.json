@@ -2,11 +2,11 @@
     "name": "HTML",
     "highlighter": "ace/mode/html",
     "extensions": ["html"],
-    
-    "tool:beautify": {
+
+    "command:Tools:Beautify": {
         "scriptUrl": "plugin/beautify/html.js"
     },
-    
+
     "tool:preview": {
         "scriptUrl": "plugin/preview/html.js"
     }

@@ -2,15 +2,15 @@
     "name": "CSS",
     "highlighter": "ace/mode/css",
     "extensions": ["css"],
-    
-    "tool:beautify": {
+
+    "command:Tools:Beautify": {
         "scriptUrl": "plugin/beautify/css.js"
     },
-    
+
     "tool:check": {
         "scriptUrl": "plugin/check/css.js"
     },
-    
+
     "tool:ctags": {
         "scriptUrl": "plugin/ctags/css.js"
     }

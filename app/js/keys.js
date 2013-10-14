@@ -50,7 +50,7 @@ define(function(require, exports, module) {
                 readOnly: c.readOnly
             });
         } catch (e) {
-            console.error("Failed to bind keys to command", cmd, "does it exist?", e);
+            console.warn("Failed to bind keys to command", cmd, ", maybe not yet defined?", e);
         }
     };
 

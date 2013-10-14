@@ -2,11 +2,11 @@
     "name": "JSON",
     "highlighter": "ace/mode/json",
     "extensions": ["json"],
-    
-    "tool:beautify": {
+
+    "command:Tools:Beautify": {
         "scriptUrl": "plugin/beautify/javascript.js"
     },
-    
+
     "tool:check": {
         "scriptUrl": "plugin/check/json.js"
     }

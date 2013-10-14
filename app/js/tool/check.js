@@ -1,6 +1,7 @@
 /*global define*/
 define(function(require, exports, module) {
     var eventbus = require("../lib/eventbus");
+    var editor = require("../editor");
     var tools = require("../tools");
 
     var defaultTimeout = 1000;
@@ -10,6 +11,9 @@ define(function(require, exports, module) {
     function check(session) {
         var path = session.filename;
         var before = Date.now();
+        if(editor.getActiveSession() !== session) {
+            return;
+        }
         tools.run(session, "check", {}, function(err) {
             if(err) {
                 return;
@@ -28,6 +32,9 @@ define(function(require, exports, module) {
             }, timeOuts[session.filename] || defaultTimeout);
         });
         eventbus.on("modeset", function(session) {
+            check(session);
+        });
+        eventbus.on("switchsession", function(edit, session) {
             check(session);
         });
     };

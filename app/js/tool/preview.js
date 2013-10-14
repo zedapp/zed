@@ -1,4 +1,4 @@
-/*global define $ _ */
+/*global define, $, _ */
 define(function(require, exports, module) {
     var resetEditorDiv = require("../split").resetEditorDiv;
     var state = require("../state");
@@ -6,43 +6,35 @@ define(function(require, exports, module) {
     var command = require("../command");
     var eventbus = require("../lib/eventbus");
     var tools = require("../tools");
-    var session_manager = require("../session_manager");
 
     var previewWrapperEl;
     var previewEl;
-    var previewSession;
     var previewScrollY = 0;
 
+    function isPreviewing() {
+        var splitState = state.get("split");
+        return splitState && (""+splitState).indexOf("preview-") === 0;
+    }
+
     function update() {
-        if(!previewSession) {
+        if(!isPreviewing()) {
             return;
         }
-        eventbus.emit("sessionactivitystarted", previewSession, "Updating preview");
-        tools.run(previewSession, "preview", {}, function(err, result) {
+        var session = editor.getActiveSession();
+        eventbus.emit("sessionactivitystarted", session, "Updating preview");
+        tools.run(session, "preview", {}, function(err) {
             if(err) {
-                result = "Not supported.";
-                eventbus.emit("sessionactivityfailed", previewSession, "No preview available");
+                exports.showPreview("Not supported.");
+                eventbus.emit("sessionactivityfailed", session, "No preview available");
             } else {
-                eventbus.emit("sessionactivitycompleted", previewSession);
+                eventbus.emit("sessionactivitycompleted", session);
             }
-            previewEl[0].contentWindow.postMessage({content: result}, "*");
         });
     }
 
     var delayedUpdate = _.debounce(update, 500);
 
-    function splitPreview(style, path) {
-        var oldPreviewSession = previewSession;
-        if(path) {
-            previewSession = session_manager.getSessions()[path];
-        } else {
-            previewSession = editor.getActiveSession();
-        }
-        if(oldPreviewSession !== previewSession && arguments.length === 0) {
-            return;
-        }
-        update();
-
+    function splitPreview(style) {
         if(style === undefined) {
             var currentSplit = ""+state.get("split") || "";
             if(currentSplit.indexOf("preview-") === 0) {
@@ -58,7 +50,7 @@ define(function(require, exports, module) {
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
         previewWrapperEl.attr("class", "preview-vsplit2-right-" + style);
         previewWrapperEl.show();
-        state.set('preview.path', previewSession.filename);
+        update();
 
         editor.getEditors().forEach(function(editor) {
             editor.resize();
@@ -71,18 +63,17 @@ define(function(require, exports, module) {
             previewScrollY = state.get("preview.scrollY") || 0;
             var splitState = state.get("split");
             if(splitState && (""+splitState).indexOf("preview-") === 0) {
-                splitPreview(parseInt(splitState.substring("preview-".length), 10),
-                             state.get('preview.path'));
+                splitPreview(parseInt(splitState.substring("preview-".length), 10));
             }
         });
         eventbus.on("splitchange", function(type) {
             if(type.indexOf("preview-") === -1) {
                 // Not a preview split, hide the preview
                 previewWrapperEl.hide();
-                previewSession = null;
             }
         });
         eventbus.on("sessionchanged", delayedUpdate);
+        eventbus.on("switchsession", delayedUpdate);
         /*
         window.addEventListener("message", function(event) {
             var data = event.data;
@@ -93,8 +84,13 @@ define(function(require, exports, module) {
         });*/
     };
 
+    exports.showPreview = function(html) {
+        previewEl[0].contentWindow.postMessage({content: html}, "*");
+    };
+
     exports.init = function() {
         previewWrapperEl = $("<div class='preview-vsplit2-right'><iframe id='preview' src='preview.html'>").hide();
+        previewWrapperEl.css("top", "25px");
         $("body").append(previewWrapperEl);
         previewEl = $("#preview");
         /*previewEl.load(function() {
