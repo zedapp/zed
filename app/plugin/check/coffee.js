@@ -5,8 +5,8 @@ define(function(require, exports, module) {
     var coffee = require("../preview/coffee-script");
     var lineRegex = /on line (\d+)/;
 
-    return function(data, callback) {
-        var path = data.path;
+    return function(info, callback) {
+        var path = info.path;
         session.getText(path, function(err, text) {
             try {
                 coffee.compile(text);

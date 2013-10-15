@@ -3,8 +3,8 @@ define(function(require, exports, module) {
 
     var parse = require("./json_parse.js");
 
-    return function(data, callback) {
-        var path = data.path;
+    return function(info, callback) {
+        var path = info.path;
         session.getText(path, function(err, text) {
             try {
                 parse(text);

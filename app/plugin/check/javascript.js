@@ -73,8 +73,8 @@ define(function(require, exports, module) {
     }
 
 
-    return function(data, callback) {
-        var path = data.path;
+    return function(info, callback) {
+        var path = info.path;
         session.getText(path, function(err, value) {
             value = value.replace(/^#!.*\n/, "\n");
             if (!value) {
@@ -87,25 +87,7 @@ define(function(require, exports, module) {
             var maxErrorLevel = isValidJS(value) ? "warning" : "error";
 
             // var start = new Date();
-            var options = {
-                "undef": true,
-                "unused": true,
-                "es5": true,
-                "esnext": true,
-                "devel": true,
-                "browser": true,
-                "node": true,
-                "laxcomma": true,
-                "laxbreak": true,
-                "lastsemic": true,
-                "onevar": false,
-                "passfail": false,
-                "maxerr": 100,
-                "expr": true,
-                "multistr": true,
-                "globalstrict": true
-            };
-            lint(value, options);
+            lint(value, info.options);
             var results = lint.errors;
 
             for (var i = 0; i < results.length; i++) {

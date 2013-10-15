@@ -1,7 +1,6 @@
-/*global define, $*/
+/*global define, $, _ */
 define(function(require, exports, module) {
     var command = require("./command");
-    var custom_command = require("./lib/custom_command");
 
     var sandboxEl;
     var id;
@@ -60,24 +59,12 @@ define(function(require, exports, module) {
         }
     });
 
-
-    exports.exec = function(url, options, content, callback) {
-        id++;
-        waitingForReply[id] = callback;
-        sandboxEl[0].contentWindow.postMessage({
-            url: url,
-            options: options,
-            content: content,
-            id: id
-        }, '*');
-    };
-
     exports.execCommand = function(spec, session, callback) {
         id++;
         waitingForReply[id] = callback;
         sandboxEl[0].contentWindow.postMessage({
             url: spec.scriptUrl,
-            data: {path: session.filename},
+            data: _.extend({path: session.filename}, spec),
             id: id
         }, '*');
     };
