@@ -79,7 +79,7 @@ define(function(require, exports, module) {
     };
 
     exports.define("Command:Enter Command", {
-        exec: function(edit) {
+        exec: function(edit, session) {
             // Lazy loading these
             require(["./lib/ui", "./lib/fuzzyfind", "./editor", "./keys", "./state"], function(ui, fuzzyfind, editor, keys, state) {
                 var recentCommands = state.get("recent.commands") || {};
@@ -87,7 +87,7 @@ define(function(require, exports, module) {
 
                 function filter(phrase) {
                     var results = fuzzyfind(exports.allCommands(), phrase);
-                    results.forEach(function(result) {
+                    results = results.filter(function(result) {
                         var k = commandKeys[result.path];
                         if (k) {
                             if (_.isString(k)) {
@@ -96,6 +96,13 @@ define(function(require, exports, module) {
                                 result.meta = useragent.isMac ? k.mac : k.win;
                             }
                         }
+                        var cmd = exports.lookup(result.path);
+                        // Filter out commands that are language-specific and don't apply to this mode
+                        if(cmd.modeCommand) {
+                            var modeName = session.mode.language;
+                            return cmd.modeCommand[modeName];
+                        }
+                        return true;
                     });
                     results.sort(function(a, b) {
                         if (a.score === b.score) {

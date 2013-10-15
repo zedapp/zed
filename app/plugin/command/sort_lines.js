@@ -1,18 +1,27 @@
 define(function(require, exports, module) {
-    return function(data, callback) {
-        var lines = data.lines;
-        if (data.selection.text) {
-            lines = data.selection.text.split("\n");
-        }
+    var session = require("zed/session");
 
+    function sortLines(text) {
+        var lines = text.split("\n");
         lines.sort();
+        return lines.join("\n");
+    }
 
-        var content = lines.join("\n");
-
-        callback(null, [{
-            "type": "replaceText",
-            "what": data.selection.text ? "selection" : "document",
-            "content": content
-        }]);
+    return function(info, callback) {
+        var path = info.path;
+        
+        session.getSelectionText(path, function(err, selectedText) {
+            if(selectedText) {
+                var sortedText = sortLines(selectedText);
+                session.getSelectionRange(path, function(err, range) {
+                    session.replaceRange(path, range, sortedText, callback);
+                });
+            } else {
+                session.getText(path, function(err, text) {
+                    var sortedText = sortLines(text);
+                    session.setText(path, sortedText, callback);
+                });
+            }
+        });
     };
 });

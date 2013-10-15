@@ -7,7 +7,6 @@
 var debug = false;
 
 require.config({
-    //baseUrl: "js",
     paths: {
         "zed": "js/sandbox/interface/zed"
     },
@@ -35,60 +34,10 @@ function handleApiResponse(event) {
     delete waitingForReply[data.replyTo];
 }
 
-if(location.search) {
-
-    require(["js/lib/custom_command"], function(custom_command) {
-        $("body").empty();
-        $("body").append('Plugin URL: <input id="url" value="plugin/" size="50"/><br/>');
-        $("body").append('<input type="checkbox" id="command" value="yes"/> Command<br/>')
-        $("body").append('<div id="code" style="width: 100%; height: 200px;"></div><br/>');
-        $("body").append('<button id="test">Test</button><br/>');
-        $("body").append('<textarea id="output" rows="10" cols="60">Output here</textarea>');
-
-        var code = ace.edit("code");
-        code.session.mode = {name: "Plain Text"};
-
-        $(function() {
-            localStorage.url && $("#url").val(localStorage.url);
-            localStorage.code && code.setValue(localStorage.code);
-            localStorage.command && $("#command").attr("checked", "checked");
-
-            $("#test").click(function(event) {
-                localStorage.url = $("#url").val();
-                localStorage.code = code.getValue();
-                localStorage.command = $("#command").is(":checked");
-                if(localStorage.command) {
-                    postMessage({id: 1, url: localStorage.url, data: custom_command.buildCustomCommandRequest(code.session) }, "*");
-                } else {
-                    postMessage({id: 1, url: localStorage.url, options: {}, content: localStorage.code}, "*");
-                }
-                event.preventDefault();
-            });
-            window.addEventListener('message', function(event) {
-                var data = event.data;
-                var result = data.result;
-                if(event.data.replyTo) {
-                    if(data.err) {
-                        result = data.err;
-                    }
-                    if(result.length) {
-                        custom_command.applyInstructions(code, result);
-                    }
-                    if(typeof result === "object") {
-                        result = JSON.stringify(result, null, 4);
-                    }
-                    $("#output").val(result);
-                }
-            });
-        });
-    });
-}
-
 window.addEventListener('message', function(event) {
     var data = event.data;
     var id = data.id;
     var url = data.url;
-    var options = data.options;
     var content = data.content;
 
     if(data.replyTo) {
@@ -100,28 +49,18 @@ window.addEventListener('message', function(event) {
 
     require([url], function(fn) {
         source = event.source;
-        if(options)  {
-            fn(options, content, function(err, result) {
-                var message = {replyTo: id, err: err, result: result};
-                if(debug) {
-                    console.log(message);
-                }
-                event.source.postMessage(message, "*");
-            });
-        } else {
-            fn(data.data, function(err, result) {
-                var message = {replyTo: id, err: err, result: result};
-                if(debug) {
-                    console.log(message);
-                }
-                event.source.postMessage(message, "*");
-            });
-        }
+        fn(data.data, function(err, result) {
+            var message = {replyTo: id, err: err, result: result};
+            if(debug) {
+                console.log(message);
+            }
+            event.source.postMessage(message, "*");
+        });
     });
 });
 </script>
 </head>
 <body>
-<a href="?test">Click here to switch to test mode</a>
+This is a sandbox
 </body>
 </html>

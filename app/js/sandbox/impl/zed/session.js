@@ -84,7 +84,7 @@ define(function(require, exports, module) {
             var cursorPos = session.selection.getCursor();
 
             session.replace(rangify(range), text);
-            
+
             session.selection.clearSelection();
             session.selection.moveCursorToPosition(cursorPos);
             callback();
