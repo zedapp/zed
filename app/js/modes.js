@@ -43,6 +43,9 @@ define(function(require, exports, module) {
 
     function loadMode(path, callback) {
         settingsfs.readFile(path, function(err, text) {
+            if(err) {
+                return callback && callback(err);
+            }
             try {
                 var json = JSON.parse(text);
                 var filename = path.split("/")[2];

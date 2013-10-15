@@ -1,7 +1,5 @@
 /*global define, chrome, _ */
 define(function(require, exports, module) {
-
-
     return function(namespace, callback) {
         namespace = namespace + "|";
 
