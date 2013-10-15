@@ -51,7 +51,7 @@ define(function(require, exports, module) {
             });
         } else if (url.indexOf("syncfs:") === 0) {
             require(["./fs/sync"], function(syncfs) {
-                syncfs(function(err, io) {
+                syncfs("notes", function(err, io) {
                     setupMethods(io);
                 });
             });

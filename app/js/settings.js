@@ -8,7 +8,6 @@ define(function(require, exports, module) {
 
     var defaultSettings = JSON.parse(require("text!../settings/settings.default.json"));
     var userSettings = {};
-    var userCommands = [];
 
     exports.init = function() {
         settingsfs.watchFile("/settings.user.json", loadSettings);
@@ -39,6 +38,6 @@ define(function(require, exports, module) {
                 eventbus.emit("settingschanged", exports);
             } catch(e) {}
         });
-        
+
     }
 });
