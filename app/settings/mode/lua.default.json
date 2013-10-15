@@ -2,8 +2,14 @@
     "name": "Lua",
     "highlighter": "ace/mode/lua",
     "extensions": ["lua"],
-    
-    "tool:check": {
-        "scriptUrl": "plugin/check/lua.js"
+
+    "commands": {
+        "Tools:Check": {
+            "scriptUrl": "plugin/check/lua.js"
+        }
+    },
+
+    "events": {
+        "change": ["Tools:Check"]
     }
 }

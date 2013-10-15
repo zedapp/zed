@@ -2,8 +2,14 @@
     "name": "Go",
     "highlighter": "ace/mode/golang",
     "extensions": ["go"],
-    
-    "tool:ctags": {
-        "scriptUrl": "plugin/ctags/go.js"
+
+    "commands": {
+        "Tools:CTags": {
+            "scriptUrl": "plugin/ctags/go.js"
+        }
+    },
+
+    "events": {
+        "change": ["Tools:CTags"]
     }
 }

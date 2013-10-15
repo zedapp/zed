@@ -43,8 +43,8 @@ define(function(require, exports, module) {
             commands.push({
                 name: cmd,
                 bindKey: bindKey,
-                exec: function(editor, args) {
-                    return command.exec(cmd, editor, args);
+                exec: function(edit, args) {
+                    return command.exec(cmd, edit, edit.getSession(), args);
                 },
                 multiSelectAction: c.multiSelectAction,
                 readOnly: c.readOnly
@@ -138,7 +138,7 @@ define(function(require, exports, module) {
             multiSelectAction: "forEach"
         }, {
             name: "inserttext",
-            exec: function(editor, args) {
+            exec: function(editor, session, args) {
                 editor.insert(lang.stringRepeat(args.text || "", args.times || 1));
             },
             multiSelectAction: "forEach"

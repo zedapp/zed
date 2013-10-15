@@ -34,8 +34,8 @@ define(function(require, exports, module) {
         }
     }
 
-    return function(options, content, callback) {
-        beautify(function(content) {
+    return function(data, callback) {
+        beautify(data.path, function(content) {
             var width = 80;
             var lines = content.split("\n");
 

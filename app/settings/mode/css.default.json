@@ -3,17 +3,18 @@
     "highlighter": "ace/mode/css",
     "extensions": ["css"],
 
-    "command:Tools:Beautify": {
-        "scriptUrl": "plugin/beautify/css.js"
+    "commands": {
+        "Tools:Beautify": {
+            "scriptUrl": "plugin/beautify/css.js"
+        },
+        "Tools:Check": {
+            "scriptUrl": "plugin/check/css.js"
+        },
+        "Tools:CTags": {
+            "scriptUrl": "plugin/ctags/css.js"
+        }
     },
-
-    "command:Tools:Check": {
-        "scriptUrl": "plugin/check/css.js"
-    },
-
-    "command:Tools:CTags": {
-        "scriptUrl": "plugin/ctags/css.js"
-    },
-
-    "on:textchange": ["Tools:Check", "Tools:CTags"]
+    "events": {
+        "change": ["Tools:Check", "Tools:CTags"]
+    }
 }

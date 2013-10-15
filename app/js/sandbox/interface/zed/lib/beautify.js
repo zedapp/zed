@@ -1,9 +1,9 @@
 define(function(require, exports, module) {
-    var editor = require("zed/editor");
-    var async = require("zed/lib/async");
+    var session = require("zed/session");
 
-    return function(beautifier, callback) {
-        async.doGets(editor, ["getSelectionRange", "getCursorPosition", "getScrollPosition"], function(selectionRange, cursorPosition, scrollPosition) {
+    return function(path, beautifier, callback) {
+
+        session.getSelectionRange(path, function(err, selectionRange) {
             var wholeDocument = false;
             if(selectionRange.start.row === selectionRange.end.row &&
                selectionRange.start.column === selectionRange.end.column) {
@@ -16,22 +16,17 @@ define(function(require, exports, module) {
             function beautifyText(err, text) {
                 var beautified = beautifier(text);
 
-                function restorePos() {
-                    editor.setScrollPosition(scrollPosition, function() {
-                        editor.setCursorPosition(cursorPosition, callback);
-                    });
-                }
                 if(wholeDocument) {
-                    editor.setText(beautified, restorePos);
+                    session.setText(path, beautified, callback);
                 } else {
-                    editor.replaceRange(selectionRange, beautified, restorePos);
+                    session.replaceRange(path, selectionRange, beautified, callback);
                 }
             }
 
             if(wholeDocument) {
-                editor.getText(beautifyText);
+                session.getText(path, beautifyText);
             } else {
-                editor.getTextRange(selectionRange, beautifyText);
+                session.getTextRange(path, selectionRange, beautifyText);
             }
         });
     };

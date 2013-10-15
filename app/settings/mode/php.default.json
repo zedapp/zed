@@ -2,6 +2,8 @@
     "name": "PHP",
     "highlighter": "ace/mode/php",
     "extensions": ["php", "php4"],
-    
-    "snippet:fn": "function ${1:name}() {\n\t${2:// Your code here}\n}"
+
+    "snippets": {
+        "fn": "function ${1:name}() {\n\t${2:// Your code here}\n}"
+    }
 }

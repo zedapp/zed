@@ -2,8 +2,15 @@
     "name": "LogiQL",
     "highlighter": "ace/mode/logiql",
     "extensions": ["logic", "lql"],
-    "tool:ctags": {
-        "scriptUrl": "plugin/ctags/logiql.js"
+    "commands": {
+        "Tools:CTags": {
+            "scriptUrl": "plugin/ctags/logiql.js"
+        }
     },
-    "snippet:module": "block(`${1:mymodule}) {\n\texport(`{\n\t\t\n\t}),\n\tclauses(`{\n\t\t${2}\n\t})\n} <-- ."
+    "events": {
+        "change": ["Tools:CTags"]
+    },
+    "snippets": {
+        "module": "block(`${1:mymodule}) {\n\texport(`{\n\t\t\n\t}),\n\tclauses(`{\n\t\t${2}\n\t})\n} <-- ."
+    }
 }

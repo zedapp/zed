@@ -1,12 +1,13 @@
 /*global define*/
 define(function(require, exports, module) {
-    var editor = require("zed/editor");
+    var session = require("zed/session");
 
     var coffee = require("../preview/coffee-script");
     var lineRegex = /on line (\d+)/;
 
     return function(data, callback) {
-        editor.getText(function(err, text) {
+        var path = data.path;
+        session.getText(path, function(err, text) {
             try {
                 coffee.compile(text);
             } catch(e) {
@@ -14,15 +15,14 @@ define(function(require, exports, module) {
                 var match = lineRegex.exec(message);
                 if(match) {
                     var line = parseInt(match[1], 10);
-                    return editor.setAnnotations([{
+                    return session.setAnnotations(path, [{
                         row: line,
                         text: message.slice(0, match.index),
                         type: "error"
                     }], callback);
                 }
             }
-            editor.setAnnotations([], callback);
+            session.setAnnotations(path, [], callback);
         });
     };
-
 });

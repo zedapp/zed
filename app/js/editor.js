@@ -265,16 +265,16 @@ define(function(require, exports, module) {
     }
 
     command.define("Navigate:Line", {
-        exec: function(edit) {
-            command.exec("Navigate:Goto", edit, ":");
+        exec: function(edit, session) {
+            command.exec("Navigate:Goto", edit, session, ":");
         },
         readOnly: true
     });
 
     command.define("Navigate:Path Under Cursor", {
-        exec: function(edit) {
+        exec: function(edit, session) {
             var path = editor.getPathUnderCursor();
-            command.exec("Navigate:Goto", edit, path);
+            command.exec("Navigate:Goto", edit, session, path);
         }
     });
 
@@ -426,7 +426,7 @@ define(function(require, exports, module) {
 
     // CURSOR
     command.define("Cursor:Up", {
-        exec: function(editor, args) {
+        exec: function(editor, session, args) {
             editor.navigateUp(args.times);
         },
         multiSelectAction: "forEach",
@@ -434,7 +434,7 @@ define(function(require, exports, module) {
     });
 
     command.define("Cursor:Down", {
-        exec: function(editor, args) {
+        exec: function(editor, session, args) {
             editor.navigateDown(args.times);
         },
         multiSelectAction: "forEach",
@@ -482,7 +482,7 @@ define(function(require, exports, module) {
     });
 
     command.define("Cursor:Left", {
-        exec: function(editor, args) {
+        exec: function(editor, session, args) {
             editor.navigateLeft(args.times);
         },
         multiSelectAction: "forEach",
@@ -498,7 +498,7 @@ define(function(require, exports, module) {
     });
 
     command.define("Cursor:Right", {
-        exec: function(editor, args) {
+        exec: function(editor, session, args) {
             editor.navigateRight(args.times);
         },
         multiSelectAction: "forEach",
@@ -792,8 +792,8 @@ define(function(require, exports, module) {
 
     // FIND
     command.define("Find:Find", {
-        exec: function(edit) {
-            command.exec("Navigate:Goto", edit, ":/");
+        exec: function(edit, session) {
+            command.exec("Navigate:Goto", edit, session, ":/");
         },
         readOnly: true
     });

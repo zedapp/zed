@@ -1,6 +1,6 @@
 /* global define */
 define(function(require, exports, module) {
-    var preview = require("../../../tool/preview");
+    var preview = require("../../../preview");
 
     return {
         showPreview: function(html, callback) {

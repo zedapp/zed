@@ -3,13 +3,17 @@
     "highlighter": "ace/mode/json",
     "extensions": ["json"],
 
-    "command:Tools:Beautify": {
-        "scriptUrl": "plugin/beautify/javascript.js"
+    "commands": {
+        "Tools:Beautify": {
+            "scriptUrl": "plugin/beautify/javascript.js"
+        },
+
+        "Tools:Check": {
+            "scriptUrl": "plugin/check/json.js"
+        }
     },
 
-    "command:Tools:Check": {
-        "scriptUrl": "plugin/check/json.js"
-    },
-
-    "on:textchange": ["Tools:Check"]
+    "events": {
+        "change": ["Tools:Check"]
+    }
 }

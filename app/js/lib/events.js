@@ -1,16 +1,16 @@
 define(function(require, exports, module) {
-    var EventEmitter = exports.EventEmitter = function (checked) {
+    var EventEmitter = exports.EventEmitter = function(checked) {
         this._events = {};
         this._checked = checked;
     };
-    
+
     var toString = Object.prototype.toString;
-    
-    var isArray = Array.isArray || function (obj) {
-        return toString.call(obj) === '[object Array]';
-    };
-    
-    var _indexOf = function (arr, el) {
+
+    var isArray = Array.isArray || function(obj) {
+            return toString.call(obj) === '[object Array]';
+        };
+
+    var _indexOf = function(arr, el) {
         if (arr.indexOf) {
             return arr.indexOf(el);
         }
@@ -21,47 +21,31 @@ define(function(require, exports, module) {
         }
         return -1;
     };
-    
+
     var defaultMaxListeners = 10;
-    
+
     EventEmitter.prototype.setMaxListeners = function(n) {
         this._events.maxListeners = n;
     };
-    
+
     EventEmitter.prototype.declare = function(type) {
         this._events[type] = [];
     };
-    
+
     EventEmitter.prototype.emit = function(type) {
         //console.log("Emitting", type);
-        // If there is no 'error' event listener then throw.
-        if (type === 'error') {
-            if (!this._events || !this._events.error ||
-                (isArray(this._events.error) && !this._events.error.length))
-                {
-                    if (arguments[1] instanceof Error) {
-                        throw arguments[1]; // Unhandled 'error' event
-                    } else {
-                        throw new Error("Uncaught, unspecified 'error' event.");
-                    }
-                    return false;
-                }
-        }
-    
         var handler = this._events[type];
-        
-        if(!handler && this._checked)
-            throw Error("Event not declared: " + type);
-        else if(!handler)
-            handler = this._events[type] = [];
-    
+
+        if (!handler && this._checked) throw Error("Event not declared: " + type);
+        else if (!handler) handler = this._events[type] = [];
+
         var args = Array.prototype.slice.call(arguments, 1);
 
         var listeners = handler.slice();
         for (var i = 0, l = listeners.length; i < l; i++) {
             listeners[i].apply(this, args);
         }
-        return true;
+        return listeners.length > 0;
     };
 
     EventEmitter.prototype.addListener = function(type, listener) {
@@ -72,7 +56,7 @@ define(function(require, exports, module) {
         if (!this._events[type] && this._checked) {
             // Optimize the case of one listener. Don't need the extra array object.
             throw new Error("Event not declared: " + type);
-        } else if(!this._events[type]) {
+        } else if (!this._events[type]) {
             this._events[type] = [];
         }
         // Check for listener leak
@@ -87,8 +71,8 @@ define(function(require, exports, module) {
             if (m && m > 0 && this._events[type].length > m) {
                 this._events[type].warned = true;
                 console.error('(node) warning: possible EventEmitter memory ' +
-                              'leak detected. %d listeners added. ' +
-                                  'Use emitter.setMaxListeners() to increase limit.',
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
                 this._events[type].length);
                 console.trace();
             }
@@ -99,9 +83,9 @@ define(function(require, exports, module) {
 
         return this;
     };
-    
+
     EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-    
+
     EventEmitter.prototype.once = function(type, listener) {
         var self = this;
         self.on(type, function g() {
@@ -111,7 +95,7 @@ define(function(require, exports, module) {
 
         return this;
     };
-    
+
     EventEmitter.prototype.removeListener = function(type, listener) {
         if ('function' !== typeof listener) {
             throw new Error('removeListener only takes instances of Function');
@@ -124,17 +108,16 @@ define(function(require, exports, module) {
 
         var i = _indexOf(list, listener);
         if (i < 0) return this;
-            list.splice(i, 1);
+        list.splice(i, 1);
         return this;
     };
-    
+
     EventEmitter.prototype.removeAllListeners = function(type) {
-      if (type && this._events && this._events[type])
-          this._events[type] = [];
-      return this;
+        if (type && this._events && this._events[type]) this._events[type] = [];
+        return this;
     };
-    
+
     EventEmitter.prototype.listeners = function(type) {
-      return this._events[type];
+        return this._events[type];
     };
 });

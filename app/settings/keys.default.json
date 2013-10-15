@@ -269,7 +269,7 @@
         "mac": "Command-Shift-B",
         "win": "Ctrl-Shift-B"
     },
-    "Tools:Preview": {
+    "Split:Preview": {
         "mac": "Command-P",
         "win": "Ctrl-P"
     },

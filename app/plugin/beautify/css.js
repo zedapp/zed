@@ -3,6 +3,6 @@ define(function(require, exports, module) {
     var beautify = require("zed/lib/beautify");
 
     return function(data, callback) {
-        beautify(beautifier, callback);
+        beautify(data.path, beautifier, callback);
     };
 });

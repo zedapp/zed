@@ -66,8 +66,11 @@ define(function(require, exports, module) {
         return commands[path];
     };
 
-    exports.exec = function(path) {
+    exports.exec = function(path, edit, session, otherArgs) {
         var def = exports.lookup(path);
+        if(!session.getTokenAt) { // Check if this is a session object
+            console.error("Did not pass in session to exec", arguments);
+        }
         def.exec.apply(null, _.toArray(arguments).slice(1));
     };
 
@@ -115,7 +118,7 @@ define(function(require, exports, module) {
                     onSelect: function(cmd) {
                         recentCommands[cmd] = Date.now();
                         state.set("recent.commands", recentCommands);
-                        exports.exec(cmd, edit);
+                        exports.exec(cmd, edit, edit.getSession());
                     }
                 });
             });

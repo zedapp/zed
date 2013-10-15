@@ -10,35 +10,40 @@ shortened version of `/mode/javascript.default.json` looks like:
         "highlighter": "ace/mode/javascript",
         "extensions": ["js"],
 
-        "command:Tools:CTags": {
-            "scriptUrl": "plugin/ctags/javascript.js"
-        },
-
-        "command:Tools:Check": {
-            "scriptUrl": "plugin/check/javascript.js",
-            "options": {
-                "undef": true,
-                "unused": true,
-                "es5": true,
-                "esnext": true,
-                "devel": true,
-                "browser": true,
-                "node": true,
-                "laxcomma": true,
-                "laxbreak": true,
-                "lastsemic": true,
-                "onevar": false,
-                "passfail": false,
-                "maxerr": 100,
-                "expr": true,
-                "multistr": true,
-                "globalstrict": true
+        "commands": {
+            "Tools:CTags": {
+                "scriptUrl": "plugin/ctags/javascript.js"
+            },
+            "Tools:Check": {
+                "scriptUrl": "plugin/check/javascript.js",
+                "options": {
+                    "undef": true,
+                    "unused": true,
+                    "es5": true,
+                    "esnext": true,
+                    "devel": true,
+                    "browser": true,
+                    "node": true,
+                    "laxcomma": true,
+                    "laxbreak": true,
+                    "lastsemic": true,
+                    "onevar": false,
+                    "passfail": false,
+                    "maxerr": 100,
+                    "expr": true,
+                    "multistr": true,
+                    "globalstrict": true
+                }
             }
         },
 
-        "on:textchange": ["Tools:CTags", "Tools:Check"],
+        "events": {
+            "change": ["Tools:CTags", "Tools:Check"]
+        },
 
-        "snippet:log": "console.log(${1})"
+        "snippets": {
+            "log": "console.log(${1})"
+        }
     }
 
 The `name` should be self explanatory. The `highlighter` is a tricky one, for

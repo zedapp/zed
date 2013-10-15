@@ -3,7 +3,9 @@
     "highlighter": "ace/mode/xml",
     "extensions": ["xml"],
 
-    "command:Tools:Beautify": {
-        "scriptUrl": "plugin/beautify/html.js"
+    "commands": {
+        "Tools:Beautify": {
+            "scriptUrl": "plugin/beautify/html.js"
+        }
     }
 }

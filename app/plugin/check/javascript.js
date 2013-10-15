@@ -32,7 +32,7 @@
 
 define(function(require, exports, module) {
     var lint = require("./jshint.js");
-    var editor = require("zed/editor");
+    var session = require("zed/session");
 
     function startRegex(arr) {
         return RegExp("^(" + arr.join("|") + ")");
@@ -74,7 +74,8 @@ define(function(require, exports, module) {
 
 
     return function(data, callback) {
-        editor.getText(function(err, value) {
+        var path = data.path;
+        session.getText(path, function(err, value) {
             value = value.replace(/^#!.*\n/, "\n");
             if (!value) {
                 return callback(null, []);
@@ -142,7 +143,7 @@ define(function(require, exports, module) {
                     raw: raw
                 });
             }
-            editor.setAnnotations(errors, callback);
+            session.setAnnotations(path, errors, callback);
         });
     };
 });

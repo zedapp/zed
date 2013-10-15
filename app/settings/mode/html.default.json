@@ -3,11 +3,15 @@
     "highlighter": "ace/mode/html",
     "extensions": ["html"],
 
-    "command:Tools:Beautify": {
-        "scriptUrl": "plugin/beautify/html.js"
+    "commands": {
+        "Tools:Beautify": {
+            "scriptUrl": "plugin/beautify/html.js"
+        },
+        "Tools:Preview": {
+            "scriptUrl": "plugin/preview/html.js"
+        }
     },
-
-    "tool:preview": {
-        "scriptUrl": "plugin/preview/html.js"
+    "events": {
+        "preview": ["Tools:Preview"]
     }
 }

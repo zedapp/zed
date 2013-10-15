@@ -2,14 +2,19 @@
     "name": "CoffeeScript",
     "highlighter": "ace/mode/coffee",
     "extensions": ["cs", "coffee"],
-    "command:Tools:Check": {
-        "scriptUrl": "plugin/check/coffee.js"
+    "commands": {
+        "Tools:Check": {
+            "scriptUrl": "plugin/check/coffee.js"
+        },
+        "Tools:CTags": {
+            "scriptUrl": "plugin/ctags/coffee.js"
+        },
+        "Tools:Preview": {
+            "scriptUrl": "plugin/preview/coffee.js"
+        }
     },
-    "tool:preview": {
-        "scriptUrl": "plugin/preview/coffee.js"
-    },
-    "command:Tools:CTags": {
-        "scriptUrl": "plugin/ctags/coffee.js"
-    },
-    "on:textchange": ["Tools:Check", "Tools:CTags"]
+    "events": {
+        "change": ["Tools:Check", "Tools:CTags"],
+        "preview": ["Tools:Preview"]
+    }
 }

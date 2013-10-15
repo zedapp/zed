@@ -1,5 +1,7 @@
 Zed Cheatsheet
 ==============
+Zed is heavily keyboard oriented, here are the keys you'll need to get started,
+for more read the manual in the Manual project:
 
 * `Command-E`/`Ctrl-E`: Open or create a new file. Inside the picker:
     * In an empty box, press space to complete the directory of the currently
@@ -30,12 +32,3 @@ Zed Cheatsheet
     * `Shift-Tab`/`Down`: Select previous completion
     * `Enter`: Pick selected completion
     * `Esc`: Close completion box
-
-Settings
---------
-Change your settings (synchronized between all your browsers via Google Chrome
-sync) via the "Settings" project (or `Cmd-,`/`Ctrl-,`).
-
-Help
-----
-Help is availble in the "Help" project.

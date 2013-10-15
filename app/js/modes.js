@@ -22,6 +22,25 @@ define(function(require, exports, module) {
         };
     }
 
+    function superExtend(dest, source) {
+        if(_.isArray(dest)) {
+            return dest.concat(source);
+        } else if(_.isObject(dest)) {
+            for(var p in source) {
+                if(source.hasOwnProperty(p)) {
+                    if(!dest[p]) {
+                        dest[p] = source[p];
+                    } else {
+                        dest[p] = superExtend(dest[p], source[p]);
+                    }
+                }
+            }
+            return dest;
+        } else {
+            return source;
+        }
+    }
+
     function loadMode(path, callback) {
         settingsfs.readFile(path, function(err, text) {
             try {
@@ -30,20 +49,28 @@ define(function(require, exports, module) {
                 var parts = filename.split(".");
                 var language = parts[0];
                 var type = parts[1];
+                var mode;
                 if (type === "default") {
                     json.language = language;
                     // Overwrite existing mode
-                    modes[language] = json;
+                    mode = json;
                 } else if (type === "user") {
-                    var mode = modes[language];
-                    Object.keys(json).forEach(function(key) {
-                        mode[key] = json[key];
-                    });
+                    mode = superExtend(modes[language], json);
                 }
+                // Normalize
+                if(!mode.events) {
+                    mode.events = {};
+                }
+                if(!mode.commands) {
+                    mode.commands = {};
+                }
+                if(!mode.snippets) {
+                    mode.snippets = {};
+                }
+                modes[language] = mode;
             } catch (e) {
                 console.error("Error loading mode:", e);
             } finally {
-                console.log("Loaded mode from", path);
                 callback && callback();
             }
         });
@@ -90,43 +117,39 @@ define(function(require, exports, module) {
             var mode = modes[language];
 
             command.define("Editor:Mode:" + mode.name, {
-                exec: function(edit) {
-                    exports.setSessionMode(edit.getSession(), mode);
+                exec: function(edit, session) {
+                    exports.setSessionMode(session, mode);
                 },
                 readOnly: true
             });
 
-            Object.keys(mode).forEach(function(key) {
-                if (key.indexOf("command:") === 0) {
-                    var name = key.substring("command:".length);
-                    var cmd = mode[key];
-                    var existingCommand = command.lookup(name);
-                    if (!existingCommand) {
-                        var modeCommands = {};
-                        modeCommands[mode.name] = cmd;
-                        var commandSpec = {
-                            exec: function(edit) {
-                                require(["./sandbox"], function(sandbox) {
-                                    var session = edit.getSession();
-                                    var cmd = commandSpec.modeCommand[session.mode.name];
-                                    if (cmd) {
-                                        sandbox.execCommand(cmd, edit.getSession(), function(err) {
-                                            if (err) {
-                                                return console.error(err);
-                                            }
-                                        });
-                                    } else {
-                                        eventbus.emit("sessionactivityfailed", session, "Command " + name + " not supported for this mode");
-                                    }
-                                });
-                            },
-                            readOnly: true,
-                            modeCommand: modeCommands
-                        };
-                        command.define(name, commandSpec);
-                    } else {
-                        existingCommand.modeCommand[mode.name] = cmd;
-                    }
+            Object.keys(mode.commands).forEach(function(name) {
+                var cmd = mode.commands[name];
+                var existingCommand = command.lookup(name);
+                if (!existingCommand) {
+                    var modeCommands = {};
+                    modeCommands[mode.language] = cmd;
+                    var commandSpec = {
+                        exec: function(edit, session) {
+                            require(["./sandbox"], function(sandbox) {
+                                var cmd = commandSpec.modeCommand[session.mode.language];
+                                if (cmd) {
+                                    sandbox.execCommand(cmd, session, function(err) {
+                                        if (err) {
+                                            return console.error(err);
+                                        }
+                                    });
+                                } else {
+                                    eventbus.emit("sessionactivityfailed", session, "Command " + name + " not supported for this mode");
+                                }
+                            });
+                        },
+                        readOnly: true,
+                        modeCommand: modeCommands
+                    };
+                    command.define(name, commandSpec);
+                } else {
+                    existingCommand.modeCommand[mode.language] = cmd;
                 }
             });
         });
@@ -142,13 +165,13 @@ define(function(require, exports, module) {
             return;
         }
         var path = session.filename;
-        var commandNames = mode["on:" + eventname];
+        var commandNames = mode.events[eventname];
 
         function runCommands() {
             require(["./editor"], function(editor) {
                 var edit = editor.getActiveEditor();
                 commandNames.forEach(function(commandName) {
-                    command.exec(commandName, edit);
+                    command.exec(commandName, edit, session);
                 });
             });
         }
@@ -164,25 +187,25 @@ define(function(require, exports, module) {
                 runCommands();
             }
         }
+
+        return !!commandNames;
     }
 
     function declareModeEvents() {
         eventbus.on("sessionchanged", function(session) {
-            require(["./editor"], function(editor) {
-                if(editor.getActiveSession() === session) {
-                    triggerSessionCommandEvent(session, "textchange", 1000);
-                }
-            });
+            triggerSessionCommandEvent(session, "change", 1000);
         });
         eventbus.on("modeset", function(session) {
-            require(["./editor"], function(editor) {
-                if(editor.getActiveSession() === session) {
-                    triggerSessionCommandEvent(session, "textchange");
-                }
-            });
+            triggerSessionCommandEvent(session, "change");
         });
-        eventbus.on("switchsession", function(session) {
-            triggerSessionCommandEvent(session, "textchange");
+        eventbus.on("preview", function(session) {
+            var didPreview = triggerSessionCommandEvent(session, "preview");
+            if(!didPreview) {
+                require(["./preview"], function(preview) {
+                    preview.showPreview("Not supported.");
+                    eventbus.emit("sessionactivityfailed", session, "No preview available");
+                });
+            }
         });
     }
 

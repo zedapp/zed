@@ -3,48 +3,48 @@
     "highlighter": "ace/mode/javascript",
     "extensions": ["js"],
 
-    "tool:beautify": {
-        "scriptUrl": "plugin/beautify/javascript.js"
-    },
+    "commands": {
+        "Tools:Check": {
+            "scriptUrl": "plugin/check/javascript.js",
+            "options": {
+                "undef": true,
+                "unused": true,
+                "es5": true,
+                "esnext": true,
+                "devel": true,
+                "browser": true,
+                "node": true,
+                "laxcomma": true,
+                "laxbreak": true,
+                "lastsemic": true,
+                "onevar": false,
+                "passfail": false,
+                "maxerr": 100,
+                "expr": true,
+                "multistr": true,
+                "globalstrict": true
+            }
+        },
+        "Tools:CTags": {
+            "scriptUrl": "plugin/ctags/javascript.js"
+        },
 
-    "command:Tools:Check": {
-        "scriptUrl": "plugin/check/javascript.js",
-        "options": {
-            "undef": true,
-            "unused": true,
-            "es5": true,
-            "esnext": true,
-            "devel": true,
-            "browser": true,
-            "node": true,
-            "laxcomma": true,
-            "laxbreak": true,
-            "lastsemic": true,
-            "onevar": false,
-            "passfail": false,
-            "maxerr": 100,
-            "expr": true,
-            "multistr": true,
-            "globalstrict": true
+        "Tools:Beautify": {
+            "scriptUrl": "plugin/beautify/javascript.js"
         }
     },
 
-    "command:Tools:CTags": {
-        "scriptUrl": "plugin/ctags/javascript.js"
+    "events": {
+        "change": ["Tools:Check", "Tools:CTags"]
     },
 
-    "command:Tools:Beautify": {
-        "scriptUrl": "plugin/beautify/javascript.js"
-    },
-
-    "on:textchange": ["Tools:Check", "Tools:CTags"],
-
-
-    "snippet:log": "console.log(${1})",
-    "snippet:def": "define(function(require, exports, module) {\n\t${1}\n});",
-    "snippet:fn": "function ${1}(${2}) {\n\t${3}\n}",
-    "snippet:foreach": "for(var ${1:i} = 0; ${1:i} < ${2:array}.length; ${1:i}++) {\n\tvar ${3:item} = ${2:array}[${1:i}];\n\t${4}\n}",
-    "snippet:forEach": "forEach(function(${0:el}) {\n\t${1}\n});",
-    "snippet:setTimeout": "setTimeout(function() {\n\t${1}\n}, ${2:0})",
-    "snippet:iterkeys": "Object.keys(${1:obj}).forEach(function(${2:key}) {\n\t${3}\n});"
+    "snippets": {
+        "log": "console.log(${1})",
+        "def": "define(function(require, exports, module) {\n\t${1}\n});",
+        "fn": "function ${1}(${2}) {\n\t${3}\n}",
+        "foreach": "for(var ${1:i} = 0; ${1:i} < ${2:array}.length; ${1:i}++) {\n\tvar ${3:item} = ${2:array}[${1:i}];\n\t${4}\n}",
+        "forEach": "forEach(function(${0:el}) {\n\t${1}\n});",
+        "setTimeout": "setTimeout(function() {\n\t${1}\n}, ${2:0})",
+        "iterkeys": "Object.keys(${1:obj}).forEach(function(${2:key}) {\n\t${3}\n});"
+    }
 }

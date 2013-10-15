@@ -62,13 +62,12 @@ define(function(require, exports, module) {
     };
 
     command.define("Navigate:Goto", {
-        exec: function(edit, text) {
+        exec: function(edit, session, text) {
             if(typeof text !== "string") {
                 text = undefined;
             }
             var currentPos = edit.getCursorPosition();
             var selectionRange = edit.getSelectionRange();
-            var session = edit.getSession();
 
             function filterSymbols(phrase, path) {
                 var tags = ctags.getCTags(path);
@@ -202,29 +201,29 @@ define(function(require, exports, module) {
     });
 
     command.define("Navigate:Path Under Cursor", {
-        exec: function(edit) {
+        exec: function(edit, session) {
             var path = editor.getPathUnderCursor();
-            command.exec("Navigate:Goto", edit, path);
+            command.exec("Navigate:Goto", edit, session, path);
         },
         readOnly: true
     });
 
     command.define("Navigate:Lookup Symbol", {
-        exec: function(edit) {
-            command.exec("Navigate:Goto", edit, "@");
+        exec: function(edit, session) {
+            command.exec("Navigate:Goto", edit, session, "@");
         }
     });
 
     command.define("Navigate:Lookup Symbol In File", {
-        exec: function(edit) {
-            command.exec("Navigate:Goto", edit, ":@");
+        exec: function(edit, session) {
+            command.exec("Navigate:Goto", edit, session, ":@");
         }
     });
 
     command.define("Navigate:Lookup Symbol Under Cursor", {
-        exec: function(edit) {
+        exec: function(edit, session) {
             var ident = editor.getIdentifierUnderCursor();
-            command.exec("Navigate:Goto", edit, "@" + ident);
+            command.exec("Navigate:Goto", edit, session, "@" + ident);
         }
     });
 

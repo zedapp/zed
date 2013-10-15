@@ -1,6 +1,6 @@
 /*global define*/
 define(function(require, exports, module) {
-    var editor = require("zed/editor");
+    var session = require("zed/session");
     var ctags = require("zed/ctags");
 
     var PRED_REGEX = /([a-zA-Z0-9_\-\$]+)\s*[\(\[]([a-zA-Z0-9_\-\$]+(,\s*)?)*[\)\]].*\->/g;
@@ -10,7 +10,7 @@ define(function(require, exports, module) {
         var match;
         var tags = [];
         var path = data.path;
-        editor.getText(function(err, text) {
+        session.getText(path, function(err, text) {
             // Regular old functions
             while (match = PRED_REGEX.exec(text)) {
                 tags.push({

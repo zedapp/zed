@@ -1,6 +1,6 @@
 /*global define*/
 define(function(require, exports, module) {
-    var editor = require("zed/editor");
+    var session = require("zed/session");
     var ctags = require("zed/ctags");
 
     var FN_REGEX = /function\s+([a-zA-Z0-9_\-\$]+)\s*\(/g;
@@ -10,8 +10,8 @@ define(function(require, exports, module) {
     return function(data, callback) {
         var match;
         var tags = [];
-        editor.getText(function(err, text) {
-            var path = data.path;
+        var path = data.path;
+        session.getText(path, function(err, text) {
             // Regular old functions
             while(match = FN_REGEX.exec(text)) {
                 //console.log(match);

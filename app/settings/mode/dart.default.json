@@ -3,7 +3,9 @@
     "highlighter": "ace/mode/dart",
     "extensions": ["dart"],
 
-    "command:Tools:Beautify": {
-        "scriptUrl": "plugin/beautify/javascript.js"
+    "commands": {
+        "Tools:Beautify": {
+            "scriptUrl": "plugin/beautify/javascript.js"
+        }
     }
 }
