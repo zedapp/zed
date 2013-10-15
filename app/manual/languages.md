@@ -51,30 +51,18 @@ now Zed won't offer real extensibility at this level, but only support any of
 the current [ACE](http://ace.ajax.org) highlighters. If you want to add one,
 contribute it to ACE and make more people happy.
 
-TODO: This is out of date!
+The `commands` object defines Zed commands specific to this mode. In the example
+two such commands are defined `Tools:CTags` and `Tools:Check`. These are implemented
+as sandboxed scripts and can be invoked like any other command for files using this
+mode.
 
-The `tool:*` settings are used to implement various useful editor features:
+The `events` object allows you to automatically trigger commands on certain events.
+Currently the following events are supported:
 
-* `check`: check this piece of code and give me back an array of errors and
-  warnings (to be marked in the editor's gutter). There's currently
-  implementations for JavasScript (based on JSHint), CSS (based on CSSLint) and
-  JSON.
-* `beautify`: reformat this piece of code.
-* `preview`: render this piece of code into HTML for previewing (think:
-  markdown, Coffeescript Javascript preview).
-* `ctags`: analyze this piece of code and give me back a list of symbols (for
-  navigation and completion)
+* `change`: when the text in a session has changed
+* `preview`: when a preview is requested
 
-In a tool object, you can specify:
+These events only apply to files with this mode, of course.
 
-* a `scriptUrl`, which can be a local path, or a remote URL of a
-  [require.js](http://requirejs.org) module that exports a single function that
-  implements the tool in question and returns the result.
-
-In addition, snippets for completion can be specified with [multiple insertion
-points](http://screencast.com/t/AYCwS0ZKE).
-
-To develop your own tools, you can clone the Zed git repo and look in the
-`/app/plugin` directory for examples. To test them, open `sandbox.html` in your
-browser, which links to a simple playground for testing.
-
+The `snippets` object defines snippets supported in this mode where `${1}` etc. are
+place holders.
