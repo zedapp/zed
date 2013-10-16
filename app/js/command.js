@@ -1,14 +1,19 @@
 /*global define, ace, _, chrome */
 define(function(require, exports, module) {
     "use strict";
+
     var useragent = ace.require("ace/lib/useragent");
     var eventbus = require("./lib/eventbus");
+
     var commands = {};
     var userCommandNames = [];
 
     eventbus.declare("commandsloaded");
 
-    function loadCustomCommands(settingsfs) {
+    /**
+     * Loads globally defined sandboxed commands (in settings:/commands.*.json)
+     */
+    function loadGlobalSandboxedCommands(settingsfs) {
         settingsfs.readFile("/commands.default.json", function(err, commandsStr) {
             var cmds = JSON.parse(commandsStr);
             settingsfs.readFile("/commands.user.json", function(err, commandsStr) {
@@ -41,10 +46,10 @@ define(function(require, exports, module) {
 
     exports.init = function() {
         require(["./fs/settings"], function(settingsfs) {
-            loadCustomCommands(settingsfs);
+            loadGlobalSandboxedCommands(settingsfs);
 
             settingsfs.watchFile("/commands.user.json", function() {
-                loadCustomCommands(settingsfs);
+                loadGlobalSandboxedCommands(settingsfs);
             });
         });
     };

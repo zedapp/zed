@@ -6,7 +6,8 @@ require.config({
     },
 });
 
-require(["text!../manual/cheatsheet.md"], function(manual) {
+/* global ace, $, _ */
+require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
     "use strict";
 
     var useragent = ace.require("ace/lib/useragent");
@@ -39,7 +40,7 @@ require(["text!../manual/cheatsheet.md"], function(manual) {
 
         session_manager.specialDocs['zed:start'] = {
             mode: 'ace/mode/markdown',
-            content: manual
+            content: cheatsheet
         };
 
         _.each(arguments, function(module) {
