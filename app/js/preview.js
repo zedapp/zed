@@ -44,12 +44,14 @@ define(function(require, exports, module) {
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
         previewWrapperEl.attr("class", "preview-vsplit2-right-" + style);
         previewWrapperEl.show();
-        update();
+
 
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
         eventbus.emit("splitchange", "preview-" + style);
+
+        setTimeout(update, 200);
     }
 
     exports.hook = function() {
@@ -85,10 +87,12 @@ define(function(require, exports, module) {
     };
 
     exports.init = function() {
-        previewWrapperEl = $("<div class='preview-vsplit2-right'><iframe id='preview' src='preview.html'>").hide();
-        previewWrapperEl.css("top", "25px");
+        var data = "data:text/html," + require("text!../preview.html");
+        previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><webview id='preview'>").hide();
+        //previewWrapperEl.css("top", "25px");
         $("body").append(previewWrapperEl);
         previewEl = $("#preview");
+        previewEl.attr("src", data);
         /*previewEl.load(function() {
             previewEl[0].contentWindow.postMessage(previewScrollY, "*");
         });*/
