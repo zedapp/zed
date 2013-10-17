@@ -26,26 +26,28 @@ echo "Creating Launchd config file"
 
 TMPCONFIGPATH=/tmp/zed.local.plist
 
-echo '<?xml version="1.0" encoding="UTF-8"?>' > $TMPCONFIGPATH
-echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> $TMPCONFIGPATH
-echo '<plist version="1.0">' >> $TMPCONFIGPATH
-echo '<dict>' >> $TMPCONFIGPATH
-echo '	<key>KeepAlive</key>' >> $TMPCONFIGPATH
-echo '	<dict>' >> $TMPCONFIGPATH
-echo '		<key>SuccessfulExit</key>' >> $TMPCONFIGPATH
-echo '		<false/>' >> $TMPCONFIGPATH
-echo '	</dict>' >> $TMPCONFIGPATH
-echo '	<key>Label</key>' >> $TMPCONFIGPATH
-echo '	<string>zed.local</string>' >> $TMPCONFIGPATH
-echo '	<key>ProgramArguments</key>' >> $TMPCONFIGPATH
-echo '	<array>' >> $TMPCONFIGPATH
-echo "		<string>$INSTALLDIR/zed</string>" >> $TMPCONFIGPATH
-echo '		<string>--local</string>' >> $TMPCONFIGPATH
-echo '	</array>' >> $TMPCONFIGPATH
-echo '	<key>RunAtLoad</key>' >> $TMPCONFIGPATH
-echo '	<true/>' >> $TMPCONFIGPATH
-echo '</dict>' >> $TMPCONFIGPATH
-echo '</plist>' >> $TMPCONFIGPATH
+cat >$TMPCONFIGPATH<<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+	<key>Label</key>
+	<string>zed.local</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>$INSTALLDIR/zed</string>
+		<string>--local</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+</dict>
+</plist>
+EOF
 
 echo "Installing Launchd service"
 launchctl unload $TMPCONFIGPATH 2> /dev/null
