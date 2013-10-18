@@ -1,6 +1,7 @@
-/*global define*/
+/*global define, ace */
 define(function(require, exports, module) {
     "use strict";
+    var Range = ace.require("ace/range").Range;
     var async = require("./lib/async");
     var eventbus = require("./lib/eventbus");
     var project = require("./project");
@@ -98,10 +99,24 @@ define(function(require, exports, module) {
             if(err) {
                 return console.error("Could not load file:", path);
             }
-            var cursor = session.selection.getCursor();
             session.ignoreChange = true;
-            session.setValue(text);
-            session.selection.moveCursorToPosition(cursor);
+
+            // Save scroll/cursor state
+            var scrollTop = session.getScrollTop();
+            var scrollLeft  = session.getScrollLeft();
+            var cursorPos = session.selection.getCursor();
+
+            var lineCount = session.getLength();
+            var range = new Range(0, 0, lineCount, session.getLine(lineCount-1).length);
+
+            session.replace(range, text);
+
+            // Restore
+            session.selection.clearSelection();
+            session.selection.moveCursorToPosition(cursorPos);
+            session.setScrollTop(scrollTop);
+            session.setScrollLeft(scrollLeft);
+
             session.ignoreChange = false;
         });
     }

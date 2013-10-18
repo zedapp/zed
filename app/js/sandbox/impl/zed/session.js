@@ -27,12 +27,8 @@ define(function(require, exports, module) {
             var scrollLeft  = session.getScrollLeft();
             var cursorPos = session.selection.getCursor();
 
-            var range = session.getSelection().getRange();
-            range.start.row = 0;
-            range.start.column = 0;
-            range.end.row = session.getLength();
-            var line = session.getLine(range.end.row);
-            range.end.column = line.length;
+            var lineCount = session.getLength();
+            var range = new Range(0, 0, lineCount, session.getLine(lineCount-1).length);
 
             session.replace(range, text);
 
