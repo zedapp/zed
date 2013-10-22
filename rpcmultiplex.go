@@ -35,7 +35,7 @@ func (m *RPCMultiplexer) writer() {
 		}
 		err := WriteFrame(m.rw, buffer[0], buffer[1:])
 		if err != nil {
-			fmt.Println("Cloudn't write frame", err)
+			fmt.Println("Couldn't write frame", err)
 			close(m.writeChannel)
 			break
 		}
@@ -76,8 +76,8 @@ func (m *RPCMultiplexer) Multiplex() error {
 		req := m.OutstandingRequests[requestId]
 		if req == nil {
 			req = &Request {
-				requestChannel: make(chan []byte),
-				responseChannel: make(chan []byte),
+				requestChannel: make(chan []byte, 10),
+				responseChannel: make(chan []byte, 10),
 				closeChannel: make(chan bool),
 			}
 			m.OutstandingRequests[requestId] = req

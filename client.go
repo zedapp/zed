@@ -5,8 +5,10 @@ import (
 	"code.google.com/p/go.net/websocket"
 	"crypto/tls"
 	"encoding/json"
+	"code.google.com/p/go-uuid/uuid"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"mime"
@@ -70,6 +72,8 @@ func safePath(rootPath string, path string) (string, error) {
 
 // TODO clean this up
 var rootPath string
+
+var writeLock = make(map[string]chan bool)
 
 func handleRequest(requestChannel chan []byte, responseChannel chan []byte, closeChannel chan bool) {
 	commandBuffer, ok := <-requestChannel
@@ -145,7 +149,17 @@ func statusCodeBuffer(code int) []byte {
 	return IntToBytes(code)
 }
 
+func waitForLock(path string) {
+	if writeLock[path] != nil {
+		fmt.Println("Waiting for lock on ", path)
+		<-writeLock[path]
+		fmt.Println("Unlocked.")
+	}
+}
+
 func handleGet(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
+	waitForLock(path)
+
 	dropUntilDelimiter(requestChannel)
 	safePath, err := safePath(rootPath, path)
 	if err != nil {
@@ -196,6 +210,8 @@ func handleGet(path string, requestChannel chan []byte, responseChannel chan []b
 }
 
 func handleHead(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
+	waitForLock(path)
+
 	safePath, err := safePath(rootPath, path)
 	dropUntilDelimiter(requestChannel)
 	if err != nil {
@@ -219,6 +235,16 @@ func handleHead(path string, requestChannel chan []byte, responseChannel chan []
 }
 
 func handlePut(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
+	waitForLock(path)
+
+	writeLock[path] = make(chan bool)
+
+	defer func() {
+		//fmt.Println("Unlocking ", path)
+		close(writeLock[path])
+		writeLock[path] = nil
+	}()
+
 	safePath, err := safePath(rootPath, path)
 	if err != nil {
 		dropUntilDelimiter(requestChannel)
@@ -226,10 +252,13 @@ func handlePut(path string, requestChannel chan []byte, responseChannel chan []b
 	}
 	dir := filepath.Dir(safePath)
 	os.MkdirAll(dir, 0700)
-	f, err := os.Create(safePath)
+
+	// To avoid corrupted files, we'll write to a temp path first
+	tempPath := os.TempDir() + "/" + uuid.New()
+	f, err := os.Create(tempPath)
 	if err != nil {
 		dropUntilDelimiter(requestChannel)
-		return NewHttpError(500, fmt.Sprintf("Could not create file: %s", safePath))
+		return NewHttpError(500, fmt.Sprintf("Could not create file: %s", tempPath))
 	}
 	for {
 		buffer := <-requestChannel
@@ -243,7 +272,32 @@ func handlePut(path string, requestChannel chan []byte, responseChannel chan []b
 		}
 	}
 	f.Close()
-	stat, _ := os.Stat(safePath)
+
+	var mode os.FileMode = 0600
+	stat, err := os.Stat(safePath)
+	if err == nil {
+		mode = stat.Mode()
+	}
+
+	// Copy temp file to new file
+	srcFile, err := os.OpenFile(tempPath, os.O_RDONLY, 0666)
+	if err != nil {
+		return NewHttpError(500, "Could copy temp file to file: could not open source file")
+	}
+
+	dstFile, err := os.OpenFile(safePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, mode)
+	if err != nil {
+		return NewHttpError(500, "Could copy temp file to file: could not open dest file")
+	}
+	_, err = io.Copy(dstFile, srcFile)
+	if err != nil {
+		return NewHttpError(500, "Could copy temp file to file: copy error")
+	}
+	srcFile.Close()
+	dstFile.Close()
+	os.Remove(tempPath)
+
+	stat, _ = os.Stat(safePath)
 	responseChannel <- statusCodeBuffer(200)
 	responseChannel <- headerBuffer(map[string]string{
 		"Content-Type": "text/plain",
@@ -254,6 +308,8 @@ func handlePut(path string, requestChannel chan []byte, responseChannel chan []b
 }
 
 func handleDelete(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
+	waitForLock(path)
+
 	safePath, err := safePath(rootPath, path)
 	dropUntilDelimiter(requestChannel)
 	if err != nil {
