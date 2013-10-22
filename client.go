@@ -235,12 +235,15 @@ func handleHead(path string, requestChannel chan []byte, responseChannel chan []
 }
 
 func handlePut(path string, requestChannel chan []byte, responseChannel chan []byte) HttpError {
-	waitForLock(path)
+	if writeLock[path] != nil {
+		// Already writing
+		dropUntilDelimiter(requestChannel)
+		return NewHttpError(500, "Write already going on")
+	}
 
 	writeLock[path] = make(chan bool)
 
 	defer func() {
-		//fmt.Println("Unlocking ", path)
 		close(writeLock[path])
 		writeLock[path] = nil
 	}()
