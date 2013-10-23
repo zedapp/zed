@@ -1,0 +1,15 @@
+{
+    "settings": {
+        "xsl": {
+            "name": "XSL",
+            "highlighter": "ace/mode/xml",
+            "extensions": ["xsl"],
+
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "plugin/beautify/html.js"
+                }
+            }
+        }
+    }
+}

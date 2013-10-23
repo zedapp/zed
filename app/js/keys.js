@@ -3,13 +3,14 @@ define(function(require, exports, module) {
     "use strict";
     var lang = ace.require("ace/lib/lang");
 
-    var settingsfs = require("./fs/settings");
+    var settings = require("./settings");
     var eventbus = require("./lib/eventbus");
     var async = require("./lib/async");
     var editor = require("./editor");
     var command = require("./command");
     var defaultKeyJson = JSON.parse(require("text!../settings/keys.default.json"));
     var userKeyJson = {};
+    var projectKeyJson = {};
     var keyboardHandler = null;
     var commands;
 
@@ -66,11 +67,17 @@ define(function(require, exports, module) {
             loadCommands();
             exports.update();
         });
+        eventbus.on("projectsettingschanged", function(projectSettings) {
+            if(projectSettings.keys) {
+                projectKeyJson = projectSettings.keys;
+                setTimeout(exports.update);
+            }
+        });
     };
 
     exports.init = function() {
         loadCommands();
-        settingsfs.watchFile("/keys.user.json", loadKeys);
+        settings.fs.watchFile("/keys.user.json", loadKeys);
     };
 
     var oldOnCommandKey = null;
@@ -107,7 +114,7 @@ define(function(require, exports, module) {
     };
 
     function loadKeys() {
-        settingsfs.readFile("/keys.user.json", function(err, userKeys_) {
+        settings.fs.readFile("/keys.user.json", function(err, userKeys_) {
             try {
                 userKeyJson = JSON.parse(userKeys_);
                 loadCommands();
@@ -144,11 +151,14 @@ define(function(require, exports, module) {
             multiSelectAction: "forEach"
         }];
 
-        Object.keys(defaultKeyJson).forEach(function(cmd) {
-            bindCommand(cmd, defaultKeyJson[cmd]);
+        _.each(defaultKeyJson, function(cmd, name) {
+            bindCommand(name, cmd);
         });
-        Object.keys(userKeyJson).forEach(function(cmd) {
-            bindCommand(cmd, userKeyJson[cmd]);
+        _.each(userKeyJson, function(cmd, name) {
+            bindCommand(name, cmd);
+        });
+        _.each(projectKeyJson, function(cmd, name) {
+            bindCommand(name, cmd);
         });
     }
 });

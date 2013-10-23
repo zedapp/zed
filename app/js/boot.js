@@ -25,11 +25,11 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
         "./project",
         "./keys",
         "./complete",
+        "./session_manager",
         "./modes",
         "./split",
         "./window",
         "./file",
-        "./session_manager",
         "./preview"];
     require(modules, function() {
         var session_manager = require("./session_manager");

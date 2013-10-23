@@ -31,6 +31,7 @@
 /mode/sh.default.json
 /mode/text.default.json
 /mode/xml.default.json
+/mode/xsl.default.json
 /mode/yaml.default.json
 /settings.default.json
 /settings.user.json

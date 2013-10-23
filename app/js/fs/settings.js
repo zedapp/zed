@@ -1,52 +1,32 @@
-/*global define chrome $ */
+/*global define, chrome, $ */
 define(function(require, exports, module) {
     var events = require("../lib/events");
-    
+
     var emitter = new events.EventEmitter(false);
 
     function getKey(key, callback) {
-        if (chrome.storage) {
-            chrome.storage.sync.get(key, function(results) {
-                callback(results[key]);
-            });
-        } else {
-            var val = localStorage[key];
-            callback(val ? JSON.parse(val) : undefined);
-            
-        }
+        chrome.storage.sync.get(key, function(results) {
+            callback(results[key]);
+        });
     }
 
     function setKey(key, value) {
-        if (chrome.storage) {
-            var obj = {};
-            obj[key] = value;
-            chrome.storage.sync.set(obj);
-        } else {
-            localStorage[key] = JSON.stringify(value);
+        var obj = {};
+        obj[key] = value;
+        chrome.storage.sync.set(obj);
+    }
+
+    chrome.storage.onChanged.addListener(function(changes, areaName) {
+        if(areaName === "sync") {
+            Object.keys(changes).forEach(function(key) {
+                if(key.indexOf("settings:") === 0) {
+                    var path = key.substring("settings:".length);
+                    emitter.emit("filechanged:" + path, path, "changed");
+                }
+            });
         }
-    }
-    
-    if(chrome.storage) {
-        chrome.storage.onChanged.addListener(function(changes, areaName) {
-            if(areaName === "sync") {
-                Object.keys(changes).forEach(function(key) {
-                    if(key.indexOf("settings:") === 0) {
-                        var path = key.substring("settings:".length);
-                        emitter.emit("filechanged:" + path, path, "changed");
-                    }
-                });
-            }
-        });
-    } else {
-        window.addEventListener("storage", function(event) {
-            var key = event.key;
-            if(key.indexOf("settings:") === 0) {
-                var path = key.substring("settings:".length);
-                emitter.emit("filechanged:" + path, path, "changed");
-            }
-        });
-    }
-    
+    });
+
     function listFiles(callback) {
         var files = [];
         $.get("settings/all", function(text) {

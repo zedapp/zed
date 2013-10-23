@@ -6,9 +6,27 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
 
     var commands = {};
-    var userCommandNames = [];
+    var userCommands = {};
+    var projectCommands = {};
 
     eventbus.declare("commandsloaded");
+
+    function defineSandboxCommands(commandObj, cmds) {
+        _.each(cmds, function(cmd, name) {
+            commandObj[name] = {
+                exec: function(edit) {
+                    require(["./sandbox"], function(sandbox) {
+                        sandbox.execCommand(cmd, edit.getSession(), function(err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                        });
+                    });
+                },
+                readOnly: cmd.readOnly
+            };
+        });
+    }
 
     /**
      * Loads globally defined sandboxed commands (in settings:/commands.*.json)
@@ -18,38 +36,31 @@ define(function(require, exports, module) {
             var cmds = JSON.parse(commandsStr);
             settingsfs.readFile("/commands.user.json", function(err, commandsStr) {
                 try {
+                    userCommands = {};
                     cmds = _.extend(cmds, JSON.parse(commandsStr));
-                    userCommandNames.forEach(function(cmd) {
-                        delete commands[cmd];
-                    });
-                    userCommandNames = [];
-                    _.each(cmds, function(cmd, name) {
-                        exports.define(name, {
-                            exec: function(edit) {
-                                require(["./sandbox"], function(sandbox) {
-                                    sandbox.execCommand(cmd, edit.getSession(), function(err) {
-                                        if (err) {
-                                            return console.error(err);
-                                        }
-                                    });
-                                });
-                            },
-                            readOnly: cmd.readOnly
-                        });
-                        userCommandNames.push(name);
-                    });
+                    defineSandboxCommands(userCommands, cmds);
                 } catch (e) {}
                 eventbus.emit("commandsloaded");
             });
         });
     }
 
-    exports.init = function() {
-        require(["./fs/settings"], function(settingsfs) {
-            loadGlobalSandboxedCommands(settingsfs);
+    exports.hook = function() {
+        eventbus.on("projectsettingschanged", function(projectSettings) {
+            if(projectSettings.commands) {
+                projectCommands = {};
+                defineSandboxCommands(projectCommands, projectSettings.commands);
+            }
+        });
+    };
 
-            settingsfs.watchFile("/commands.user.json", function() {
-                loadGlobalSandboxedCommands(settingsfs);
+    exports.init = function() {
+        require(["./settings"], function(settings) {
+            var fs = settings.fs;
+            loadGlobalSandboxedCommands(fs);
+
+            fs.watchFile("/commands.user.json", function() {
+                loadGlobalSandboxedCommands(fs);
             });
         });
     };
@@ -68,6 +79,14 @@ define(function(require, exports, module) {
     };
 
     exports.lookup = function(path) {
+        var cmd = projectCommands[path];
+        if(cmd) {
+            return cmd;
+        }
+        cmd = userCommands[path];
+        if(cmd) {
+            return cmd;
+        }
         return commands[path];
     };
 
@@ -80,7 +99,9 @@ define(function(require, exports, module) {
     };
 
     exports.allCommands = function() {
-        return Object.keys(commands);
+        return Object.keys(projectCommands)
+               .concat(Object.keys(userCommands))
+               .concat(Object.keys(commands));
     };
 
     exports.define("Command:Enter Command", {
@@ -104,6 +125,9 @@ define(function(require, exports, module) {
                         var cmd = exports.lookup(result.path);
                         // Filter out commands that are language-specific and don't apply to this mode
                         if(cmd.modeCommand) {
+                            if(!session.mode) {
+                                return true;
+                            }
                             var modeName = session.mode.language;
                             return cmd.modeCommand[modeName];
                         }

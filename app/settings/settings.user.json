@@ -1,1 +1,13 @@
-{}
+{
+    "imports": ["settings:/settings.default.json",
+                "settings:/modes.default.json"],
+    "settings": {
+
+    },
+    "commands": {
+
+    },
+    "modes": {
+
+    }
+}

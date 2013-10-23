@@ -3,13 +3,14 @@ define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
     var async = require("./lib/async");
-    var settingsfs = require("./fs/settings");
+    var settings = require("./settings");
     var command = require("./command");
 
     eventbus.declare("modesloaded");
     eventbus.declare("modeset");
 
     var modes = bareMinimumModes();
+    var projectModes = {};
     var extensionMapping = {};
 
     function bareMinimumModes() {
@@ -26,6 +27,7 @@ define(function(require, exports, module) {
         if(_.isArray(dest)) {
             return dest.concat(source);
         } else if(_.isObject(dest)) {
+            dest = _.extend({}, dest); // shallow clone
             for(var p in source) {
                 if(source.hasOwnProperty(p)) {
                     if(!dest[p]) {
@@ -42,7 +44,7 @@ define(function(require, exports, module) {
     }
 
     function loadMode(path, callback) {
-        settingsfs.readFile(path, function(err, text) {
+        settings.fs.readFile(path, function(err, text) {
             if(err) {
                 return callback && callback(err);
             }
@@ -80,11 +82,10 @@ define(function(require, exports, module) {
     }
 
     function loadModes() {
-        settingsfs.listFiles(function(err, paths) {
+        settings.fs.listFiles(function(err, paths) {
             if (err) {
                 return console.error("Could not load settings file list");
             }
-            modes = bareMinimumModes();
             // Sorting to ensure "default" comes before "user"
             paths.sort();
             async.forEach(paths, function(path, next) {
@@ -93,70 +94,89 @@ define(function(require, exports, module) {
                 } else {
                     next();
                 }
-            }, function() {
-                extensionMapping = {};
-                Object.keys(modes).forEach(function(language) {
-                    var mode = modes[language];
-                    if (mode.extensions) {
-                        mode.extensions.forEach(function(ext) {
-                            extensionMapping[ext] = language;
-                        });
+            }, updateAllModes);
+        });
+    }
 
-                    }
-                    var userModePath = "/mode/" + language + ".user.json";
-                    settingsfs.watchFile(userModePath, function() {
-                        loadMode(userModePath);
-                    });
+    function updateAllModes() {
+        updateExtensionMappings();
+        eventbus.emit("modesloaded", exports);
+        declareAllModeCommands();
+        declareModeEvents();
+    }
+
+    function updateExtensionMappings() {
+        extensionMapping = {};
+        Object.keys(modes).forEach(function(language) {
+            var mode = modes[language];
+            if (mode.extensions) {
+                mode.extensions.forEach(function(ext) {
+                    extensionMapping[ext] = language;
                 });
-                eventbus.emit("modesloaded", exports);
-                declareModeCommands();
-                declareModeEvents();
+
+            }
+            var userModePath = "/mode/" + language + ".user.json";
+            settings.fs.watchFile(userModePath, function() {
+                loadMode(userModePath);
             });
         });
     }
 
-    function declareModeCommands() {
-        Object.keys(modes).forEach(function(language) {
+    function updateProjectExtensionMappings() {
+        Object.keys(projectModes).forEach(function(language) {
             var mode = modes[language];
+            if (mode.extensions) {
+                mode.extensions.forEach(function(ext) {
+                    extensionMapping[ext] = language;
+                });
+            }
+        });
+    }
 
-            command.define("Editor:Mode:" + mode.name, {
-                exec: function(edit, session) {
-                    exports.setSessionMode(session, mode);
-                },
-                readOnly: true
-            });
-
-            Object.keys(mode.commands).forEach(function(name) {
-                var cmd = mode.commands[name];
-                var existingCommand = command.lookup(name);
-                if (!existingCommand) {
-                    var modeCommands = {};
-                    modeCommands[mode.language] = cmd;
-                    var commandSpec = {
-                        exec: function(edit, session) {
-                            require(["./sandbox"], function(sandbox) {
-                                var cmd = commandSpec.modeCommand[session.mode.language];
-                                if (cmd) {
-                                    sandbox.execCommand(cmd, session, function(err) {
-                                        if (err) {
-                                            return console.error(err);
-                                        }
-                                    });
-                                } else {
-                                    eventbus.emit("sessionactivityfailed", session, "Command " + name + " not supported for this mode");
-                                }
-                            });
-                        },
-                        readOnly: true,
-                        modeCommand: modeCommands
-                    };
-                    command.define(name, commandSpec);
-                } else {
-                    existingCommand.modeCommand[mode.language] = cmd;
-                }
-            });
+    function declareAllModeCommands() {
+        _.each(exports.allModes(), function(modeName) {
+            declareModeCommands(exports.get(modeName));
         });
         eventbus.emit("commandsloaded");
+    }
+
+    function declareModeCommands(mode) {
+        command.define("Editor:Mode:" + mode.name, {
+            exec: function(edit, session) {
+                exports.setSessionMode(session, mode);
+            },
+            readOnly: true
+        });
+
+        Object.keys(mode.commands).forEach(function(name) {
+            var cmd = mode.commands[name];
+            var existingCommand = command.lookup(name);
+            if (!existingCommand) {
+                var modeCommands = {};
+                modeCommands[mode.language] = cmd;
+                var commandSpec = {
+                    exec: function(edit, session) {
+                        require(["./sandbox"], function(sandbox) {
+                            var cmd = commandSpec.modeCommand[session.mode.language];
+                            if (cmd) {
+                                sandbox.execCommand(cmd, session, function(err) {
+                                    if (err) {
+                                        return console.error(err);
+                                    }
+                                });
+                            } else {
+                                eventbus.emit("sessionactivityfailed", session, "Command " + name + " not supported for this mode");
+                            }
+                        });
+                    },
+                    readOnly: true,
+                    modeCommand: modeCommands
+                };
+                command.define(name, commandSpec);
+            } else {
+                existingCommand.modeCommand[mode.language] = cmd;
+            }
+        });
     }
 
     var eventHandlerFn;
@@ -214,19 +234,36 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         loadModes();
+        eventbus.on("projectsettingschanged", function(projectSettings) {
+                console.log("SEttings", projectSettings);
+            if(projectSettings.modes) {
+                projectModes = projectSettings.modes;
+                updateAllModes();
+            }
+        });
+    };
+
+    exports.allModes = function() {
+        return Object.keys(modes).concat(Object.keys(projectModes));
     };
 
     exports.get = function(language) {
-        return modes[language];
+        var projectMode = projectModes[language];
+        if(projectMode) {
+            var mode = superExtend(modes[language] || {}, projectMode);
+            return mode;
+        } else {
+            return modes[language];
+        }
     };
 
     exports.getModeForPath = function(path) {
         var parts = path.split(".");
         var ext = parts[parts.length - 1];
         if (extensionMapping[ext]) {
-            return modes[extensionMapping[ext]];
+            return exports.get(extensionMapping[ext]);
         } else {
-            return modes.text;
+            return exports.get("text");
         }
     };
 
