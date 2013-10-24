@@ -1,9 +1,13 @@
 {
-    "name": "PHP",
-    "highlighter": "ace/mode/php",
-    "extensions": ["php", "php4"],
+    "modes": {
+        "php": {
+            "name": "PHP",
+            "highlighter": "ace/mode/php",
+            "extensions": ["php", "php4"],
 
-    "snippets": {
-        "fn": "function ${1:name}() {\n\t${2:// Your code here}\n}"
+            "snippets": {
+                "fn": "function ${1:name}() {\n\t${2:// Your code here}\n}"
+            }
+        }
     }
 }

@@ -7,7 +7,6 @@ define(function(require, exports, module) {
 
     var commands = {};
     var userCommands = {};
-    var projectCommands = {};
 
     eventbus.declare("commandsloaded");
 
@@ -28,40 +27,10 @@ define(function(require, exports, module) {
         });
     }
 
-    /**
-     * Loads globally defined sandboxed commands (in settings:/commands.*.json)
-     */
-    function loadGlobalSandboxedCommands(settingsfs) {
-        settingsfs.readFile("/commands.default.json", function(err, commandsStr) {
-            var cmds = JSON.parse(commandsStr);
-            settingsfs.readFile("/commands.user.json", function(err, commandsStr) {
-                try {
-                    userCommands = {};
-                    cmds = _.extend(cmds, JSON.parse(commandsStr));
-                    defineSandboxCommands(userCommands, cmds);
-                } catch (e) {}
-                eventbus.emit("commandsloaded");
-            });
-        });
-    }
-
     exports.hook = function() {
-        eventbus.on("projectsettingschanged", function(projectSettings) {
-            if(projectSettings.commands) {
-                projectCommands = {};
-                defineSandboxCommands(projectCommands, projectSettings.commands);
-            }
-        });
-    };
-
-    exports.init = function() {
-        require(["./settings"], function(settings) {
-            var fs = settings.fs;
-            loadGlobalSandboxedCommands(fs);
-
-            fs.watchFile("/commands.user.json", function() {
-                loadGlobalSandboxedCommands(fs);
-            });
+        eventbus.on("settingschanged", function(settings) {
+            userCommands = {};
+            defineSandboxCommands(userCommands, settings.getCommands());
         });
     };
 
@@ -79,11 +48,7 @@ define(function(require, exports, module) {
     };
 
     exports.lookup = function(path) {
-        var cmd = projectCommands[path];
-        if(cmd) {
-            return cmd;
-        }
-        cmd = userCommands[path];
+        var cmd = userCommands[path];
         if(cmd) {
             return cmd;
         }
@@ -99,8 +64,7 @@ define(function(require, exports, module) {
     };
 
     exports.allCommands = function() {
-        return Object.keys(projectCommands)
-               .concat(Object.keys(userCommands))
+        return Object.keys(userCommands)
                .concat(Object.keys(commands));
     };
 
@@ -176,7 +140,7 @@ define(function(require, exports, module) {
     exports.define("Settings:Toggle Highlight Active Line", {
         exec: function() {
             require(["./settings"], function(settings) {
-                settings.set("highlightActiveLine", !settings.get("highlightActiveLine"));
+                settings.setPreference("highlightActiveLine", !settings.getPreference("highlightActiveLine"));
             });
         },
         readOnly: true
@@ -185,7 +149,7 @@ define(function(require, exports, module) {
     exports.define("Settings:Toggle Highlight Gutter Line", {
         exec: function() {
             require(["./settings"], function(settings) {
-                settings.set("highlightGutterLine", !settings.get("highlightGutterLine"));
+                settings.setPreference("highlightGutterLine", !settings.getPreference("highlightGutterLine"));
             });
         },
         readOnly: true
@@ -194,7 +158,7 @@ define(function(require, exports, module) {
     exports.define("Settings:Toggle Show Print Margin", {
         exec: function() {
             require(["./settings"], function(settings) {
-                settings.set("showPrintMargin", !settings.get("showPrintMargin"));
+                settings.setPreference("showPrintMargin", !settings.getPreference("showPrintMargin"));
             });
         },
         readOnly: true
@@ -203,7 +167,7 @@ define(function(require, exports, module) {
     exports.define("Settings:Toggle Show Invisibles", {
         exec: function() {
             require(["./settings"], function(settings) {
-                settings.set("showInvisibles", !settings.get("showInvisibles"));
+                settings.setPreference("showInvisibles", !settings.getPreference("showInvisibles"));
             });
         },
         readOnly: true
@@ -212,7 +176,7 @@ define(function(require, exports, module) {
     exports.define("Settings:Toggle Display Indent Guides", {
         exec: function() {
             require(["./settings"], function(settings) {
-                settings.set("displayIndentGuides", !settings.get("displayIndentGuides"));
+                settings.setPreference("displayIndentGuides", !settings.getPreference("displayIndentGuides"));
             });
         },
         readOnly: true
@@ -221,7 +185,7 @@ define(function(require, exports, module) {
     exports.define("Settings:Toggle Show Gutter", {
         exec: function() {
             require(["./settings"], function(settings) {
-                settings.set("showGutter", !settings.get("showGutter"));
+                settings.setPreference("showGutter", !settings.getPreference("showGutter"));
             });
         },
         readOnly: true

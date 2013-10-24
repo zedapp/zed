@@ -1,5 +1,9 @@
 {
-    "name": "Python",
-    "highlighter": "ace/mode/python",
-    "extensions": ["py"]
+    "modes": {
+        "python": {
+            "name": "Python",
+            "highlighter": "ace/mode/python",
+            "extensions": ["py"]
+        }
+    }
 }

@@ -1,5 +1,9 @@
 {
-    "name": "Haml",
-    "highlighter": "ace/mode/haml",
-    "extensions": ["haml"]
+    "modes": {
+        "haml": {
+            "name": "Haml",
+            "highlighter": "ace/mode/haml",
+            "extensions": ["haml"]
+        }
+    }
 }

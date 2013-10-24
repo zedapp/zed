@@ -1,5 +1,9 @@
 {
-    "name": "Ini",
-    "highlighter": "ace/mode/ini",
-    "extensions": ["ini"]
+    "modes": {
+        "ini": {
+            "name": "Ini",
+            "highlighter": "ace/mode/ini",
+            "extensions": ["ini"]
+        }
+    }
 }

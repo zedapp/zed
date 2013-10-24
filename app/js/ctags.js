@@ -29,8 +29,8 @@ define(function(require, exports, module) {
     };
 
     exports.writeCTags = _.debounce(function() {
-        if(settings.get("hygienicMode") ||
-           (settings.get("hygienicModeRemote") && options.get("url").indexOf("http") === 0)) {
+        if(settings.getPreference("hygienicMode") ||
+           (settings.getPreference("hygienicModeRemote") && options.get("url").indexOf("http") === 0)) {
             return;
         }
         var tabbedCTags = ctagsCache.map(function(ctag) {

@@ -2,7 +2,7 @@
 define(function(require, exports, module) {
     var events = require("../lib/events");
 
-    var emitter = new events.EventEmitter(false);
+    var emitter = window.emitter = new events.EventEmitter(false);
 
     function getKey(key, callback) {
         chrome.storage.sync.get(key, function(results) {
@@ -115,6 +115,6 @@ define(function(require, exports, module) {
         deleteFile: deleteFile,
         getUrl: getUrl,
         watchFile: watchFile,
-        unwatchFile: unwatchFile
+        unwatchFile: unwatchFile,
     };
 });

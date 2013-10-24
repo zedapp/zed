@@ -3,14 +3,10 @@ define(function(require, exports, module) {
     "use strict";
     var lang = ace.require("ace/lib/lang");
 
-    var settings = require("./settings");
     var eventbus = require("./lib/eventbus");
-    var async = require("./lib/async");
     var editor = require("./editor");
     var command = require("./command");
-    var defaultKeyJson = JSON.parse(require("text!../settings/keys.default.json"));
-    var userKeyJson = {};
-    var projectKeyJson = {};
+    var keys = JSON.parse(require("text!../settings/keys.default.json"));
     var keyboardHandler = null;
     var commands;
 
@@ -56,28 +52,23 @@ define(function(require, exports, module) {
     };
 
     exports.getCommandKeys = function() {
-        var commandKeys = {};
-        _.extend(commandKeys, defaultKeyJson, userKeyJson);
-        return commandKeys;
+        return keys;
     };
 
     exports.hook = function() {
-        async.waitForEvents(eventbus, ["editorloaded", "commandsloaded"], loadKeys);
         eventbus.on("commandsloaded", function() {
             loadCommands();
             exports.update();
         });
-        eventbus.on("projectsettingschanged", function(projectSettings) {
-            if(projectSettings.keys) {
-                projectKeyJson = projectSettings.keys;
-                setTimeout(exports.update);
-            }
+        eventbus.on("settingschanged", function(settings) {
+            keys = settings.getKeys();
+            loadCommands();
+            exports.update();
         });
     };
 
     exports.init = function() {
         loadCommands();
-        settings.fs.watchFile("/keys.user.json", loadKeys);
     };
 
     var oldOnCommandKey = null;
@@ -113,16 +104,6 @@ define(function(require, exports, module) {
         }
     };
 
-    function loadKeys() {
-        settings.fs.readFile("/keys.user.json", function(err, userKeys_) {
-            try {
-                userKeyJson = JSON.parse(userKeys_);
-                loadCommands();
-                exports.update();
-            } catch (e) {}
-        });
-    }
-
     function loadCommands() {
         // Some special builtin commands
         commands = [{
@@ -151,13 +132,7 @@ define(function(require, exports, module) {
             multiSelectAction: "forEach"
         }];
 
-        _.each(defaultKeyJson, function(cmd, name) {
-            bindCommand(name, cmd);
-        });
-        _.each(userKeyJson, function(cmd, name) {
-            bindCommand(name, cmd);
-        });
-        _.each(projectKeyJson, function(cmd, name) {
+        _.each(keys, function(cmd, name) {
             bindCommand(name, cmd);
         });
     }

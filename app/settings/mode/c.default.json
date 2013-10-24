@@ -1,5 +1,9 @@
 {
-    "name": "C",
-    "highlighter": "ace/mode/c_cpp",
-    "extensions": ["c", "h", "cpp", "cxx", "hpp", "hxx"]
+    "modes": {
+        "c": {
+            "name": "C",
+            "highlighter": "ace/mode/c_cpp",
+            "extensions": ["c", "h", "cpp", "cxx", "hpp", "hxx"]
+        }
+    }
 }

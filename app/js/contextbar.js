@@ -16,8 +16,8 @@ define(function(require, exports, module) {
     };
 
     function update() {
-        var showContextBar = settings.get("showContextBar");
-        var fontSize = settings.get("fontSize");
+        var showContextBar = settings.getPreference("showContextBar");
+        var fontSize = settings.getPreference("fontSize");
         var barHeight = fontSize + 13;
 
         if(showContextBar && !barEl) {
@@ -50,7 +50,7 @@ define(function(require, exports, module) {
 
     command.define("Settings:Toggle Context Bar", {
         exec: function() {
-            settings.set("showContextBar", !settings.get("showContextBar"));
+            settings.setPreference("showContextBar", !settings.getPreference("showContextBar"));
         },
         readOnly: true
     });

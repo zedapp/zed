@@ -10,7 +10,7 @@ define(function(require, exports, module) {
     eventbus.declare("stateloaded");
     
     function isHygienic() {
-        return settings.get("hygienicMode") || (settings.get("hygienicModeRemote") && options.get("url").indexOf("http") === 0);
+        return settings.getPreference("hygienicMode") || (settings.getPreference("hygienicModeRemote") && options.get("url").indexOf("http") === 0);
     }
 
     module.exports = {

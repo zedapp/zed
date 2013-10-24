@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var command = require("./command");
     var settings = require("./settings");
-    var defaultSettings = JSON.parse(require("text!../settings/settings.default.json"));
+    //var defaultSettings = JSON.parse(require("text!../settings/settings.default.json"));
     var modes = require("./modes");
     var whitespace = ace.require("ace/ext/whitespace");
 
@@ -17,7 +17,7 @@ define(function(require, exports, module) {
     var activeEditor = null;
 
     var editor = module.exports = {
-        extMapping: defaultSettings.fileExtensions,
+        extMapping: {},
         themes: ["ace/theme/ambiance", "ace/theme/chaos",
             "ace/theme/chrome", "ace/theme/clouds",
             "ace/theme/clouds_midnight", "ace/theme/cobalt",
@@ -35,7 +35,7 @@ define(function(require, exports, module) {
         hook: function() {
             eventbus.on("settingschanged", function(settings) {
                 editor.getEditors(true).forEach(function(edit) {
-                    edit.setTheme(settings.get("theme"));
+                    edit.setTheme(settings.getPreference("theme"));
                     edit.renderer.once("themeLoaded", function(event) {
                         var theme = event.theme;
                         if(theme.isDark) {
@@ -44,27 +44,27 @@ define(function(require, exports, module) {
                             $("body").removeClass("black");
                         }
                     });
-                    edit.setHighlightActiveLine(settings.get("highlightActiveLine"));
-                    edit.setHighlightGutterLine(settings.get("highlightGutterLine"));
-                    edit.setFontSize(settings.get("fontSize"));
-                    edit.setShowPrintMargin(settings.get("showPrintMargin"));
-                    edit.setPrintMarginColumn(settings.get("printMarginColumn"));
-                    edit.setShowInvisibles(settings.get("showInvisibles"));
-                    edit.setDisplayIndentGuides(settings.get("displayIndentGuides"));
-                    edit.setAnimatedScroll(settings.get("animatedScroll"));
-                    edit.setShowFoldWidgets(settings.get("showFoldWidgets"));
-                    edit.setScrollSpeed(settings.get("scrollSpeed"));
-                    edit.renderer.setShowGutter(settings.get("showGutter"));
-                    edit.setHighlightSelectedWord(settings.get("highlightSelectedWord"));
-                    edit.setBehavioursEnabled(settings.get("behaviorsEnabled")); // ( -> ()
-                    edit.setWrapBehavioursEnabled(settings.get("wrapBehaviorsEnabled")); // same as above but with selection
+                    edit.setHighlightActiveLine(settings.getPreference("highlightActiveLine"));
+                    edit.setHighlightGutterLine(settings.getPreference("highlightGutterLine"));
+                    edit.setFontSize(settings.getPreference("fontSize"));
+                    edit.setShowPrintMargin(settings.getPreference("showPrintMargin"));
+                    edit.setPrintMarginColumn(settings.getPreference("printMarginColumn"));
+                    edit.setShowInvisibles(settings.getPreference("showInvisibles"));
+                    edit.setDisplayIndentGuides(settings.getPreference("displayIndentGuides"));
+                    edit.setAnimatedScroll(settings.getPreference("animatedScroll"));
+                    edit.setShowFoldWidgets(settings.getPreference("showFoldWidgets"));
+                    edit.setScrollSpeed(settings.getPreference("scrollSpeed"));
+                    edit.renderer.setShowGutter(settings.getPreference("showGutter"));
+                    edit.setHighlightSelectedWord(settings.getPreference("highlightSelectedWord"));
+                    edit.setBehavioursEnabled(settings.getPreference("behaviorsEnabled")); // ( -> ()
+                    edit.setWrapBehavioursEnabled(settings.getPreference("wrapBehaviorsEnabled")); // same as above but with selection
                 });
                 require(["./session_manager"], function(session_manager) {
                     var sessions = session_manager.getSessions();
                     Object.keys(sessions).forEach(function(path) {
-                        sessions[path].setTabSize(settings.get("tabSize"));
-                        sessions[path].setUseSoftTabs(settings.get("useSoftTabs"));
-                        sessions[path].setUseWrapMode(settings.get("wordWrap"));
+                        sessions[path].setTabSize(settings.getPreference("tabSize"));
+                        sessions[path].setUseSoftTabs(settings.getPreference("useSoftTabs"));
+                        sessions[path].setUseWrapMode(settings.getPreference("wordWrap"));
                     });
                 });
             });
@@ -80,7 +80,7 @@ define(function(require, exports, module) {
             });
 
             eventbus.on("sessionbeforesave", function() {
-                if(settings.get("trimTrailingWhiteSpaceOnSave")) {
+                if(settings.getPreference("trimTrailingWhiteSpaceOnSave")) {
                     editor.trimTrailingWhitespace(editor.getActiveEditor());
                 }
             });
@@ -113,7 +113,7 @@ define(function(require, exports, module) {
             var doc = session.getDocument();
             var lines = doc.getAllLines();
 
-            var min = settings.get("trimEmptyLines") ? -1 : 0;
+            var min = settings.getPreference("trimEmptyLines") ? -1 : 0;
 
             for (var i = 0, l=lines.length; i < l; i++) {
                 if(i === currentLine) {
@@ -130,12 +130,12 @@ define(function(require, exports, module) {
             var mode = modes.getModeForPath(path);
             var session = ace.createEditSession(content);
             session.filename = path;
-            session.setUseWrapMode(settings.get("wordWrap"));
-            session.setTabSize(settings.get("tabSize"));
-            session.setUseSoftTabs(settings.get("useSoftTabs"));
+            session.setUseWrapMode(settings.getPreference("wordWrap"));
+            session.setTabSize(settings.getPreference("tabSize"));
+            session.setUseSoftTabs(settings.getPreference("useSoftTabs"));
             session.setUseWorker(false);
             modes.setSessionMode(session, mode);
-            if (settings.get("detectIndentation")) whitespace.detectIndentation(session);
+            if (settings.getPreference("detectIndentation")) whitespace.detectIndentation(session);
             return session;
         },
         switchSession: function(session, edit) {
@@ -173,7 +173,7 @@ define(function(require, exports, module) {
                 lastUse: session.lastUse,
                 undo: undoStack,
                 redo: redoStack,
-                mode: session.mode.language
+                //mode: session.mode.language
             };
         },
         setSessionState: function(session, state) {
@@ -192,7 +192,7 @@ define(function(require, exports, module) {
             session.getSelection().setSelectionRange(state.selection, false);
             session.setScrollTop(state.scrollTop);
             session.setScrollLeft(state.scrollLeft);
-            modes.setSessionMode(session, state.mode);
+            //modes.setSessionMode(session, state.mode);
             session.lastUse = state.lastUse;
 
             var undoManager = session.getUndoManager();
@@ -843,28 +843,28 @@ define(function(require, exports, module) {
     // SETTINGS
     command.define("Settings:Toggle Word Wrap", {
         exec: function() {
-            settings.set("wordWrap", !settings.get("wordWrap"));
+            settings.setPreference("wordWrap", !settings.getPreference("wordWrap"));
         },
         readOnly: true
     });
 
     command.define("Settings:Increase Font Size", {
         exec: function() {
-            settings.set("fontSize", settings.get("fontSize") + 1);
+            settings.setPreference("fontSize", settings.getPreference("fontSize") + 1);
         },
         readOnly: true
     });
 
     command.define("Settings:Decrease Font Size", {
         exec: function() {
-            settings.set("fontSize", settings.get("fontSize") - 1);
+            settings.setPreference("fontSize", settings.getPreference("fontSize") - 1);
         },
         readOnly: true
     });
 
     command.define("Settings:Toggle Trim Trailing Whitespace On Save", {
         exec: function() {
-            settings.set("trimTrailingWhiteSpaceOnSave", !settings.get("trimTrailingWhiteSpaceOnSave"));
+            settings.setPreference("trimTrailingWhiteSpaceOnSave", !settings.getPreference("trimTrailingWhiteSpaceOnSave"));
         }
     });
 
@@ -875,7 +875,7 @@ define(function(require, exports, module) {
 
         command.define("Settings:Theme:" + name, {
             exec: function() {
-                settings.set("theme", theme);
+                settings.setPreference("theme", theme);
             },
             readOnly: true
         });

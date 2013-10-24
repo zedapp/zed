@@ -6,7 +6,7 @@ require.config({
 });
 
 /*global $, chrome, _*/
-require(["lib/history", "lib/icons"], function(history, icons) {
+require(["lib/history", "lib/icons", "lib/async"], function(history, icons, async) {
     var input = $("#gotoinput");
 
     function open(url, title) {
@@ -20,7 +20,7 @@ require(["lib/history", "lib/icons"], function(history, icons) {
     var defaultHint = $("#hint").html();
 
     function openChecked(url) {
-        if(!url) {
+        if (!url) {
             return;
         }
         // Only check http(s) links
@@ -59,23 +59,40 @@ require(["lib/history", "lib/icons"], function(history, icons) {
 
     // We're storing recent projects in local storage
     var projectCache = [];
-
+    
     function updateRecentProjects() {
         history.getProjects(function(err, projects) {
             if (_.isEqual(projects, projectCache)) {
                 return;
             }
-            var recentEl = $("#recent");
-            recentEl.empty();
-            projects.forEach(function(project) {
-             var el = $("<a href='#'>");
-             el.html("<img src='" + icons.protocolIcon(project.url) + "'/>" + project.name);
-             el.data("url", project.url);
-             el.data("title", project.name);
-             recentEl.append(el);
+            
+            var validProjects = [];
+            async.forEach(projects, function(project, next) {
+                if(project.url.indexOf("local:") === 0) {
+                    chrome.fileSystem.isRestorable(project.url.substring("local:".length), function(yes) {
+                        if(yes) {
+                            validProjects.push(project);
+                        }
+                        next();
+                    });
+                } else {
+                    validProjects.push(project);
+                    next();
+                }
+            }, function() {
+                var recentEl = $("#recent");
+                recentEl.empty();
+                validProjects.forEach(function(project) {
+                    var el = $("<a href='#'>");
+                    el.html("<img src='" + icons.protocolIcon(project.url) + "'/>" + project.name);
+                    el.data("url", project.url);
+                    el.data("title", project.name);
+                    recentEl.append(el);
+                });
+                projectCache = projects;
+                updateWindowSize();
             });
-            projectCache = projects;
-            updateWindowSize();
+            
         });
     }
 
@@ -96,7 +113,7 @@ require(["lib/history", "lib/icons"], function(history, icons) {
 
     try {
         var chromeVersion = parseInt(/Chrome\/(\d+)/.exec(navigator.userAgent)[1], 10);
-        
+
         if (chromeVersion < 31) {
             $("#open-local").hide();
         }
@@ -123,7 +140,7 @@ require(["lib/history", "lib/icons"], function(history, icons) {
 
     // Hide dropbox option for non-registered oAuth ids:
     var dropboxOauthAppId = ["fkjcgamnceomfnbcaedlhhopcchmnlkj",
-                             "pfmjnmeipppmcebplngmhfkleiinphhp"];
+        "pfmjnmeipppmcebplngmhfkleiinphhp"];
     if (dropboxOauthAppId.indexOf(chrome.runtime.id) === -1) {
         $("#dropbox-open").hide();
     }

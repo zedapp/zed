@@ -19,8 +19,8 @@ define(function(require, exports, module) {
                         name: name,
                         url: url
                     });
-                    if (projects.length > settings.get("recentFolderHistory")) {
-                        var numToRemove = projects.length - settings.get("recentFolderHistory");
+                    if (projects.length > settings.getPreference("recentFolderHistory")) {
+                        var numToRemove = projects.length - settings.getPreference("recentFolderHistory");
                         projects.splice(projects.length - numToRemove, numToRemove);
                     }
                 } else {

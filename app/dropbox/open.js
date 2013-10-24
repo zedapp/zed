@@ -6,10 +6,7 @@ require.config({
 });
 
 /*global chrome, $ */
-require(["lib/dropbox", "lib/history", "settings"], function(dropbox, history, settings) {
-    
-    settings.init();
-    
+require(["lib/dropbox", "lib/history"], function(dropbox, history) {
     
     dropbox.authenticate(function(err, dropbox) {
         var treeEl = $("#tree");

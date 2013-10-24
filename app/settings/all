@@ -1,7 +1,4 @@
-/commands.default.json
-/commands.user.json
 /keys.default.json
-/keys.user.json
 /mode/c.default.json
 /mode/clojure.default.json
 /mode/coffee.default.json
@@ -33,5 +30,6 @@
 /mode/xml.default.json
 /mode/xsl.default.json
 /mode/yaml.default.json
-/settings.default.json
+/modes.default.json
+/preferences.default.json
 /settings.user.json

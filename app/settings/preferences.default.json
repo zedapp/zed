@@ -1,5 +1,5 @@
 {
-    "settings": {
+    "preferences": {
         "theme": "ace/theme/textmate",
         "highlightActiveLine": true,
         "highlightGutterLine": true,

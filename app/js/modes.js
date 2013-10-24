@@ -2,107 +2,45 @@
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
-    var async = require("./lib/async");
-    var settings = require("./settings");
     var command = require("./command");
 
     eventbus.declare("modesloaded");
     eventbus.declare("modeset");
 
-    var modes = bareMinimumModes();
-    var projectModes = {};
+    var modes = {};
     var extensionMapping = {};
 
-    function bareMinimumModes() {
-        return {
-            text: {
-                language: "text",
-                name: "Plain Text",
-                highlighter: "ace/mode/text"
-            }
-        };
-    }
+    var fallbackMode = {
+        language: "text",
+        name: "Plain Text",
+        highlighter: "ace/mode/text",
+        events: {},
+        commands: {},
+        snippets: {}
+    };
 
-    function superExtend(dest, source) {
-        if(_.isArray(dest)) {
-            return dest.concat(source);
-        } else if(_.isObject(dest)) {
-            dest = _.extend({}, dest); // shallow clone
-            for(var p in source) {
-                if(source.hasOwnProperty(p)) {
-                    if(!dest[p]) {
-                        dest[p] = source[p];
-                    } else {
-                        dest[p] = superExtend(dest[p], source[p]);
-                    }
-                }
+    function normalizeModes() {
+        _.each(modes, function(mode, name) {
+            mode.language = name;
+            // Normalize
+            if (!mode.events) {
+                mode.events = {};
             }
-            return dest;
-        } else {
-            return source;
-        }
-    }
-
-    function loadMode(path, callback) {
-        settings.fs.readFile(path, function(err, text) {
-            if(err) {
-                return callback && callback(err);
+            if (!mode.commands) {
+                mode.commands = {};
             }
-            try {
-                var json = JSON.parse(text);
-                var filename = path.split("/")[2];
-                var parts = filename.split(".");
-                var language = parts[0];
-                var type = parts[1];
-                var mode;
-                if (type === "default") {
-                    json.language = language;
-                    // Overwrite existing mode
-                    mode = json;
-                } else if (type === "user") {
-                    mode = superExtend(modes[language], json);
-                }
-                // Normalize
-                if(!mode.events) {
-                    mode.events = {};
-                }
-                if(!mode.commands) {
-                    mode.commands = {};
-                }
-                if(!mode.snippets) {
-                    mode.snippets = {};
-                }
-                modes[language] = mode;
-            } catch (e) {
-                console.error("Error loading mode:", e);
-            } finally {
-                callback && callback();
+            if (!mode.snippets) {
+                mode.snippets = {};
             }
-        });
-    }
-
-    function loadModes() {
-        settings.fs.listFiles(function(err, paths) {
-            if (err) {
-                return console.error("Could not load settings file list");
-            }
-            // Sorting to ensure "default" comes before "user"
-            paths.sort();
-            async.forEach(paths, function(path, next) {
-                if (path.indexOf("/mode/") === 0) {
-                    loadMode(path, next);
-                } else {
-                    next();
-                }
-            }, updateAllModes);
         });
     }
 
     function updateAllModes() {
+        console.log("Updating modes...");
+        normalizeModes();
         updateExtensionMappings();
         eventbus.emit("modesloaded", exports);
         declareAllModeCommands();
-        declareModeEvents();
     }
 
     function updateExtensionMappings() {
@@ -114,21 +52,6 @@ define(function(require, exports, module) {
                     extensionMapping[ext] = language;
                 });
 
-            }
-            var userModePath = "/mode/" + language + ".user.json";
-            settings.fs.watchFile(userModePath, function() {
-                loadMode(userModePath);
-            });
-        });
-    }
-
-    function updateProjectExtensionMappings() {
-        Object.keys(projectModes).forEach(function(language) {
-            var mode = modes[language];
-            if (mode.extensions) {
-                mode.extensions.forEach(function(ext) {
-                    extensionMapping[ext] = language;
-                });
             }
         });
     }
@@ -184,7 +107,7 @@ define(function(require, exports, module) {
 
     function triggerSessionCommandEvent(session, eventname, debounceTimeout) {
         var mode = session.mode;
-        if(!mode) {
+        if (!mode) {
             return;
         }
         var path = session.filename;
@@ -214,7 +137,11 @@ define(function(require, exports, module) {
         return !!commandNames;
     }
 
-    function declareModeEvents() {
+    exports.hook = function() {
+        eventbus.on("settingschanged", function(settings) {
+            modes = settings.getModes();
+            updateAllModes();
+        });
         eventbus.on("sessionchanged", function(session) {
             triggerSessionCommandEvent(session, "change", 1000);
         });
@@ -223,38 +150,21 @@ define(function(require, exports, module) {
         });
         eventbus.on("preview", function(session) {
             var didPreview = triggerSessionCommandEvent(session, "preview");
-            if(!didPreview) {
+            if (!didPreview) {
                 require(["./preview"], function(preview) {
                     preview.showPreview("Not supported.");
                     eventbus.emit("sessionactivityfailed", session, "No preview available");
                 });
             }
         });
-    }
-
-    exports.hook = function() {
-        loadModes();
-        eventbus.on("projectsettingschanged", function(projectSettings) {
-                console.log("SEttings", projectSettings);
-            if(projectSettings.modes) {
-                projectModes = projectSettings.modes;
-                updateAllModes();
-            }
-        });
     };
 
     exports.allModes = function() {
-        return Object.keys(modes).concat(Object.keys(projectModes));
+        return Object.keys(modes);
     };
 
     exports.get = function(language) {
-        var projectMode = projectModes[language];
-        if(projectMode) {
-            var mode = superExtend(modes[language] || {}, projectMode);
-            return mode;
-        } else {
-            return modes[language];
-        }
+        return modes[language];
     };
 
     exports.getModeForPath = function(path) {
@@ -263,7 +173,7 @@ define(function(require, exports, module) {
         if (extensionMapping[ext]) {
             return exports.get(extensionMapping[ext]);
         } else {
-            return exports.get("text");
+            return fallbackMode;
         }
     };
 

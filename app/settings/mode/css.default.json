@@ -1,20 +1,24 @@
 {
-    "name": "CSS",
-    "highlighter": "ace/mode/css",
-    "extensions": ["css"],
+    "modes": {
+        "css": {
+            "name": "CSS",
+            "highlighter": "ace/mode/css",
+            "extensions": ["css"],
 
-    "commands": {
-        "Tools:Beautify": {
-            "scriptUrl": "plugin/beautify/css.js"
-        },
-        "Tools:Check": {
-            "scriptUrl": "plugin/check/css.js"
-        },
-        "Tools:CTags": {
-            "scriptUrl": "plugin/ctags/css.js"
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "plugin/beautify/css.js"
+                },
+                "Tools:Check": {
+                    "scriptUrl": "plugin/check/css.js"
+                },
+                "Tools:CTags": {
+                    "scriptUrl": "plugin/ctags/css.js"
+                }
+            },
+            "events": {
+                "change": ["Tools:Check", "Tools:CTags"]
+            }
         }
-    },
-    "events": {
-        "change": ["Tools:Check", "Tools:CTags"]
     }
 }

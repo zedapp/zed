@@ -1,11 +1,15 @@
 {
-    "name": "Dart",
-    "highlighter": "ace/mode/dart",
-    "extensions": ["dart"],
+    "modes": {
+        "dart": {
+            "name": "Dart",
+            "highlighter": "ace/mode/dart",
+            "extensions": ["dart"],
 
-    "commands": {
-        "Tools:Beautify": {
-            "scriptUrl": "plugin/beautify/javascript.js"
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "plugin/beautify/javascript.js"
+                }
+            }
         }
     }
 }

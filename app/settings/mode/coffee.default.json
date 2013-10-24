@@ -1,20 +1,24 @@
 {
-    "name": "CoffeeScript",
-    "highlighter": "ace/mode/coffee",
-    "extensions": ["cs", "coffee"],
-    "commands": {
-        "Tools:Check": {
-            "scriptUrl": "plugin/check/coffee.js"
-        },
-        "Tools:CTags": {
-            "scriptUrl": "plugin/ctags/coffee.js"
-        },
-        "Tools:Preview": {
-            "scriptUrl": "plugin/preview/coffee.js"
+    "modes": {
+        "coffee": {
+            "name": "CoffeeScript",
+            "highlighter": "ace/mode/coffee",
+            "extensions": ["cs", "coffee"],
+            "commands": {
+                "Tools:Check": {
+                    "scriptUrl": "plugin/check/coffee.js"
+                },
+                "Tools:CTags": {
+                    "scriptUrl": "plugin/ctags/coffee.js"
+                },
+                "Tools:Preview": {
+                    "scriptUrl": "plugin/preview/coffee.js"
+                }
+            },
+            "events": {
+                "change": ["Tools:Check", "Tools:CTags"],
+                "preview": ["Tools:Preview"]
+            }
         }
-    },
-    "events": {
-        "change": ["Tools:Check", "Tools:CTags"],
-        "preview": ["Tools:Preview"]
     }
 }

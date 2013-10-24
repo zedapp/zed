@@ -1,5 +1,9 @@
 {
-    "name": "Nix",
-    "highlighter": "ace/mode/nix",
-    "extensions": ["nix"]
+    "modes": {
+        "nix": {
+            "name": "Nix",
+            "highlighter": "ace/mode/nix",
+            "extensions": ["nix"]
+        }
+    }
 }

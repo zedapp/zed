@@ -1,5 +1,5 @@
 {
-    "settings": {
+    "modes": {
         "xsl": {
             "name": "XSL",
             "highlighter": "ace/mode/xml",

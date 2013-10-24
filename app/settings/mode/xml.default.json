@@ -1,11 +1,15 @@
 {
-    "name": "XML",
-    "highlighter": "ace/mode/xml",
-    "extensions": ["xml"],
+    "modes": {
+        "xml": {
+            "name": "XML",
+            "highlighter": "ace/mode/xml",
+            "extensions": ["xml"],
 
-    "commands": {
-        "Tools:Beautify": {
-            "scriptUrl": "plugin/beautify/html.js"
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "plugin/beautify/html.js"
+                }
+            }
         }
     }
 }

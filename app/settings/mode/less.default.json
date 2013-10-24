@@ -1,5 +1,9 @@
 {
-    "name": "Less",
-    "highlighter": "ace/mode/less",
-    "extensions": ["less"]
+    "modes": {
+        "less": {
+            "name": "Less",
+            "highlighter": "ace/mode/less",
+            "extensions": ["less"]
+        }
+    }
 }

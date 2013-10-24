@@ -1,5 +1,9 @@
 {
-    "name": "Shell",
-    "highlighter": "ace/mode/sh",
-    "extensions": ["sh"]
+    "modes": {
+        "sh": {
+            "name": "Shell",
+            "highlighter": "ace/mode/sh",
+            "extensions": ["sh"]
+        }
+    }
 }

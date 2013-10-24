@@ -1,15 +1,19 @@
 {
-    "name": "Go",
-    "highlighter": "ace/mode/golang",
-    "extensions": ["go"],
+    "modes": {
+        "go": {
+            "name": "Go",
+            "highlighter": "ace/mode/golang",
+            "extensions": ["go"],
 
-    "commands": {
-        "Tools:CTags": {
-            "scriptUrl": "plugin/ctags/go.js"
+            "commands": {
+                "Tools:CTags": {
+                    "scriptUrl": "plugin/ctags/go.js"
+                }
+            },
+
+            "events": {
+                "change": ["Tools:CTags"]
+            }
         }
-    },
-
-    "events": {
-        "change": ["Tools:CTags"]
     }
 }

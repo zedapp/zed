@@ -1,6 +1,6 @@
 {
     "name": "Zed",
-    "version": "0.4.1",
+    "version": "0.5.0",
     "manifest_version": 2,
     "minimum_chrome_version": "27",
     "description": "The opiniated text and code editor",
@@ -23,6 +23,6 @@
         "128": "Icon.png"
     },
     "sandbox": {
-        "pages": ["sandbox.html", "preview.html"]
+        "pages": ["sandbox.html"]
     }
 }

@@ -1,17 +1,21 @@
 {
-    "name": "HTML",
-    "highlighter": "ace/mode/html",
-    "extensions": ["html"],
+    "modes": {
+        "html": {
+            "name": "HTML",
+            "highlighter": "ace/mode/html",
+            "extensions": ["html"],
 
-    "commands": {
-        "Tools:Beautify": {
-            "scriptUrl": "plugin/beautify/html.js"
-        },
-        "Tools:Preview": {
-            "scriptUrl": "plugin/preview/html.js"
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "plugin/beautify/html.js"
+                },
+                "Tools:Preview": {
+                    "scriptUrl": "plugin/preview/html.js"
+                }
+            },
+            "events": {
+                "preview": ["Tools:Preview"]
+            }
         }
-    },
-    "events": {
-        "preview": ["Tools:Preview"]
     }
 }

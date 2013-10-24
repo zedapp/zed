@@ -1,5 +1,9 @@
 {
-    "name": "Clojure",
-    "highlighter": "ace/mode/clojure",
-    "extensions": ["clj"]
+    "modes": {
+        "clojure": {
+            "name": "Clojure",
+            "highlighter": "ace/mode/clojure",
+            "extensions": ["clj"]
+        }
+    }
 }

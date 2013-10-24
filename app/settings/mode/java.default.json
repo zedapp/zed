@@ -1,5 +1,9 @@
 {
-    "name": "Java",
-    "highlighter": "ace/mode/java",
-    "extensions": ["java"]
+    "modes": {
+        "java": {
+            "name": "Java",
+            "highlighter": "ace/mode/java",
+            "extensions": ["java"]
+        }
+    }
 }

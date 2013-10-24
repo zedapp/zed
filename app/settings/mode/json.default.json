@@ -1,19 +1,23 @@
 {
-    "name": "JSON",
-    "highlighter": "ace/mode/json",
-    "extensions": ["json"],
+    "modes": {
+        "json": {
+            "name": "JSON",
+            "highlighter": "ace/mode/json",
+            "extensions": ["json"],
 
-    "commands": {
-        "Tools:Beautify": {
-            "scriptUrl": "plugin/beautify/javascript.js"
-        },
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "plugin/beautify/javascript.js"
+                },
 
-        "Tools:Check": {
-            "scriptUrl": "plugin/check/json.js"
+                "Tools:Check": {
+                    "scriptUrl": "plugin/check/json.js"
+                }
+            },
+
+            "events": {
+                "change": ["Tools:Check"]
+            }
         }
-    },
-
-    "events": {
-        "change": ["Tools:Check"]
     }
 }
