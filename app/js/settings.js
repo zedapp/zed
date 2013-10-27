@@ -1,4 +1,4 @@
-/*global define, _ */
+/*global define, _, chrome */
 define(function(require, exports, module) {
     "use strict";
     var settingsfs = require("./fs/settings");
@@ -34,6 +34,23 @@ define(function(require, exports, module) {
             command.define("Settings:Reload", {
                 exec: function() {
                     loadSettings();
+                },
+                readOnly: true
+            });
+
+            command.define("Settings:Reset", {
+                exec: function() {
+                    require(["./lib/ui"], function(ui) {
+                        ui.prompt({
+                            message: "Are you sure you reset all settings?"
+                        }, function(yes) {
+                            if (yes) {
+                                chrome.storage.sync.clear(function() {
+                                    loadSettings();
+                                });
+                            }
+                        });
+                    });
                 },
                 readOnly: true
             });
@@ -137,9 +154,9 @@ define(function(require, exports, module) {
     }
 
     exports.getPreference = function(key, session) {
-        if(session && session.mode) {
+        if (session && session.mode) {
             var mode = session.mode;
-            if(mode.preferences[key] !== undefined) {
+            if (mode.preferences[key] !== undefined) {
                 return mode.preferences[key];
             }
         }
@@ -176,12 +193,12 @@ define(function(require, exports, module) {
     function loadSettings() {
         console.log("Loading settings");
         require(["./goto", "./project"], function(goto, project) {
-            if(goto.getFileCache().indexOf("/zedsettings.json") !== -1) {
+            if (goto.getFileCache().indexOf("/zedsettings.json") !== -1) {
                 project.readFile("/zedsettings.json", function(err, text) {
                     var base = {};
                     try {
                         base = JSON.parse(text);
-                    } catch(e) {
+                    } catch (e) {
                         console.error(e);
                     }
                     loadUserSettings(base);
@@ -191,7 +208,7 @@ define(function(require, exports, module) {
             }
         });
     }
-    
+
     function loadUserSettings(base) {
         var rootFile = "/settings.user.json";
         settings = superExtend(base, minimumSettings);
