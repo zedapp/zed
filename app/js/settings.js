@@ -80,9 +80,7 @@ define(function(require, exports, module) {
     }
 
     function watchFile(fs, path, callback) {
-        setTimeout(function() {
-            fs.watchFile(path, callback);
-        }, 500);
+        fs.watchFile(path, callback);
         watchers.push({
             fs: fs,
             path: path,
@@ -119,7 +117,6 @@ define(function(require, exports, module) {
                 } else if (imp[0] === '/') {
                     require(["./project"], function(project) {
                         project.readFile(imp, handleFile);
-                        //watchFile(project, imp, loadSettings);
                     });
                 } else {
                     console.warn("Could not import", imp);
@@ -139,7 +136,13 @@ define(function(require, exports, module) {
         });
     }
 
-    exports.getPreference = function(key) {
+    exports.getPreference = function(key, session) {
+        if(session && session.mode) {
+            var mode = session.mode;
+            if(mode.preferences[key] !== undefined) {
+                return mode.preferences[key];
+            }
+        }
         return expandedSettings.preferences[key];
     };
 

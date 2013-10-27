@@ -85,7 +85,7 @@ define(function(require, exports, module) {
 
     function writeFile(path, content, callback) {
         setKey("settings:" + path, content);
-        emitter.emit("filechanged:" + path, path, "changed");
+        //emitter.emit("filechanged:" + path, path, "changed");
         getKey("settings:", function(allDocs) {
             allDocs = allDocs || {};
             if(!allDocs[path]) {

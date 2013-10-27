@@ -1,4 +1,4 @@
-/*global define, $, ace */
+/*global define, $, _, ace */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
@@ -32,41 +32,56 @@ define(function(require, exports, module) {
             "ace/theme/tomorrow_night_blue", "ace/theme/tomorrow_night_bright",
             "ace/theme/tomorrow_night_eighties", "ace/theme/twilight",
             "ace/theme/vibrant_ink", "ace/theme/xcode"],
+        setEditorSettings: function(edit) {
+            var session = edit.getSession();
+            edit.renderer.once("themeLoaded", function(event) {
+                var theme = event.theme;
+                if(theme.isDark) {
+                    $("body").addClass("black");
+                } else {
+                    $("body").removeClass("black");
+                }
+            });
+            edit.setTheme(settings.getPreference("theme", session));
+            edit.setHighlightActiveLine(settings.getPreference("highlightActiveLine", session));
+            edit.setHighlightGutterLine(settings.getPreference("highlightGutterLine", session));
+            edit.setFontSize(settings.getPreference("fontSize", session));
+            edit.setShowPrintMargin(settings.getPreference("showPrintMargin", session));
+            edit.setPrintMarginColumn(settings.getPreference("printMarginColumn", session));
+            edit.setShowInvisibles(settings.getPreference("showInvisibles", session));
+            edit.setDisplayIndentGuides(settings.getPreference("displayIndentGuides", session));
+            edit.setAnimatedScroll(settings.getPreference("animatedScroll", session));
+            edit.setShowFoldWidgets(settings.getPreference("showFoldWidgets", session));
+            edit.setScrollSpeed(settings.getPreference("scrollSpeed", session));
+            edit.renderer.setShowGutter(settings.getPreference("showGutter", session));
+            edit.setHighlightSelectedWord(settings.getPreference("highlightSelectedWord", session));
+            edit.setBehavioursEnabled(settings.getPreference("behaviorsEnabled", session)); // ( -> ()
+            edit.setWrapBehavioursEnabled(settings.getPreference("wrapBehaviorsEnabled", session)); // same as above but with selection
+        },
+        setSessionSettings: function(session) {
+            session.setTabSize(settings.getPreference("tabSize", session));
+            session.setUseSoftTabs(settings.getPreference("useSoftTabs", session));
+            session.setUseWrapMode(settings.getPreference("wordWrap", session));
+        },
+        updateSettings: function() {
+            editor.getEditors(true).forEach(function(edit) {
+                editor.setEditorSettings(edit);
+            });
+            require(["./session_manager"], function(session_manager) {
+                var sessions = session_manager.getSessions();
+                _.each(sessions, function(session) {
+                    editor.setSessionSettings(session);
+                });
+            });
+        },
         hook: function() {
-            eventbus.on("settingschanged", function(settings) {
-                editor.getEditors(true).forEach(function(edit) {
-                    edit.setTheme(settings.getPreference("theme"));
-                    edit.renderer.once("themeLoaded", function(event) {
-                        var theme = event.theme;
-                        if(theme.isDark) {
-                            $("body").addClass("black");
-                        } else {
-                            $("body").removeClass("black");
-                        }
-                    });
-                    edit.setHighlightActiveLine(settings.getPreference("highlightActiveLine"));
-                    edit.setHighlightGutterLine(settings.getPreference("highlightGutterLine"));
-                    edit.setFontSize(settings.getPreference("fontSize"));
-                    edit.setShowPrintMargin(settings.getPreference("showPrintMargin"));
-                    edit.setPrintMarginColumn(settings.getPreference("printMarginColumn"));
-                    edit.setShowInvisibles(settings.getPreference("showInvisibles"));
-                    edit.setDisplayIndentGuides(settings.getPreference("displayIndentGuides"));
-                    edit.setAnimatedScroll(settings.getPreference("animatedScroll"));
-                    edit.setShowFoldWidgets(settings.getPreference("showFoldWidgets"));
-                    edit.setScrollSpeed(settings.getPreference("scrollSpeed"));
-                    edit.renderer.setShowGutter(settings.getPreference("showGutter"));
-                    edit.setHighlightSelectedWord(settings.getPreference("highlightSelectedWord"));
-                    edit.setBehavioursEnabled(settings.getPreference("behaviorsEnabled")); // ( -> ()
-                    edit.setWrapBehavioursEnabled(settings.getPreference("wrapBehaviorsEnabled")); // same as above but with selection
-                });
-                require(["./session_manager"], function(session_manager) {
-                    var sessions = session_manager.getSessions();
-                    Object.keys(sessions).forEach(function(path) {
-                        sessions[path].setTabSize(settings.getPreference("tabSize"));
-                        sessions[path].setUseSoftTabs(settings.getPreference("useSoftTabs"));
-                        sessions[path].setUseWrapMode(settings.getPreference("wordWrap"));
-                    });
-                });
+            eventbus.on("settingschanged", function() {
+                setTimeout(editor.updateSettings);
+            });
+            
+            eventbus.on("switchsession", function(edit, session) {
+                editor.setEditorSettings(edit);
+                editor.setSessionSettings(session);
             });
 
             eventbus.on("filedeleted", function(path) {

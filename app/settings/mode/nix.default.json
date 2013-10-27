@@ -3,7 +3,10 @@
         "nix": {
             "name": "Nix",
             "highlighter": "ace/mode/nix",
-            "extensions": ["nix"]
+            "extensions": ["nix"],
+            "preferences": {
+                "behaviorsEnabled": false
+            }
         }
     }
 }

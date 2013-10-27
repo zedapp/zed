@@ -16,7 +16,8 @@ define(function(require, exports, module) {
         highlighter: "ace/mode/text",
         events: {},
         commands: {},
-        snippets: {}
+        snippets: {},
+        preferences: {}
     };
 
     function normalizeModes() {
@@ -31,6 +32,9 @@ define(function(require, exports, module) {
             }
             if (!mode.snippets) {
                 mode.snippets = {};
+            }
+            if(!mode.preferences) {
+                mode.preferences = {};
             }
         });
     }
