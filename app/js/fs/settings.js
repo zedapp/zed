@@ -15,6 +15,10 @@ define(function(require, exports, module) {
         obj[key] = value;
         chrome.storage.sync.set(obj);
     }
+    
+    function removeKey(key) {
+        chrome.storage.sync.remove(key);
+    }
 
     chrome.storage.onChanged.addListener(function(changes, areaName) {
         if(areaName === "sync") {
@@ -93,7 +97,14 @@ define(function(require, exports, module) {
     }
 
     function deleteFile(path, callback) {
-        callback("Not supported");
+        removeKey("settings:" + path);
+        emitter.emit("filechanged:" + path, path, "deleted");
+        getKey("settings:", function(allDocs) {
+            allDocs = allDocs || {};
+            delete allDocs[path];
+            setKey("settings:", allDocs);
+            callback(null, "OK");
+        });
     }
 
     function getUrl(path, callback) {

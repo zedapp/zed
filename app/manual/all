@@ -1,3 +1,6 @@
+
+/.DS_Store
+/.zedstate
 /cheatsheet.md
 /ctags.md
 /cursors.md
@@ -13,3 +16,4 @@
 /split.md
 /vision.md
 /webfs.md
+/zedsettings.json

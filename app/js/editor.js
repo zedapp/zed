@@ -841,28 +841,28 @@ define(function(require, exports, module) {
     });
 
     // SETTINGS
-    command.define("Settings:Toggle Word Wrap", {
+    command.define("Settings:Preferences:Toggle Word Wrap", {
         exec: function() {
             settings.setPreference("wordWrap", !settings.getPreference("wordWrap"));
         },
         readOnly: true
     });
 
-    command.define("Settings:Increase Font Size", {
+    command.define("Settings:Preferences:Increase Font Size", {
         exec: function() {
             settings.setPreference("fontSize", settings.getPreference("fontSize") + 1);
         },
         readOnly: true
     });
 
-    command.define("Settings:Decrease Font Size", {
+    command.define("Settings:Preferences:Decrease Font Size", {
         exec: function() {
             settings.setPreference("fontSize", settings.getPreference("fontSize") - 1);
         },
         readOnly: true
     });
 
-    command.define("Settings:Toggle Trim Trailing Whitespace On Save", {
+    command.define("Settings:Preferences:Toggle Trim Trailing Whitespace On Save", {
         exec: function() {
             settings.setPreference("trimTrailingWhiteSpaceOnSave", !settings.getPreference("trimTrailingWhiteSpaceOnSave"));
         }
@@ -873,7 +873,7 @@ define(function(require, exports, module) {
         var name = parts[parts.length - 1];
         name = name[0].toUpperCase() + name.substring(1).replace("_", " ");
 
-        command.define("Settings:Theme:" + name, {
+        command.define("Settings:Preferences:Theme:" + name, {
             exec: function() {
                 settings.setPreference("theme", theme);
             },

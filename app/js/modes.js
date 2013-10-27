@@ -64,7 +64,7 @@ define(function(require, exports, module) {
     }
 
     function declareModeCommands(mode) {
-        command.define("Editor:Mode:" + mode.name, {
+        command.define("Settings:Mode:" + mode.name, {
             exec: function(edit, session) {
                 exports.setSessionMode(session, mode);
             },

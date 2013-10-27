@@ -126,7 +126,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Preferences", {
+    exports.define("Settings:Edit Preferences", {
         exec: function() {
             chrome.app.window.create('editor.html?url=settings:&title=Settings&chromeapp=true', {
                 frame: 'chrome',
@@ -137,7 +137,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Toggle Highlight Active Line", {
+    exports.define("Settings:Preferences:Toggle Highlight Active Line", {
         exec: function() {
             require(["./settings"], function(settings) {
                 settings.setPreference("highlightActiveLine", !settings.getPreference("highlightActiveLine"));
@@ -146,7 +146,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Toggle Highlight Gutter Line", {
+    exports.define("Settings:Preferences:Toggle Highlight Gutter Line", {
         exec: function() {
             require(["./settings"], function(settings) {
                 settings.setPreference("highlightGutterLine", !settings.getPreference("highlightGutterLine"));
@@ -155,7 +155,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Toggle Show Print Margin", {
+    exports.define("Settings:Preferences:Toggle Show Print Margin", {
         exec: function() {
             require(["./settings"], function(settings) {
                 settings.setPreference("showPrintMargin", !settings.getPreference("showPrintMargin"));
@@ -164,7 +164,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Toggle Show Invisibles", {
+    exports.define("Settings:Preferences:Toggle Show Invisibles", {
         exec: function() {
             require(["./settings"], function(settings) {
                 settings.setPreference("showInvisibles", !settings.getPreference("showInvisibles"));
@@ -173,7 +173,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Toggle Display Indent Guides", {
+    exports.define("Settings:Preferences:Toggle Display Indent Guides", {
         exec: function() {
             require(["./settings"], function(settings) {
                 settings.setPreference("displayIndentGuides", !settings.getPreference("displayIndentGuides"));
@@ -182,7 +182,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Toggle Show Gutter", {
+    exports.define("Settings:Preferences:Toggle Show Gutter", {
         exec: function() {
             require(["./settings"], function(settings) {
                 settings.setPreference("showGutter", !settings.getPreference("showGutter"));
@@ -191,7 +191,7 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Editor:Reset State", {
+    exports.define("Settings:Reset Editor State", {
         exec: function() {
             require(["./state"], function(state) {
                 state.reset();

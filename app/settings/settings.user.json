@@ -1,6 +1,5 @@
 {
     "imports": [
-        "/zedsettings.json",
         "settings:/preferences.default.json",
         "settings:/modes.default.json",
         "settings:/keys.default.json"

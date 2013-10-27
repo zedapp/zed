@@ -10,13 +10,11 @@ define(function(require, exports, module) {
 
     var minimumSettings = {
         imports: [
-            "/zedsettings.json",
             "settings:/preferences.default.json",
             "settings:/modes.default.json",
             "settings:/keys.default.json"],
         preferences: {},
-        modes: {
-        },
+        modes: {},
         keys: {},
         commands: {}
     };
@@ -59,7 +57,7 @@ define(function(require, exports, module) {
             dest = _.extend({}, dest); // shallow clone
             for (var p in source) {
                 if (source.hasOwnProperty(p)) {
-                    if (!dest[p]) {
+                    if (dest[p] === undefined) {
                         dest[p] = source[p];
                     } else {
                         dest[p] = superExtend(dest[p], source[p]);
@@ -68,7 +66,7 @@ define(function(require, exports, module) {
             }
             return dest;
         } else {
-            return dest ? dest : source;
+            return dest !== undefined ? dest : source;
         }
     }
 
@@ -174,8 +172,26 @@ define(function(require, exports, module) {
 
     function loadSettings() {
         console.log("Loading settings");
+        require(["./goto", "./project"], function(goto, project) {
+            if(goto.getFileCache().indexOf("/zedsettings.json") !== -1) {
+                project.readFile("/zedsettings.json", function(err, text) {
+                    var base = {};
+                    try {
+                        base = JSON.parse(text);
+                    } catch(e) {
+                        console.error(e);
+                    }
+                    loadUserSettings(base);
+                });
+            } else {
+                loadUserSettings({});
+            }
+        });
+    }
+    
+    function loadUserSettings(base) {
         var rootFile = "/settings.user.json";
-        settings = _.extend({}, minimumSettings);
+        settings = superExtend(base, minimumSettings);
         expandedSettings = _.extend({}, settings);
         clearWatchers();
         watchFile(settingsfs, rootFile, loadSettings);

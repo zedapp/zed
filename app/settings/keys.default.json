@@ -274,7 +274,7 @@
             "mac": "Command-P",
             "win": "Ctrl-P"
         },
-        "Settings:Preferences": {
+        "Settings:Edit Preferences": {
             "mac": "Command-,",
             "win": "Ctrl-,"
         }

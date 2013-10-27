@@ -44,6 +44,7 @@ define(function(require, exports, module) {
 
         editor.getEditors(true).forEach(function(edit) {
             $(edit.container).css("top", showContextBar ? (barHeight+1) + "px": "0");
+            edit.resize();
         });
         $("#preview-wrapper").css("top", showContextBar ? (barHeight+1) + "px": "0");
     }
