@@ -18,6 +18,7 @@
 /mode/less.default.json
 /mode/logiql.default.json
 /mode/lua.default.json
+/mode/makefile.default.json
 /mode/markdown.default.json
 /mode/nix.default.json
 /mode/php.default.json

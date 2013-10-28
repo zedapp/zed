@@ -3,12 +3,14 @@ define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
     var command = require("./command");
+    var path = require("./lib/path");
 
     eventbus.declare("modesloaded");
     eventbus.declare("modeset");
 
     var modes = {};
     var extensionMapping = {};
+    var filenameMapping = {};
 
     var fallbackMode = {
         language: "text",
@@ -49,13 +51,17 @@ define(function(require, exports, module) {
 
     function updateExtensionMappings() {
         extensionMapping = {};
-        Object.keys(modes).forEach(function(language) {
-            var mode = modes[language];
+        filenameMapping = {};
+        _.each(modes, function(mode) {
             if (mode.extensions) {
                 mode.extensions.forEach(function(ext) {
-                    extensionMapping[ext] = language;
+                    extensionMapping[ext] = mode.language;
                 });
-
+            }
+            if(mode.filenames) {
+                mode.filenames.forEach(function(filename) {
+                    filenameMapping[filename] = mode.language;
+                });
             }
         });
     }
@@ -171,9 +177,12 @@ define(function(require, exports, module) {
         return modes[language];
     };
 
-    exports.getModeForPath = function(path) {
-        var parts = path.split(".");
-        var ext = parts[parts.length - 1];
+    exports.getModeForPath = function(path_) {
+        var filename = path.filename(path_);
+        if(filenameMapping[filename]) {
+            return exports.get(filenameMapping[filename]);
+        }
+        var ext = path.ext(path_);
         if (extensionMapping[ext]) {
             return exports.get(extensionMapping[ext]);
         } else {

@@ -6,7 +6,7 @@ require.config({
 });
 
 /*global chrome, $ */
-require(["lib/dropbox", "lib/history"], function(dropbox, history) {
+require(["lib/dropbox"], function(dropbox) {
     
     dropbox.authenticate(function(err, dropbox) {
         var treeEl = $("#tree");
@@ -16,7 +16,6 @@ require(["lib/dropbox", "lib/history"], function(dropbox, history) {
 
         function open(path) {
             var url = "dropbox:" + path;
-            history.pushProject(path, url);
             chrome.app.window.create('editor.html?url=' + url + "&title=" + path + '&chromeapp=true', {
                 frame: 'chrome',
                 width: 720,

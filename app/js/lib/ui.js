@@ -1,8 +1,8 @@
-/*global define $ _*/
+/*global define, $, _*/
 define(function(require, exports, module) {
     "use strict";
     var editor = require("../editor");
-    var project = require("../project");
+    var path = require("./path");
     var keyCode = require("./key_code");
     var eventbus = require("../lib/eventbus");
 
@@ -101,7 +101,7 @@ define(function(require, exports, module) {
                         break;
                     }
                     if (currentPath) {
-                        input.val(project.dirname(currentPath) + "/");
+                        input.val(path.dirname(currentPath) + "/");
                         event.preventDefault();
                     }
                     break;
@@ -112,7 +112,7 @@ define(function(require, exports, module) {
                     if (val === '/') {
                         input.val('');
                     } else if (val[caret.start - 1] === '/') {
-                        input.val(project.dirname(input.val()) + "/");
+                        input.val(path.dirname(input.val()) + "/");
                         event.preventDefault();
                     }
                     break;

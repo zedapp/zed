@@ -150,7 +150,9 @@ define(function(require, exports, module) {
             session.setUseSoftTabs(settings.getPreference("useSoftTabs"));
             session.setUseWorker(false);
             modes.setSessionMode(session, mode);
-            if (settings.getPreference("detectIndentation")) whitespace.detectIndentation(session);
+            if (settings.getPreference("detectIndentation")) {
+                whitespace.detectIndentation(session);
+            }
             return session;
         },
         switchSession: function(session, edit) {

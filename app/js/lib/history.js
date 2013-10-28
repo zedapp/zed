@@ -2,7 +2,7 @@
 define(function(require, exports, module) {
 
     var settings = require("../settings");
-
+    
     return {
         pushProject: function(name, url) {
             chrome.storage.local.get("recentProjects", function(results) {
@@ -19,20 +19,25 @@ define(function(require, exports, module) {
                         name: name,
                         url: url
                     });
-                    if (projects.length > settings.getPreference("recentFolderHistory")) {
-                        var numToRemove = projects.length - settings.getPreference("recentFolderHistory");
-                        projects.splice(projects.length - numToRemove, numToRemove);
-                    }
+                    settings.loadSettings(function() {
+                        if (projects.length > settings.getPreference("recentFolderHistory")) {
+                            var numToRemove = projects.length - settings.getPreference("recentFolderHistory");
+                            projects.splice(projects.length - numToRemove, numToRemove);
+                        }
+                        chrome.storage.local.set({
+                            recentProjects: projects
+                        });
+                    });
                 } else {
                     projects.splice(projects.indexOf(existing[0]), 1);
                     projects.splice(0, 0, {
                         name: name,
                         url: url
                     });
+                    chrome.storage.local.set({
+                        recentProjects: projects
+                    });
                 }
-                chrome.storage.local.set({
-                    recentProjects: projects
-                });
             });
         },
         getProjects: function(callback) {

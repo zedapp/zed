@@ -6,23 +6,6 @@ define(function(require, exports, module) {
 
     eventbus.declare('ioavailable');
 
-    exports.dirname = function(path) {
-        if (path[path.length - 1] === '/') {
-            path = path.substring(0, path.length - 1);
-        }
-        var parts = path.split("/");
-        return parts.slice(0, parts.length - 1).join("/");
-    };
-
-    exports.filename = function(path) {
-        if (path[path.length - 1] === '/') {
-            path = path.substring(0, path.length - 1);
-        }
-        var parts = path.split("/");
-        return parts[parts.length - 1];
-    };
-
-
     exports.hook = function() {
         var url = options.get("url");
 
@@ -57,7 +40,9 @@ define(function(require, exports, module) {
             });
         } else if (url.indexOf("dropbox:") === 0) {
             require(["./fs/dropbox"], function(dropboxfs) {
-                dropboxfs(url.substring("dropbox:".length), function(err, io) {
+                var path = url.substring("dropbox:".length);
+                history.pushProject(path, url);
+                dropboxfs(path, function(err, io) {
                     setupMethods(io);
                 });
             });

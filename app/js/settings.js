@@ -187,10 +187,9 @@ define(function(require, exports, module) {
     exports.getSettings = function() {
         return expandedSettings;
     };
+    
 
-    exports.fs = settingsfs;
-
-    function loadSettings() {
+    function loadSettings(callback) {
         console.log("Loading settings");
         require(["./goto", "./project"], function(goto, project) {
             if (goto.getFileCache().indexOf("/zedsettings.json") !== -1) {
@@ -201,15 +200,17 @@ define(function(require, exports, module) {
                     } catch (e) {
                         console.error(e);
                     }
-                    loadUserSettings(base);
+                    loadUserSettings(base, callback);
                 });
             } else {
-                loadUserSettings({});
+                loadUserSettings({}, callback);
             }
         });
     }
+    
+    exports.loadSettings = loadSettings;
 
-    function loadUserSettings(base) {
+    function loadUserSettings(base, callback) {
         var rootFile = "/settings.user.json";
         settings = superExtend(base, minimumSettings);
         expandedSettings = _.extend({}, settings);
@@ -225,6 +226,7 @@ define(function(require, exports, module) {
                 settings = superExtend(settings, json);
                 expandSettings(settings, function() {
                     eventbus.emit("settingschanged", exports);
+                    _.isFunction(callback) && callback(null, exports);
                 });
             } catch (e) {
                 console.error(e);

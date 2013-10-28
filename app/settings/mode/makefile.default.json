@@ -1,0 +1,13 @@
+{
+    "modes": {
+        "makefile": {
+            "name": "Makefile",
+            "highlighter": "ace/mode/makefile",
+            "filenames": ["Makefile"],
+            
+            "preferences": {
+                "useSoftTabs": false
+            }
+        }
+    }
+}

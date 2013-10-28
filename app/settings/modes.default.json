@@ -30,5 +30,7 @@
         "settings:/mode/text.default.json",
         "settings:/mode/xml.default.json",
         "settings:/mode/xsl.default.json",
-        "settings:/mode/yaml.default.json"]
+        "settings:/mode/yaml.default.json",
+        "settings:/mode/makefile.default.json"
+        ]
 }
