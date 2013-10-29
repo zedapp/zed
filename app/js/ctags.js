@@ -27,7 +27,8 @@ define(function(require, exports, module) {
         }).concat(ctags);
         exports.writeCTags();
     };
-
+    
+    // Writes CTags to a file, but at most once every 5 seconds (that's the debounce part)
     exports.writeCTags = _.debounce(function() {
         if(settings.getPreference("hygienicMode") ||
            (settings.getPreference("hygienicModeRemote") && options.get("url").indexOf("http") === 0)) {
@@ -89,10 +90,5 @@ define(function(require, exports, module) {
 
     eventbus.once("ioavailable", function() {
         fetchCTags();
-        project.watchFile("/tags", function(path, change) {
-            if(change === "changed") {
-                fetchCTags();
-            }
-        });
     });
 });

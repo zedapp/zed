@@ -28,7 +28,6 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
         "./session_manager",
         "./modes",
         "./split",
-        "./window",
         "./file",
         "./preview"];
     require(modules, function() {

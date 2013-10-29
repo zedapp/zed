@@ -128,12 +128,23 @@ define(function(require, exports, module) {
                     fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
                 }
             };
-            callback(null, operations);
-            // operations.writeFile("/welcome.md", require("text!../../notes.md"), function(err) {
-            //     if(err) {
-            //         console.error(err);
-            //     }
-            // });
+
+            // In order to not confuse users, we'll prefill the project with a welcome.md file
+            operations.listFiles(function(err, files) {
+                if (files.length === 0) {
+                    var finished = 0;
+                    function doneCallback(err) {
+                        finished++;
+                        if(finished === 2) {
+                            callback(null, operations);
+                        }
+                    }
+                    operations.writeFile("/welcome.md", require("text!../../notes.md"), doneCallback);
+                    operations.writeFile("/.zedstate", '{"session.current": ["/welcome.md"]}', doneCallback);
+                } else {
+                    callback(null, operations);
+                }
+            });
         });
     };
 });

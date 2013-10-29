@@ -1,13 +1,17 @@
-/*global define $ */
+/**
+ * This module implements the read-only manual file system, essentially a simple
+ * way to serve files from the app/manual directory
+ */
+/*global define, $ */
 define(function(require, exports, module) {
     var root = "manual";
-    
+
     module.exports = {
         listFiles: function(callback) {
-            $.get(root+"/all", function(res) {
+            $.get(root + "/all", function(res) {
                 var items = res.split("\n");
-                for(var i = 0; i < items.length; i++) {
-                    if(!items[i]) {
+                for (var i = 0; i < items.length; i++) {
+                    if (!items[i]) {
                         items.splice(i, 1);
                         i--;
                     }
@@ -16,14 +20,16 @@ define(function(require, exports, module) {
             }, "text");
         },
         readFile: function(path, callback) {
-            if(path === "/.zedstate") {
+            if (path === "/.zedstate") {
                 return callback(null, '{"session.current": ["/index.md"]}');
             }
             $.ajax({
-                url: root+path,
+                url: root + path,
                 dataType: "text",
                 success: function(text) {
-                    callback(null, text, {readOnly: true});
+                    callback(null, text, {
+                        readOnly: true
+                    });
                 },
                 error: function(xhr) {
                     callback(xhr.status);

@@ -1,3 +1,14 @@
+/**
+ * This module manages the Zed sandbox, the sandbox is used to run user
+ * provided code, either fetched from the Zed code base itself, or fetched
+ * from remote URLs.
+ * 
+ * Sandboxed code cannot crash Zed itself, but can call some Zed-specific APIs.
+ * These APIs live in the "zed/*" require.js namespace in the sandbox, and are
+ * essentially proxies proxying the request to Zed itself via postMessage
+ * communication. The APIs interfaces are defined in sandbox/interface/zed/*
+ * and the Zed side is implemented in sandbox/impl/zed/*.
+ */
 /*global define, $, _ */
 define(function(require, exports, module) {
     var command = require("./command");
@@ -6,6 +17,10 @@ define(function(require, exports, module) {
     var id;
     var waitingForReply;
 
+    /**
+     * If we would like to reset our sandbox (e.d. to reload code), we can
+     * simply delete and readd the iframe.
+     */
     function resetSandbox() {
         if (sandboxEl) {
             sandboxEl.remove();
@@ -20,6 +35,9 @@ define(function(require, exports, module) {
         resetSandbox();
     };
 
+    /**
+     * Handle a request coming from within the sandbox, and send back a response
+     */
     function handleApiRequest(event) {
         var data = event.data;
         require(["./sandbox/impl/" + data.module], function(mod) {
@@ -59,6 +77,13 @@ define(function(require, exports, module) {
         }
     });
 
+    /**
+     * Programmatically call a sandbox command, the spec argument has the following keys:
+     * - scriptUrl: the URL (http, https or relative local path) of the require.js module
+     *   that implements the command
+     * Any other arguments added in spec are passed along as the first argument to the
+     * module which is executed as a function.
+     */
     exports.execCommand = function(spec, session, callback) {
         id++;
         waitingForReply[id] = callback;

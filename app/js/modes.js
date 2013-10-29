@@ -9,9 +9,14 @@ define(function(require, exports, module) {
     eventbus.declare("modeset");
 
     var modes = {};
+    
+    // Mappings from file extension to mode name, e.g. "js" -> "javascript"
     var extensionMapping = {};
+    
+    // Mappings from particular file names to mode name, e.g. "Makefile" -> "makefile"
     var filenameMapping = {};
 
+    // Mode to use if all else fails
     var fallbackMode = {
         language: "text",
         name: "Plain Text",
@@ -25,6 +30,7 @@ define(function(require, exports, module) {
     function normalizeModes() {
         _.each(modes, function(mode, name) {
             mode.language = name;
+            
             // Normalize
             if (!mode.events) {
                 mode.events = {};
@@ -44,12 +50,12 @@ define(function(require, exports, module) {
     function updateAllModes() {
         console.log("Updating modes...");
         normalizeModes();
-        updateExtensionMappings();
+        updateMappings();
         eventbus.emit("modesloaded", exports);
         declareAllModeCommands();
     }
 
-    function updateExtensionMappings() {
+    function updateMappings() {
         extensionMapping = {};
         filenameMapping = {};
         _.each(modes, function(mode) {
@@ -81,10 +87,12 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
-        Object.keys(mode.commands).forEach(function(name) {
-            var cmd = mode.commands[name];
+        _.each(mode.commands, function(cmd, name) {
             var existingCommand = command.lookup(name);
+            
             if (!existingCommand) {
+                // Declare it as a special mode command, with an implementation
+                // specific to the mode
                 var modeCommands = {};
                 modeCommands[mode.language] = cmd;
                 var commandSpec = {
@@ -111,6 +119,10 @@ define(function(require, exports, module) {
             }
         });
     }
+    
+    /**
+     * This parts handles mode events, e.g. "change", "preview" etc.
+     */
 
     var eventHandlerFn;
     var lastEventPath;

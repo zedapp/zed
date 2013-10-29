@@ -1,5 +1,8 @@
-/*global define, $, _ */
+/**
+ * Implements the preview split mode
+ */
 // TODO: Redo all of this, it's messy and buggy
+/*global define, $, _ */
 define(function(require, exports, module) {
     var resetEditorDiv = require("./split").resetEditorDiv;
     var state = require("./state");
@@ -70,14 +73,6 @@ define(function(require, exports, module) {
         });
         eventbus.on("sessionchanged", delayedUpdate);
         eventbus.on("switchsession", delayedUpdate);
-        /*
-        window.addEventListener("message", function(event) {
-            var data = event.data;
-            if(typeof data === "string" && data.indexOf("preview-scroll: ") === 0) {
-                previewScrollY = +data.substring("preview-scroll: ".length);
-                state.set("preview.scrollY", previewScrollY);
-            }
-        });*/
     };
 
     exports.showPreview = function(html) {
@@ -89,13 +84,9 @@ define(function(require, exports, module) {
     exports.init = function() {
         var data = "data:text/html," + require("text!../preview.html");
         previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><webview id='preview'>").hide();
-        //previewWrapperEl.css("top", "25px");
         $("body").append(previewWrapperEl);
         previewEl = $("#preview");
         previewEl.attr("src", data);
-        /*previewEl.load(function() {
-            previewEl[0].contentWindow.postMessage(previewScrollY, "*");
-        });*/
     };
 
     command.define("Split:Preview", {

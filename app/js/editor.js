@@ -17,8 +17,8 @@ define(function(require, exports, module) {
     var activeEditor = null;
 
     var editor = module.exports = {
-        extMapping: {},
-        themes: ["ace/theme/ambiance", "ace/theme/chaos",
+        themes: [
+            "ace/theme/ambiance", "ace/theme/chaos",
             "ace/theme/chrome", "ace/theme/clouds",
             "ace/theme/clouds_midnight", "ace/theme/cobalt",
             "ace/theme/crimson_editor", "ace/theme/dawn",
@@ -36,7 +36,7 @@ define(function(require, exports, module) {
             var session = edit.getSession();
             edit.renderer.once("themeLoaded", function(event) {
                 var theme = event.theme;
-                if(theme.isDark) {
+                if (theme.isDark) {
                     $("body").addClass("black");
                 } else {
                     $("body").removeClass("black");
@@ -78,7 +78,7 @@ define(function(require, exports, module) {
             eventbus.on("settingschanged", function() {
                 setTimeout(editor.updateSettings);
             });
-            
+
             eventbus.on("switchsession", function(edit, session) {
                 editor.setEditorSettings(edit);
                 editor.setSessionSettings(session);
@@ -95,7 +95,7 @@ define(function(require, exports, module) {
             });
 
             eventbus.on("sessionbeforesave", function() {
-                if(settings.getPreference("trimTrailingWhiteSpaceOnSave")) {
+                if (settings.getPreference("trimTrailingWhiteSpaceOnSave")) {
                     editor.trimTrailingWhitespace(editor.getActiveEditor());
                 }
             });
@@ -130,15 +130,14 @@ define(function(require, exports, module) {
 
             var min = settings.getPreference("trimEmptyLines") ? -1 : 0;
 
-            for (var i = 0, l=lines.length; i < l; i++) {
-                if(i === currentLine) {
+            for (var i = 0, l = lines.length; i < l; i++) {
+                if (i === currentLine) {
                     continue;
                 }
                 var line = lines[i];
                 var index = line.search(/\s+$/);
 
-                if (index > min)
-                    doc.removeInLine(i, index, line.length);
+                if (index > min) doc.removeInLine(i, index, line.length);
             }
         },
         createSession: function(path, content) {
@@ -158,7 +157,7 @@ define(function(require, exports, module) {
         switchSession: function(session, edit) {
             edit = edit || editor.getActiveEditor();
             edit.setSession(session);
-            edit.setReadOnly( !! session.readOnly);
+            edit.setReadOnly(!!session.readOnly);
             eventbus.emit("switchsession", edit, session);
         },
         getActiveEditor: function() {
@@ -189,8 +188,7 @@ define(function(require, exports, module) {
                 selection: session.getSelection().getRange(),
                 lastUse: session.lastUse,
                 undo: undoStack,
-                redo: redoStack,
-                //mode: session.mode.language
+                redo: redoStack
             };
         },
         setSessionState: function(session, state) {
@@ -209,7 +207,6 @@ define(function(require, exports, module) {
             session.getSelection().setSelectionRange(state.selection, false);
             session.setScrollTop(state.scrollTop);
             session.setScrollLeft(state.scrollLeft);
-            //modes.setSessionMode(session, state.mode);
             session.lastUse = state.lastUse;
 
             var undoManager = session.getUndoManager();
@@ -885,6 +882,7 @@ define(function(require, exports, module) {
         }
     });
 
+    // Create theme commands
     editor.themes.forEach(function(theme) {
         var parts = theme.split('/');
         var name = parts[parts.length - 1];

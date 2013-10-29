@@ -1,4 +1,4 @@
-/*global define $*/
+/*global define, $, _ */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
@@ -37,8 +37,7 @@ define(function(require, exports, module) {
 
     function objToDynaTree(obj, sep, path) {
         var elements = [];
-        Object.keys(obj).forEach(function(filename) {
-            var entry = obj[filename];
+        _.each(obj, function(entry, filename) {
             var fullPath = path + sep + filename;
             if (entry === true) {
                 elements.push({
@@ -84,7 +83,9 @@ define(function(require, exports, module) {
                 if (!tree.getActiveNode()) {
                     $(lastFocusEl ? lastFocusEl.li : "#" + treeId +" li:first").focus().click();
                 }
-                ignoreActivate = false;
+                setTimeout(function() {
+                    ignoreActivate = false;
+                });
             }, 100);
         }
         
@@ -134,7 +135,6 @@ define(function(require, exports, module) {
         readOnly: true
     });
     
-    // TODO: Move this to command.js
     command.define("Command:Command Tree", {
         exec: function(edit) {
             showTree("command-tree", edit, command.allCommands().sort(), ":", function(cmd) {

@@ -1,3 +1,6 @@
+/**
+ * This module handles all open editor sessions (i.e. all open files, opening them etc.)
+ */
 /*global define, ace, _ */
 define(function(require, exports, module) {
     "use strict";
@@ -20,8 +23,11 @@ define(function(require, exports, module) {
     eventbus.declare("allsessionsloaded");
 
     var sessions = {};
+    
+    // Used to detect changes in editor state
     var oldstateJSON = null;
 
+    // Currently only used for zed:start
     exports.specialDocs = {}; // {content: ..., mode: ..., readonly: true}
 
     function setupSave(session) {
@@ -48,6 +54,7 @@ define(function(require, exports, module) {
         sessions[path] = session;
     }
 
+    // TODO: Move this to state.js?
     function updateState() {
         state.set("session.current", editor.getEditors().map(function(e) {
             return e.getSession().filename;
@@ -90,6 +97,9 @@ define(function(require, exports, module) {
         });
     }
 
+    /**
+     * Reloads a file when it has been changed on disk (observed by a file watcher)
+     */
     function handleChangedFile(path) {
         var session = sessions[path];
         if(!session) {
@@ -121,6 +131,10 @@ define(function(require, exports, module) {
         });
     }
 
+    /**
+     * Navigates to a file, openeing it if hasn't been opened yet, switching to
+     * it if it's already loaded in memory
+     */
     function go(path, edit, previousSession) {
         edit = edit || editor.getActiveEditor();
         if (!path) {

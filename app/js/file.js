@@ -1,3 +1,6 @@
+/**
+ * This module implements miscelaneous file operations (delete, rename)
+ */
 define(function(require, exports, module) {
     var ui = require("./lib/ui");
     var eventbus = require("./lib/eventbus");

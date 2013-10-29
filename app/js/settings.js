@@ -6,7 +6,6 @@ define(function(require, exports, module) {
     var async = require("./lib/async");
 
     eventbus.declare("settingschanged");
-    eventbus.declare("projectsettingschanged");
 
     var minimumSettings = {
         imports: [
@@ -25,38 +24,20 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.on("ioavailable", loadSettings);
+        
         eventbus.on("sessionsaved", function(session) {
             if (session.filename === "/zedsettings.json") {
                 loadSettings();
             }
         });
-        require(["./command"], function(command) {
-            command.define("Settings:Reload", {
-                exec: function() {
-                    loadSettings();
-                },
-                readOnly: true
-            });
-
-            command.define("Settings:Reset", {
-                exec: function() {
-                    require(["./lib/ui"], function(ui) {
-                        ui.prompt({
-                            message: "Are you sure you reset all settings?"
-                        }, function(yes) {
-                            if (yes) {
-                                chrome.storage.sync.clear(function() {
-                                    loadSettings();
-                                });
-                            }
-                        });
-                    });
-                },
-                readOnly: true
-            });
-        });
     };
 
+    /**
+     * This is a super-charged version of _.extend, it recursively merges
+     * objects and concatenates arrays (but does not add duplicates).
+     * This function does not modify either dest or source, it creates a new
+     * object
+     */
     function superExtend(dest, source) {
         if (_.isArray(dest)) {
             if (!source) {
@@ -87,6 +68,7 @@ define(function(require, exports, module) {
         }
     }
 
+    // Setting file watchers (reload settings when any of them change)
     var watchers = [];
 
     function clearWatchers() {
@@ -105,6 +87,9 @@ define(function(require, exports, module) {
         });
     }
 
+    /**
+     * Recursively import "imports" into the `expandedSettings` variable
+     */
     function expandSettings(setts, callback) {
         setts = _.extend({}, setts);
         var imports = setts.imports;
@@ -187,8 +172,12 @@ define(function(require, exports, module) {
     exports.getSettings = function() {
         return expandedSettings;
     };
-    
 
+    /**
+     * Loads settings, deciding which settings file to use as root:
+     * - if a /zedsettings.json file exists in the project, use it
+     * - otherwise use the /settings.user.json file in the settings project
+     */
     function loadSettings(callback) {
         console.log("Loading settings");
         require(["./goto", "./project"], function(goto, project) {
@@ -207,9 +196,13 @@ define(function(require, exports, module) {
             }
         });
     }
-    
+
     exports.loadSettings = loadSettings;
 
+    /**
+     * Extend the project settings (or the empty object, if not present)
+     * with settings from /settings.user.json from the settings project
+     */
     function loadUserSettings(base, callback) {
         var rootFile = "/settings.user.json";
         settings = superExtend(base, minimumSettings);
@@ -233,4 +226,31 @@ define(function(require, exports, module) {
             }
         });
     }
+
+    require(["./command"], function(command) {
+        command.define("Settings:Reload", {
+            exec: function() {
+                loadSettings();
+            },
+            readOnly: true
+        });
+
+        command.define("Settings:Reset", {
+            exec: function() {
+                require(["./lib/ui"], function(ui) {
+                    ui.prompt({
+                        message: "Are you sure you reset all settings?"
+                    }, function(yes) {
+                        if (yes) {
+                            chrome.storage.sync.clear(function() {
+                                loadSettings();
+                            });
+                        }
+                    });
+                });
+            },
+            readOnly: true
+        });
+    });
+
 });

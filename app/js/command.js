@@ -10,27 +10,23 @@ define(function(require, exports, module) {
 
     eventbus.declare("commandsloaded");
 
-    function defineSandboxCommands(commandObj, cmds) {
-        _.each(cmds, function(cmd, name) {
-            commandObj[name] = {
-                exec: function(edit) {
-                    require(["./sandbox"], function(sandbox) {
-                        sandbox.execCommand(cmd, edit.getSession(), function(err) {
-                            if (err) {
-                                return console.error(err);
-                            }
-                        });
-                    });
-                },
-                readOnly: cmd.readOnly
-            };
-        });
-    }
-
     exports.hook = function() {
         eventbus.on("settingschanged", function(settings) {
             userCommands = {};
-            defineSandboxCommands(userCommands, settings.getCommands());
+            _.each(settings.getCommands(), function(cmd, name) {
+                userCommands[name] = {
+                    exec: function(edit) {
+                        require(["./sandbox"], function(sandbox) {
+                            sandbox.execCommand(cmd, edit.getSession(), function(err) {
+                                if (err) {
+                                    return console.error(err);
+                                }
+                            });
+                        });
+                    },
+                    readOnly: cmd.readOnly
+                };
+            });
         });
     };
 
@@ -49,7 +45,7 @@ define(function(require, exports, module) {
 
     exports.lookup = function(path) {
         var cmd = userCommands[path];
-        if(cmd) {
+        if (cmd) {
             return cmd;
         }
         return commands[path];
@@ -57,15 +53,14 @@ define(function(require, exports, module) {
 
     exports.exec = function(path, edit, session, otherArgs) {
         var def = exports.lookup(path);
-        if(!session.getTokenAt) { // Check if this is a session object
+        if (!session.getTokenAt) { // Check if this is a session object
             console.error("Did not pass in session to exec", arguments);
         }
         def.exec.apply(null, _.toArray(arguments).slice(1));
     };
 
     exports.allCommands = function() {
-        return Object.keys(userCommands)
-               .concat(Object.keys(commands));
+        return Object.keys(userCommands).concat(Object.keys(commands));
     };
 
     exports.define("Command:Enter Command", {
@@ -88,8 +83,8 @@ define(function(require, exports, module) {
                         }
                         var cmd = exports.lookup(result.path);
                         // Filter out commands that are language-specific and don't apply to this mode
-                        if(cmd.modeCommand) {
-                            if(!session.mode) {
+                        if (cmd.modeCommand) {
+                            if (!session.mode) {
                                 return true;
                             }
                             var modeName = session.mode.language;

@@ -1,4 +1,4 @@
-/*global define ace $ _ */
+/*global define, ace, $, _ */
 define(function(require, exports, module) {
     "use strict";
 

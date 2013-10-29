@@ -1,3 +1,7 @@
+/**
+ * The project module exposes the same API as a file system module, but
+ * picks an implementation based on the "url" argument passed to the editor URL
+ */
 /*global define, chrome*/
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");

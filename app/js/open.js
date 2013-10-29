@@ -1,3 +1,7 @@
+/**
+ * This module implements Zed's open screen, with project picker etc.
+ * TODO: Clean this up
+ */
 require.config({
     baseUrl: "js",
     paths: {

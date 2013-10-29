@@ -1,17 +1,24 @@
-/*global define $ */
+/**
+ * This module implements Zed's split views, it supports the following types of splits
+ * - 1 split (full window)
+ * - 2 vertical splits (with 3 variants: 50-50%, 33-66% and 66-33%)
+ * - 3 vertical splits
+ * - 2 vertical split with left one code editor and right one preview panel (handled in preview.js)
+ */
+/*global define, $, */
 define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
     var state = require("./state");
     var editor = require("./editor");
     var command = require("./command");
-    
+
     /**
      * Triggered when the active editor has changed
      * @param edit the new active editor
      */
     eventbus.declare("splitswitched");
-    
+
     /**
      * Triggered when the split configuration has changed
      * @param config (1, 2, 3 or preview)
@@ -40,9 +47,9 @@ define(function(require, exports, module) {
     }
 
     function splitTwo(style) {
-        if(style === undefined) {
-            var currentSplit = ""+state.get("split") || "1";
-            if(currentSplit.indexOf("2-") === 0) {
+        if (style === undefined) {
+            var currentSplit = "" + state.get("split") || "1";
+            if (currentSplit.indexOf("2-") === 0) {
                 // Increase by one
                 style = (parseInt(currentSplit.substring(2), 10) + 1) % 3;
             } else {
@@ -78,11 +85,11 @@ define(function(require, exports, module) {
         editor.setActiveEditor(activeEditor);
         eventbus.emit("splitswitched", activeEditor);
     }
-    
+
     function updateActiveEditorStyling() {
         var activeEditor = editor.getActiveEditor();
         editor.getEditors().forEach(function(edit) {
-            if(edit === activeEditor) {
+            if (edit === activeEditor) {
                 $(edit.container).removeClass("inactive-editor");
             } else {
                 $(edit.container).addClass("inactive-editor");
@@ -114,7 +121,7 @@ define(function(require, exports, module) {
             }
             eventbus.emit("splitswitched", editor.getActiveEditor());
         });
-        
+
         eventbus.on("splitswitched", updateActiveEditorStyling);
     };
 
@@ -123,7 +130,9 @@ define(function(require, exports, module) {
         readOnly: true
     });
     command.define("Split:Vertical Two", {
-        exec: function() { splitTwo(); },
+        exec: function() {
+            splitTwo();
+        },
         readOnly: true
     });
     command.define("Split:Vertical Three", {

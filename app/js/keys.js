@@ -1,3 +1,7 @@
+/**
+ * This module implements all key handing within the editor, overriding ACE's
+ * own key handlers.
+ */
 /*global define, ace, _*/
 define(function(require, exports, module) {
     "use strict";
@@ -25,16 +29,7 @@ define(function(require, exports, module) {
         });
     };
 
-    exports.bind = function(name, bindKey, callback) {
-        commands.push({
-            name: name,
-            bindKey: bindKey,
-            exec: callback,
-            readOnly: true
-        });
-    };
-
-    var bindCommand = exports.bindCommand = function(cmd, bindKey) {
+    function bindCommand(cmd, bindKey) {
         try {
             var c = command.lookup(cmd);
             commands.push({
@@ -49,7 +44,7 @@ define(function(require, exports, module) {
         } catch (e) {
             console.warn("Failed to bind keys to command", cmd, ", maybe not yet defined?", e);
         }
-    };
+    }
 
     exports.getCommandKeys = function() {
         return keys;
@@ -71,6 +66,8 @@ define(function(require, exports, module) {
         loadCommands();
     };
 
+    // Hacky way of temporarily overriding the key handlers, used e.g. during
+    // code complete mode
     var oldOnCommandKey = null;
     var oldOnTextInput = null;
     exports.tempRebindKeys = function(keyHandler) {
