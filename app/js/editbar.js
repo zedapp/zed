@@ -93,7 +93,7 @@ define(function(require, exports, module) {
 
     function switchSession(edit, session) {
         var filename = session.filename;
-        edit.editbarEl.find('.path').text(filename);
+        edit.editbarEl.find('.path').text(filename + (session.readOnly ? " [Read Only]" : ""));
         edit.editbarEl.find('.info').html("");
     }
 });

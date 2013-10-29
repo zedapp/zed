@@ -215,20 +215,23 @@ define(function(require, exports, module) {
     command.define("Navigate:Lookup Symbol", {
         exec: function(edit, session) {
             command.exec("Navigate:Goto", edit, session, "@");
-        }
+        },
+        readOnly: true
     });
 
     command.define("Navigate:Lookup Symbol In File", {
         exec: function(edit, session) {
             command.exec("Navigate:Goto", edit, session, ":@");
-        }
+        },
+        readOnly: true
     });
 
     command.define("Navigate:Lookup Symbol Under Cursor", {
         exec: function(edit, session) {
             var ident = editor.getIdentifierUnderCursor();
             command.exec("Navigate:Goto", edit, session, "@" + ident);
-        }
+        },
+        readOnly: true
     });
 
     exports.getFileCache = function() {

@@ -1,0 +1,24 @@
+{
+    "modes": {
+        "coffee": {
+            "name": "CoffeeScript",
+            "highlighter": "ace/mode/coffee",
+            "extensions": ["cs", "coffee"],
+            "commands": {
+                "Tools:Check": {
+                    "scriptUrl": "settingsfs!/default/mode/coffee/check.js"
+                },
+                "Tools:CTags": {
+                    "scriptUrl": "settingsfs!/default/mode/coffee/ctags.js"
+                },
+                "Tools:Preview": {
+                    "scriptUrl": "settingsfs!/default/mode/coffee/preview.js"
+                }
+            },
+            "events": {
+                "change": ["Tools:Check", "Tools:CTags"],
+                "preview": ["Tools:Preview"]
+            }
+        }
+    }
+}

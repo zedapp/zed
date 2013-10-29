@@ -8,8 +8,9 @@ var debug = false;
 
 require.config({
     paths: {
-        "zed": "js/sandbox/interface/zed"
-    },
+        "zed": "js/sandbox/interface/zed",
+        "settingsfs": "js/sandbox/rjs_loader"
+    }
 });
 
 var source;
@@ -40,6 +41,7 @@ window.addEventListener('message', function(event) {
     var url = data.url;
     var content = data.content;
 
+    source = event.source;
     if(data.replyTo) {
         return handleApiResponse(event);
     }
@@ -48,7 +50,6 @@ window.addEventListener('message', function(event) {
     }
 
     require([url], function(fn) {
-        source = event.source;
         fn(data.data, function(err, result) {
             var message = {replyTo: id, err: err, result: result};
             if(debug) {

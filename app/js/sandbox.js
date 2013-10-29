@@ -41,7 +41,7 @@ define(function(require, exports, module) {
     function handleApiRequest(event) {
         var data = event.data;
         require(["./sandbox/impl/" + data.module], function(mod) {
-            if(!mod[data.call]) {
+            if (!mod[data.call]) {
                 return event.source.postMessage({
                     replyTo: data.id,
                     err: "No such method: " + mod
@@ -60,7 +60,7 @@ define(function(require, exports, module) {
     window.addEventListener('message', function(event) {
         var data = event.data;
         var replyTo = data.replyTo;
-        if(data.type === "request") {
+        if (data.type === "request") {
             return handleApiRequest(event);
         }
         if (!replyTo) {
@@ -89,7 +89,9 @@ define(function(require, exports, module) {
         waitingForReply[id] = callback;
         sandboxEl[0].contentWindow.postMessage({
             url: spec.scriptUrl,
-            data: _.extend({path: session.filename}, spec),
+            data: _.extend({
+                path: session.filename
+            }, spec),
             id: id
         }, '*');
     };

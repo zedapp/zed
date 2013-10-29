@@ -11,9 +11,10 @@ define(function(require, exports, module) {
 
     var minimumSettings = {
         imports: [
-            "/preferences.default.json",
-            "/modes.default.json",
-            "/keys.default.json"],
+            "/default/preferences.json",
+            "/default/modes.json",
+            "/default/keys.json"
+        ],
         preferences: {},
         modes: {},
         keys: {},
@@ -25,7 +26,7 @@ define(function(require, exports, module) {
     var expandedSettings = _.extend({}, settings);
 
     exports.hook = function() {
-        eventbus.on("ioavailable", loadSettings);
+        eventbus.on("loadedfilelist", loadSettings);
 
         eventbus.on("sessionsaved", function(session) {
             if (session.filename === "/zedsettings.json") {
@@ -34,7 +35,6 @@ define(function(require, exports, module) {
         });
 
         require("./fs/settings")(false, function(err, settingsfs_) {
-            console.log("Got settings!");
             settingsfs = settingsfs_;
             eventbus.emit("settingsavailable", settingsfs);
         });
@@ -42,11 +42,13 @@ define(function(require, exports, module) {
 
     function whenSettingsAvailable(fn) {
         if(settingsfs) {
-            fn();
+            fn(settingsfs);
         } else {
             eventbus.once("settingsavailable", fn);
         }
     }
+    
+    exports.whenSettingsAvailable = whenSettingsAvailable;
 
     /**
      * This is a super-charged version of _.extend, it recursively merges
@@ -139,7 +141,7 @@ define(function(require, exports, module) {
 
     function saveSettings() {
         whenSettingsAvailable(function() {
-            settingsfs.writeFile("/settings.user.json", JSON.stringify(settings, null, 4), function(err) {
+            settingsfs.writeFile("/user/settings.json", JSON.stringify(settings, null, 4), function(err) {
                 console.log("Settings written:", err);
             });
         });
@@ -183,7 +185,7 @@ define(function(require, exports, module) {
     /**
      * Loads settings, deciding which settings file to use as root:
      * - if a /zedsettings.json file exists in the project, use it
-     * - otherwise use the /settings.user.json file in the settings project
+     * - otherwise use the /user/settings.json file in the settings project
      */
     function loadSettings(callback) {
         whenSettingsAvailable(function() {
@@ -210,10 +212,10 @@ define(function(require, exports, module) {
 
     /**
      * Extend the project settings (or the empty object, if not present)
-     * with settings from /settings.user.json from the settings project
+     * with settings from /user/settings.json from the settings project
      */
     function loadUserSettings(base, callback) {
-        var rootFile = "/settings.user.json";
+        var rootFile = "/user/settings.json";
         settings = superExtend(base, minimumSettings);
         expandedSettings = _.extend({}, settings);
         clearWatchers();
@@ -221,10 +223,6 @@ define(function(require, exports, module) {
         settingsfs.readFile(rootFile, function(err, settings_) {
             try {
                 var json = JSON.parse(settings_);
-                if (!json.preferences) {
-                    json = {};
-                    setTimeout(saveSettings);
-                }
                 settings = superExtend(settings, json);
                 expandSettings(settings, function() {
                     eventbus.emit("settingschanged", exports);

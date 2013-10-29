@@ -1,0 +1,22 @@
+{
+    "modes": {
+        "markdown": {
+            "name": "Markdown",
+            "highlighter": "ace/mode/markdown",
+            "extensions": ["md", "txt", "markdown"],
+
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "settingsfs!/default/mode/markdown/beautify.js"
+                },
+                "Tools:Preview": {
+                    "scriptUrl": "settingsfs!/default/mode/markdown/preview.js"
+                }
+            },
+            
+            "events": {
+                "preview": ["Tools:Preview"]
+            }
+        }
+    }
+}

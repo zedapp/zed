@@ -10,7 +10,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var editor = require("./editor");
     var command = require("./command");
-    var keys = JSON.parse(require("text!../settings/keys.default.json"));
+    var keys = JSON.parse(require("text!../settings/default/keys.json"));
     var keyboardHandler = null;
     var commands;
 
