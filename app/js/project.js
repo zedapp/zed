@@ -2,7 +2,7 @@
  * The project module exposes the same API as a file system module, but
  * picks an implementation based on the "url" argument passed to the editor URL
  */
-/*global define, chrome*/
+/*global define, chrome, $ */
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var options = require("./lib/options");
@@ -99,9 +99,13 @@ define(function(require, exports, module) {
                 }
             });
         } else {
-            require('./fs/web')(url, options.get('username'), options.get('password'), function(err, io) {
+            require('./fs/web')(url, function(err, io) {
                 setupMethods(io);
             });
         }
+    };
+    
+    exports.init = function() {
+        $("title").text(options.get("title") + " [ Zed ]");
     };
 });

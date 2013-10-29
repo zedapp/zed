@@ -1,6 +1,6 @@
 /*global define, $ */
 define(function(require, exports, module) {
-    return function(url, username, password, callback) {
+    return function(url, callback) {
         var pollInterval = 5000;
 
         var etagCache = window.etagCache = {};
@@ -15,8 +15,6 @@ define(function(require, exports, module) {
             $.ajax({
                 type: "POST",
                 url: url,
-                username: username,
-                password: password,
                 data: {
                     action: 'filelist'
                 },
@@ -51,8 +49,6 @@ define(function(require, exports, module) {
             $.ajax({
                 type: "GET",
                 url: url + path,
-                username: username,
-                password: password,
                 error: function(xhr) {
                     callback(xhr.status);
                 },
@@ -78,8 +74,6 @@ define(function(require, exports, module) {
                 type: 'PUT',
                 data: content,
                 dataType: 'text',
-                username: username,
-                password: password,
                 success: function(res, status, xhr) {
                     etagCache[path] = xhr.getResponseHeader("ETag");
                     callback(null, res);
@@ -94,8 +88,6 @@ define(function(require, exports, module) {
             $.ajax(url + path, {
                 type: 'DELETE',
                 dataType: 'text',
-                username: username,
-                password: password,
                 success: function(res) {
                     callback(null, res);
                 },
@@ -103,14 +95,6 @@ define(function(require, exports, module) {
                     callback(xhr.status);
                 }
             });
-        }
-
-        function getUrl(path, callback) {
-            if (username) {
-                var parts = url.split('://');
-                url = parts[0] + '://' + username + ':' + password + '@' + parts[1];
-            }
-            callback(null, url + path);
         }
 
         var fileWatchers = window.fileWatchers = {};
@@ -130,8 +114,6 @@ define(function(require, exports, module) {
 
                 $.ajax(url + path, {
                     type: 'HEAD',
-                    username: username,
-                    password: password,
                     success: function(data, status, xhr) {
                         var newEtag = xhr.getResponseHeader("ETag");
                         if (etagCache[path] !== newEtag) {
@@ -167,8 +149,6 @@ define(function(require, exports, module) {
         // Check if we're dealing with one file
         $.ajax(url, {
             type: 'HEAD',
-            username: username,
-            password: password,
             success: function(data, status, xhr) {
                 var type = xhr.getResponseHeader("X-Type");
                 if (type === "file") {
@@ -185,7 +165,6 @@ define(function(require, exports, module) {
                     readFile: readFile,
                     writeFile: writeFile,
                     deleteFile: deleteFile,
-                    getUrl: getUrl,
                     watchFile: watchFile,
                     unwatchFile: unwatchFile
                 });
