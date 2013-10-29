@@ -30,16 +30,40 @@ define(function(require, exports, module) {
         // TODO: Generalize this
         if (url.indexOf("settings:") === 0) {
             require(["./fs/settings"], function(settingsfs) {
-                setupMethods(settingsfs);
+                settingsfs(true, function(err, io) {
+                    setupMethods(io);
+                });
             });
         } else if (url.indexOf("manual:") === 0) {
-            require(["./fs/manual"], function(manualfs) {
-                setupMethods(manualfs);
+            require(["./fs/static"], function(staticfs) {
+                staticfs("manual", {
+                    readOnlyFn: function() {
+                        return true;
+                    }
+                }, function(err, io) {
+                    setupMethods(io);
+                });
             });
         } else if (url.indexOf("syncfs:") === 0) {
             require(["./fs/sync"], function(syncfs) {
                 syncfs("notes", function(err, io) {
-                    setupMethods(io);
+                    // In order to not confuse users, we'll prefill the project with a welcome.md file
+                    io.listFiles(function(err, files) {
+                        if (files.length === 0) {
+                            var finished = 0;
+
+                            function doneCallback(err) {
+                                finished++;
+                                if (finished === 2) {
+                                    setupMethods(io);
+                                }
+                            }
+                            io.writeFile("/welcome.md", require("text!../../notes.md"), doneCallback);
+                            io.writeFile("/.zedstate", '{"session.current": ["/welcome.md"]}', doneCallback);
+                        } else {
+                            setupMethods(io);
+                        }
+                    });
                 });
             });
         } else if (url.indexOf("dropbox:") === 0) {
@@ -64,7 +88,7 @@ define(function(require, exports, module) {
                     chrome.fileSystem.chooseEntry({
                         type: "openDirectory"
                     }, function(dir) {
-                        if(!dir) {
+                        if (!dir) {
                             return chrome.app.window.current().close();
                         }
                         var id = chrome.fileSystem.retainEntry(dir);

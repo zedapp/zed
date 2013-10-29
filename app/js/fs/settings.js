@@ -1,6 +1,31 @@
 /*global define, chrome, $ */
 define(function(require, exports, module) {
+
+    return function(isSettingsProject, callback) {
+        require(["./union", "./static", "./sync"], function(unionfs, staticfs, syncfs) {
+            staticfs("settings", {
+                readOnlyFn: function(path) {
+                    if (path.indexOf(".default.") !== -1) {
+                        return true;
+                    }
+                    return false;
+                }
+            }, function(err, settingsStatic) {
+                syncfs("settings", function(err, settingsSync) {
+                    unionfs([settingsSync, settingsStatic], {
+                        watchSelf: !isSettingsProject
+                    }, function(err, io) {
+                        callback(null, io);
+                    });
+                });
+            });
+        });
+    };
+
+    return;
+
     var events = require("../lib/events");
+    var http_cache = require("../lib/http_cache");
 
     var emitter = window.emitter = new events.EventEmitter(false);
 
@@ -15,15 +40,15 @@ define(function(require, exports, module) {
         obj[key] = value;
         chrome.storage.sync.set(obj);
     }
-    
+
     function removeKey(key) {
         chrome.storage.sync.remove(key);
     }
 
     chrome.storage.onChanged.addListener(function(changes, areaName) {
-        if(areaName === "sync") {
+        if (areaName === "sync") {
             Object.keys(changes).forEach(function(key) {
-                if(key.indexOf("settings:") === 0) {
+                if (key.indexOf("settings:") === 0) {
                     var path = key.substring("settings:".length);
                     emitter.emit("filechanged:" + path, path, "changed");
                 }
@@ -36,23 +61,23 @@ define(function(require, exports, module) {
         $.get("settings/all", function(text) {
             var paths = text.split("\n");
             paths.forEach(function(path) {
-                if(path) {
+                if (path) {
                     files.push(path);
                 }
             });
             getKey("settings:", function(docs) {
                 docs = docs || {};
                 Object.keys(docs).forEach(function(path) {
-                    if(!path) {
+                    if (!path) {
                         return;
                     }
                     var parts = path.split('/');
-                    for(var i = 0; i < parts.length; i++) {
-                        if(parts[i][0] === '.') {
+                    for (var i = 0; i < parts.length; i++) {
+                        if (parts[i][0] === '.') {
                             return;
                         }
                     }
-                    if(files.indexOf(path) === -1) {
+                    if (files.indexOf(path) === -1) {
                         files.push(path);
                     }
                 });
@@ -64,18 +89,12 @@ define(function(require, exports, module) {
     function readFile(path, callback) {
         getKey("settings:" + path, function(val) {
             if (!val) {
-                return $.ajax({
-                    method: "GET",
-                    url: "settings" + path,
-                    dataType: "text",
-                    success: function(result) {
-                        callback(null, result, {
-                            readOnly: path.indexOf(".default.") !== -1
-                        });
-                    },
-                    error: function(xhr) {
-                        callback(xhr.status);
-                    }
+                return http_cache.fetchUrl("settings" + path, {
+                    persistent: false
+                }, function(err, result) {
+                    callback(err, result, {
+                        readOnly: path.indexOf(".default.") !== -1
+                    });
                 });
             } else {
                 callback(null, val);
@@ -88,7 +107,7 @@ define(function(require, exports, module) {
         //emitter.emit("filechanged:" + path, path, "changed");
         getKey("settings:", function(allDocs) {
             allDocs = allDocs || {};
-            if(!allDocs[path]) {
+            if (!allDocs[path]) {
                 allDocs[path] = true;
                 setKey("settings:", allDocs);
             }

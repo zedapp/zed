@@ -1,8 +1,8 @@
 {
     "imports": [
-        "settings:/preferences.default.json",
-        "settings:/modes.default.json",
-        "settings:/keys.default.json"
+        "/preferences.default.json",
+        "/modes.default.json",
+        "/keys.default.json"
     ],
     "preferences": {},
     "modes": {},

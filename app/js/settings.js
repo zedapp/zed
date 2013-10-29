@@ -1,17 +1,19 @@
 /*global define, _, chrome */
 define(function(require, exports, module) {
     "use strict";
-    var settingsfs = require("./fs/settings");
+    var settingsfs = null;
     var eventbus = require("./lib/eventbus");
     var async = require("./lib/async");
+    var http_cache = require("./lib/http_cache");
 
     eventbus.declare("settingschanged");
+    eventbus.declare("settingsavailable");
 
     var minimumSettings = {
         imports: [
-            "settings:/preferences.default.json",
-            "settings:/modes.default.json",
-            "settings:/keys.default.json"],
+            "/preferences.default.json",
+            "/modes.default.json",
+            "/keys.default.json"],
         preferences: {},
         modes: {},
         keys: {},
@@ -24,13 +26,27 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.on("ioavailable", loadSettings);
-        
+
         eventbus.on("sessionsaved", function(session) {
             if (session.filename === "/zedsettings.json") {
                 loadSettings();
             }
         });
+
+        require("./fs/settings")(false, function(err, settingsfs_) {
+            console.log("Got settings!");
+            settingsfs = settingsfs_;
+            eventbus.emit("settingsavailable", settingsfs);
+        });
     };
+
+    function whenSettingsAvailable(fn) {
+        if(settingsfs) {
+            fn();
+        } else {
+            eventbus.once("settingsavailable", fn);
+        }
+    }
 
     /**
      * This is a super-charged version of _.extend, it recursively merges
@@ -112,18 +128,7 @@ define(function(require, exports, module) {
                     }
                 }
 
-                if (imp.indexOf("settings:") === 0) {
-                    var path = imp.substring("settings:".length);
-                    settingsfs.readFile(path, handleFile);
-                    watchFile(settingsfs, path, loadSettings);
-                } else if (imp[0] === '/') {
-                    require(["./project"], function(project) {
-                        project.readFile(imp, handleFile);
-                    });
-                } else {
-                    console.warn("Could not import", imp);
-                    next();
-                }
+                settingsfs.readFile(imp, handleFile);
             }, function() {
                 callback();
             });
@@ -133,8 +138,10 @@ define(function(require, exports, module) {
     }
 
     function saveSettings() {
-        settingsfs.writeFile("/settings.user.json", JSON.stringify(settings, null, 4), function(err) {
-            console.log("Settings written:", err);
+        whenSettingsAvailable(function() {
+            settingsfs.writeFile("/settings.user.json", JSON.stringify(settings, null, 4), function(err) {
+                console.log("Settings written:", err);
+            });
         });
     }
 
@@ -179,21 +186,23 @@ define(function(require, exports, module) {
      * - otherwise use the /settings.user.json file in the settings project
      */
     function loadSettings(callback) {
-        console.log("Loading settings");
-        require(["./goto", "./project"], function(goto, project) {
-            if (goto.getFileCache().indexOf("/zedsettings.json") !== -1) {
-                project.readFile("/zedsettings.json", function(err, text) {
-                    var base = {};
-                    try {
-                        base = JSON.parse(text);
-                    } catch (e) {
-                        console.error(e);
-                    }
-                    loadUserSettings(base, callback);
-                });
-            } else {
-                loadUserSettings({}, callback);
-            }
+        whenSettingsAvailable(function() {
+            console.log("Loading settings");
+            require(["./goto", "./project"], function(goto, project) {
+                if (goto.getFileCache().indexOf("/zedsettings.json") !== -1) {
+                    project.readFile("/zedsettings.json", function(err, text) {
+                        var base = {};
+                        try {
+                            base = JSON.parse(text);
+                        } catch (e) {
+                            console.error(e);
+                        }
+                        loadUserSettings(base, callback);
+                    });
+                } else {
+                    loadUserSettings({}, callback);
+                }
+            });
         });
     }
 
@@ -242,8 +251,13 @@ define(function(require, exports, module) {
                         message: "Are you sure you reset all settings?"
                     }, function(yes) {
                         if (yes) {
-                            chrome.storage.sync.clear(function() {
-                                loadSettings();
+                            settingsfs.listFiles(function(err, files) {
+                                async.parForEach(files, function(path, next) {
+                                    settingsfs.deleteFile(path, next);
+                                }, function() {
+                                    console.log("All files removed!");
+                                    loadSettings();
+                                });
                             });
                         }
                     });

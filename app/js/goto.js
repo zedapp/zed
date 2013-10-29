@@ -134,6 +134,10 @@ define(function(require, exports, module) {
 
                 // Filter out paths currently open in an editor
                 resultList = resultList.filter(function(result) {
+                    // Filter out files starting with . (TODO: do this properly)
+                    if(result.path[1] === ".") {
+                        return false;
+                    }
                     for(var i = 0; i < editors.length; i++) {
                         if(editors[i].getSession().filename === result.path) {
                             return false;
