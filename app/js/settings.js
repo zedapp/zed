@@ -11,9 +11,7 @@ define(function(require, exports, module) {
 
     var minimumSettings = {
         imports: [
-            "/default/preferences.json",
-            "/default/modes.json",
-            "/default/keys.json"
+            "/default.json"
         ],
         preferences: {},
         modes: {},
