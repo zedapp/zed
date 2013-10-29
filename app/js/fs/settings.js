@@ -5,7 +5,7 @@ define(function(require, exports, module) {
         require(["./union", "./static", "./sync"], function(unionfs, staticfs, syncfs) {
             staticfs("settings", {
                 readOnlyFn: function(path) {
-                    return path !== "/.zedstate" && path !== "/settings.user.json";
+                    return path !== "/.zedstate" && path !== "/user.json";
                 }
             }, function(err, settingsStatic) {
                 syncfs("settings", function(err, settingsSync) {
