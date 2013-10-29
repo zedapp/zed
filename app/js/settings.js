@@ -139,7 +139,7 @@ define(function(require, exports, module) {
 
     function saveSettings() {
         whenSettingsAvailable(function() {
-            settingsfs.writeFile("/user/settings.json", JSON.stringify(settings, null, 4), function(err) {
+            settingsfs.writeFile("/user.json", JSON.stringify(settings, null, 4), function(err) {
                 console.log("Settings written:", err);
             });
         });
@@ -183,7 +183,7 @@ define(function(require, exports, module) {
     /**
      * Loads settings, deciding which settings file to use as root:
      * - if a /zedsettings.json file exists in the project, use it
-     * - otherwise use the /user/settings.json file in the settings project
+     * - otherwise use the /user.json file in the settings project
      */
     function loadSettings(callback) {
         whenSettingsAvailable(function() {
@@ -210,10 +210,10 @@ define(function(require, exports, module) {
 
     /**
      * Extend the project settings (or the empty object, if not present)
-     * with settings from /user/settings.json from the settings project
+     * with settings from /user.json from the settings project
      */
     function loadUserSettings(base, callback) {
-        var rootFile = "/user/settings.json";
+        var rootFile = "/user.json";
         settings = superExtend(base, minimumSettings);
         expandedSettings = _.extend({}, settings);
         clearWatchers();
