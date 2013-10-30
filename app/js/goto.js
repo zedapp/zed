@@ -44,6 +44,8 @@ define(function(require, exports, module) {
             eventbus.emit("loadedfilelist");
         });
     }
+    
+    exports.fetchFileList = fetchFileList;
 
     exports.hook = function() {
         eventbus.on("ioavailable", fetchFileList);

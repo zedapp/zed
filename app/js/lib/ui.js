@@ -281,14 +281,14 @@ define(function(require, exports, module) {
 
     var blockedEl = null;
 
-    exports.blockUI = function(message) {
+    exports.blockUI = function(message, noSpin) {
         if (blockedEl) {
             return;
         }
         console.log("Blocking UI");
         blockedEl = $("<div id='blockui'>");
         $("body").append(blockedEl);
-        blockedEl.html(message + " <img src='img/loader.gif'/>");
+        blockedEl.html(message + (!noSpin ? " <img src='img/loader.gif'/>" : ""));
     };
 
     exports.unblockUI = function() {
