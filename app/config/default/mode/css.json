@@ -1,0 +1,24 @@
+{
+    "modes": {
+        "css": {
+            "name": "CSS",
+            "highlighter": "ace/mode/css",
+            "extensions": ["css"],
+
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "configfs!/default/mode/css/beautify.js"
+                },
+                "Tools:Check": {
+                    "scriptUrl": "configfs!/default/mode/css/check.js"
+                },
+                "Tools:CTags": {
+                    "scriptUrl": "configfs!/default/mode/css/ctags.js"
+                }
+            },
+            "events": {
+                "change": ["Tools:Check", "Tools:CTags"]
+            }
+        }
+    }
+}

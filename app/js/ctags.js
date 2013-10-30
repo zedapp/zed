@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var options = require("./lib/options");
     var project = require("./project");
-    var settings = require("./settings");
+    var config = require("./config");
 
     /**
      * symbol:
@@ -30,8 +30,8 @@ define(function(require, exports, module) {
     
     // Writes CTags to a file, but at most once every 5 seconds (that's the debounce part)
     exports.writeCTags = _.debounce(function() {
-        if(settings.getPreference("hygienicMode") ||
-           (settings.getPreference("hygienicModeRemote") && options.get("url").indexOf("http") === 0)) {
+        if(config.getPreference("hygienicMode") ||
+           (config.getPreference("hygienicModeRemote") && options.get("url").indexOf("http") === 0)) {
             return;
         }
         var tabbedCTags = ctagsCache.map(function(ctag) {

@@ -6,7 +6,7 @@ The goto box is your swiss army knife of project navigation. To access it, press
 project. Alternatively, `Alt-T` shows a tree representation of the project, this
 is more useful in the exploration stages of working on a project.
 
-The rest of this document focusses on the goto box.
+The rest of this document focuses on the goto box.
 
 Basics
 ------
@@ -21,8 +21,8 @@ open `/my/imaginary/path.txt`, the directories `/my` and `/my/imaginary` will
 automatically be created if they don't already exist.
 
 Files are ordered by score, or if the score is the same, by date last opened,
-therefore recently opened files show up at the top. This makes toggling between
-two files a very quick `Command-E`/`Ctrl-E` followed by `Return`.
+therefore recently opened files show up at the top. This makes switching between
+recent files a very quick `Command-E`/`Ctrl-E` followed by `Return`.
 
 Filtering
 ---------

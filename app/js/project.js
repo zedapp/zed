@@ -27,9 +27,9 @@ define(function(require, exports, module) {
         }
 
         // TODO: Generalize this
-        if (url.indexOf("settings:") === 0) {
-            require(["./fs/settings"], function(settingsfs) {
-                settingsfs(true, function(err, io) {
+        if (url.indexOf("config:") === 0) {
+            require(["./fs/config"], function(configfs) {
+                configfs(true, function(err, io) {
                     setupMethods(io);
                 });
             });

@@ -3,7 +3,7 @@ Zed Features
 
 1. **Edit files remotely with your local preferences:** Need to edit files on a
    remote server, or even in a local VM, and don't like copying your editor's
-   settings files everywhere you go? Zed makes this easy: howto/remote.md
+   config files everywhere you go? Zed makes this easy: howto/remote.md
 2. **Edit files locally:** howto/local.md
 3. **Chrome Application:** Installing via the Chrome Web Store brings a few
    useful features:
@@ -11,7 +11,7 @@ Zed Features
         (including Chromebooks)
      2. Installation is easy with just a few clicks
      3. Upgrades are automatic
-     4. Settings are automatically synchronized between all computers logged into
+     4. Configuration are automatically synchronized between all computers logged into
         with the same Google account.
      5. Special "Notes" space is stored in Google Drive and synchronized between
         computers automatically as well. (Beta feature)
@@ -35,7 +35,7 @@ Zed Features
      * Symbols, Zed indexes all symbols defined in your project and lets you
        quickly jump to the one you're interested in (`Command-R`, `Command-J`)
 9. **Command-based:** Similar Emacs, every key you press in Zed runs a command.
-   Keybinding to command mappings are configurable in the "Settings" projects.
+   Keybinding to command mappings are configurable in the "Configuration" projects.
    Commands can also executed by name via `Command-.` (for a filter list view
    of all comands) or `Command-Shift-.` (for a tree view of all commands).
 10. **(Vertical) split views**: either 1, 2 or 3 vertical splits. (`Command-1`,

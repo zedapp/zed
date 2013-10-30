@@ -1,4 +1,4 @@
-Zed, The Manual
+Zed: The Manual
 ===============
 
 Welcome to Zed's manual. As you can probably tell, this manual is hosted in a
@@ -21,10 +21,11 @@ General topics
 
 * Zed's features: features.md
 * Essential keyboard shortcuts: cheatsheet.md
+* Configuring and extending Zed: configuration.md
+
+Specific features
+-----------------
+
 * Split-view editing: split.md
-* CTags: ctags.md
-* Snippets: snippets.md
-* Managing settings: settings.md
 * Multiple cursors: cursors.md
-* Language modes: languages.md
-* Custom commands: custom_commands.md
+* CTags: ctags.md

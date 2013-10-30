@@ -1,0 +1,20 @@
+{
+    "modes": {
+        "logiql": {
+            "name": "LogiQL",
+            "highlighter": "ace/mode/logiql",
+            "extensions": ["logic", "lql"],
+            "commands": {
+                "Tools:CTags": {
+                    "scriptUrl": "configfs!/default/mode/logiql/ctags.js"
+                }
+            },
+            "events": {
+                "change": ["Tools:CTags"]
+            },
+            "snippets": {
+                "module": "block(`${1:mymodule}) {\n\texport(`{\n\t\t\n\t}),\n\tclauses(`{\n\t\t${2}\n\t})\n} <-- ."
+            }
+        }
+    }
+}

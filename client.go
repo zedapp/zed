@@ -151,9 +151,7 @@ func statusCodeBuffer(code int) []byte {
 
 func waitForLock(path string) {
 	if writeLock[path] != nil {
-		fmt.Println("Waiting for lock on ", path)
 		<-writeLock[path]
-		fmt.Println("Unlocked.")
 	}
 }
 

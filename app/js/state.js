@@ -10,13 +10,13 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var options = require("./lib/options");
     var project = require("./project");
-    var settings = require("./settings");
+    var config = require("./config");
     var state = {};
 
     eventbus.declare("stateloaded");
 
     function isHygienic() {
-        return settings.getPreference("hygienicMode") || (settings.getPreference("hygienicModeRemote") && options.get("url").indexOf("http") === 0);
+        return config.getPreference("hygienicMode") || (config.getPreference("hygienicModeRemote") && options.get("url").indexOf("http") === 0);
     }
 
     module.exports = {

@@ -3,5 +3,5 @@
 cd `dirname $0`/..
 cd app/manual
 find . -name '*.*' | sed 's/^.//' > all
-cd ../settings
+cd ../config
 find . -name '*.*' | sed 's/^.//' > all

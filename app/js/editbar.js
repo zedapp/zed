@@ -61,8 +61,8 @@ define(function(require, exports, module) {
                 }
             });
         });
-        eventbus.on("settingschanged", function(settings) {
-            var fontSize = settings.getPreference("fontSize");
+        eventbus.on("configchanged", function(config) {
+            var fontSize = config.getPreference("fontSize");
             editor.getEditors(true).forEach(function(edit) {
                 var editBarHeight = fontSize + 13;
                 edit.editbarEl.height(editBarHeight);

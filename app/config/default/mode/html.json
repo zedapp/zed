@@ -1,0 +1,21 @@
+{
+    "modes": {
+        "html": {
+            "name": "HTML",
+            "highlighter": "ace/mode/html",
+            "extensions": ["html"],
+
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "configfs!/default/mode/html/beautify.js"
+                },
+                "Tools:Preview": {
+                    "scriptUrl": "configfs!/default/mode/html/preview.js"
+                }
+            },
+            "events": {
+                "preview": ["Tools:Preview"]
+            }
+        }
+    }
+}

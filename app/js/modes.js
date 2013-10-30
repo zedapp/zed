@@ -80,7 +80,7 @@ define(function(require, exports, module) {
     }
 
     function declareModeCommands(mode) {
-        command.define("Settings:Mode:" + mode.name, {
+        command.define("Configuration:Mode:" + mode.name, {
             exec: function(edit, session) {
                 exports.setSessionMode(session, mode);
             },
@@ -160,8 +160,8 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
-        eventbus.on("settingschanged", function(settings) {
-            modes = settings.getModes();
+        eventbus.on("configchanged", function(config) {
+            modes = config.getModes();
             updateAllModes();
         });
         eventbus.on("sessionchanged", function(session) {

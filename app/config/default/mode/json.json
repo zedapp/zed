@@ -1,0 +1,23 @@
+{
+    "modes": {
+        "json": {
+            "name": "JSON",
+            "highlighter": "ace/mode/json",
+            "extensions": ["json"],
+
+            "commands": {
+                "Tools:Beautify": {
+                    "scriptUrl": "configfs!/default/mode/javascript/beautify.js"
+                },
+
+                "Tools:Check": {
+                    "scriptUrl": "configfs!/default/mode/json/check.js"
+                }
+            },
+
+            "events": {
+                "change": ["Tools:Check"]
+            }
+        }
+    }
+}

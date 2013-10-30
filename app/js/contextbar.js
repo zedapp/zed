@@ -2,7 +2,7 @@
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var editor = require("./editor");
-    var settings = require("./settings");
+    var config = require("./config");
     var options = require("./lib/options");
     var command = require("./command");
     var icons = require("./lib/icons");
@@ -12,12 +12,12 @@ define(function(require, exports, module) {
     exports.hook = function() {
         eventbus.once("editorloaded", update);
         eventbus.once("ioavailable", update);
-        eventbus.on("settingschanged", update);
+        eventbus.on("configchanged", update);
     };
 
     function update() {
-        var showContextBar = settings.getPreference("showContextBar");
-        var fontSize = settings.getPreference("fontSize");
+        var showContextBar = config.getPreference("showContextBar");
+        var fontSize = config.getPreference("fontSize");
         var barHeight = fontSize + 13;
 
         if(showContextBar && !barEl) {
@@ -49,9 +49,9 @@ define(function(require, exports, module) {
         $("#preview-wrapper").css("top", showContextBar ? (barHeight+1) + "px": "0");
     }
 
-    command.define("Settings:Toggle Context Bar", {
+    command.define("Configuration:Preferences:Toggle Context Bar", {
         exec: function() {
-            settings.setPreference("showContextBar", !settings.getPreference("showContextBar"));
+            config.setPreference("showContextBar", !config.getPreference("showContextBar"));
         },
         readOnly: true
     });

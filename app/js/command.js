@@ -11,9 +11,9 @@ define(function(require, exports, module) {
     eventbus.declare("commandsloaded");
 
     exports.hook = function() {
-        eventbus.on("settingschanged", function(settings) {
+        eventbus.on("configchanged", function(config) {
             userCommands = {};
-            _.each(settings.getCommands(), function(cmd, name) {
+            _.each(config.getCommands(), function(cmd, name) {
                 userCommands[name] = {
                     exec: function(edit) {
                         require(["./sandbox"], function(sandbox) {
@@ -121,9 +121,9 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Edit Preferences", {
+    exports.define("Configuration:Edit Preferences", {
         exec: function() {
-            chrome.app.window.create('editor.html?url=settings:&title=Settings&chromeapp=true', {
+            chrome.app.window.create('editor.html?url=config:&title=Configuration&chromeapp=true', {
                 frame: 'chrome',
                 width: 720,
                 height: 400,
@@ -132,61 +132,61 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Settings:Preferences:Toggle Highlight Active Line", {
+    exports.define("Configuration:Preferences:Toggle Highlight Active Line", {
         exec: function() {
-            require(["./settings"], function(settings) {
-                settings.setPreference("highlightActiveLine", !settings.getPreference("highlightActiveLine"));
+            require(["./config"], function(config) {
+                config.setPreference("highlightActiveLine", !config.getPreference("highlightActiveLine"));
             });
         },
         readOnly: true
     });
 
-    exports.define("Settings:Preferences:Toggle Highlight Gutter Line", {
+    exports.define("Configuration:Preferences:Toggle Highlight Gutter Line", {
         exec: function() {
-            require(["./settings"], function(settings) {
-                settings.setPreference("highlightGutterLine", !settings.getPreference("highlightGutterLine"));
+            require(["./config"], function(config) {
+                config.setPreference("highlightGutterLine", !config.getPreference("highlightGutterLine"));
             });
         },
         readOnly: true
     });
 
-    exports.define("Settings:Preferences:Toggle Show Print Margin", {
+    exports.define("Configuration:Preferences:Toggle Show Print Margin", {
         exec: function() {
-            require(["./settings"], function(settings) {
-                settings.setPreference("showPrintMargin", !settings.getPreference("showPrintMargin"));
+            require(["./config"], function(config) {
+                config.setPreference("showPrintMargin", !config.getPreference("showPrintMargin"));
             });
         },
         readOnly: true
     });
 
-    exports.define("Settings:Preferences:Toggle Show Invisibles", {
+    exports.define("Configuration:Preferences:Toggle Show Invisibles", {
         exec: function() {
-            require(["./settings"], function(settings) {
-                settings.setPreference("showInvisibles", !settings.getPreference("showInvisibles"));
+            require(["./config"], function(config) {
+                config.setPreference("showInvisibles", !config.getPreference("showInvisibles"));
             });
         },
         readOnly: true
     });
 
-    exports.define("Settings:Preferences:Toggle Display Indent Guides", {
+    exports.define("Configuration:Preferences:Toggle Display Indent Guides", {
         exec: function() {
-            require(["./settings"], function(settings) {
-                settings.setPreference("displayIndentGuides", !settings.getPreference("displayIndentGuides"));
+            require(["./config"], function(config) {
+                config.setPreference("displayIndentGuides", !config.getPreference("displayIndentGuides"));
             });
         },
         readOnly: true
     });
 
-    exports.define("Settings:Preferences:Toggle Show Gutter", {
+    exports.define("Configuration:Preferences:Toggle Show Gutter", {
         exec: function() {
-            require(["./settings"], function(settings) {
-                settings.setPreference("showGutter", !settings.getPreference("showGutter"));
+            require(["./config"], function(config) {
+                config.setPreference("showGutter", !config.getPreference("showGutter"));
             });
         },
         readOnly: true
     });
 
-    exports.define("Settings:Reset Editor State", {
+    exports.define("Configuration:Reset Editor State", {
         exec: function() {
             require(["./state"], function(state) {
                 state.reset();

@@ -3,8 +3,8 @@ define(function(require, exports, module) {
     "use strict";
     var eventbus = require("./lib/eventbus");
     var command = require("./command");
-    var settings = require("./settings");
-    //var defaultSettings = JSON.parse(require("text!../settings/settings.default.json"));
+    var config = require("./config");
+    //var defaultConfiguration = JSON.parse(require("text!../config/config.default.json"));
     var modes = require("./modes");
     var whitespace = ace.require("ace/ext/whitespace");
 
@@ -32,7 +32,7 @@ define(function(require, exports, module) {
             "ace/theme/tomorrow_night_blue", "ace/theme/tomorrow_night_bright",
             "ace/theme/tomorrow_night_eighties", "ace/theme/twilight",
             "ace/theme/vibrant_ink", "ace/theme/xcode"],
-        setEditorSettings: function(edit) {
+        setEditorConfiguration: function(edit) {
             var session = edit.getSession();
             edit.renderer.once("themeLoaded", function(event) {
                 var theme = event.theme;
@@ -42,46 +42,46 @@ define(function(require, exports, module) {
                     $("body").removeClass("black");
                 }
             });
-            edit.setTheme(settings.getPreference("theme", session));
-            edit.setHighlightActiveLine(settings.getPreference("highlightActiveLine", session));
-            edit.setHighlightGutterLine(settings.getPreference("highlightGutterLine", session));
-            edit.setFontSize(settings.getPreference("fontSize", session));
-            edit.setShowPrintMargin(settings.getPreference("showPrintMargin", session));
-            edit.setPrintMarginColumn(settings.getPreference("printMarginColumn", session));
-            edit.setShowInvisibles(settings.getPreference("showInvisibles", session));
-            edit.setDisplayIndentGuides(settings.getPreference("displayIndentGuides", session));
-            edit.setAnimatedScroll(settings.getPreference("animatedScroll", session));
-            edit.setShowFoldWidgets(settings.getPreference("showFoldWidgets", session));
-            edit.setScrollSpeed(settings.getPreference("scrollSpeed", session));
-            edit.renderer.setShowGutter(settings.getPreference("showGutter", session));
-            edit.setHighlightSelectedWord(settings.getPreference("highlightSelectedWord", session));
-            edit.setBehavioursEnabled(settings.getPreference("behaviorsEnabled", session)); // ( -> ()
-            edit.setWrapBehavioursEnabled(settings.getPreference("wrapBehaviorsEnabled", session)); // same as above but with selection
+            edit.setTheme(config.getPreference("theme", session));
+            edit.setHighlightActiveLine(config.getPreference("highlightActiveLine", session));
+            edit.setHighlightGutterLine(config.getPreference("highlightGutterLine", session));
+            edit.setFontSize(config.getPreference("fontSize", session));
+            edit.setShowPrintMargin(config.getPreference("showPrintMargin", session));
+            edit.setPrintMarginColumn(config.getPreference("printMarginColumn", session));
+            edit.setShowInvisibles(config.getPreference("showInvisibles", session));
+            edit.setDisplayIndentGuides(config.getPreference("displayIndentGuides", session));
+            edit.setAnimatedScroll(config.getPreference("animatedScroll", session));
+            edit.setShowFoldWidgets(config.getPreference("showFoldWidgets", session));
+            edit.setScrollSpeed(config.getPreference("scrollSpeed", session));
+            edit.renderer.setShowGutter(config.getPreference("showGutter", session));
+            edit.setHighlightSelectedWord(config.getPreference("highlightSelectedWord", session));
+            edit.setBehavioursEnabled(config.getPreference("behaviorsEnabled", session)); // ( -> ()
+            edit.setWrapBehavioursEnabled(config.getPreference("wrapBehaviorsEnabled", session)); // same as above but with selection
         },
-        setSessionSettings: function(session) {
-            session.setTabSize(settings.getPreference("tabSize", session));
-            session.setUseSoftTabs(settings.getPreference("useSoftTabs", session));
-            session.setUseWrapMode(settings.getPreference("wordWrap", session));
+        setSessionConfiguration: function(session) {
+            session.setTabSize(config.getPreference("tabSize", session));
+            session.setUseSoftTabs(config.getPreference("useSoftTabs", session));
+            session.setUseWrapMode(config.getPreference("wordWrap", session));
         },
-        updateSettings: function() {
+        updateConfiguration: function() {
             editor.getEditors(true).forEach(function(edit) {
-                editor.setEditorSettings(edit);
+                editor.setEditorConfiguration(edit);
             });
             require(["./session_manager"], function(session_manager) {
                 var sessions = session_manager.getSessions();
                 _.each(sessions, function(session) {
-                    editor.setSessionSettings(session);
+                    editor.setSessionConfiguration(session);
                 });
             });
         },
         hook: function() {
-            eventbus.on("settingschanged", function() {
-                setTimeout(editor.updateSettings);
+            eventbus.on("configchanged", function() {
+                setTimeout(editor.updateConfiguration);
             });
 
             eventbus.on("switchsession", function(edit, session) {
-                editor.setEditorSettings(edit);
-                editor.setSessionSettings(session);
+                editor.setEditorConfiguration(edit);
+                editor.setSessionConfiguration(session);
             });
 
             eventbus.on("filedeleted", function(path) {
@@ -95,7 +95,7 @@ define(function(require, exports, module) {
             });
 
             eventbus.on("sessionbeforesave", function() {
-                if (settings.getPreference("trimTrailingWhiteSpaceOnSave")) {
+                if (config.getPreference("trimTrailingWhiteSpaceOnSave")) {
                     editor.trimTrailingWhitespace(editor.getActiveEditor());
                 }
             });
@@ -128,7 +128,7 @@ define(function(require, exports, module) {
             var doc = session.getDocument();
             var lines = doc.getAllLines();
 
-            var min = settings.getPreference("trimEmptyLines") ? -1 : 0;
+            var min = config.getPreference("trimEmptyLines") ? -1 : 0;
 
             for (var i = 0, l = lines.length; i < l; i++) {
                 if (i === currentLine) {
@@ -144,12 +144,12 @@ define(function(require, exports, module) {
             var mode = modes.getModeForPath(path);
             var session = ace.createEditSession(content);
             session.filename = path;
-            session.setUseWrapMode(settings.getPreference("wordWrap"));
-            session.setTabSize(settings.getPreference("tabSize"));
-            session.setUseSoftTabs(settings.getPreference("useSoftTabs"));
+            session.setUseWrapMode(config.getPreference("wordWrap"));
+            session.setTabSize(config.getPreference("tabSize"));
+            session.setUseSoftTabs(config.getPreference("useSoftTabs"));
             session.setUseWorker(false);
             modes.setSessionMode(session, mode);
-            if (settings.getPreference("detectIndentation")) {
+            if (config.getPreference("detectIndentation")) {
                 whitespace.detectIndentation(session);
             }
             return session;
@@ -855,30 +855,30 @@ define(function(require, exports, module) {
     });
 
     // SETTINGS
-    command.define("Settings:Preferences:Toggle Word Wrap", {
+    command.define("Configuration:Preferences:Toggle Word Wrap", {
         exec: function() {
-            settings.setPreference("wordWrap", !settings.getPreference("wordWrap"));
+            config.setPreference("wordWrap", !config.getPreference("wordWrap"));
         },
         readOnly: true
     });
 
-    command.define("Settings:Preferences:Increase Font Size", {
+    command.define("Configuration:Preferences:Increase Font Size", {
         exec: function() {
-            settings.setPreference("fontSize", settings.getPreference("fontSize") + 1);
+            config.setPreference("fontSize", config.getPreference("fontSize") + 1);
         },
         readOnly: true
     });
 
-    command.define("Settings:Preferences:Decrease Font Size", {
+    command.define("Configuration:Preferences:Decrease Font Size", {
         exec: function() {
-            settings.setPreference("fontSize", settings.getPreference("fontSize") - 1);
+            config.setPreference("fontSize", config.getPreference("fontSize") - 1);
         },
         readOnly: true
     });
 
-    command.define("Settings:Preferences:Toggle Trim Trailing Whitespace On Save", {
+    command.define("Configuration:Preferences:Toggle Trim Trailing Whitespace On Save", {
         exec: function() {
-            settings.setPreference("trimTrailingWhiteSpaceOnSave", !settings.getPreference("trimTrailingWhiteSpaceOnSave"));
+            config.setPreference("trimTrailingWhiteSpaceOnSave", !config.getPreference("trimTrailingWhiteSpaceOnSave"));
         }
     });
 
@@ -888,9 +888,9 @@ define(function(require, exports, module) {
         var name = parts[parts.length - 1];
         name = name[0].toUpperCase() + name.substring(1).replace("_", " ");
 
-        command.define("Settings:Preferences:Theme:" + name, {
+        command.define("Configuration:Preferences:Theme:" + name, {
             exec: function() {
-                settings.setPreference("theme", theme);
+                config.setPreference("theme", theme);
             },
             readOnly: true
         });

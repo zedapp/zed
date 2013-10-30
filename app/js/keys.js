@@ -10,7 +10,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var editor = require("./editor");
     var command = require("./command");
-    var keys = JSON.parse(require("text!../settings/default/keys.json"));
+    var keys = JSON.parse(require("text!../config/default/keys.json"));
     var keyboardHandler = null;
     var commands;
 
@@ -55,8 +55,8 @@ define(function(require, exports, module) {
             loadCommands();
             exports.update();
         });
-        eventbus.on("settingschanged", function(settings) {
-            keys = settings.getKeys();
+        eventbus.on("configchanged", function(config) {
+            keys = config.getKeys();
             loadCommands();
             exports.update();
         });

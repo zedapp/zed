@@ -9,8 +9,8 @@ define(function(require, exports, module) {
                 return "img/sync.png";
             case "manual":
                 return "img/manual.png";
-            case "settings":
-                return "img/settings.png";
+            case "config":
+                return "img/config.png";
             case "http":
                 return "img/remote.png";
             case "https":

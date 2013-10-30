@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var keys = JSON.parse(fs.readFileSync("app/settings/keys.default.json"));
+var keys = JSON.parse(fs.readFileSync("app/config/default/keys.json"));
 
 checkKeys("win");
 checkKeys("mac");

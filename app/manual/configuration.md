@@ -1,0 +1,278 @@
+Configuration
+=============
+
+Configuration of Zed happen in two primary locations:
+
+1. The "Configuration" project which you can open from the Zed open screen
+   or using `Command-,`/`Ctrl-,` from any editor.
+2. A /zedconfig.json file in your project.
+
+Zed implements configuration via an in-editor virtual file system that
+automatically synchronizes with Google Drive when connected to the Internet.
+As a result, your configuration is automatically synced between all your
+Chromes connected to your Google account. If you're interested, you can see the
+files by searching for them in your Drive:
+
+    https://drive.google.com/#search/config%7C
+
+There are file watchers on all imported config files, which reload the config
+whenever changes are made to a file. For instance, you can change the `theme`
+setting to something else and within a few seconds you see the colors of all
+your editor windows (on all your devices) change.
+
+Zed's configuration consist of a number of aspects:
+
+* Preferences: for configuring things like font size, theme, tabSize etc.
+* Modes: for configuring language-specific support, e.g. for JavaScript, Go etc.
+* Commands: Zed comes with about a hundred built-in commands, but new commands
+            can also be implemented by the user.
+* Keys: for defining mappings between key sequences and commands.
+
+Configuration is done in Zed's JSON format, which looks as follows:
+
+    {
+        "imports": [...],
+        "preferences": {...},
+        "modes": {...},
+        "commands": {...},
+        "keys": {...}
+    }
+
+Each key is optional.
+
+Zed loads its configuration from two places:
+
+1. If there exists a /zedconfig.json file in your project, it will load that
+   first
+2. /user.json in your Configuration project
+
+Note that when a /zedconfig.json file is present in the project, those configs
+take presedence over the ones defined in user.json in your Configuration
+project.
+
+Each config section will now be discussed separately.
+
+Imports
+-------
+
+Zed config files have a simple importing mechanism. Each file specified in
+the "imports" array will be loaded from the Configuration project, and combined
+with the rest of the file. For instance, if I have this user.json file:
+
+    {
+        "imports": ["/morestuff.json"],
+        "preferences": {
+            "fontSize": 14
+        },
+        "modes": {
+            "javascript": {
+                "extensions": ["js"]
+            }
+        }
+    }
+
+and this /morestuff.json file:
+
+    {
+        "preferences": {
+            "fontSize": 12,
+            "showContextBar": true
+        },
+        "modes": {
+            "javascript": {
+                "extensions": ["es"]
+            }
+        }
+    }
+
+the config that I will end up effectively is:
+
+    {
+        "preferences": {
+            "fontSize": 14,
+            "showContextBar": true
+        },
+        "modes": {
+            "javascript": {
+                "extensions": ["js", "es"]
+            }
+        }
+    }
+
+So: objects are merged and arrays concatenated (without duplicate elements).
+
+Preferences
+-----------
+Preferences can be set in multiple ways:
+
+* Using commands, e.g. "Configuration:Preferences:Toggle Context Bar", these
+  will automatically update the value in your /user.json file.
+* By editing them by hand in your configuration JSON file
+
+All available preferences and their default values can be found in the
+/default/preferences.json file in the Configuration project. They can all
+be overridden in your /user.json or zedconfig.json file or any file you
+import from there.
+
+Modes
+-----
+
+Zed comes with a number of language-modes. These modes can be extended
+arbitrarily by adding to the "modes" section of a configuration.
+
+Let's start with a simple new "zed" mode:
+
+    {
+        "modes": {
+            "name": "Zed",
+            "highlighter": "ace/mode/markdown",
+            "extensions": ["zed"],
+            
+            "commands": {
+                "Tools:Check": {
+                    "scriptUrl": "configfs!/user/mode/zed/check.js"
+                }
+            },
+            
+            "events": {
+                "change": ["Tools:Check"]
+            },
+            
+            "preferences": {
+                "fontSize": 20
+            },
+            
+            "snippets": {
+                "zed": "Zed is ${1:awesome}!"
+            }
+        }
+    }
+
+As can be seen, in a mode we can define a few things:
+
+* "name": defines the name of the mode (to appear in the command list)
+* "highlighter": defines which ACE syntax highlighter to use, highlighters
+  cannot at this time be defined in Zed itself.
+* "extensions": the file extensions to use the mode for.
+* "filenames": the filenames to use the mode for (e.g. "Makefile").
+* "commands": custom commands specific to this mode (see the Commands section
+  later in this document).
+* "events": what events trigger a specific command automatically,
+  currently the following events are supported:
+  - "change": triggered when the text in a file changes (throttled every few
+    seconds).
+  - "preview": triggered when the Preview panel needs updating.
+* "preferences": preference overrides specific to this mode.
+* "snippets": snippets for code completion where ${1}, ${2} etc. are insertion
+  points, optionally you can provide default values using ${1:defaultValue}.
+
+Commands
+--------
+
+In this section you can define custom commands. Each command is mapped to a
+JavaScript require.js module that is to return a simple function taking two
+arguments: options, and a callback to be called when completed.
+
+Let's look at an example config:
+
+    {
+        "commands": {
+            "My Commands:Summarize Document": {
+                "scriptUrl": "configfs!/user/command/summarize.js",
+                "length": "long"
+            }
+        }
+    }
+
+The scriptUrl specified can be any require.js module, loaded from anywhere
+(e.g. http, https). Zed adds a special special "configfs!" notation to load
+modules from the Configuration project itself, which is what we're using here
+(and used for all default Zed modes as well).
+
+In our Configuration project we create a JavaScript file
+/user/command/summarize.js as follows to implement this command:
+
+    define(function(require, exports, module) {
+        var session = require("zed/session");
+        
+        return function(options, callback) {
+            var text = "Zed is cool";
+            
+            if(options.length === "long") {
+                text = "Zed is super duper cool!";
+            }
+            session.setText(options.path, text, callback);
+        };
+    });
+
+This defines a simple require.js module that imports one of Zed's sandbox
+APIs (sandbox.md) named "zed/session", which gives you access to open sessions
+(files). The module exports (returns) a function taking two arguments:
+
+* options: which contains everything specified in the body of the command spec,
+  so in this case: a "scriptUrl" and "length" key, as well as an extra "path"
+  key that specifies the path of the currently active file.
+* callback: which should be called when the command has done its work.
+
+Commands are run in the Zed Sandbox (sandbox.md), which is running in a separate
+process for safety and safe code reloading reasons. As a result, you do not have
+access to all built-in Zed's core APIs. However, there is a growing number of 
+specific APIs exposed to you (like the zed/session API in the example), check
+sandbox.md for more information.
+
+If you make changes to your command's JavaScript and would like to reload,
+you can do so by running the "Sandbox:Reset" command.
+
+For inspiration, it's useful to have a look at the commands defined under
+/default/mode/* in the Configuration project. Here you'll see that many of
+the features of Zed are implemented as sandboxed custom commands:
+
+* On-the-fly checking of code (e.g. using jshint for JavaScript)
+* Code beautification
+* Preview rendering
+* CTag providers
+
+In fact, concepts like "checking" and "beautification" are not built-in Zed
+features at all, they're 100% defined using custom mode-specific sandboxed
+commands.
+
+Keys
+----
+
+Keys specifications specify command name to keyboard shortcut mappings. Let's
+look at a snippet from /default/keys.json:
+
+    {
+        "keys": {
+            "Select:To Line Start": {
+                "mac": "Command-Shift-Left|Shift-Home",
+                "win": "Alt-Shift-Left|Shift-Home"
+            },
+            "Select:Down": "Shift-Down",
+        }
+    }
+
+The format is simple: the command names (either built-in or custom) are the
+keys, the values are either a shortcut key string, or if you want to have
+specific version for Mac and non-Mac platforms, a "mac" and "win" (which is
+also used for Linux) key. To provide multiple options, separate them with a
+pipe (|).
+
+Modifier keys that are supported:
+
+* Ctrl
+* Alt
+* Shift
+* Command (Mac-specific)
+* Option (Mac-specific)
+
+And the following key names (as well as any upper case letter or number):
+
+* Up
+* Down
+* Left
+* Right
+* PageUp
+* PageDown
+* Home
+* End

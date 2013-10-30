@@ -1,7 +1,7 @@
 /*global chrome, define, _*/
 define(function(require, exports, module) {
 
-    var settings = require("../settings");
+    var config = require("../config");
     
     return {
         pushProject: function(name, url) {
@@ -19,9 +19,9 @@ define(function(require, exports, module) {
                         name: name,
                         url: url
                     });
-                    settings.loadSettings(function() {
-                        if (projects.length > settings.getPreference("recentFolderHistory")) {
-                            var numToRemove = projects.length - settings.getPreference("recentFolderHistory");
+                    config.loadConfiguration(function() {
+                        if (projects.length > config.getPreference("recentFolderHistory")) {
+                            var numToRemove = projects.length - config.getPreference("recentFolderHistory");
                             projects.splice(projects.length - numToRemove, numToRemove);
                         }
                         chrome.storage.local.set({
