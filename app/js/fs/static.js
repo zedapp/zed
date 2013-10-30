@@ -40,14 +40,19 @@ define(function(require, exports, module) {
             deleteFile: function(path, callback) {
                 callback(405); // Method not allowed
             },
-            getUrl: function(path, callback) {
-                callback(null, root + path);
-            },
             watchFile: function() {
                 // Nop
             },
             unwatchFile: function() {
                 // Nop
+            },
+            getCacheTag: function(path, callback) {
+                http_cache.fetchUrl(root + path, {}, function(err) {
+                    if(err) {
+                        return callback(404);
+                    }
+                    callback(null, "unchanged");
+                });
             }
         });
     };

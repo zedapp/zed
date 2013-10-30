@@ -8,21 +8,13 @@
 /* global _ */
 define(function(require, exports, module) {
     var async = require("../lib/async");
+    var poll_watcher = require("./poll_watcher");
 
     /**
      * @param options:
      *    - watchSelf: emit change events on things written by this fs
      */
     return function(fileSystems, options, callback) {
-        var pollInterval = 2000;
-
-        var fileWatchers = {};
-        var tagCache = {};
-
-        function hash(content) {
-            return content;
-        }
-
         function attempt(fnName, args, callback) {
             var index = 0;
 
@@ -64,59 +56,46 @@ define(function(require, exports, module) {
                 });
             },
             readFile: function(path, callback) {
-                attempt("readFile", [path], function(err, content) {
+                attempt("readFile", [path], function(err) {
                     if (!err) {
-                        tagCache[path] = hash(content);
+                        fs.getCacheTag(path, function(err, tag) {
+                            if(err) {
+                                return console.error("Could not get tag for", path, "this shouldn't happen.");
+                            }
+                            watcher.setCacheTag(path, tag);
+                        });
                     }
                     callback.apply(null, arguments);
                 });
             },
             writeFile: function(path, content, callback) {
-                if(!options.watchSelf) {
-                    tagCache[path] = hash(content);
-                }
-                attempt("writeFile", [path, content], callback);
+                attempt("writeFile", [path, content], function(err) {
+                    if(!err && !options.watchSelf) {
+                        fs.getCacheTag(path, function(err, tag) {
+                            if(err) {
+                                return console.error("Could not get tag for", path, "this shouldn't happen.");
+                            }
+                            watcher.setCacheTag(path, tag);
+                        });
+                    }
+                    callback.apply(null, arguments);
+                });
             },
             deleteFile: function(path, callback) {
                 attempt("deleteFile", [path], callback);
             },
             watchFile: function(path, callback) {
-                fileWatchers[path] = fileWatchers[path] || [];
-                fileWatchers[path].push(callback);
+                watcher.watchFile(path, callback);
             },
             unwatchFile: function(path, callback) {
-                fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
+                watcher.unwatchFile(path, callback);
+            },
+            getCacheTag: function(path, callback) {
+                attempt("getCacheTag", [path], callback);
             }
         };
-
-        function pollFiles() {
-            Object.keys(fileWatchers).forEach(function(path) {
-                if (fileWatchers[path].length === 0) {
-                    return;
-                }
-
-                attempt("readFile", [path], function(err, content) {
-                    if (err) {
-                        // Removed
-                        fileWatchers[path].forEach(function(fn) {
-                            fn(path, "deleted");
-                        });
-                        fileWatchers[path] = [];
-                    } else {
-                        var tag = hash(content);
-                        if (tagCache[path] !== tag) {
-                            fileWatchers[path].forEach(function(fn) {
-                                console.log(path, "changed!");
-                                fn(path, "changed");
-                            });
-                            tagCache[path] = tag;
-                        }
-                    }
-                });
-            });
-        }
-
-        setInterval(pollFiles, pollInterval);
+        
+        var watcher = poll_watcher(fs, 2000);
 
         callback(null, fs);
     };

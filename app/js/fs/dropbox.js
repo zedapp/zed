@@ -1,7 +1,7 @@
 /*global define, Dropbox, chrome */
 define(function(require, exports, module) {
     var dropbox = require("lib/dropbox");
-
+    var poll_watcher = require("./poll_watcher");
     var async = require("../lib/async");
 
     return function(rootPath, callback) {
@@ -10,9 +10,6 @@ define(function(require, exports, module) {
         if (rootPath[0] !== "/") {
             rootPath = "/" + rootPath;
         }
-
-        var pollInterval = 10000;
-        var tagCache = window.tagCache = {};
 
         dropbox.authenticate(function(err, dropbox) {
             if (err) {
@@ -92,7 +89,7 @@ define(function(require, exports, module) {
                     if (err) {
                         return callback(err);
                     }
-                    tagCache[path] = stat.versionTag;
+                    watcher.setCacheTag(path, stat.versionTag);
                     callback(null, content);
                 });
             }
@@ -105,7 +102,7 @@ define(function(require, exports, module) {
                         if (err) {
                             return callback(err);
                         }
-                        tagCache[path] = stat.versionTag;
+                        watcher.setCacheTag(stat.versionTag);
                         callback();
                     });
                 }
@@ -129,54 +126,37 @@ define(function(require, exports, module) {
                 dropbox.remove(fullPath, callback);
             }
 
-            var fileWatchers = window.fileWatchers = {};
-
-            function watchFile(path, callback) {
-                fileWatchers[path] = fileWatchers[path] || [];
-                fileWatchers[path].push(callback);
-            }
-
-            function unwatchFile(path, callback) {
-                fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
-            }
-
-            function pollFiles() {
-                Object.keys(fileWatchers).forEach(function(path) {
-                    if (fileWatchers[path].length === 0) return;
-
-                    var fullPath = addRoot(path);
-                    dropbox.stat(fullPath, function(err, stat) {
-                        if (err) {
-                            console.error("Got stat error while polling", fullPath, err);
-                            return;
-                        }
-                        var tag = stat.versionTag;
-                        if (stat.isRemoved) {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "deleted");
-                            });
-                            fileWatchers[path] = [];
-                        } else if (tagCache[path] !== tag) {
-                            fileWatchers[path].forEach(function(fn) {
-                                console.log(path, "changed!");
-                                fn(path, "changed");
-                            });
-                            tagCache[path] = tag;
-                        }
-                    });
+            function getCacheTag(path, callback) {
+                var fullPath = addRoot(path);
+                dropbox.stat(fullPath, function(err, stat) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    if (stat.isRemoved) {
+                        return callback(404);
+                    } else {
+                        callback(null, stat.versionTag);
+                    }
                 });
             }
 
-            setInterval(pollFiles, pollInterval);
-
-            callback(null, {
+            var fs = {
                 listFiles: listFiles,
                 readFile: readFile,
                 writeFile: writeFile,
                 deleteFile: deleteFile,
-                watchFile: watchFile,
-                unwatchFile: unwatchFile
-            });
+                watchFile: function(path, callback) {
+                    watcher.watchFile(path, callback);
+                },
+                unwatchFile: function(path, callback) {
+                    watcher.unwatchFile(path, callback);
+                },
+                getCacheTag: getCacheTag
+            };
+            
+            var watcher = poll_watcher(fs, 10000);
+            
+            callback(null, fs);
         });
     };
 });

@@ -1,12 +1,11 @@
 /*global define, $ */
 define(function(require, exports, module) {
+    var poll_watcher = require("./poll_watcher");
+    
     return function(url, callback) {
-        var pollInterval = 5000;
-
-        var etagCache = window.etagCache = {};
-
         var mode = "directory"; // or: file
         var fileModeFilename; // if mode === "file"
+        var watcher;
 
         function listFiles(callback) {
             if (mode === "file") {
@@ -53,7 +52,7 @@ define(function(require, exports, module) {
                     callback(xhr.status);
                 },
                 success: function(res, status, xhr) {
-                    etagCache[path] = xhr.getResponseHeader("ETag");
+                    watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
                     callback(null, res);
                 },
                 dataType: "text"
@@ -75,7 +74,7 @@ define(function(require, exports, module) {
                 data: content,
                 dataType: 'text',
                 success: function(res, status, xhr) {
-                    etagCache[path] = xhr.getResponseHeader("ETag");
+                    watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
                     callback(null, res);
                 },
                 error: function(xhr) {
@@ -97,55 +96,27 @@ define(function(require, exports, module) {
             });
         }
 
-        var fileWatchers = window.fileWatchers = {};
-
         function watchFile(path, callback) {
-            fileWatchers[path] = fileWatchers[path] || [];
-            fileWatchers[path].push(callback);
+            watcher.watchFile(path, callback);
         }
 
         function unwatchFile(path, callback) {
-            fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
+            watcher.unwatchFile(path, callback);
         }
-
-        function pollFiles() {
-            Object.keys(fileWatchers).forEach(function(path) {
-                if (fileWatchers[path].length === 0) return;
-
-                $.ajax(url + path, {
-                    type: 'HEAD',
-                    success: function(data, status, xhr) {
-                        var newEtag = xhr.getResponseHeader("ETag");
-                        if (etagCache[path] !== newEtag) {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "changed");
-                            });
-                            etagCache[path] = newEtag;
-                        }
-                    },
-                    error: function(xhr) {
-                        etagCache[path] = null;
-                        if (xhr.status === 404) {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "deleted");
-                            });
-                            fileWatchers[path] = [];
-                        } else if (xhr.status == 410) {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "disconnected");
-                            });
-                        } else {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "error");
-                            });
-                        }
-                    }
-                });
+        
+        function getCacheTag(path, callback) {
+            $.ajax(url + path, {
+                type: 'HEAD',
+                success: function(data, status, xhr) {
+                    var newEtag = xhr.getResponseHeader("ETag");
+                    callback(null, newEtag);
+                },
+                error: function(xhr) {
+                    callback(xhr.status);
+                }
             });
         }
-
-        setInterval(pollFiles, pollInterval);
-
+        
         // Check if we're dealing with one file
         $.ajax(url, {
             type: 'HEAD',
@@ -160,14 +131,19 @@ define(function(require, exports, module) {
                 }
 
                 console.log("WebFS mode:", mode);
-                callback(null, {
+                var fs = {
                     listFiles: listFiles,
                     readFile: readFile,
                     writeFile: writeFile,
                     deleteFile: deleteFile,
                     watchFile: watchFile,
-                    unwatchFile: unwatchFile
-                });
+                    unwatchFile: unwatchFile,
+                    getCacheTag: getCacheTag
+                };
+                
+                watcher = poll_watcher(fs, 5000);
+                
+                callback(null, fs);
             },
             error: function(xhr) {
                 callback(xhr);

@@ -1,5 +1,8 @@
 /*global define, chrome, _ */
 define(function(require, exports, module) {
+    
+    var poll_watcher = require("./poll_watcher");
+    
     return function(namespace, callback) {
         namespace = namespace + "|";
 
@@ -14,39 +17,6 @@ define(function(require, exports, module) {
         }
 
         chrome.syncFileSystem.requestFileSystem(function(fs) {
-            var pollInterval = 2000;
-
-            var fileWatchers = {};
-            var tagCache = {};
-
-            function pollFiles() {
-                Object.keys(fileWatchers).forEach(function(path) {
-                    if (fileWatchers[path].length === 0) return;
-
-                    var encodedPath = encodePath(path);
-                    fs.root.getFile(encodedPath, {}, function(f) {
-                        f.file(function(stat) {
-                            var tag = "" + stat.lastModifiedDate;
-                            if (tagCache[path] !== tag) {
-                                fileWatchers[path].forEach(function(fn) {
-                                    console.log(path, "changed!");
-                                    fn(path, "changed");
-                                });
-                                tagCache[path] = tag;
-                            }
-                        });
-                    }, function() {
-                        // Removed
-                        fileWatchers[path].forEach(function(fn) {
-                            fn(path, "deleted");
-                        });
-                        fileWatchers[path] = [];
-                    });
-                });
-            }
-
-            setInterval(pollFiles, pollInterval);
-
             var operations = {
                 listFiles: function(callback) {
                     var reader = fs.root.createReader();
@@ -74,7 +44,7 @@ define(function(require, exports, module) {
                         };
                         f.file(function(file) {
                             fileReader.readAsText(file);
-                            tagCache[path] = "" + file.lastModifiedDate;
+                            watcher.setCacheTag(path, ""+file.lastModifiedDate);
                         });
                     }, callback);
                 },
@@ -90,7 +60,7 @@ define(function(require, exports, module) {
                                 fileEntry.createWriter(function(fileWriter) {
                                     fileWriter.onwriteend = function() {
                                         fileEntry.file(function(stat) {
-                                            tagCache[path] = "" + stat.lastModifiedDate;
+                                            watcher.setCacheTag(path, ""+stat.lastModifiedDate);
                                             callback();
                                         });
                                     };
@@ -114,20 +84,25 @@ define(function(require, exports, module) {
                         }, callback);
                     }, callback);
                 },
-                getUrl: function(path, callback) {
-                    var encodedPath = encodePath(path);
-                    fs.root.getFile(encodedPath, {}, function(fileEntry) {
-                        callback(null, fileEntry.toURL());
-                    });
-                },
                 watchFile: function(path, callback) {
-                    fileWatchers[path] = fileWatchers[path] || [];
-                    fileWatchers[path].push(callback);
+                    watcher.watchFile(path, callback);
                 },
                 unwatchFile: function(path, callback) {
-                    fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
+                    watcher.unwatchFile(path, callback);
+                },
+                getCacheTag: function(path, callback) {
+                    var encodedPath = encodePath(path);
+                    fs.root.getFile(encodedPath, {}, function(f) {
+                        f.file(function(stat) {
+                            callback(null, "" + stat.lastModifiedDate);
+                        });
+                    }, function() {
+                        callback(404);
+                    });
                 }
             };
+            
+            var watcher = poll_watcher(operations, 3000);
 
             callback(null, operations);
         });

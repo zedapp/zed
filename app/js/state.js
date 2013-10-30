@@ -34,6 +34,11 @@ define(function(require, exports, module) {
                 }
                 win.onBoundsChanged.addListener(function() {
                     state.set("window", win.getBounds());
+                    require(["./editor"], function(editor) {
+                        editor.getEditors().forEach(function(edit) {
+                            edit.resize();
+                        });
+                    });
                 });
             });
         },

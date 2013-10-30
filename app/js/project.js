@@ -18,7 +18,6 @@ define(function(require, exports, module) {
             exports.readFile = io.readFile;
             exports.writeFile = io.writeFile;
             exports.deleteFile = io.deleteFile;
-            exports.getUrl = io.getUrl;
             exports.watchFile = io.watchFile;
             exports.unwatchFile = io.unwatchFile;
             exports.io = io;
@@ -81,7 +80,9 @@ define(function(require, exports, module) {
                 if (id) {
                     chrome.fileSystem.restoreEntry(id, function(dir) {
                         history.pushProject(dir.fullPath, "local:" + id);
-                        setupMethods(localfs(dir));
+                        localfs(dir, function(err, io) {
+                            setupMethods(io);
+                        });
                     });
                 } else {
                     // Show pick directory
@@ -94,7 +95,9 @@ define(function(require, exports, module) {
                         var id = chrome.fileSystem.retainEntry(dir);
                         history.pushProject(dir.fullPath, "local:" + id);
                         options.set("title", dir.fullPath);
-                        setupMethods(localfs(dir));
+                        localfs(dir, function(err, io) {
+                            setupMethods(io);
+                        });
                     });
                 }
             });

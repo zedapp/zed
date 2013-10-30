@@ -6,11 +6,9 @@
 /*global define chrome _ */
 define(function(require, exports, module) {
     var async = require("../lib/async");
+    var poll_watcher = require("./poll_watcher");
 
-    return function(root) {
-        var pollInterval = 5000;
-        var tagCache = window.tagCache = {};
-
+    return function(root, callback) {
         // Copy and paste from project.js, but cannot important that due to
         // recursive imports.
         function dirname(path) {
@@ -44,38 +42,8 @@ define(function(require, exports, module) {
                 });
             }
         }
-
-        var fileWatchers = window.fileWatchers = {};
-
-        function pollFiles() {
-            Object.keys(fileWatchers).forEach(function(path) {
-                if (fileWatchers[path].length === 0) return;
-
-                var fullPath = addRoot(path);
-                root.getFile(fullPath, {}, function(f) {
-                    f.file(function(stat) {
-                        var tag = ""+stat.lastModifiedDate;
-                        if (tagCache[path] !== tag) {
-                            fileWatchers[path].forEach(function(fn) {
-                                console.log(path, "changed!");
-                                fn(path, "changed");
-                            });
-                            tagCache[path] = tag;
-                        }
-                    });
-                }, function() {
-                    // Removed
-                    fileWatchers[path].forEach(function(fn) {
-                        fn(path, "deleted");
-                    });
-                    fileWatchers[path] = [];
-                });
-            });
-        }
-
-        setInterval(pollFiles, pollInterval);
-
-        return {
+        
+        var fs = {
             listFiles: function(callback) {
                 var files = [];
 
@@ -110,7 +78,7 @@ define(function(require, exports, module) {
                     };
                     f.file(function(file) {
                         fileReader.readAsText(file);
-                        tagCache[path] = ""+file.lastModifiedDate;
+                        watcher.setCacheTag(path, ""+file.lastModifiedDate);
                     });
                 }, callback);
             },
@@ -131,7 +99,7 @@ define(function(require, exports, module) {
                                 fileEntry.createWriter(function(fileWriter) {
                                     fileWriter.onwriteend = function() {
                                         fileEntry.file(function(stat) {
-                                            tagCache[path] = ""+stat.lastModifiedDate;
+                                            watcher.setCacheTag(path, ""+stat.lastModifiedDate);
                                             callback();
                                         });
                                     };
@@ -156,19 +124,26 @@ define(function(require, exports, module) {
                     }, callback);
                 });
             },
-            getUrl: function(path, callback) {
-                var fullPath = addRoot(path);
-                root.getFile(fullPath, {}, function(fileEntry) {
-                    callback(null, fileEntry.toURL());
-                });
-            },
             watchFile: function(path, callback) {
-                fileWatchers[path] = fileWatchers[path] || [];
-                fileWatchers[path].push(callback);
+                watcher.watchFile(path, callback);
             },
             unwatchFile: function(path, callback) {
-                fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
+                watcher.unwatchFile(path, callback);
+            },
+            getCacheTag: function(path, callback) {
+                var fullPath = addRoot(path);
+                root.getFile(fullPath, {}, function(f) {
+                    f.file(function(stat) {
+                        var tag = ""+stat.lastModifiedDate;
+                        callback(null, tag);
+                    });
+                }, function() {
+                    callback(404);
+                });
             }
         };
+        
+        var watcher = poll_watcher(fs, 3000);
+        callback(null, fs);
     };
 });
