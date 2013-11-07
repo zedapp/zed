@@ -4,8 +4,20 @@
             "name": "Nix",
             "highlighter": "ace/mode/nix",
             "extensions": ["nix"],
+            "commands": {
+                "Tools:CTags": {
+                    "scriptUrl": "configfs!/default/mode/nix/ctags.js"
+                }
+            },
+            "events": {
+                "change": ["Tools:CTags"]
+            },
+            "snippets": {
+                "mkDerivation": "mkDerivation {\n\tname = \"${1}\";\n\tsrc = ${2};\n}"
+            },
             "preferences": {
-                "behaviorsEnabled": false
+                "behaviorsEnabled": false,
+                "tabSize": 2
             }
         }
     }

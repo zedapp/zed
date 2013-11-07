@@ -9,10 +9,10 @@ define(function(require, exports, module) {
     eventbus.declare("modeset");
 
     var modes = {};
-    
+
     // Mappings from file extension to mode name, e.g. "js" -> "javascript"
     var extensionMapping = {};
-    
+
     // Mappings from particular file names to mode name, e.g. "Makefile" -> "makefile"
     var filenameMapping = {};
 
@@ -30,7 +30,7 @@ define(function(require, exports, module) {
     function normalizeModes() {
         _.each(modes, function(mode, name) {
             mode.language = name;
-            
+
             // Normalize
             if (!mode.events) {
                 mode.events = {};
@@ -89,7 +89,7 @@ define(function(require, exports, module) {
 
         _.each(mode.commands, function(cmd, name) {
             var existingCommand = command.lookup(name);
-            
+
             if (!existingCommand) {
                 // Declare it as a special mode command, with an implementation
                 // specific to the mode
@@ -119,7 +119,7 @@ define(function(require, exports, module) {
             }
         });
     }
-    
+
     /**
      * This parts handles mode events, e.g. "change", "preview" etc.
      */
@@ -209,6 +209,7 @@ define(function(require, exports, module) {
         if (mode) {
             session.mode = mode;
             session.setMode(mode.highlighter);
+            session.clearAnnotations();
             eventbus.emit("modeset", session, mode);
         }
     };
