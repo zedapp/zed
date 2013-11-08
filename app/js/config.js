@@ -11,8 +11,7 @@ define(function(require, exports, module) {
 
     var minimumConfiguration = {
         imports: [
-            "/default.json"
-        ],
+            "/default.json"],
         preferences: {},
         modes: {},
         keys: {},
@@ -39,13 +38,13 @@ define(function(require, exports, module) {
     };
 
     function whenConfigurationAvailable(fn) {
-        if(configfs) {
+        if (configfs) {
             fn(configfs);
         } else {
             eventbus.once("configavailable", fn);
         }
     }
-    
+
     exports.whenConfigurationAvailable = whenConfigurationAvailable;
 
     /**
@@ -138,11 +137,7 @@ define(function(require, exports, module) {
     }
 
     function saveConfiguration() {
-        whenConfigurationAvailable(function() {
-            configfs.writeFile("/user.json", JSON.stringify(config, null, 4), function(err) {
-                console.log("Configuration written:", err);
-            });
-        });
+
     }
 
     exports.getPreference = function(key, session) {
@@ -157,6 +152,23 @@ define(function(require, exports, module) {
 
     exports.setPreference = function(key, value) {
         config.preferences[key] = value;
+        whenConfigurationAvailable(function() {
+            // Load user.json just in case
+            configfs.readFile("/user.json", function(err, text) {
+                try {
+                    var config = JSON.parse(text);
+                    config.preferences = config.preferences || {};
+                    config.preferences[key] = value;
+                    configfs.writeFile("/user.json", JSON.stringify(config, null, 4), function(err) {
+                        if(err) {
+                            console.error("Error during writing config:", err);
+                        }
+                    });
+                } catch (e) {
+                    console.error("Error during writing config:", e);
+                }
+            });
+        });
         saveConfiguration();
     };
 
@@ -262,5 +274,9 @@ define(function(require, exports, module) {
             readOnly: true
         });
     });
+
+    exports.getC = function() {
+        return config;
+    };
 
 });
