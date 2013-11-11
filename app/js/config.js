@@ -4,7 +4,6 @@ define(function(require, exports, module) {
     var configfs = null;
     var eventbus = require("./lib/eventbus");
     var async = require("./lib/async");
-    var http_cache = require("./lib/http_cache");
 
     eventbus.declare("configchanged");
     eventbus.declare("configavailable");
@@ -19,6 +18,7 @@ define(function(require, exports, module) {
     };
 
     var config = _.extend({}, minimumConfiguration);
+    var userConfig = _.extend({}, minimumConfiguration); // Cache of user.json file
 
     var expandedConfiguration = _.extend({}, config);
 
@@ -153,19 +153,10 @@ define(function(require, exports, module) {
     exports.setPreference = function(key, value) {
         config.preferences[key] = value;
         whenConfigurationAvailable(function() {
-            // Load user.json just in case
-            configfs.readFile("/user.json", function(err, text) {
-                try {
-                    var config = JSON.parse(text);
-                    config.preferences = config.preferences || {};
-                    config.preferences[key] = value;
-                    configfs.writeFile("/user.json", JSON.stringify(config, null, 4), function(err) {
-                        if(err) {
-                            console.error("Error during writing config:", err);
-                        }
-                    });
-                } catch (e) {
-                    console.error("Error during writing config:", e);
+            userConfig.preferences[key] = value;
+            configfs.writeFile("/user.json", JSON.stringify(config, null, 4), function(err) {
+                if(err) {
+                    console.error("Error during writing config:", err);
                 }
             });
         });
@@ -233,6 +224,7 @@ define(function(require, exports, module) {
         configfs.readFile(rootFile, function(err, config_) {
             try {
                 var json = JSON.parse(config_);
+                userConfig = json;
                 config = superExtend(config, json);
                 expandConfiguration(config, function() {
                     eventbus.emit("configchanged", exports);

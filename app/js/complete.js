@@ -8,7 +8,8 @@ define(function(require, exports, module) {
     var completers = [
         ace.require("ace/autocomplete/text_completer"),
         require("./complete/snippet"),
-        require("./complete/ctags")
+        require("./complete/ctags"),
+        require("./complete/builtins")
     ];
 
     exports.addCompleter = function(completer) {

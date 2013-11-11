@@ -41,7 +41,10 @@ define(function(require, exports, module) {
             if (!mode.snippets) {
                 mode.snippets = {};
             }
-            if(!mode.preferences) {
+            if (!mode.builtins) {
+                mode.builtins = [];
+            }
+            if (!mode.preferences) {
                 mode.preferences = {};
             }
         });
@@ -64,7 +67,7 @@ define(function(require, exports, module) {
                     extensionMapping[ext] = mode.language;
                 });
             }
-            if(mode.filenames) {
+            if (mode.filenames) {
                 mode.filenames.forEach(function(filename) {
                     filenameMapping[filename] = mode.language;
                 });
@@ -191,7 +194,7 @@ define(function(require, exports, module) {
 
     exports.getModeForPath = function(path_) {
         var filename = path.filename(path_);
-        if(filenameMapping[filename]) {
+        if (filenameMapping[filename]) {
             return exports.get(filenameMapping[filename]);
         }
         var ext = path.ext(path_);
