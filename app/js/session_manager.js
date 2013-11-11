@@ -23,7 +23,7 @@ define(function(require, exports, module) {
     eventbus.declare("allsessionsloaded");
 
     var sessions = {};
-    
+
     // Used to detect changes in editor state
     var oldstateJSON = null;
 
@@ -34,10 +34,13 @@ define(function(require, exports, module) {
         var saveTimer = null;
         var path = session.filename;
         session.on('change', function(delta) {
-            if(session.ignoreChange)
+            if(session.ignoreChange) {
                 return;
+            }
             eventbus.emit("sessionchanged", session, delta);
-            if (saveTimer) clearTimeout(saveTimer);
+            if (saveTimer) {
+                clearTimeout(saveTimer);
+            }
             saveTimer = setTimeout(function() {
                 eventbus.emit("sessionactivitystarted", session, "Saving");
                 eventbus.emit("sessionbeforesave", session);
@@ -57,7 +60,11 @@ define(function(require, exports, module) {
     // TODO: Move this to state.js?
     function updateState() {
         state.set("session.current", editor.getEditors().map(function(e) {
-            return e.getSession().filename;
+            if(e.getSession().dontPersist) {
+                return "zed:start";
+            } else {
+                return e.getSession().filename;
+            }
         }));
 
         var openDocumentList = Object.keys(sessions);
@@ -70,7 +77,10 @@ define(function(require, exports, module) {
 
         var openDocuments = {};
         openDocumentList.slice(0, 25).forEach(function(path) {
-            openDocuments[path] = editor.getSessionState(sessions[path]);
+            var session = sessions[path];
+            if(!session.dontPersist) {
+                openDocuments[path] = editor.getSessionState(session);
+            }
         });
         state.set("session.open", openDocuments);
 
@@ -150,11 +160,13 @@ define(function(require, exports, module) {
             return;
         }
         var pathParts = path.split(':');
-        path = pathParts[0];
-        var loc = pathParts[1];
-        if (path[0] !== '/') {
-            // Normalize
-            path = '/' + path;
+        if(pathParts[0] !== "zed") {
+            path = pathParts[0];
+            var loc = pathParts[1];
+            if (path[0] !== '/') {
+                // Normalize
+                path = '/' + path;
+            }
         }
 
         // Check if somebody is not trying to create a file ending with '/'
@@ -165,6 +177,12 @@ define(function(require, exports, module) {
 
         if (sessions[path]) {
             show(sessions[path]);
+        } else if(path.indexOf("zed:") === 0) {
+            var session = editor.createSession(path, "");
+            session.readOnly = true;
+            show(session);
+            sessions[path] = session;
+            eventbus.emit("newfilecreated", path);
         } else {
             eventbus.emit("sessionactivitystarted", previousSession, "Loading...");
             loadFile(path, function(err, session) {
@@ -202,20 +220,22 @@ define(function(require, exports, module) {
             }
 
             // File watching
-            session.watcherFn = function(path, kind) {
-                ui.unblockUI();
-                if(kind === "changed") {
-                    handleChangedFile(path);
-                } else if(kind === "deleted") {
-                    console.log("File deleted", path);
-                    delete sessions[path];
-                    eventbus.emit("filedeleted", path);
-                } else {
-                    console.log("Other kind", kind);
-                    ui.blockUI("Disconnected, hang on... If this message doesn't disappear within a few seconds: close this window and restart your Zed client.");
-                }
-            };
-            project.watchFile(session.filename, session.watcherFn);
+            if(!session.readOnly) {
+                session.watcherFn = function(path, kind) {
+                    ui.unblockUI();
+                    if(kind === "changed") {
+                        handleChangedFile(path);
+                    } else if(kind === "deleted") {
+                        console.log("File deleted", path);
+                        delete sessions[path];
+                        eventbus.emit("filedeleted", path);
+                    } else {
+                        console.log("Other kind", kind);
+                        ui.blockUI("Disconnected, hang on... If this message doesn't disappear within a few seconds: close this window and restart your Zed client.");
+                    }
+                };
+                project.watchFile(session.filename, session.watcherFn);
+            }
         }
     }
 

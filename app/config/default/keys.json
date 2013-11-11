@@ -60,8 +60,14 @@
             "mac": "Command-Shift-G",
             "win": "Ctrl-Shift-K"
         },
-    
-    
+        "Find:Find In Project": {
+            "mac": "Command-Shift-F",
+            "win": "Ctrl-Shift-F"
+        },
+        "Find:Find Identifier Under Cursor In Project": {
+            "mac": "Command-Shift-/",
+            "win": "Ctrl-Shift-/"
+        },
         "Navigate:Line": {
             "win": "Ctrl-L",
             "mac": "Command-L"
@@ -133,7 +139,7 @@
         "Cursor:Center": {
             "mac": "Ctrl-L"
         },
-    
+
         "Cursor:Multiple:Add Above": "Ctrl-Alt-Up",
         "Cursor:Multiple:Add Below": "Ctrl-Alt-Down",
         "Cursor:Multiple:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",

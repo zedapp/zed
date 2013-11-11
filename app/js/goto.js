@@ -30,6 +30,18 @@ define(function(require, exports, module) {
             } else {
                 return "<tt>Enter</tt> jumps to line " + phrase.substring(1);
             }
+        } else if(phrase[0] === "@") {
+            if(phrase === "@") {
+                return "Type symbol name to jump to within this project.";
+            } else {
+                return "<tt>Enter</tt> jumps to the first symbol matching your query.";
+            }
+        } else if(phrase.indexOf("//") === 0) {
+            if(phrase === "//") {
+                return "Type the search string and press <tt>Enter</tt> to perform a project-wide search.";
+            } else {
+                return "Press <tt>Enter</tt> to perform a project-wide search for '" + phrase.substring(2) + "'";
+            }
         } else if(phrase && results.length === 0) {
             return "<tt>Return</tt> creates and opens this file.";
         } else {
@@ -44,7 +56,7 @@ define(function(require, exports, module) {
             eventbus.emit("loadedfilelist");
         });
     }
-    
+
     exports.fetchFileList = fetchFileList;
 
     exports.hook = function() {
@@ -100,7 +112,9 @@ define(function(require, exports, module) {
                     }
                 } else if(phrase[0] === "@") {
                     resultList = filterSymbols(phrase);
-                } else if(phrase[0] === '/') {
+                } else if(phrase[0] === '/' && phrase[1] === '/') {
+                    resultList = [];
+                } else if(phrase[0] === '/' && phrase[1] !== '/') {
                     var results = {};
                     phrase = phrase.toLowerCase();
                     fileCache.forEach(function(file) {
@@ -173,8 +187,14 @@ define(function(require, exports, module) {
                 },
                 hint: hint,
                 onSelect: function(file, phrase) {
+                    console.log("Selected", file, phrase);
                     var currentPath = session.filename;
                     var fileOnly, loc, phraseParts;
+                    if(file.indexOf("//") === 0) {
+                        return require(["./search"], function(search) {
+                            search.search(file.substring(2), edit);
+                        });
+                    }
                     if(file !== phrase) {
                         phraseParts = locator.parse(phrase);
                         fileOnly = file || currentPath;

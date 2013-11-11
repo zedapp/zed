@@ -24,7 +24,8 @@ define(function(require, exports, module) {
         events: {},
         commands: {},
         snippets: {},
-        preferences: {}
+        preferences: {},
+        isFallback: true
     };
 
     function normalizeModes() {

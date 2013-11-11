@@ -9,7 +9,7 @@ define(function(require, exports, module) {
     var whitespace = ace.require("ace/ext/whitespace");
 
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
-    var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-]+/;
+    var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-:]/;
 
     eventbus.declare("editorloaded");
 
