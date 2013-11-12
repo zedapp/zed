@@ -1,0 +1,14 @@
+{
+    "modes": {
+        "search-results": {
+            "name": "Zed Search Results",
+            "highlighter": "ace/mode/text",
+            "filenames": ["zed:search"],
+
+            "preferences": {
+                "showGutter": false,
+                "showPrintMargin": false
+            }
+        }
+    }
+}

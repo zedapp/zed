@@ -17,24 +17,29 @@ define(function(require, exports, module) {
         return lines[line-1].trim();
     }
 
+    var MAX_RESULTS = 1000;
+
     exports.search = function(phrase, edit) {
         session_manager.go("zed:search", edit, edit.getSession());
         var session = session_manager.getSessions()["zed:search"];
         session.dontPersist = true;
-        var resultText = "Search results for '" + phrase + "'\n==============================\nPut your cursor on the path and press Command-Shift-E/Ctrl-Shift-E and Enter to navigate to the result.\n";
 
-        function update() {
-            session.setValue(resultText);
+        function append(text) {
+            session.insert({row: session.getLength(), column: 0}, text);
         }
 
-        var foundResult = false;
+        var results = 0;
 
         project.listFiles(function(err, fileList) {
             // Only search in files we have a mode for (may be a bad assumption)
             fileList = fileList.filter(function(path) {
                 return !modes.getModeForPath(path).isFallback;
             });
+            session.setValue("Searching " + fileList.length + " files for '" + phrase + "'...\nPut your cursor on the path and press Command-Shift-E/Ctrl-Shift-E and Enter to navigate to the result.\n");
             async.forEach(fileList, function(path, next) {
+                if(results >= MAX_RESULTS) {
+                    return next();
+                }
                 project.readFile(path, function(err, text) {
                     if(err) {
                         console.error(path, err);
@@ -42,17 +47,20 @@ define(function(require, exports, module) {
                     }
                     var matchIdx = 0;
                     while((matchIdx = text.indexOf(phrase, matchIdx)) !== -1) {
-                        resultText += "\n" + path + ":" + indexToLine(text, matchIdx) + "\n\tSnippet: " + getLine(text, matchIdx) + "\n";
+                        append("\n" + path + ":" + indexToLine(text, matchIdx) + "\n\t\"" + getLine(text, matchIdx) + "\"\n");
                         matchIdx++;
-                        foundResult = true;
+                        results++;
+                        if(results >= MAX_RESULTS) {
+                            break;
+                        }
                     }
-                    update();
                     next();
                 });
             }, function() {
-                if(!foundResult) {
-                    resultText += "\nNo results found.";
-                    update();
+                if(results === 0) {
+                    append("\nNo results found.");
+                } else {
+                    append("\nFound " + results + " results.");
                 }
             });
         });

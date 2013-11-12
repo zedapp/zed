@@ -187,7 +187,6 @@ define(function(require, exports, module) {
                 },
                 hint: hint,
                 onSelect: function(file, phrase) {
-                    console.log("Selected", file, phrase);
                     var currentPath = session.filename;
                     var fileOnly, loc, phraseParts;
                     if(file.indexOf("//") === 0) {
