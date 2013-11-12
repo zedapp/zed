@@ -64,10 +64,6 @@
             "mac": "Command-Shift-F",
             "win": "Ctrl-Shift-F"
         },
-        "Find:Find Identifier Under Cursor In Project": {
-            "mac": "Command-Shift-/",
-            "win": "Ctrl-Shift-/"
-        },
         "Navigate:Line": {
             "win": "Ctrl-L",
             "mac": "Command-L"

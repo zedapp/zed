@@ -249,7 +249,7 @@ define(function(require, exports, module) {
                 require(["./lib/ui"], function(ui) {
                     ui.prompt({
                         message: "Are you sure you reset all config?"
-                    }, function(yes) {
+                    }, function(err, yes) {
                         if (yes) {
                             configfs.listFiles(function(err, files) {
                                 async.parForEach(files, function(path, next) {
@@ -266,9 +266,4 @@ define(function(require, exports, module) {
             readOnly: true
         });
     });
-
-    exports.getC = function() {
-        return config;
-    };
-
 });

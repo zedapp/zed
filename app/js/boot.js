@@ -30,8 +30,7 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
         "./split",
         "./file",
         "./preview",
-        "./dnd",
-        "./search"];
+        "./dnd"];
     require(modules, function() {
         var session_manager = require("./session_manager");
 

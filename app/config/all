@@ -1,5 +1,7 @@
 
 /.zedstate
+/default/command/search.js
+/default/commands.json
 /default/keys.json
 /default/mode/c.json
 /default/mode/clojure.json
@@ -49,12 +51,15 @@
 /default/mode/markdown/preview.js
 /default/mode/markdown/showdown.js
 /default/mode/markdown.json
+/default/mode/nix/ctags.js
 /default/mode/nix.json
 /default/mode/php.json
 /default/mode/plist.json
 /default/mode/protobuf.json
 /default/mode/python.json
 /default/mode/ruby.json
+/default/mode/search-results/open.js
+/default/mode/search-results.json
 /default/mode/sh.json
 /default/mode/text.json
 /default/mode/xml.json

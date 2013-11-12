@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
     var session_manager = require("../../../session_manager");
     var Range = ace.require("ace/range").Range;
+    var editor = require("../../../editor");
 
     function rangify(range) {
         return Range.fromPoints(range.start, range.end);
@@ -12,6 +13,12 @@ define(function(require, exports, module) {
     }
 
     return {
+        goto: function(path, callback) {
+            var edit = editor.getActiveEditor();
+            session_manager.go(path, edit, edit.getSession(), function(err) {
+                callback(err);
+            });
+        },
         setAnnotations: function(path, annos, callback) {
             getSession(path).setAnnotations(annos);
             callback();
@@ -36,6 +43,16 @@ define(function(require, exports, module) {
             session.selection.moveCursorToPosition(cursorPos);
             session.setScrollTop(scrollTop);
             session.setScrollLeft(scrollLeft);
+            callback();
+        },
+        insert: function(path, pos, text, callback) {
+            var session = getSession(path);
+            session.insert(pos, text);
+            callback();
+        },
+        append: function(path, text, callback) {
+            var session = getSession(path);
+            session.insert({row: session.getLength(), column: 0}, text);
             callback();
         },
         getAllLines: function(path, callback) {

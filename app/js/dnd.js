@@ -43,7 +43,7 @@ define(function(require, exports, module) {
         el.addEventListener('dragleave', dragleave, false);
         el.addEventListener('drop', drop, false);
     };
-    
+
     function saveFile(entry, rootPath, callback) {
         var fileReader = new FileReader();
         fileReader.onload = function(e) {
@@ -55,7 +55,7 @@ define(function(require, exports, module) {
             fileReader.readAsText(file);
         });
     }
-    
+
     function saveDirectory(dir, rootPath, callback) {
         var reader = dir.createReader();
         reader.readEntries(function(entries) {
@@ -78,7 +78,7 @@ define(function(require, exports, module) {
         ui.prompt({
             message: "Uploading files. Desired path prefix:",
             input: "/"
-        }, function(path) {
+        }, function(err, path) {
             if(!path) {
                 return;
             }

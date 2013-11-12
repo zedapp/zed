@@ -7,29 +7,30 @@ define(function(require, exports, module) {
     "use strict";
     var lang = ace.require("ace/lib/lang");
 
+    var CommandManager = ace.require("ace/commands/command_manager").CommandManager;
+    var useragent = ace.require("ace/lib/useragent");
+    var KeyBinding = ace.require("ace/keyboard/keybinding").KeyBinding;
+
     var eventbus = require("./lib/eventbus");
     var editor = require("./editor");
     var command = require("./command");
+
     var keys = JSON.parse(require("text!../config/default/keys.json"));
-    var keyboardHandler = null;
-    var commands;
 
-    exports.update = function() {
-        var CommandManager = ace.require("ace/commands/command_manager").CommandManager;
-        var useragent = ace.require("ace/lib/useragent");
-        var KeyBinding = ace.require("ace/keyboard/keybinding").KeyBinding;
+    function updateAllEditors() {
+        editor.getEditors(true).forEach(function(edit) {
+            updateEditor(edit);
+        });
+    }
 
-        var edit = editor.getActiveEditor();
+    function updateEditor(edit) {
+        var commands = loadCommands(edit.getSession().mode);
         edit.commands = new CommandManager(useragent.isMac ? "mac" : "win", commands);
         edit.keyBinding = new KeyBinding(edit);
-        keyboardHandler = edit.getKeyboardHandler();
+        edit.getKeyboardHandler();
+    }
 
-        editor.getEditors(true).forEach(function(edit) {
-            edit.setKeyboardHandler(keyboardHandler);
-        });
-    };
-
-    function bindCommand(cmd, bindKey) {
+    function bindCommand(commands, cmd, bindKey) {
         try {
             var c = command.lookup(cmd);
             commands.push({
@@ -52,18 +53,19 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.on("commandsloaded", function() {
-            loadCommands();
-            exports.update();
+            updateAllEditors();
         });
         eventbus.on("configchanged", function(config) {
             keys = config.getKeys();
-            loadCommands();
-            exports.update();
+            updateAllEditors();
         });
-    };
-
-    exports.init = function() {
-        loadCommands();
+        eventbus.on("switchsession", function(edit, session) {
+            var mode = session.mode;
+            require(["./config"], function(config) {
+                keys = _.extend({}, config.getKeys(), mode.keys);
+                updateEditor(edit);
+            });
+        });
     };
 
     // Hacky way of temporarily overriding the key handlers, used e.g. during
@@ -101,9 +103,9 @@ define(function(require, exports, module) {
         }
     };
 
-    function loadCommands() {
+    function loadCommands(mode) {
         // Some special builtin commands
-        commands = [{
+        var commands = [{
             name: "cut",
             exec: function(editor) {
                 var range = editor.getSelectionRange();
@@ -130,7 +132,15 @@ define(function(require, exports, module) {
         }];
 
         _.each(keys, function(cmd, name) {
-            bindCommand(name, cmd);
+            bindCommand(commands, name, cmd);
         });
+
+        if(mode) {
+            _.each(mode.keys, function(cmd, name) {
+                bindCommand(commands, name, cmd);
+            });
+        }
+
+        return commands;
     }
 });

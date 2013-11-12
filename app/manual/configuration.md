@@ -127,21 +127,25 @@ Let's start with a simple new "zed" mode:
             "name": "Zed",
             "highlighter": "ace/mode/markdown",
             "extensions": ["zed"],
-            
+
             "commands": {
                 "Tools:Check": {
                     "scriptUrl": "configfs!/user/mode/zed/check.js"
                 }
             },
-            
+
             "events": {
                 "change": ["Tools:Check"]
             },
-            
+
+            "keys": {
+                "Tools:Check": "Ctrl-C"
+            },
+
             "preferences": {
                 "fontSize": 20
             },
-            
+
             "snippets": {
                 "zed": "Zed is ${1:awesome}!"
             }
@@ -163,6 +167,7 @@ As can be seen, in a mode we can define a few things:
     seconds).
   - "preview": triggered when the Preview panel needs updating.
 * "preferences": preference overrides specific to this mode.
+* "keys": key overrides specific to this mode.
 * "snippets": snippets for code completion where ${1}, ${2} etc. are insertion
   points, optionally you can provide default values using ${1:defaultValue}.
 
@@ -194,10 +199,10 @@ In our Configuration project we create a JavaScript file
 
     define(function(require, exports, module) {
         var session = require("zed/session");
-        
+
         return function(options, callback) {
             var text = "Zed is cool";
-            
+
             if(options.length === "long") {
                 text = "Zed is super duper cool!";
             }
@@ -216,7 +221,7 @@ APIs (sandbox.md) named "zed/session", which gives you access to open sessions
 
 Commands are run in the Zed Sandbox (sandbox.md), which is running in a separate
 process for safety and safe code reloading reasons. As a result, you do not have
-access to all built-in Zed's core APIs. However, there is a growing number of 
+access to all built-in Zed's core APIs. However, there is a growing number of
 specific APIs exposed to you (like the zed/session API in the example), check
 sandbox.md for more information.
 

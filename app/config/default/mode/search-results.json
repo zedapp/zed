@@ -5,6 +5,16 @@
             "highlighter": "ace/mode/text",
             "filenames": ["zed:search"],
 
+            "keys": {
+                "Search Results:Open File": "Enter"
+            },
+
+            "commands": {
+                "Search Results:Open File": {
+                    "scriptUrl": "configfs!/default/mode/search-results/open.js"
+                }
+            },
+
             "preferences": {
                 "showGutter": false,
                 "showPrintMargin": false

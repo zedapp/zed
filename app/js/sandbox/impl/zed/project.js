@@ -1,12 +1,20 @@
 define(function(require, exports, module) {
     var project = require("../../../project");
-    var goto = require("../../../goto");
     return {
         readFile: function(path, callback) {
-            project.readFile(path, callback);
+            project.readFile(path, function(err, text) {
+                if(err) {
+                    if(err.message) {
+                        return callback(err.message);
+                    } else {
+                        return callback(""+err);
+                    }
+                }
+                callback(null, text);
+            });
         },
         listFiles: function(callback) {
-            callback(null, goto.getFileCache());
+            project.listFiles(callback);
         }
     };
 });

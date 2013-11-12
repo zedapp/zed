@@ -145,9 +145,10 @@ define(function(require, exports, module) {
      * Navigates to a file, openeing it if hasn't been opened yet, switching to
      * it if it's already loaded in memory
      */
-    function go(path, edit, previousSession) {
+    function go(path, edit, previousSession, callback) {
         edit = edit || editor.getActiveEditor();
         if (!path) {
+            callback && callback("No path");
             return;
         }
 
@@ -157,6 +158,7 @@ define(function(require, exports, module) {
             session.readOnly = true;
             session.setMode(doc.mode);
             editor.switchSession(session, edit);
+            callback && callback(null, session);
             return;
         }
         var pathParts = path.split(':');
@@ -172,6 +174,7 @@ define(function(require, exports, module) {
         // Check if somebody is not trying to create a file ending with '/'
         if(path[path.length-1] === '/') {
             eventbus.emit("sessionactivityfailed", previousSession, "Cannot create files ending with /");
+            callback && callback("Cannot create files ending with /");
             return;
         }
 
@@ -180,6 +183,7 @@ define(function(require, exports, module) {
         } else if(path.indexOf("zed:") === 0) {
             var session = editor.createSession(path, "");
             session.readOnly = true;
+            session.dontPersist = true;
             show(session);
             sessions[path] = session;
             eventbus.emit("newfilecreated", path);
@@ -236,6 +240,8 @@ define(function(require, exports, module) {
                 };
                 project.watchFile(session.filename, session.watcherFn);
             }
+
+            callback && callback(null, session);
         }
     }
 

@@ -7,15 +7,15 @@ define(function(require, exports, module) {
     var command = require("./command");
     var project = require("./project");
     var session_manager = require("./session_manager");
-    
+
     function confirmDelete(edit) {
         var path = edit.getSession().filename;
         ui.prompt({
             message: "Are you sure you want to delete " + path + "?"
-        }, function(yes) {
+        }, function(err, yes) {
             if (yes) {
                 eventbus.emit("sessionactivitystarted", edit.getSession(), "Deleting");
-                
+
                 project.deleteFile(path, function(err) {
                     if (err) {
                         return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not delete file: " + err);
@@ -24,7 +24,7 @@ define(function(require, exports, module) {
             }
         });
     }
-    
+
     function renameFile(edit) {
         var session = edit.getSession();
         var path = session.filename;
@@ -32,7 +32,7 @@ define(function(require, exports, module) {
         ui.prompt({
             message: "New name:",
             input: path
-        }, function(newPath) {
+        }, function(err, newPath) {
             if (newPath) {
                 eventbus.emit("sessionactivitystarted", edit.getSession(), "Renaming");
                 project.writeFile(newPath, session.getValue(), function(err) {
@@ -61,7 +61,7 @@ define(function(require, exports, module) {
             }, 0);
         }
     });
-    
+
     command.define("File:Rename", {
         exec: function(edit) {
             setTimeout(function() {

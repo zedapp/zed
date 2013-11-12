@@ -1,0 +1,8 @@
+{
+    "commands": {
+        "Find:Find In Project": {
+            "scriptUrl": "configfs!/default/command/search.js",
+            "readOnly": true
+        }
+    }
+}

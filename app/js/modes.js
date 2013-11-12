@@ -25,6 +25,8 @@ define(function(require, exports, module) {
         commands: {},
         snippets: {},
         preferences: {},
+        builtins: [],
+        keys: {},
         isFallback: true
     };
 
@@ -44,6 +46,9 @@ define(function(require, exports, module) {
             }
             if (!mode.builtins) {
                 mode.builtins = [];
+            }
+            if (!mode.keys) {
+                mode.keys = {};
             }
             if (!mode.preferences) {
                 mode.preferences = {};

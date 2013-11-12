@@ -264,7 +264,7 @@ define(function(require, exports, module) {
 
         function ok() {
             close();
-            callback(input ? input.val() : true);
+            callback(null, input ? input.val() : true);
         }
 
         function cancel() {
