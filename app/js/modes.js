@@ -23,9 +23,7 @@ define(function(require, exports, module) {
         highlighter: "ace/mode/text",
         events: {},
         commands: {},
-        snippets: {},
         preferences: {},
-        builtins: [],
         keys: {},
         isFallback: true
     };
@@ -40,12 +38,6 @@ define(function(require, exports, module) {
             }
             if (!mode.commands) {
                 mode.commands = {};
-            }
-            if (!mode.snippets) {
-                mode.snippets = {};
-            }
-            if (!mode.builtins) {
-                mode.builtins = [];
             }
             if (!mode.keys) {
                 mode.keys = {};
@@ -105,17 +97,22 @@ define(function(require, exports, module) {
                 var modeCommands = {};
                 modeCommands[mode.language] = cmd;
                 var commandSpec = {
-                    exec: function(edit, session) {
+                    exec: function(edit, session, callback) {
                         require(["./sandbox"], function(sandbox) {
                             var cmd = commandSpec.modeCommand[session.mode.language];
                             if (cmd) {
-                                sandbox.execCommand(cmd, session, function(err) {
+                                sandbox.execCommand(cmd, session, function(err, result) {
                                     if (err) {
                                         return console.error(err);
                                     }
+                                    _.isFunction(callback) && callback(err, result);
                                 });
                             } else {
-                                eventbus.emit("sessionactivityfailed", session, "Command " + name + " not supported for this mode");
+                                if(_.isFunction(callback)) {
+                                    callback("not-supported");
+                                } else {
+                                    eventbus.emit("sessionactivityfailed", session, "Command " + name + " not supported for this mode");
+                                }
                             }
                         });
                     },

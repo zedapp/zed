@@ -12,6 +12,8 @@ define(function(require, exports, module) {
         return session;
     }
 
+    var identifierRegex = /[a-zA-Z_0-9\$\-]/;
+
     return {
         goto: function(path, callback) {
             var edit = editor.getActiveEditor();
@@ -31,11 +33,11 @@ define(function(require, exports, module) {
 
             // Save scroll/cursor state
             var scrollTop = session.getScrollTop();
-            var scrollLeft  = session.getScrollLeft();
+            var scrollLeft = session.getScrollLeft();
             var cursorPos = session.selection.getCursor();
 
             var lineCount = session.getLength();
-            var range = new Range(0, 0, lineCount, session.getLine(lineCount-1).length);
+            var range = new Range(0, 0, lineCount, session.getLine(lineCount - 1).length);
 
             session.replace(range, text);
 
@@ -52,15 +54,37 @@ define(function(require, exports, module) {
         },
         append: function(path, text, callback) {
             var session = getSession(path);
-            session.insert({row: session.getLength(), column: 0}, text);
+            session.insert({
+                row: session.getLength(),
+                column: 0
+            }, text);
             callback();
+        },
+        getPreceedingIdentifier: function(path, callback) {
+            var session = getSession(path);
+            var doc = session.getDocument();
+            var pos = session.selection.getCursor();
+            var line = doc.getLine(pos.row);
+
+            var identBuf = [];
+            for (var i = pos.column - 1; i >= 0; i--) {
+                if (identifierRegex.test(line[i])) {
+                    identBuf.push(line[i]);
+                } else {
+                    break;
+                }
+            }
+            callback(null, identBuf.reverse().join(""));
         },
         getAllLines: function(path, callback) {
             callback(null, getSession(path).getDocument().getAllLines());
         },
         getSelectionRange: function(path, callback) {
             var range = getSession(path).selection.getRange();
-            callback(null, {start: range.start, end: range.end});
+            callback(null, {
+                start: range.start,
+                end: range.end
+            });
         },
         getSelectionText: function(path, callback) {
             var session = getSession(path);

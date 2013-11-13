@@ -19,6 +19,9 @@ define(function(require, exports, module) {
         append: function(path, text, callback) {
             sandboxRequest("zed/session", "append", [path, text], callback);
         },
+        getPreceedingIdentifier: function(path, callback) {
+            sandboxRequest("zed/session", "getPreceedingIdentifier", [path], callback);
+        },
         getAllLines: function(path, callback) {
             sandboxRequest("zed/session", "getAllLines", [path], callback);
         },

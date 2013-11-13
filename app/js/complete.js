@@ -7,9 +7,8 @@ define(function(require, exports, module) {
 
     var completers = [
         ace.require("ace/autocomplete/text_completer"),
-        require("./complete/snippet"),
         require("./complete/ctags"),
-        require("./complete/builtins")
+        require("./complete/user")
     ];
 
     exports.addCompleter = function(completer) {

@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     "use strict";
     var Map = require("../lib/collection").Map;
     var ctags = require("../ctags");
-    
+
     exports.getCompletions = function(edit, session, pos, prefix, callback) {
         var tags = ctags.getCTags();
         var matches = [];

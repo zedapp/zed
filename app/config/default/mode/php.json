@@ -3,11 +3,7 @@
         "php": {
             "name": "PHP",
             "highlighter": "ace/mode/php",
-            "extensions": ["php", "php4"],
-
-            "snippets": {
-                "fn": "function ${1:name}() {\n\t${2:// Your code here}\n}"
-            }
+            "extensions": ["php", "php4"]
         }
     }
 }

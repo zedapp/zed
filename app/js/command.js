@@ -10,22 +10,27 @@ define(function(require, exports, module) {
 
     eventbus.declare("commandsloaded");
 
+    function defineUserCommand(name, cmd) {
+        userCommands[name] = {
+            exec: function(edit, session, callback) {
+                require(["./sandbox"], function(sandbox) {
+                    sandbox.execCommand(cmd, edit.getSession(), function(err, result) {
+                        if (err) {
+                            console.error(err);
+                        }
+                        _.isFunction(callback) && callback(err, result);
+                    });
+                });
+            },
+            readOnly: cmd.readOnly
+        };
+    }
+
     exports.hook = function() {
         eventbus.on("configchanged", function(config) {
             userCommands = {};
             _.each(config.getCommands(), function(cmd, name) {
-                userCommands[name] = {
-                    exec: function(edit) {
-                        require(["./sandbox"], function(sandbox) {
-                            sandbox.execCommand(cmd, edit.getSession(), function(err) {
-                                if (err) {
-                                    return console.error(err);
-                                }
-                            });
-                        });
-                    },
-                    readOnly: cmd.readOnly
-                };
+                defineUserCommand(name, cmd);
             });
         });
     };

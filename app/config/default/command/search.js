@@ -49,7 +49,7 @@ define(function(require, exports, module) {
 
                 project.listFiles(function(err, fileList) {
                     session.setText("zed:search", "Searching " + fileList.length + " files for '" + phrase + "'...\nPut your cursor on the result press Enter to jump.\n", function() {});
-                    async.forEach(fileList, function(path, next) {
+                    async.eachLimit(fileList, 10, function(path, next) {
                         if (results >= MAX_RESULTS) {
                             return next();
                         }
@@ -68,7 +68,7 @@ define(function(require, exports, module) {
                             }
                             var matchIdx = 0;
                             while ((matchIdx = text.indexOf(phrase, matchIdx)) !== -1) {
-                                append("\n" + path + ":" + indexToLine(text, matchIdx) + "\n\t\"" + getLine(text, matchIdx) + "\"\n");
+                                append("\n" + path + ":" + indexToLine(text, matchIdx) + "\n\t" + getLine(text, matchIdx) + "\n");
                                 matchIdx++;
                                 results++;
                                 if (results >= MAX_RESULTS) {

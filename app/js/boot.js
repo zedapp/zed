@@ -2,7 +2,8 @@
 require.config({
     baseUrl: "js",
     paths: {
-        "text": "../dep/text"
+        "text": "../dep/text",
+        "async": "../dep/async"
     },
 });
 

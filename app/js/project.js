@@ -107,7 +107,7 @@ define(function(require, exports, module) {
             });
         }
     };
-    
+
     exports.init = function() {
         $("title").text(options.get("title") + " [ Zed ]");
     };

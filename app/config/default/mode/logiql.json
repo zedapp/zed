@@ -7,13 +7,17 @@
             "commands": {
                 "Tools:CTags": {
                     "scriptUrl": "configfs!/default/mode/logiql/ctags.js"
+                },
+                "Tools:Complete:Snippet": {
+                    "scriptUrl": "configfs!/default/command/snippet_completer.js",
+                    "snippets": {
+                        "module": "block(`${1:mymodule}) {\n\texport(`{\n\t\t\n\t}),\n\tclauses(`{\n\t\t${2}\n\t})\n} <-- ."
+                    }
                 }
             },
             "events": {
-                "change": ["Tools:CTags"]
-            },
-            "snippets": {
-                "module": "block(`${1:mymodule}) {\n\texport(`{\n\t\t\n\t}),\n\tclauses(`{\n\t\t${2}\n\t})\n} <-- ."
+                "change": ["Tools:CTags"],
+                "complete": ["Tools:Complete:Snippet"]
             }
         }
     }

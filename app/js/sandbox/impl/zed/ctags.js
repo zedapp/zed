@@ -4,6 +4,9 @@ define(function(require, exports, module) {
         updateCTags: function(path, tags, callback) {
             ctags.updateCTags(path, tags);
             callback();
+        },
+        getCTags: function(callback) {
+            callback(null, ctags.getCTags());
         }
     };
 });

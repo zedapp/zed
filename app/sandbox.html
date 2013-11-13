@@ -1,6 +1,8 @@
 <html>
 <head>
 <script src="dep/require.js"></script>
+<script src="dep/underscore-min.js"></script>
+<script src="dep/jquery.js"></script>
 <script src="dep/jquery.js"></script>
 <script src="ace/ace.js"></script>
 <script>
@@ -9,7 +11,7 @@ var debug = false;
 require.config({
     paths: {
         "zed": "js/sandbox/interface/zed",
-        "lib": "js/lib",
+        "lib": "dep",
         "configfs": "js/sandbox/rjs_loader"
     }
 });

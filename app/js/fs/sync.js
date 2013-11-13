@@ -1,8 +1,8 @@
 /*global define, chrome, _ */
 define(function(require, exports, module) {
-    
+
     var poll_watcher = require("./poll_watcher");
-    
+
     return function(namespace, callback) {
         namespace = namespace + "|";
 
@@ -101,7 +101,7 @@ define(function(require, exports, module) {
                     });
                 }
             };
-            
+
             var watcher = poll_watcher(operations, 3000);
 
             callback(null, operations);
