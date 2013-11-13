@@ -17,6 +17,15 @@ define(function(require, exports, module) {
         }
 
         chrome.syncFileSystem.requestFileSystem(function(fs) {
+            if (!fs) {
+                require(["../lib/ui"], function(ui) {
+                    ui.unblockUI();
+                    ui.prompt({
+                        message: "You are running a version of Chrome/Chromium that does not support SyncFS. Zed relies on SyncFS. Please install a recent version of Chrome with SyncFS support."
+                    });
+                });
+                return;
+            }
             var operations = {
                 listFiles: function(callback) {
                     var reader = fs.root.createReader();
@@ -44,7 +53,7 @@ define(function(require, exports, module) {
                         };
                         f.file(function(file) {
                             fileReader.readAsText(file);
-                            watcher.setCacheTag(path, ""+file.lastModifiedDate);
+                            watcher.setCacheTag(path, "" + file.lastModifiedDate);
                         });
                     }, callback);
                 },
@@ -60,7 +69,7 @@ define(function(require, exports, module) {
                                 fileEntry.createWriter(function(fileWriter) {
                                     fileWriter.onwriteend = function() {
                                         fileEntry.file(function(stat) {
-                                            watcher.setCacheTag(path, ""+stat.lastModifiedDate);
+                                            watcher.setCacheTag(path, "" + stat.lastModifiedDate);
                                             callback();
                                         });
                                     };
