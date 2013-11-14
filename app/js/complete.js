@@ -5,17 +5,37 @@ define(function(require, exports, module) {
     var command = require("./command");
     var Autocomplete = ace.require("ace/autocomplete").Autocomplete;
 
-    var completers = [
-        ace.require("ace/autocomplete/text_completer"),
-        require("./complete/ctags"),
-        require("./complete/user")
-    ];
-
-    exports.addCompleter = function(completer) {
-        completers.push(completer);
-    };
+    var async = require("async");
+    var config = require("./config");
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
+
+    var completer = {
+        getCompletions: function(edit, session, pos, prefix, callback) {
+            var modeCompleteCommands = session.mode.events.complete;
+            var globalCompleteCommands = config.getEvents().complete;
+            var results = [];
+            var completeCommands = [];
+            if (modeCompleteCommands) {
+                completeCommands = completeCommands.concat(modeCompleteCommands);
+            }
+            if (globalCompleteCommands) {
+                completeCommands = completeCommands.concat(globalCompleteCommands);
+            }
+            async.each(completeCommands, function(cmdName, next) {
+                command.exec(cmdName, edit, session, function(err, results_) {
+                    if (err) {
+                        console.error(err);
+                        return next();
+                    }
+                    results = results.concat(results_);
+                    next();
+                });
+            }, function() {
+                callback(null, results);
+            });
+        }
+    };
 
     function retrievePreceedingIdentifier(text, pos) {
         var identBuf = [];
@@ -31,7 +51,7 @@ define(function(require, exports, module) {
     }
 
     function shouldComplete(edit) {
-        if(edit.getSelectedText()) {
+        if (edit.getSelectedText()) {
             return false;
         }
         var session = edit.getSession();
@@ -42,18 +62,22 @@ define(function(require, exports, module) {
         return retrievePreceedingIdentifier(line, pos.column);
     }
 
-    Autocomplete.prototype.commands["Tab"] = function(editor) { editor.completer.goTo("down"); };
-    Autocomplete.prototype.commands["Shift-Tab"] = function(editor) { editor.completer.goTo("up"); };
+    Autocomplete.prototype.commands["Tab"] = function(editor) {
+        editor.completer.goTo("down");
+    };
+    Autocomplete.prototype.commands["Shift-Tab"] = function(editor) {
+        editor.completer.goTo("up");
+    };
 
     command.define("Edit:Complete", {
         exec: function(edit) {
-            if(shouldComplete(edit)) {
+            if (shouldComplete(edit)) {
                 if (!edit.completer) {
                     edit.completer = new Autocomplete();
-                    edit.completers = completers;
+                    edit.completers = [completer];
                 }
                 edit.completer.showPopup(edit);
-                if(edit.completer.popup) {
+                if (edit.completer.popup) {
                     edit.completer.goTo("start");
                     edit.completer.cancelContextMenu();
                 }

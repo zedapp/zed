@@ -5,7 +5,6 @@ define(function(require, exports, module) {
         var path = info.path;
         var snippets = info.snippets;
         session.getPreceedingIdentifier(path, function(err, prefix) {
-            console.log("Identifier", prefix);
             var matches = [];
             _.each(snippets, function(snippet, name) {
                 if (name.indexOf(prefix) === 0) {

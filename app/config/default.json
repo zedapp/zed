@@ -3,6 +3,7 @@
         "/default/preferences.json",
         "/default/modes.json",
         "/default/keys.json",
-        "/default/commands.json"
+        "/default/commands.json",
+        "/default/events.json"
     ]
 }

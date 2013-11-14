@@ -31,8 +31,8 @@ define(function(require, exports, module) {
         getSelectionText: function(path, callback) {
             sandboxRequest("zed/session", "getSelectionText", [path], callback);
         },
-        getTextRange: function(path, range, callback) {
-            sandboxRequest("zed/session", "getTextRange", [path, range], callback);
+        getTextRange: function(path, start, end, callback) {
+            sandboxRequest("zed/session", "getTextRange", [path, start, end], callback);
         },
         getCursorPosition: function(path, callback) {
             sandboxRequest("zed/session", "getCursorPosition", [path], callback);

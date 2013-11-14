@@ -91,8 +91,8 @@ define(function(require, exports, module) {
             var range = session.selection.getRange();
             callback(null, session.getTextRange(range));
         },
-        getTextRange: function(path, range, callback) {
-            callback(null, getSession(path).getTextRange(rangify(range)));
+        getTextRange: function(path, start, end, callback) {
+            callback(null, getSession(path).getTextRange(rangify({start: start, end: end})));
         },
         getCursorPosition: function(path, callback) {
             callback(null, getSession(path).selection.getCursor());

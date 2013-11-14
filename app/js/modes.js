@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var command = require("./command");
     var path = require("./lib/path");
+    var events = require("./events");
 
     eventbus.declare("modesloaded");
     eventbus.declare("modeset");
@@ -126,64 +127,10 @@ define(function(require, exports, module) {
         });
     }
 
-    /**
-     * This parts handles mode events, e.g. "change", "preview" etc.
-     */
-
-    var eventHandlerFn;
-    var lastEventPath;
-
-    function triggerSessionCommandEvent(session, eventname, debounceTimeout) {
-        var mode = session.mode;
-        if (!mode) {
-            return;
-        }
-        var path = session.filename;
-        var commandNames = mode.events[eventname];
-
-        function runCommands() {
-            require(["./editor"], function(editor) {
-                var edit = editor.getActiveEditor();
-                commandNames.forEach(function(commandName) {
-                    command.exec(commandName, edit, session);
-                });
-            });
-        }
-
-        if (commandNames) {
-            if (debounceTimeout) {
-                if (path !== lastEventPath) {
-                    eventHandlerFn = _.debounce(runCommands, debounceTimeout);
-                    lastEventPath = path;
-                }
-                eventHandlerFn();
-            } else {
-                runCommands();
-            }
-        }
-
-        return !!commandNames;
-    }
-
     exports.hook = function() {
         eventbus.on("configchanged", function(config) {
             modes = config.getModes();
             updateAllModes();
-        });
-        eventbus.on("sessionchanged", function(session) {
-            triggerSessionCommandEvent(session, "change", 1000);
-        });
-        eventbus.on("modeset", function(session) {
-            triggerSessionCommandEvent(session, "change");
-        });
-        eventbus.on("preview", function(session) {
-            var didPreview = triggerSessionCommandEvent(session, "preview");
-            if (!didPreview) {
-                require(["./preview"], function(preview) {
-                    preview.showPreview("Not supported.");
-                    eventbus.emit("sessionactivityfailed", session, "No preview available");
-                });
-            }
         });
     };
 

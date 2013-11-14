@@ -14,7 +14,8 @@ define(function(require, exports, module) {
         preferences: {},
         modes: {},
         keys: {},
-        commands: {}
+        commands: {},
+        events: {}
     };
 
     var config = _.extend({}, minimumConfiguration);
@@ -68,12 +69,14 @@ define(function(require, exports, module) {
             return newArray;
         } else if (_.isObject(dest)) {
             dest = _.extend({}, dest); // shallow clone
-            for (var p in source) {
-                if (source.hasOwnProperty(p)) {
-                    if (dest[p] === undefined) {
-                        dest[p] = source[p];
-                    } else {
-                        dest[p] = superExtend(dest[p], source[p]);
+            if(source) {
+                for (var p in source) {
+                    if (source.hasOwnProperty(p)) {
+                        if (dest[p] === undefined) {
+                            dest[p] = source[p];
+                        } else {
+                            dest[p] = superExtend(dest[p], source[p]);
+                        }
                     }
                 }
             }
@@ -136,10 +139,6 @@ define(function(require, exports, module) {
         }
     }
 
-    function saveConfiguration() {
-
-    }
-
     exports.getPreference = function(key, session) {
         if (session && session.mode) {
             var mode = session.mode;
@@ -160,7 +159,6 @@ define(function(require, exports, module) {
                 }
             });
         });
-        saveConfiguration();
     };
 
     exports.getModes = function() {
@@ -179,9 +177,14 @@ define(function(require, exports, module) {
         return expandedConfiguration.preferences;
     };
 
+    exports.getEvents = function() {
+        return expandedConfiguration.events;
+    };
+
     exports.getConfiguration = function() {
         return expandedConfiguration;
     };
+
 
     /**
      * Loads config, deciding which config file to use as root:

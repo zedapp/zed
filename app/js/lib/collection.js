@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     function Map() {
         this.items = {};
     }
-    
+
     Map.prototype = {
         set: function(key, value) {
             this.items['_' + key] = value;
@@ -28,6 +28,6 @@ define(function(require, exports, module) {
             return keys;
         }
     };
-    
+
     exports.Map = Map;
 });
