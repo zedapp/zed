@@ -7,14 +7,14 @@
 
             "commands": {
                 "Tools:CTags": {
-                    "scriptUrl": "configfs!/default/mode/go/ctags.js"
+                    "scriptUrl": "/default/mode/go/ctags.js"
                 }
             },
 
             "events": {
                 "change": ["Tools:CTags"]
             },
-            
+
             "preferences": {
                 "tabSize": 8,
                 "useSoftTabs": false

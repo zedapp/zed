@@ -7,13 +7,18 @@
 
             "commands": {
                 "Tools:Beautify": {
-                    "scriptUrl": "configfs!/default/mode/markdown/beautify.js"
+                    "scriptUrl": "/default/mode/markdown/beautify.js"
                 },
                 "Tools:Preview": {
-                    "scriptUrl": "configfs!/default/mode/markdown/preview.js"
+                    "scriptUrl": "/default/mode/markdown/preview.js"
                 }
             },
-            
+
+            "preferences": {
+                "wordWrap": true,
+                "wordWrapColumn": 80
+            },
+
             "events": {
                 "preview": ["Tools:Preview"]
             }

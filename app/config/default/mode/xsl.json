@@ -7,7 +7,7 @@
 
             "commands": {
                 "Tools:Beautify": {
-                    "scriptUrl": "configfs!/default/mode/html/beautify.js"
+                    "scriptUrl": "/default/mode/html/beautify.js"
                 }
             }
         }

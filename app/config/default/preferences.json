@@ -20,6 +20,7 @@
         "behaviorsEnabled": true,
         "wrapBehaviorsEnabled": false,
         "wordWrap": false,
+        "wordWrapColumn": null,
         "previewDelay": 500,
         "trimTrailingWhiteSpaceOnSave": false,
         "trimEmptyLines": true,

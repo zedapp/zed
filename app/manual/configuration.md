@@ -130,7 +130,7 @@ Let's start with a simple new "zed" mode:
 
             "commands": {
                 "Tools:Check": {
-                    "scriptUrl": "configfs!/user/mode/zed/check.js"
+                    "scriptUrl": "/user/mode/zed/check.js"
                 }
             },
 
@@ -183,16 +183,15 @@ Let's look at an example config:
     {
         "commands": {
             "My Commands:Summarize Document": {
-                "scriptUrl": "configfs!/user/command/summarize.js",
+                "scriptUrl": "/user/command/summarize.js",
                 "length": "long"
             }
         }
     }
 
 The scriptUrl specified can be any require.js module, loaded from anywhere
-(e.g. http, https). Zed adds a special special "configfs!" notation to load
-modules from the Configuration project itself, which is what we're using here
-(and used for all default Zed modes as well).
+(e.g. http, https). If the URL starts with a slash, it is assumed to
+be located in the Configuration project itself.
 
 In our Configuration project we create a JavaScript file
 /user/command/summarize.js as follows to implement this command:

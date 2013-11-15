@@ -7,11 +7,11 @@
 
             "commands": {
                 "Tools:Beautify": {
-                    "scriptUrl": "configfs!/default/mode/javascript/beautify.js"
+                    "scriptUrl": "/default/mode/javascript/beautify.js"
                 },
 
                 "Tools:Check": {
-                    "scriptUrl": "configfs!/default/mode/json/check.js"
+                    "scriptUrl": "/default/mode/json/check.js"
                 }
             },
 

@@ -7,13 +7,13 @@
 
             "commands": {
                 "Tools:Beautify": {
-                    "scriptUrl": "configfs!/default/mode/css/beautify.js"
+                    "scriptUrl": "/default/mode/css/beautify.js"
                 },
                 "Tools:Check": {
-                    "scriptUrl": "configfs!/default/mode/css/check.js"
+                    "scriptUrl": "/default/mode/css/check.js"
                 },
                 "Tools:CTags": {
-                    "scriptUrl": "configfs!/default/mode/css/ctags.js"
+                    "scriptUrl": "/default/mode/css/ctags.js"
                 }
             },
             "events": {

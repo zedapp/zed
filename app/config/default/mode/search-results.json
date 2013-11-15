@@ -2,7 +2,7 @@
     "modes": {
         "search-results": {
             "name": "Zed Search Results",
-            "highlighter": "ace/mode/text",
+            "highlighter": "ace/mode/markdown",
             "filenames": ["zed:search"],
 
             "keys": {
@@ -11,7 +11,7 @@
 
             "commands": {
                 "Search Results:Open File": {
-                    "scriptUrl": "configfs!/default/mode/search-results/open.js"
+                    "scriptUrl": "/default/mode/search-results/open.js"
                 }
             },
 

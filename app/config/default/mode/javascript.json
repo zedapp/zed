@@ -7,7 +7,7 @@
 
             "commands": {
                 "Tools:Check": {
-                    "scriptUrl": "configfs!/default/mode/javascript/check.js",
+                    "scriptUrl": "/default/mode/javascript/check.js",
                     "options": {
                         "undef": true,
                         "unused": true,
@@ -28,15 +28,15 @@
                     }
                 },
                 "Tools:CTags": {
-                    "scriptUrl": "configfs!/default/mode/javascript/ctags.js"
+                    "scriptUrl": "/default/mode/javascript/ctags.js"
                 },
 
                 "Tools:Beautify": {
-                    "scriptUrl": "configfs!/default/mode/javascript/beautify.js"
+                    "scriptUrl": "/default/mode/javascript/beautify.js"
                 },
 
                 "Tools:Complete:Snippet": {
-                    "scriptUrl": "configfs!/default/command/snippet_completer.js",
+                    "scriptUrl": "/default/command/snippet_completer.js",
                     "snippets": {
                         "log": "console.log(${1})",
                         "def": "define(function(require, exports, module) {\n\t${1}\n});",

@@ -7,7 +7,7 @@
 
             "commands": {
                 "Tools:Check": {
-                    "scriptUrl": "configfs!/default/mode/lua/check.js"
+                    "scriptUrl": "/default/mode/lua/check.js"
                 }
             },
 

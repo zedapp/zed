@@ -1,14 +1,14 @@
 {
     "commands": {
         "Find:Find In Project": {
-            "scriptUrl": "configfs!/default/command/search.js",
+            "scriptUrl": "/default/command/search.js",
             "readOnly": true
         },
         "Tools:Complete:CTags": {
-            "scriptUrl": "configfs!/default/command/ctags_completer.js"
+            "scriptUrl": "/default/command/ctags_completer.js"
         },
         "Tools:Complete:Text": {
-            "scriptUrl": "configfs!/default/command/text_completer.js"
+            "scriptUrl": "/default/command/text_completer.js"
         }
     }
 }

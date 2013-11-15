@@ -62,6 +62,7 @@ define(function(require, exports, module) {
             session.setTabSize(config.getPreference("tabSize", session));
             session.setUseSoftTabs(config.getPreference("useSoftTabs", session));
             session.setUseWrapMode(config.getPreference("wordWrap", session));
+            session.setWrapLimitRange(null, config.getPreference("wordWrapColumn", session));
         },
         updateConfiguration: function() {
             editor.getEditors(true).forEach(function(edit) {

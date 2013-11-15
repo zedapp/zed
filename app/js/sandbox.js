@@ -2,7 +2,7 @@
  * This module manages the Zed sandbox, the sandbox is used to run user
  * provided code, either fetched from the Zed code base itself, or fetched
  * from remote URLs.
- * 
+ *
  * Sandboxed code cannot crash Zed itself, but can call some Zed-specific APIs.
  * These APIs live in the "zed/*" require.js namespace in the sandbox, and are
  * essentially proxies proxying the request to Zed itself via postMessage
@@ -87,8 +87,12 @@ define(function(require, exports, module) {
     exports.execCommand = function(spec, session, callback) {
         id++;
         waitingForReply[id] = callback;
+        var scriptUrl = spec.scriptUrl;
+        if(scriptUrl[0] === "/") {
+            scriptUrl = "configfs!" + scriptUrl;
+        }
         sandboxEl[0].contentWindow.postMessage({
-            url: spec.scriptUrl,
+            url: scriptUrl,
             data: _.extend({
                 path: session.filename
             }, spec),

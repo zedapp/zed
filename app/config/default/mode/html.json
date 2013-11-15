@@ -7,10 +7,10 @@
 
             "commands": {
                 "Tools:Beautify": {
-                    "scriptUrl": "configfs!/default/mode/html/beautify.js"
+                    "scriptUrl": "/default/mode/html/beautify.js"
                 },
                 "Tools:Preview": {
-                    "scriptUrl": "configfs!/default/mode/html/preview.js"
+                    "scriptUrl": "/default/mode/html/preview.js"
                 }
             },
             "events": {
