@@ -15,6 +15,9 @@
                     }
                 }
             },
+            "preferences": {
+                "tabSize": 2
+            },
             "events": {
                 "change": ["Tools:CTags"],
                 "complete": ["Tools:Complete:Snippet"]

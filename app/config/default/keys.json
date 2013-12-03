@@ -212,7 +212,6 @@
             "mac": "Ctrl-K"
         },
         "Edit:Outdent": "Shift-Tab",
-        "Edit:Split Line": "Ctrl-O",
         "Edit:Transpose Letters": "Ctrl-T",
         "Edit:Uppercase": "Ctrl-U",
         "Edit:Lowercase": "Ctrl-Shift-U",
@@ -276,6 +275,10 @@
         "Configuration:Edit Preferences": {
             "mac": "Command-,",
             "win": "Ctrl-,"
+        },
+        "Project:Open Local Folder": {
+            "mac": "Command-O",
+            "win": "Ctrl-O"
         }
     }
 }
