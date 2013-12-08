@@ -27,6 +27,7 @@
         "hygienicMode": false,
         "hygienicModeRemote": true,
         "recentFolderHistory": 5,
-        "showContextBar": false
+        "showContextBar": false,
+        "dimInactiveEditors": true
     }
 }
