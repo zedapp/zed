@@ -12,6 +12,7 @@ define(function(require, exports, module) {
     var state = require("./state");
     var editor = require("./editor");
     var command = require("./command");
+    var config = require("./config");
 
     /**
      * Triggered when the active editor has changed
@@ -85,16 +86,33 @@ define(function(require, exports, module) {
         editor.setActiveEditor(activeEditor);
         eventbus.emit("splitswitched", activeEditor);
     }
+    
+    var dimInactiveEditors = config.getPreference("dimInactiveEditors");
+    function updateActiveEditorStylingOnConfigChange() {
+        var newDimInactiveEditors = config.getPreference("dimInactiveEditors");
+        if (newDimInactiveEditors !== dimInactiveEditors) {
+            dimInactiveEditors = newDimInactiveEditors;
+            if (dimInactiveEditors) {
+                updateActiveEditorStyling();
+            } else {
+                editor.getEditors().forEach(function(edit) {
+                    $(edit.container).removeClass("inactive-editor");
+                });
+            }
+        }
+    }
 
     function updateActiveEditorStyling() {
-        var activeEditor = editor.getActiveEditor();
-        editor.getEditors().forEach(function(edit) {
-            if (edit === activeEditor) {
-                $(edit.container).removeClass("inactive-editor");
-            } else {
-                $(edit.container).addClass("inactive-editor");
-            }
-        });
+        if (dimInactiveEditors) {
+            var activeEditor = editor.getActiveEditor();
+            editor.getEditors().forEach(function(edit) {
+                if (edit === activeEditor) {
+                    $(edit.container).removeClass("inactive-editor");
+                } else {
+                    $(edit.container).addClass("inactive-editor");
+                }
+            });
+        }
     }
 
     exports.hook = function() {
@@ -123,6 +141,7 @@ define(function(require, exports, module) {
         });
 
         eventbus.on("splitswitched", updateActiveEditorStyling);
+        eventbus.on("configchanged", updateActiveEditorStylingOnConfigChange);
     };
 
     command.define("Split:One", {
