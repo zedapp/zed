@@ -20,7 +20,9 @@
         "https://*/"
     ],
     "icons": {
-        "128": "Icon.png"
+        "128": "Icon.png",
+        "16": "Icon16.png",
+        "48": "Icon48.png"
     },
     "sandbox": {
         "pages": ["sandbox.html"]
