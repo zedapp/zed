@@ -31,7 +31,8 @@ define(function(require, exports, module) {
             "ace/theme/tomorrow", "ace/theme/tomorrow_night",
             "ace/theme/tomorrow_night_blue", "ace/theme/tomorrow_night_bright",
             "ace/theme/tomorrow_night_eighties", "ace/theme/twilight",
-            "ace/theme/vibrant_ink", "ace/theme/xcode"],
+            "ace/theme/vibrant_ink", "ace/theme/xcode",
+            "ace/theme/katzenmilch", "ace/theme/kuroir"],
         setEditorConfiguration: function(edit) {
             var session = edit.getSession();
             edit.renderer.once("themeLoaded", function(event) {

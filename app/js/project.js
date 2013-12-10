@@ -48,6 +48,9 @@ define(function(require, exports, module) {
                 syncfs("notes", function(err, io) {
                     // In order to not confuse users, we'll prefill the project with a welcome.md file
                     io.listFiles(function(err, files) {
+                        if(err) {
+                            return console.error("List file error", err);
+                        }
                         if (files.length === 0) {
                             var finished = 0;
 
