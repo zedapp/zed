@@ -189,11 +189,6 @@ define(function(require, exports, module) {
                 onSelect: function(file, phrase) {
                     var currentPath = session.filename;
                     var fileOnly, loc, phraseParts;
-                    if(file.indexOf("//") === 0) {
-                        return require(["./search"], function(search) {
-                            search.search(file.substring(2), edit);
-                        });
-                    }
                     if(file !== phrase) {
                         phraseParts = locator.parse(phrase);
                         fileOnly = file || currentPath;

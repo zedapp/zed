@@ -816,14 +816,14 @@ define(function(require, exports, module) {
 
     command.define("Find:Next", {
         exec: function(editor) {
-            editor.findNext();
+            editor.findNext({wholeWord: false});
         },
         readOnly: true
     });
 
     command.define("Find:Previous", {
         exec: function(editor) {
-            editor.findPrevious();
+            editor.findPrevious({wholeWord: false});
         },
         readOnly: true
     });

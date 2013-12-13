@@ -4,7 +4,6 @@ define(function(require, exports, module) {
     
     function enhancedBeautifier(text) {
         // Some tweaks for generator functions
-        console.log("HEreereere");
         return beautifier(text).replace(/function \* \(/g, "function*(")
                                .replace(/function \* (\w)/g, "function* $1");
     }

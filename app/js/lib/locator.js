@@ -17,7 +17,8 @@ define(function(require, exports, module) {
         if(locator[0] === "/") {
             edit.find(locator.substring(1), {
                 start: selectionRange || edit.getSelectionRange(),
-                wrap: true
+                wrap: true,
+                wholeWord: false
             });
         } else if(locator[0] === '@' && selectedItem) {
             var parts = selectedItem.split(":");
