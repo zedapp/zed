@@ -166,6 +166,7 @@ As can be seen, in a mode we can define a few things:
   - "change": triggered when the text in a file changes (throttled every few
     seconds).
   - "preview": triggered when the Preview panel needs updating.
+  - "complete": triggered when the user requests code completion, should return a list of possible completions.
 * "preferences": preference overrides specific to this mode.
 * "keys": key overrides specific to this mode.
 * "snippets": snippets for code completion where ${1}, ${2} etc. are insertion
