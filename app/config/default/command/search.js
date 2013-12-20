@@ -4,6 +4,9 @@ define(function(require, exports, module) {
     var session = require("zed/session");
     var async = require("lib/async");
 
+    var filterExtensions = ["pdf", "gz", "tgz", "bz2", "zip",
+        "exe", "jpg", "jpeg", "gif", "png"];
+
     function indexToLine(text, index) {
         var s = text.substring(0, index);
         return s.split("\n").length;
@@ -48,13 +51,19 @@ define(function(require, exports, module) {
                 var results = 0;
 
                 project.listFiles(function(err, fileList) {
+                    fileList = fileList.filter(function(filename) {
+                        var parts = filename.split('.');
+                        var ext = parts[parts.length - 1];
+                        return filterExtensions.indexOf(ext) === -1;
+                    });
+
                     session.setText("zed:search", "Searching " + fileList.length + " files for '" + phrase + "'...\nPut your cursor on the result press Enter to jump.\n", function() {});
                     async.eachLimit(fileList, 10, function(path, next) {
                         if (results >= MAX_RESULTS) {
                             return next();
                         }
 
-                        if(path === "/tags") {
+                        if (path === "/tags") {
                             return next();
                         }
 
@@ -63,7 +72,7 @@ define(function(require, exports, module) {
                                 console.error(path, err);
                                 return next();
                             }
-                            if(!stringIsText(text)) {
+                            if (!stringIsText(text)) {
                                 return next();
                             }
                             var matchIdx = 0;
