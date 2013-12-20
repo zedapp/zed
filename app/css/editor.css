@@ -4,15 +4,12 @@ body {
     overflow-y: hidden;
     background-color: #fff;
 }
-
 body.black {
     background-color: #000;
 }
-
 .inactive-editor {
     opacity: 0.80;
 }
-
 div.editor-single {
     position: absolute;
     top: 0;
@@ -131,7 +128,7 @@ div.preview-vsplit2-right-2 {
     background: #fff;
     padding: 0;
     z-index: 999;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
 }
 #goto input {
@@ -146,40 +143,19 @@ div.preview-vsplit2-right-2 {
     border-right: 0;
     border-bottom: 1px dotted gray;
     border-top: 0;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-}
-#goto ul {
-    margin: 0;
-    padding: 0;
-    max-height: 200px;
-    overflow: scroll;
-    overflow-x: hidden;
-}
-#goto li {
-    position: relative;
-    list-style-type: none;
-    padding: 0;
-}
-#goto span.meta {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    color: #999;
-}
-#goto a {
-    display: block;
-    padding: 3px;
-    text-decoration: none;
-    color: black;
-}
-#goto a.ui-state-focus {
-    background-color: #33CCFF;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
 #gotohint {
     background: #eee;
     margin-top: -3px;
     padding: 2px;
     font-size: 11px;
+}
+#results .ace_autocomplete {
+    border: 1px;
+    position: relative !important;
+    width: 100% !important;
+    background: none;
 }
 .editbar {
     position: absolute;
@@ -193,7 +169,7 @@ div.preview-vsplit2-right-2 {
     background-color: #ddd;
 }
 .editbar .path {
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     padding-right: 3px;
     padding-left: 5px;
@@ -202,7 +178,7 @@ div.preview-vsplit2-right-2 {
     position: absolute;
     right: 0;
     top: 0;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     padding-right: 8px;
     color: #777;
@@ -210,7 +186,6 @@ div.preview-vsplit2-right-2 {
 .editbar .error {
     color: red;
 }
-
 #contextbar {
     position: absolute;
     top: 0;
@@ -219,7 +194,7 @@ div.preview-vsplit2-right-2 {
     height: 25px;
     line-height: 25px;
     background-color: #fff;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     border-bottom: 1px solid #000;
     z-index: 1000;
@@ -227,36 +202,29 @@ div.preview-vsplit2-right-2 {
     padding-left: 35px;
     font-weight: bold;
 }
-
 #contextbar img {
     position: absolute;
     left: 8px;
     top: 8px;
     height: 13px;
 }
-
 .hidden {
     display: none;
 }
-
 .ace_autocomplete {
     width: 300px;
 }
-
 .ace_completion-highlight {
     text-decoration: underline;
     text-shadow: none !important;
 }
-
 .ace_line-hover {
     border: 0 !important;
     background: #33CCFF !important;
 }
-
 .ace_autocomplete .ace_active-line {
     background-color: #33CCFF !important;
 }
-
 .tree {
     position: fixed;
     border-left: solid 1px black;
@@ -265,15 +233,14 @@ div.preview-vsplit2-right-2 {
     background: #fff;
     padding: 0;
     z-index: 999;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
     max-height: 80%;
     overflow: scroll;
 }
-
 #blockui {
     position: absolute;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
     top: 0;
     left: 0;
@@ -284,14 +251,12 @@ div.preview-vsplit2-right-2 {
     background-color: #eee;
     z-index: 9999;
 }
-
 #blockui img {
 }
-
 #dialog {
     position: fixed;
     border: solid 1px #ccc;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
     padding: 10px;
     left: 50%;
@@ -301,7 +266,7 @@ div.preview-vsplit2-right-2 {
 }
 #dialog input {
     font-size: 14px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     width: 100%;
     box-sizing: border-box;
     padding: 5px;
@@ -319,19 +284,17 @@ div.preview-vsplit2-right-2 {
     right: 5px;
 }
 body.non_mac ::-webkit-scrollbar {
-  background: none;
+    background: none;
 }
 body.non_mac ::-webkit-scrollbar-track-piece {
-  margin: 4px;
+    margin: 4px;
 }
 body.non_mac ::-webkit-scrollbar-thumb {
     border: solid 0 transparent;
     border-right-width: 4px;
     border-left-width: 4px;
     -webkit-border-radius: 9px 4px;
-    -webkit-box-shadow:
-      inset 0 0 0 1px rgba(128,128,128,0.2),
-      inset 0 0 0 4px rgba(128,128,128,0.2);
+    -webkit-box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.2), inset 0 0 0 4px rgba(128, 128, 128, 0.2);
 }
 body.non_mac ::-webkit-scrollbar-thumb:horizontal {
     border-right-width: 0;
@@ -341,7 +304,5 @@ body.non_mac ::-webkit-scrollbar-thumb:horizontal {
     -webkit-border-radius: 4px 9px;
 }
 body.non_mac ::-webkit-scrollbar-thumb:hover {
-    -webkit-box-shadow:
-      inset 0 0 0 1px rgba(128,128,128,0.9),
-      inset 0 0 0 4px rgba(128,128,128,0.9);
+    -webkit-box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.9), inset 0 0 0 4px rgba(128, 128, 128, 0.9);
 }

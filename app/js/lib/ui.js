@@ -1,12 +1,11 @@
-/*global define, $, _*/
+/*global define, $, _, ace */
 define(function(require, exports, module) {
     "use strict";
     var editor = require("../editor");
     var path = require("./path");
     var keyCode = require("./key_code");
     var eventbus = require("../lib/eventbus");
-
-    var visible = false;
+    var AcePopup = ace.require("ace/autocomplete/popup").AcePopup;
 
     /**
      * Supported options
@@ -28,47 +27,41 @@ define(function(require, exports, module) {
         var hint = options.hint;
         var currentPath = options.currentPath;
 
-        if (visible) {
-            return;
-        }
-
         var edit = editor.getActiveEditor();
-        $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='" + placeholder + "'/><div id='gotohint'></div><ul id='results'>");
+        $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='" + placeholder + "'/><div id='gotohint'></div><div id='results'>");
 
         var editorEl = $(edit.container);
         var gotoEl = $("#goto");
         var hintEl = $("#gotohint");
         var box = $("#goto");
         var input = $("#gotoinput");
-        var resultsEl = $("#results");
-
-        if (options.text) {
-            input.val(options.text);
-        }
 
         gotoEl.css("left", (editorEl.offset().left + 40) + "px");
         gotoEl.css("width", (editorEl.width() - 80) + "px");
         gotoEl.css("top", editorEl.offset().top + "px");
+        var popup = new AcePopup($("#results")[0]);
+        popup.on("click", function(e) {
+            select();
+            e.stop();
+        });
+        
+        var handleSelect = false;
 
-        visible = true;
+        popup.on("select", function() {
+            if (!handleSelect) {
+                return;
+            }
+            input.val(getCurrentHighlightedItem());
+            triggerOnChange();
+            updateHint();
+        });
 
         var lastPhrase = null;
         var results = [];
 
-        var ignoreFocus = false;
-
-        resultsEl.menu({
-            select: select,
-            focus: function(event, ui) {
-                if (ignoreFocus) {
-                    ignoreFocus = false;
-                    return;
-                }
-                input.val(ui.item.data("path"));
-                triggerOnChange();
-                updateHint();
-            }
-        });
+        if (options.text) {
+            input.val(options.text);
+        }
 
         input.keyup(function(event) {
             switch (event.keyCode) {
@@ -76,10 +69,10 @@ define(function(require, exports, module) {
                     cancel();
                     break;
                 case keyCode('Up'):
-                    resultsEl.menu("previous");
+                    go('up');
                     break;
                 case keyCode('Down'):
-                    resultsEl.menu("next");
+                    go('down');
                     break;
                 case keyCode('Return'):
                     select();
@@ -119,9 +112,9 @@ define(function(require, exports, module) {
                 case keyCode('Tab'):
                     // Tab
                     if (event.shiftKey) {
-                        resultsEl.menu("previous");
+                        go('up');
                     } else {
-                        resultsEl.menu("next");
+                        go('down');
                     }
                     event.preventDefault();
                     event.stopPropagation();
@@ -139,13 +132,39 @@ define(function(require, exports, module) {
         }
 
         function getCurrentHighlightedItem() {
-            return resultsEl.find("a.ui-state-focus").parent().data("path");
+            if (results.length === 0) {
+                return null;
+            }
+            return popup.getData(popup.getRow()).path;
+        }
+
+        function go(where) {
+            var row = popup.getRow();
+            var max = popup.session.getLength() - 1;
+
+            switch (where) {
+                case "up":
+                    row = row < 0 ? max : row - 1;
+                    break;
+                case "down":
+                    row = row >= max ? -1 : row + 1;
+                    break;
+                case "start":
+                    row = 0;
+                    break;
+                case "end":
+                    row = max;
+                    break;
+            }
+
+            popup.setRow(row);
         }
 
         function select(event) {
             var inputVal = input.val();
             var selection = inputVal;
             var selectedPath = getCurrentHighlightedItem();
+            console.log("Input val", inputVal, selectedPath);
             close();
             if (selection) {
                 if (selection[0] !== '/' && selection.indexOf("zed:") !== 0 && selectedPath) {
@@ -165,10 +184,9 @@ define(function(require, exports, module) {
 
         function close() {
             eventbus.removeListener("splitswitched", cancel);
-            resultsEl.menu("destroy");
+            popup.hide();
             box.remove();
             editor.getActiveEditor().focus();
-            visible = false;
         }
 
         function updateHint() {
@@ -184,23 +202,28 @@ define(function(require, exports, module) {
 
         function updateResults() {
             var phrase = input.val();
-            results = filter(phrase).slice(0, 100);
-            var html = '';
-            results.forEach(function(r) {
-                var meta = r.meta ? '<span class="meta">' + r.meta + '</meta>' : '';
-                html += '<li data-path="' + _.escape(r.path) + '"><a href="#">' + r.name + '</a>' + meta + '</li>';
-            });
-            resultsEl.html(html);
-            resultsEl.menu("refresh");
-            if (phrase[0] !== '/') {
-                ignoreFocus = true;
-                if (results.length > 0) {
-                    resultsEl.menu("next");
+            results = filter(phrase); //.slice(0, 100);
+            if (results.length > 0) {
+                _.each(results, function(result) {
+                    result.caption = result.name;
+                });
+                handleSelect = false;
+                if (!popup.isOpen) {
+                    popup.show({
+                        left: 0,
+                        top: 0
+                    }, 14);
+                    $(popup.container).css("top", 0);
                 }
+                popup.setData(results);
+                handleSelect = true;
+            } else {
+                popup.hide();
             }
             updateHint();
             lastPhrase = phrase;
         }
+
     };
 
     function makeDialog(width, height) {
