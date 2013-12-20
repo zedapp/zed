@@ -61,6 +61,9 @@ define(function(require, exports, module) {
         });
         eventbus.on("switchsession", function(edit, session) {
             var mode = session.mode;
+            if(!mode) {
+                return;
+            }
             require(["./config"], function(config) {
                 keys = _.extend({}, config.getKeys(), mode.keys);
                 updateEditor(edit);

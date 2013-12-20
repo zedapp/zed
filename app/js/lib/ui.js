@@ -164,7 +164,6 @@ define(function(require, exports, module) {
             var inputVal = input.val();
             var selection = inputVal;
             var selectedPath = getCurrentHighlightedItem();
-            console.log("Input val", inputVal, selectedPath);
             close();
             if (selection) {
                 if (selection[0] !== '/' && selection.indexOf("zed:") !== 0 && selectedPath) {

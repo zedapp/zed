@@ -44,6 +44,7 @@ define(function(require, exports, module) {
         editor.getEditors().forEach(function(editor) {
             editor.resize();
         });
+        switchSplit();
         eventbus.emit("splitchange", "1");
     }
 
@@ -86,6 +87,8 @@ define(function(require, exports, module) {
         editor.setActiveEditor(activeEditor);
         eventbus.emit("splitswitched", activeEditor);
     }
+    
+    exports.switchSplit = switchSplit;
     
     var dimInactiveEditors = config.getPreference("dimInactiveEditors");
     function updateActiveEditorStylingOnConfigChange() {

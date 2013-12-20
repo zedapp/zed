@@ -1,7 +1,6 @@
 body {
     font-family: Tahoma, Arial;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    overflow: hidden;
     background-color: #fff;
 }
 body.black {
@@ -87,6 +86,50 @@ div.editor-vsplit3-right {
     top: 0;
     right: 0;
     bottom: 0;
+    width: 33.3%;
+}
+div.editbar-single {
+    right: 0;
+    left: 0;
+}
+div.editbar-disabled {
+    display: none;
+}
+div.editbar-vsplit2-left-0 {
+    left: 0;
+    width: 50%;
+}
+div.editbar-vsplit2-right-0 {
+    right: 0;
+    width: 50%;
+}
+div.editbar-vsplit2-left-1 {
+    left: 0;
+    width: 33.33%;
+}
+div.editbar-vsplit2-right-1 {
+    right: 0;
+    width: 66.66%;
+}
+div.editbar-vsplit2-left-2 {
+    left: 0;
+    width: 66.66%;
+}
+div.editbar-vsplit2-right-2 {
+    right: 0;
+    width: 33.33%;
+}
+div.editbar-vsplit3-left {
+    left: 0;
+    width: 33.33%;
+}
+div.editbar-vsplit3-middle {
+    left: 50%;
+    margin-left: -16.666%;
+    width: 33.33%;
+}
+div.editbar-vsplit3-right {
+    right: 0;
     width: 33.3%;
 }
 div.preview-vsplit2-right-0 {

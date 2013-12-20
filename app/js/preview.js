@@ -5,6 +5,7 @@
 /*global define, $, _ */
 define(function(require, exports, module) {
     var resetEditorDiv = require("./split").resetEditorDiv;
+    var switchSplit = require("./split").switchSplit;
     var state = require("./state");
     var editor = require("./editor");
     var command = require("./command");
@@ -47,13 +48,20 @@ define(function(require, exports, module) {
         resetEditorDiv($("#editor2")).addClass("editor-disabled");
         previewWrapperEl.attr("class", "preview-vsplit2-right-" + style);
         previewWrapperEl.show();
+        
+        var editors = editor.getEditors(true);
+        var activeEditor = editor.getActiveEditor();
+        if(editors[0] !== activeEditor) {
+            var session = activeEditor.getSession();
+            activeEditor.setSession(editors[0].getSession());
+            editors[0].setSession(session);
+        }
 
-
-        editor.getEditors().forEach(function(editor) {
+        editor.getEditors(true).forEach(function(editor) {
             editor.resize();
         });
+        switchSplit();
         eventbus.emit("splitchange", "preview-" + style);
-
         setTimeout(update, 200);
     }
 

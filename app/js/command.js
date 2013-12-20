@@ -86,14 +86,16 @@ define(function(require, exports, module) {
                                 result.meta = useragent.isMac ? k.mac : k.win;
                             }
                         }
-                        var cmd = exports.lookup(result.path);
+                        // Let's rename the `cmd` variable using multiple cursors...
+                        // There are three instances
+                        var command = exports.lookup(result.path);
                         // Filter out commands that are language-specific and don't apply to this mode
-                        if (cmd.modeCommand) {
+                        if (command.modeCommand) {
                             if (!session.mode) {
                                 return true;
                             }
                             var modeName = session.mode.language;
-                            return cmd.modeCommand[modeName];
+                            return command.modeCommand[modeName];
                         }
                         return true;
                     });
