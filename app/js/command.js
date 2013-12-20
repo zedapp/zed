@@ -136,6 +136,13 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
+    
+    exports.define("Project:Open Project Picker", {
+        exec: function() {
+            window.opener.focusMe();
+        },
+        readOnly: true
+    });
 
     exports.define("Configuration:Edit Preferences", {
         exec: function() {

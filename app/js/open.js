@@ -149,3 +149,8 @@ require(["lib/history", "lib/icons", "lib/async"], function(history, icons, asyn
         $("#dropbox-open").hide();
     }
 });
+
+window.focusMe = function() {
+    // chrome.app.window.current().drawAttention();
+    chrome.app.window.current().focus();
+};
