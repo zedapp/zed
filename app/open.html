@@ -2,109 +2,102 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-        <title>Open Zed project</title>
+        <title>Zed Project Picker</title>
         <script src="dep/require.js"></script>
         <script src="dep/underscore-min.js"></script>
         <script src="dep/jquery.js"></script>
         <script src="dep/jquery-ui.js"></script>
         <script src="ace/ace.js"></script>
-<style>
-#status {
-    background: yellow;
-}
-body {
-    margin: 0;
-    font-family: Monaco, Menlo;
-}
-#goto {
-    width: 100%;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    font-size: 14px;
-}
-input[type=text] {
-    font-size: 14px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 5px;
-    -webkit-box-sizing: border-box;
-    outline-width: 0;
-    border: 0;
-    border-top: 1px dotted gray;
-}
-input[type=submit] {
-    visibility: hidden;
-    height: 0;
-}
-
-#hint {
-    border-top: 1px dotted gray;
-    font-size: 12px;
-    padding: 5px;
-}
-
-#hint .error {
-    color: red;
-}
-
-.projects {
-    border-top: 1px solid #aaa;
-}
-
-.projects a {
-    display: block;
-    position: relative;
-    text-decoration: none;
-    background-color: #eee;
-    color: #000;
-    font-size: 13px;
-    padding: 8px;
-    border-bottom: 1px solid #aaa;
-    overflow: hidden;
-    text-align: left;
-    white-space: nowrap;
-    padding-left: 35px;
-}
-
-.projects a img {
-    position: absolute;
-    left: 8px;
-    top: 8px;
-    width: 18px;
-    height: 18px;
-}
-
-#projects h1 {
-    font-size: 14px;
-    font-weight: bold;
-    margin: 8px;
-}
-
-#projects a:hover {
-    background-color: #33CCFF;
-}
-
-</style>
+        <style>
+            #status {
+                background: yellow;
+            }
+            body {
+                margin: 0;
+                font-family: Monaco, Menlo;
+            }
+            #goto {
+                width: 100%;
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+                font-size: 14px;
+            }
+            input[type=text] {
+                font-size: 14px;
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                -webkit-box-sizing: border-box;
+                outline-width: 0;
+                border: 0;
+                border-top: 1px dotted gray;
+            }
+            input[type=submit] {
+                visibility: hidden;
+                height: 0;
+            }
+            
+            #hint {
+                border-top: 1px dotted gray;
+                font-size: 12px;
+                padding: 5px;
+            }
+            
+            #hint .error {
+                color: red;
+            }
+            
+            .projects {
+                border-top: 1px solid #aaa;
+            }
+            
+            .projects a {
+                display: block;
+                position: relative;
+                text-decoration: none;
+                background-color: #eee;
+                color: #000;
+                font-size: 13px;
+                padding: 8px;
+                border-bottom: 1px solid #aaa;
+                overflow: hidden;
+                text-align: left;
+                white-space: nowrap;
+                padding-left: 35px;
+            }
+            
+            .projects a img {
+                position: absolute;
+                left: 8px;
+                top: 8px;
+                width: 18px;
+                height: 18px;
+            }
+            
+            #projects h1 {
+                font-size: 14px;
+                font-weight: bold;
+                margin: 8px;
+            }
+            
+            #projects a:hover {
+                background-color: #33CCFF;
+            }
+        </style>
     </head>
     <body>
-    <div id="projects">
-        <h1>Zed &raquo;</h1>
-        <div class="projects">
-            <a href="#" data-url="local:" data-title="Local Folder" id="open-local"><img src="img/project.png"/>Open Local Folder</a>
-            <a href="#" data-title="Dropbox Folder" id="dropbox-open"><img src="img/dropbox.png"/>Open Dropbox Folder</a>
-            <a href="#" data-url="syncfs:" data-title="Notes"><img src="img/sync.png"/>Notes</a>
-            <a href="#" data-url="config:" data-title="Configuration"><img src="img/config.png"/>Configuration</a>
-            <a href="#" data-url="manual:" data-title="Manual"><img src="img/manual.png"/>Manual</a>
+        <div id="projects">
+            <h1>Zed &raquo;</h1>
+
+            <input type="text" id="projectfilter" placeholder="Type to filter project list" tabindex="0" />
+            <div id="hint">To open the first matching project press <tt>Enter</tt>.</div>
+            <div id="recent" class="projects"></div>
+            <h1>Edit Remote Files &raquo;</h1>
         </div>
-        <h1>Recent Folders &raquo;</h1>
-        <div id="recent" class="projects"></div>
-        <h1>Edit Remote Files &raquo;</h1>
-    </div>
-    <div id="goto">
-        <input id="gotoinput" type="text" placeholder="URL to edit remotely" value=""/>
-    </div>
-    <div id="hint">To edit remote files, run <tt>zed</tt> on the server. Paste the URL <tt>zed</tt> returns into this box and press <tt>Enter</tt>.</div>
-    <script src="js/open.js"></script>
-</body>
+        <div id="goto">
+            <input id="gotoinput" type="text" placeholder="URL to edit remotely" value="" tabindex="1" />
+        </div>
+        <div id="hint">To edit remote files, run <tt>zed</tt> on the server. Paste the URL <tt>zed</tt> returns into this box and press <tt>Enter</tt>.</div>
+        <script src="js/open.js"></script>
+    </body>
 </html>
