@@ -80,7 +80,7 @@
                 margin: 8px;
             }
             
-            #projects a:hover {
+            #projects a.active {
                 background-color: #33CCFF;
             }
         </style>
@@ -88,9 +88,8 @@
     <body>
         <div id="projects">
             <h1>Zed &raquo;</h1>
-
             <input type="text" id="projectfilter" placeholder="Type to filter project list" tabindex="0" />
-            <div id="hint">To open the first matching project press <tt>Enter</tt>.</div>
+            <div id="hint">To open the selected project press <tt>Enter</tt>.</div>
             <div id="recent" class="projects"></div>
             <h1>Edit Remote Files &raquo;</h1>
         </div>

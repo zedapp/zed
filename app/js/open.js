@@ -11,13 +11,17 @@ require.config({
     },
 });
 
-require(["lib/history", "lib/icons", "lib/async"], function(history, icons, async) {
-    var input = $("#gotoinput");
-
+require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(history, icons, async, keyCode) {
+    var remoteEditInput = $("#gotoinput");
     var filterInput = $("#projectfilter");
+    var defaultHint = $("#hint").html();
     
+    var selectIdx = 0;
+    // Keeps references to open project's Chrome windows
     var openProjects = {};
-    window.openProjects = openProjects;
+    // We're storing recent projects in local storage
+    var projectCache = [];
+    var validProjectCache = [];
 
     function open(url, title) {
         var openProject = openProjects[url];
@@ -39,15 +43,16 @@ require(["lib/history", "lib/icons", "lib/async"], function(history, icons, asyn
         }
     }
 
-    var defaultHint = $("#hint").html();
-
+    /**
+     * Same as open, but first checks for a valid WebFS implementation in case of http/https links
+     */
     function openChecked(url) {
         if (!url) {
             return;
         }
         // Only check http(s) links
         if (url.indexOf("http") !== 0) {
-            input.val("");
+            remoteEditInput.val("");
             return open(url, url);
         }
         $.ajax({
@@ -58,7 +63,7 @@ require(["lib/history", "lib/icons", "lib/async"], function(history, icons, asyn
             },
             success: function() {
                 open(url, url);
-                input.val("");
+                remoteEditInput.val("");
             },
             error: function() {
                 $("#hint").html("<span class='error'>ERROR</span>: URL does seem to run a (recent) Zed server.");
@@ -74,16 +79,10 @@ require(["lib/history", "lib/icons", "lib/async"], function(history, icons, asyn
         var win = chrome.app.window.current();
         win.resizeTo(400, $("body").height() + 23);
     }
-
-    // We're storing recent projects in local storage
-    var projectCache = [];
-    var validProjectCache = [];
-
-    function updateProjectList() {
+    
+    function getAllVisibleProjects() {
         var projects = validProjectCache.slice();
-        var recentEl = $("#recent");
         var filterPhrase = filterInput.val().toLowerCase();
-        recentEl.empty();
         projects.splice(0, 0, {
             name: "Local Folder",
             url: "local:"
@@ -103,11 +102,23 @@ require(["lib/history", "lib/icons", "lib/async"], function(history, icons, asyn
         projects = projects.filter(function(p) {
             return p.name.toLowerCase().indexOf(filterPhrase) !== -1;
         });
-        projects.forEach(function(project) {
+        return projects;
+    }
+
+    function updateProjectList() {
+        var projects = getAllVisibleProjects();
+        var recentEl = $("#recent");
+        recentEl.empty();
+        
+        projects.forEach(function(project, idx) {
             var el = $("<a href='#'>");
             el.html("<img src='" + icons.protocolIcon(project.url) + "'/>" + project.name);
             el.data("url", project.url);
             el.data("title", project.name);
+            el.data("idx", idx);
+            if(idx === selectIdx) {
+                el.addClass("active");
+            }
             recentEl.append(el);
         });
         updateWindowSize();
@@ -143,19 +154,60 @@ require(["lib/history", "lib/icons", "lib/async"], function(history, icons, asyn
     updateRecentProjects();
     chrome.storage.onChanged.addListener(updateRecentProjects);
 
-    input.keyup(function(event) {
+    remoteEditInput.keyup(function(event) {
         if (event.keyCode === 13) {
-            openChecked(input.val());
+            openChecked(remoteEditInput.val());
+        }
+    });
+    remoteEditInput.blur(function() {
+        filterInput.focus();
+    });
+    
+    var lastFilterPhrase = null;
+    
+    filterInput.keyup(function() {
+        if (lastFilterPhrase != filterInput.val()) {
+            selectIdx = 0;
+            lastFilterPhrase = filterInput.val();
+            updateProjectList();
         }
     });
 
-    filterInput.keyup(function(event) {
-        var projects = updateProjectList();
-        if(event.keyCode === 13 && projects.length > 0) {
-            $(".projects a").eq(0).click();
-            filterInput.val("");
+    filterInput.keydown(function(event) {
+        switch(event.keyCode) {
+            case keyCode('Return'):
+                var projects = updateProjectList();
+                if(projects.length > 0) {
+                    $(".projects a").eq(selectIdx).click();
+                    filterInput.val("");
+                }
+                break;
+            case keyCode('Up'):
+                selectIdx = Math.max(0, selectIdx - 1);
+                break;
+            case keyCode('Down'):
+                selectIdx = Math.min(getAllVisibleProjects().length - 1, selectIdx + 1);
+                break;
+            case keyCode('Tab'):
+                if(event.shiftKey) {
+                    // Up
+                    selectIdx = Math.max(0, selectIdx - 1);
+                } else {
+                    // Down
+                    selectIdx = Math.min(getAllVisibleProjects().length - 1, selectIdx + 1);
+                }
+                event.preventDefault();
+                event.stopPropagation();
+                break;
         }
+        updateProjectSelection();
     });
+    
+    function updateProjectSelection() {
+        var projectEls = $(".projects a");
+        projectEls.removeClass("active");
+        projectEls.eq(selectIdx).addClass("active");
+    }
 
     $("#projects").on("click", ".projects a", function(event) {
         var url = $(event.target).data("url");
@@ -169,6 +221,13 @@ require(["lib/history", "lib/icons", "lib/async"], function(history, icons, asyn
         } else if (url) {
             open(url, title);
         }
+        filterInput.focus();
+    });
+    
+    $("#projects").on("mouseover", ".projects a", function(event) {
+        var idx = $(event.target).data("idx");
+        selectIdx = idx;
+        updateProjectSelection();
     });
 
     filterInput.focus();
