@@ -37,13 +37,13 @@
                 height: 0;
             }
             
-            #hint {
+            .hint {
                 border-top: 1px dotted gray;
                 font-size: 12px;
                 padding: 5px;
             }
             
-            #hint .error {
+            .hint .error {
                 color: red;
             }
             
@@ -89,14 +89,14 @@
         <div id="projects">
             <h1>Zed &raquo;</h1>
             <input type="text" id="projectfilter" placeholder="Type to filter project list" tabindex="0" />
-            <div id="hint">To open the selected project press <tt>Enter</tt>.</div>
+            <div class="hint">To open the selected project press <tt>Enter</tt>.</div>
             <div id="recent" class="projects"></div>
             <h1>Edit Remote Files &raquo;</h1>
         </div>
         <div id="goto">
             <input id="gotoinput" type="text" placeholder="URL to edit remotely" value="" tabindex="1" />
         </div>
-        <div id="hint">To edit remote files, run <tt>zed</tt> on the server. Paste the URL <tt>zed</tt> returns into this box and press <tt>Enter</tt>.</div>
+        <div id="hint" class="hint">To edit remote files, run <tt>zed</tt> on the server. Paste the URL <tt>zed</tt> returns into this box and press <tt>Enter</tt>.</div>
         <script src="js/open.js"></script>
     </body>
 </html>
