@@ -36,12 +36,6 @@ define(function(require, exports, module) {
             } else {
                 return "<tt>Enter</tt> jumps to the first symbol matching your query.";
             }
-        } else if (phrase.indexOf("//") === 0) {
-            if (phrase === "//") {
-                return "Type the search string and press <tt>Enter</tt> to perform a project-wide search.";
-            } else {
-                return "Press <tt>Enter</tt> to perform a project-wide search for '" + phrase.substring(2) + "'";
-            }
         } else if (phrase && (results.length === 0 || phrase[0] === "/")) {
             return "<tt>Return</tt> creates and/or opens this file.";
         } else {
@@ -114,9 +108,7 @@ define(function(require, exports, module) {
                     }
                 } else if (phrase[0] === "@") {
                     resultList = filterSymbols(phrase);
-                } else if (phrase[0] === '/' && phrase[1] === '/') {
-                    resultList = [];
-                } else if (phrase[0] === '/' && phrase[1] !== '/') {
+                } else if (phrase[0] === '/') {
                     var results = {};
                     phrase = phrase.toLowerCase();
                     fileCache.forEach(function(file) {
@@ -179,7 +171,7 @@ define(function(require, exports, module) {
                     }
                 });
 
-                if (resultList.length === 0) {
+                if (resultList.length === 0 && loc === undefined) {
                     resultList = [{
                         path: phrase,
                         name: "Create file '" + phrase + "'",
