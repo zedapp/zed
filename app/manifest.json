@@ -3,7 +3,7 @@
     "version": "0.7.2",
     "manifest_version": 2,
     "minimum_chrome_version": "27",
-    "description": "The opiniated text and code editor",
+    "description": "Rethinking code editing.",
     "offline_enabled": true,
     "app": {
         "background": {

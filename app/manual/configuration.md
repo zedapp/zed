@@ -3,22 +3,14 @@ Configuration
 
 Configuration of Zed happen in two primary locations:
 
-1. The "Configuration" project which you can open from the Zed open screen
-   or using `Command-,`/`Ctrl-,` from any editor.
+1. The "Configuration" project which you can open from the Zed open screen or using `Command-,`/`Ctrl-,` from any editor.
 2. A /zedconfig.json file in your project.
 
-Zed implements configuration via an in-editor virtual file system that
-automatically synchronizes with Google Drive when connected to the Internet.
-As a result, your configuration is automatically synced between all your
-Chromes connected to your Google account. If you're interested, you can see the
-files by searching for them in your Drive:
+Zed implements configuration via an in-editor virtual file system that automatically synchronizes with Google Drive when connected to the Internet. As a result, your configuration is automatically synced between all your Chromes connected to your Google account. If you're interested, you can see the files by searching for them in your Drive:
 
     https://drive.google.com/#search/config%7C
 
-There are file watchers on all imported config files, which reload the config
-whenever changes are made to a file. For instance, you can change the `theme`
-setting to something else and within a few seconds you see the colors of all
-your editor windows (on all your devices) change.
+There are file watchers on all imported config files, which reload the config whenever changes are made to a file. For instance, you can change the `theme` setting to something else and within a few seconds you see the colors of all your editor windows (on all your devices) change.
 
 Zed's configuration consist of a number of aspects:
 
@@ -144,10 +136,6 @@ Let's start with a simple new "zed" mode:
 
             "preferences": {
                 "fontSize": 20
-            },
-
-            "snippets": {
-                "zed": "Zed is ${1:awesome}!"
             }
         }
     }
@@ -169,8 +157,6 @@ As can be seen, in a mode we can define a few things:
   - "complete": triggered when the user requests code completion, should return a list of possible completions.
 * "preferences": preference overrides specific to this mode.
 * "keys": key overrides specific to this mode.
-* "snippets": snippets for code completion where ${1}, ${2} etc. are insertion
-  points, optionally you can provide default values using ${1:defaultValue}.
 
 Commands
 --------

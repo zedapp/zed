@@ -9,19 +9,20 @@ to open the goto box to quickly jump to a topic.
 To quickly navigate to a help topic whose file name appears in the text,
 put your cursor on the file name and press `Command-Shift-E`/`Ctrl-Shift-E`.
 
-How to
-------
+General
+-------
 
-* Edit local files with Zed: howto/local.md
-* Edit remote files with Zed: howto/remote.md
-* Navigate a project: howto/navigation.md
-
-General topics
---------------
-
+* Changelog: changelog.md
 * Zed's features: features.md
 * Essential keyboard shortcuts: cheatsheet.md
 * Configuring and extending Zed: configuration.md
+* Tips and tricks: protips.md
+
+How to
+------
+
+* Edit remote files with Zed: howto/remote.md
+* Navigate a project: howto/navigation.md
 
 Specific features
 -----------------

@@ -4,15 +4,16 @@ Zed Features
 1. **Edit files remotely with your local preferences:** Need to edit files on a
    remote server, or even in a local VM, and don't like copying your editor's
    config files everywhere you go? Zed makes this easy: howto/remote.md
-2. **Edit files locally:** howto/local.md
+2. **Edit files locally:** Pick "Local Folder" from the project picker to
+   edit local files.
 3. **Chrome Application:** Installing via the Chrome Web Store brings a few
    useful features:
      1. Cross platform: Zed runs on any platforms that desktop Chrome runs on
         (including Chromebooks)
      2. Installation is easy with just a few clicks
      3. Upgrades are automatic
-     4. Configuration are automatically synchronized between all computers logged into
-        with the same Google account.
+     4. Configuration are automatically synchronized between all computers
+        logged into with the same Google account.
      5. Special "Notes" space is stored in Google Drive and synchronized between
         computers automatically as well. (Beta feature)
 4. **State preservation**: Zed preserves your editor state completely: the state

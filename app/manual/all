@@ -1,11 +1,11 @@
 
 /.zedstate
+/changelog.md
 /cheatsheet.md
 /configuration.md
 /ctags.md
 /cursors.md
 /features.md
-/howto/local.md
 /howto/navigation.md
 /howto/remote.md
 /index.md
