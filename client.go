@@ -417,21 +417,7 @@ func ParseClientFlags(args []string) string {
 	return url
 }
 
-func NotifySignaller(connectUrl string) bool {
-	resp, err := http.PostForm("http://localhost:7336/signal", url.Values{"url": {connectUrl}})
-	if err != nil {
-		return false
-	}
-	if resp.StatusCode == 500 {
-		fmt.Println("Zed local is up, but the Zed Chrome App is not running.")
-		fmt.Println("Please start the Zed Chrome App to automatically open this project.")
-		os.Exit(2)
-	}
-	return resp.StatusCode == 200
-}
-
-// localClient is only used in --local mode
-func RunClient(url string, id string, localClient bool) {
+func RunClient(url string, id string) {
 	rootPath, _ = filepath.Abs(rootPath)
 
 	socketUrl := fmt.Sprintf("%s/clientsocket", url)
@@ -467,20 +453,12 @@ func RunClient(url string, id string, localClient bool) {
 	connectUrl = strings.Replace(connectUrl, "wss://", "https://", 1)
 	multiplexer := NewRPCMultiplexer(ws, handleRequest)
 
-	if localClient {
-		multiplexer.Multiplex()
-		fmt.Println("The Zed Chrome App should now have opened a window to edit", rootPath)
-	} else {
-		shouldKeepRunning := !NotifySignaller(rootPath)
-		if shouldKeepRunning {
-			fmt.Print("In the Zed Chrome application copy and paste following URL to edit:\n\n")
-			fmt.Printf("  %s/fs/%s\n\n", connectUrl, id)
-			fmt.Println("Press Ctrl-c to quit.")
-			err = multiplexer.Multiplex()
-			if err != nil {
-				// TODO do this in a cleaner way (reconnect, that is)
-				RunClient(url, id, localClient)
-			}
-		}
+	fmt.Print("In the Zed Chrome application copy and paste following URL to edit:\n\n")
+	fmt.Printf("  %s/fs/%s\n\n", connectUrl, id)
+	fmt.Println("Press Ctrl-c to quit.")
+	err = multiplexer.Multiplex()
+	if err != nil {
+		// TODO do this in a cleaner way (reconnect, that is)
+		RunClient(url, id)
 	}
 }
