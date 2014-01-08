@@ -7,7 +7,14 @@ require.config({
 
 /*global chrome, $ */
 require(["lib/dropbox"], function(dropbox) {
-    
+
+    var dropboxOauthAppId = ["fkjcgamnceomfnbcaedlhhopcchmnlkj",
+        "pfmjnmeipppmcebplngmhfkleiinphhp"];
+    if (dropboxOauthAppId.indexOf(chrome.runtime.id) === -1) {
+        $("body").empty();
+        $("body").append("<h1>Dropbox only supported in <a href='https://chrome.google.com/webstore/detail/zed/pfmjnmeipppmcebplngmhfkleiinphhp' target='_blank'>Chrome Webstore version of Zed</a></h1>");
+        return;
+    }
     dropbox.authenticate(function(err, dropbox) {
         var treeEl = $("#tree");
         $("#logout").click(function() {

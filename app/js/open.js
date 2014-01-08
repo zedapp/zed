@@ -87,6 +87,7 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
             name: "Local Folder",
             url: "local:"
         }, {
+            id: "dropbox-open",
             name: "Open Dropbox Folder",
             url: "dropbox:"
         }, {
@@ -112,6 +113,9 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         
         projects.forEach(function(project, idx) {
             var el = $("<a href='#'>");
+            if(project.id) {
+                el.attr("id", project.id);
+            }
             el.html("<img src='" + icons.protocolIcon(project.url) + "'/>" + project.name);
             el.data("url", project.url);
             el.data("title", project.name);
@@ -232,13 +236,6 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
 
     filterInput.focus();
     updateWindowSize();
-
-    // Hide dropbox option for non-registered oAuth ids:
-    var dropboxOauthAppId = ["fkjcgamnceomfnbcaedlhhopcchmnlkj",
-        "pfmjnmeipppmcebplngmhfkleiinphhp"];
-    if (dropboxOauthAppId.indexOf(chrome.runtime.id) === -1) {
-        $("#dropbox-open").hide();
-    }
 });
 
 window.focusMe = function() {
