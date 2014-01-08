@@ -19,6 +19,7 @@ What you get instead is a bare bones, simple yet powerful editor that focusses o
 * (Vertical) split views, either 1, 2 or 3 vertical splits.
 * Auto-updating preview split for various languages (including markdown and
   coffeescript).
+* Editing of local files (via Chrome-specific APIs) and remote files (check the manual on how to do this)
 
 Installation
 ------------
@@ -31,25 +32,6 @@ You can install Zed [via the Chrome Web Store](https://chrome.google.com/webstor
 Then, in (a recent version of) Chrome, go to the "three-lined" menu > Tools >
 Extensions and click the "Load unpacked extension..." button, navigate to the
 `app` directory inside the Zed repository checkout. Zed should now run!
-
-Running a Zed server
-----------------------
-
-Requirements: go 1.1 or newer.
-
-After cloning the repo and installing the deps:
-
-    $ go build
-    
-This will produce a `zed` binary. The `zed` binary has three modes:
-
-1. Server mode: server mode acts as a proxy between the Zed Chrome application
-   and the server where the files to be edited are located.
-2. Client mode (default): connects to a Zed server, and exposes a file system
-   for editing
-3. Local mode: combines the client and server into a single process
-
-Run `./zed --help` for help.
 
 Inspiration
 -----------
