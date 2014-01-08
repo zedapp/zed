@@ -30,3 +30,10 @@ Specific features
 * Split-view editing: split.md
 * Multiple cursors: cursors.md
 * CTags: ctags.md
+
+Development
+-----------
+Want to hack on the Zed codebase itself? Fantastic! It's all just HTML, JavaScript and CSS so it's easy. Here are some pointers:
+
+* Zed implementation architecture: dev/index.md
+* Editor architecture: dev/editor.md
