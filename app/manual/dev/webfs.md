@@ -5,11 +5,6 @@ WebFS is a super simple protocol that Zed uses to communicate with a remote (or
 local) server. You can think of it as a super simplified version of WebDAV. It
 is designed to be minimal and easy to implement.
 
-Authentication
---------------
-
-Authentication is optional and if supported, happens via HTTP BasicAuth.
-
 URL
 ---
 

@@ -7,6 +7,7 @@
 /cursors.md
 /dev/editor.md
 /dev/index.md
+/dev/webfs.md
 /features.md
 /howto/navigation.md
 /howto/remote.md
@@ -15,5 +16,4 @@
 /sandbox.md
 /split.md
 /vision.md
-/webfs.md
 /zedconfig.json
