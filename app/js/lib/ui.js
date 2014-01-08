@@ -201,7 +201,7 @@ define(function(require, exports, module) {
 
         function updateResults() {
             var phrase = input.val();
-            results = filter(phrase); //.slice(0, 100);
+            results = filter(phrase).slice(0, 500);
             if (results.length > 0) {
                 _.each(results, function(result) {
                     result.caption = result.name;

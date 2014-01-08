@@ -16,34 +16,34 @@ define(function(require, exports, module) {
     eventbus.declare("loadedfilelist");
 
     function hint(phrase, results) {
-        if(phrase[0] === ':') {
-            if(phrase === ":") {
+        if (phrase[0] === ':') {
+            if (phrase === ":") {
                 return "Type line number and press <tt>Enter</tt> to jump.";
-            } else if(phrase == ":/") {
+            } else if (phrase == ":/") {
                 return "Type search phrase and press <tt>Enter</tt> to jump to first match.";
-            } else if(phrase[1] === '/') {
+            } else if (phrase[1] === '/') {
                 return "<tt>Enter</tt> jumps to first match for '" + _.escape(phrase.substring(2)) + "'";
-            } else if(phrase == ":@") {
+            } else if (phrase == ":@") {
                 return "Type symbol name and press <tt>Enter</tt> to jump to it.";
-            } else if(phrase[1] === '@') {
+            } else if (phrase[1] === '@') {
                 return "<tt>Enter</tt> jumps to first definition of '" + _.escape(phrase.substring(2)) + "'";
             } else {
                 return "<tt>Enter</tt> jumps to line " + phrase.substring(1);
             }
-        } else if(phrase[0] === "@") {
-            if(phrase === "@") {
+        } else if (phrase[0] === "@") {
+            if (phrase === "@") {
                 return "Type symbol name to jump to within this project.";
             } else {
                 return "<tt>Enter</tt> jumps to the first symbol matching your query.";
             }
-        } else if(phrase.indexOf("//") === 0) {
-            if(phrase === "//") {
+        } else if (phrase.indexOf("//") === 0) {
+            if (phrase === "//") {
                 return "Type the search string and press <tt>Enter</tt> to perform a project-wide search.";
             } else {
                 return "Press <tt>Enter</tt> to perform a project-wide search for '" + phrase.substring(2) + "'";
             }
-        } else if(phrase && results.length === 0) {
-            return "<tt>Return</tt> creates and opens this file.";
+        } else if (phrase && (results.length === 0 || phrase[0] === "/")) {
+            return "<tt>Return</tt> creates and/or opens this file.";
         } else {
             return "<tt>Return</tt> opens the selected file.";
         }
@@ -63,13 +63,13 @@ define(function(require, exports, module) {
         eventbus.on("ioavailable", fetchFileList);
 
         eventbus.on("newfilecreated", function(path) {
-            if(fileCache.indexOf(path) === -1) {
+            if (fileCache.indexOf(path) === -1) {
                 fileCache.push(path);
             }
         });
         eventbus.on("filedeleted", function(path) {
             var index = fileCache.indexOf(path);
-            if(index !== -1) {
+            if (index !== -1) {
                 fileCache.splice(index, 1);
             }
         });
@@ -77,7 +77,7 @@ define(function(require, exports, module) {
 
     command.define("Navigate:Goto", {
         exec: function(edit, session, text) {
-            if(typeof text !== "string") {
+            if (typeof text !== "string") {
                 text = undefined;
             }
             var currentPos = edit.getCursorPosition();
@@ -85,14 +85,16 @@ define(function(require, exports, module) {
 
             function filterSymbols(phrase, path) {
                 var tags = ctags.getCTags(path);
-                var symbols = tags.map(function(t) { return t.path + ":" + t.locator + "/" + t.symbol; });
+                var symbols = tags.map(function(t) {
+                    return t.path + ":" + t.locator + "/" + t.symbol;
+                });
                 var resultList = fuzzyfind(symbols, phrase.substring(1));
                 resultList.forEach(function(result) {
                     var parts = result.path.split('/');
-                    result.name = parts[parts.length-1];
+                    result.name = parts[parts.length - 1];
                     result.path = parts.slice(0, -1).join("/");
                     parts = result.path.split(":")[0].split("/");
-                    result.meta = parts[parts.length-1];
+                    result.meta = parts[parts.length - 1];
                 });
                 return resultList;
             }
@@ -104,31 +106,38 @@ define(function(require, exports, module) {
                 phrase = phraseParts[0];
                 var loc = phraseParts[1];
 
-                if(!phrase && loc !== undefined) {
-                    if(loc[0] === "@") {
+                if (!phrase && loc !== undefined) {
+                    if (loc[0] === "@") {
                         resultList = filterSymbols(loc, session.filename);
                     } else {
                         resultList = [];
                     }
-                } else if(phrase[0] === "@") {
+                } else if (phrase[0] === "@") {
                     resultList = filterSymbols(phrase);
-                } else if(phrase[0] === '/' && phrase[1] === '/') {
+                } else if (phrase[0] === '/' && phrase[1] === '/') {
                     resultList = [];
-                } else if(phrase[0] === '/' && phrase[1] !== '/') {
+                } else if (phrase[0] === '/' && phrase[1] !== '/') {
                     var results = {};
                     phrase = phrase.toLowerCase();
                     fileCache.forEach(function(file) {
                         var fileNorm = file.toLowerCase();
                         var score = 1;
 
-                        if(sessions[file]) {
+                        if (sessions[file]) {
                             score = sessions[file].lastUse;
                         }
 
-                        if(fileNorm.substring(0, phrase.length) === phrase)
-                            results[file] = score;
+                        if (fileNorm.substring(0, phrase.length) === phrase) results[file] = score;
                     });
                     resultList = [];
+                    if (fileCache.indexOf(phrase) === -1) {
+                        resultList.push({
+                            path: phrase,
+                            name: "Create file '" + phrase + "'",
+                            meta: "action",
+                            score: Infinity
+                        });
+                    }
                     Object.keys(results).forEach(function(path) {
                         resultList.push({
                             path: path,
@@ -140,7 +149,7 @@ define(function(require, exports, module) {
                     resultList = fuzzyfind(fileCache, phrase);
                     resultList.forEach(function(result) {
                         result.name = result.path;
-                        if(sessions[result.path]) {
+                        if (sessions[result.path]) {
                             result.score = sessions[result.path].lastUse;
                         }
                     });
@@ -151,11 +160,11 @@ define(function(require, exports, module) {
                 // Filter out paths currently open in an editor
                 resultList = resultList.filter(function(result) {
                     // Filter out files starting with . (TODO: do this properly)
-                    if(result.path[1] === ".") {
+                    if (result.path[1] === ".") {
                         return false;
                     }
-                    for(var i = 0; i < editors.length; i++) {
-                        if(editors[i].getSession().filename === result.path) {
+                    for (var i = 0; i < editors.length; i++) {
+                        if (editors[i].getSession().filename === result.path) {
                             return false;
                         }
                     }
@@ -163,12 +172,20 @@ define(function(require, exports, module) {
                 });
 
                 resultList.sort(function(r1, r2) {
-                    if(r1.score === r2.score) {
+                    if (r1.score === r2.score) {
                         return r1.path < r2.path ? -1 : 1;
                     } else {
                         return r2.score - r1.score;
                     }
                 });
+
+                if (resultList.length === 0) {
+                    resultList = [{
+                        path: phrase,
+                        name: "Create file '" + phrase + "'",
+                        meta: "action"
+                    }];
+                }
                 return resultList;
             }
 
@@ -181,7 +198,7 @@ define(function(require, exports, module) {
                 onChange: function(phrase, selectedItem) {
                     var phraseParts = locator.parse(phrase);
                     var loc = phraseParts[1];
-                    if(loc && (!phraseParts[0] || phraseParts[0] === session.filename)) {
+                    if (loc && (!phraseParts[0] || phraseParts[0] === session.filename)) {
                         locator.jump(loc, selectionRange, selectedItem);
                     }
                 },
@@ -189,7 +206,7 @@ define(function(require, exports, module) {
                 onSelect: function(file, phrase) {
                     var currentPath = session.filename;
                     var fileOnly, loc, phraseParts;
-                    if(file !== phrase) {
+                    if (file !== phrase) {
                         phraseParts = locator.parse(phrase);
                         fileOnly = file || currentPath;
                         loc = phraseParts[1];
@@ -200,7 +217,7 @@ define(function(require, exports, module) {
                     }
                     // Actual jumping only needs to happen if it's non-local
                     // i.e. if we're not already there (as is the case with local locators)
-                    if(phraseParts[0] || !loc) {
+                    if (phraseParts[0] || !loc) {
                         file = fileOnly + (loc ? ':' + loc : '');
                         session_manager.go(file, edit, session);
                     }
