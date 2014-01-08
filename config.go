@@ -17,10 +17,6 @@ type Config struct {
         Sslcert string
         Sslkey string
     }
-
-    Local struct {
-        Root string
-    }
 }
 
 func ParseConfig() Config {
@@ -28,7 +24,6 @@ func ParseConfig() Config {
     config.Client.Url = "ws://server.zedapp.org:7337"
     config.Server.Ip = "0.0.0.0"
     config.Server.Port = 7337
-    config.Local.Root = os.Getenv("HOME")
 
     configFile := os.ExpandEnv("$HOME/.zedrc")
     if _, err := os.Stat(configFile); err == nil {

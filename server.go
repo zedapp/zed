@@ -268,10 +268,6 @@ func ParseServerFlags(args []string) (ip string, port int, sslCrt string, sslKey
 func RunServer(ip string, port int, sslCrt string, sslKey string, withSignaling bool) {
 	http.Handle("/fs/", http.StripPrefix("/fs/", &WebFSHandler{}))
 	http.Handle("/clientsocket", websocket.Handler(socketServer))
-	if withSignaling {
-		http.Handle("/signalsocket", websocket.Handler(HandleSignalSocket))
-		http.HandleFunc("/signal", HandleSignal)
-	}
 	if sslCrt != "" {
 		fmt.Printf("Zed server now running on wss://%s:%d\n", ip, port)
 		log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", ip, port), sslCrt, sslKey, nil))
