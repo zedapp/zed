@@ -47,6 +47,9 @@ define(function(require, exports, module) {
                 fileWatchers[path].push(callback);
             },
             unwatchFile: function(path, callback) {
+                if(!fileWatchers[path]) {
+                    return;
+                }
                 fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
             },
             setCacheTag: function(path, tag) {

@@ -42,6 +42,13 @@ define(function(require, exports, module) {
                 clearTimeout(saveTimer);
             }
             saveTimer = setTimeout(function() {
+                // If this is a new file, this is the moment that it's going to
+                // be saved for the first time and ought to appear in the file list,
+                // so let's emit the 'newfilecreated' event.
+                if(session.newFile) {
+                    session.newFile = false;
+                    eventbus.emit("newfilecreated", path);
+                }
                 eventbus.emit("sessionactivitystarted", session, "Saving");
                 eventbus.emit("sessionbeforesave", session);
                 project.writeFile(path, session.getValue(), function(err) {
@@ -196,12 +203,7 @@ define(function(require, exports, module) {
                     session = editor.createSession(path, "");
                     setupSave(session);
                     show(session);
-                    eventbus.emit("newfilecreated", path);
-                    project.writeFile(path, "", function(err) {
-                        if(err) {
-                            eventbus.emit("sessionactivityfailed", session, "Could not create file");
-                        }
-                    });
+                    session.newFile = true;
                 } else {
                     eventbus.emit("newsession", session);
                     show(session);
@@ -230,9 +232,12 @@ define(function(require, exports, module) {
                     if(kind === "changed") {
                         handleChangedFile(path);
                     } else if(kind === "deleted") {
-                        console.log("File deleted", path);
-                        delete sessions[path];
-                        eventbus.emit("filedeleted", path);
+                        var session = sessions[path];
+                        if(!session.newFile) {
+                            console.log("File deleted", path);
+                            delete sessions[path];
+                            eventbus.emit("filedeleted", path);
+                        }
                     } else {
                         console.log("Other kind", kind);
                         ui.blockUI("Disconnected, hang on... If this message doesn't disappear within a few seconds: close this window and restart your Zed client.");
