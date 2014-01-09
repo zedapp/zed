@@ -31,7 +31,7 @@ define(function(require, exports, module) {
                 } else {
                     projects.splice(projects.indexOf(existing[0]), 1);
                     projects.splice(0, 0, {
-                        name: name,
+                        name: existing[0].name,
                         url: url
                     });
                     chrome.storage.local.set({

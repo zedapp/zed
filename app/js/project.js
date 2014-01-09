@@ -83,7 +83,8 @@ define(function(require, exports, module) {
                 // We're opening a specific previously opened directory here
                 if (id) {
                     chrome.fileSystem.restoreEntry(id, function(dir) {
-                        history.pushProject(dir.fullPath, "local:" + id);
+                        var title = dir.fullPath.slice(1);
+                        history.pushProject(title, "local:" + id);
                         localfs(dir, function(err, io) {
                             setupMethods(io);
                         });
