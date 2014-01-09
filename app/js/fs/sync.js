@@ -16,19 +16,10 @@ define(function(require, exports, module) {
             return namespace + path.substring(1).replace(/\//g, "|", path);
         }
 
-        chrome.syncFileSystem.requestFileSystem(function(fs) {
-            if (!fs) {
-                require(["../lib/ui"], function(ui) {
-                    ui.unblockUI();
-                    ui.prompt({
-                        message: "You are running a version of Chrome/Chromium that does not support SyncFS. Zed relies on SyncFS. Please install a recent version of Chrome with SyncFS support."
-                    });
-                });
-                return;
-            }
+        function wrapFilesystem(root) {
             var operations = {
                 listFiles: function(callback) {
-                    var reader = fs.root.createReader();
+                    var reader = root.createReader();
                     reader.readEntries(function(entries) {
                         var results = [];
                         for (var i = 0; i < entries.length; i++) {
@@ -46,7 +37,7 @@ define(function(require, exports, module) {
                 },
                 readFile: function(path, callback) {
                     var encodedPath = encodePath(path);
-                    fs.root.getFile(encodedPath, {}, function(f) {
+                    root.getFile(encodedPath, {}, function(f) {
                         var fileReader = new FileReader();
                         fileReader.onload = function(e) {
                             callback(null, e.target.result);
@@ -59,7 +50,7 @@ define(function(require, exports, module) {
                 },
                 writeFile: function(path, content, callback) {
                     var encodedPath = encodePath(path);
-                    fs.root.getFile(encodedPath, {
+                    root.getFile(encodedPath, {
                         create: true
                     }, function(fileEntry) {
                         // For whatever we need to truncate in a separate step
@@ -87,7 +78,7 @@ define(function(require, exports, module) {
                 },
                 deleteFile: function(path, callback) {
                     var encodedPath = encodePath(path);
-                    fs.root.getFile(encodedPath, {}, function(fileEntry) {
+                    root.getFile(encodedPath, {}, function(fileEntry) {
                         fileEntry.remove(function() {
                             callback();
                         }, callback);
@@ -101,7 +92,7 @@ define(function(require, exports, module) {
                 },
                 getCacheTag: function(path, callback) {
                     var encodedPath = encodePath(path);
-                    fs.root.getFile(encodedPath, {}, function(f) {
+                    root.getFile(encodedPath, {}, function(f) {
                         f.file(function(stat) {
                             callback(null, "" + stat.lastModifiedDate);
                         });
@@ -114,6 +105,27 @@ define(function(require, exports, module) {
             var watcher = poll_watcher(operations, 3000);
 
             callback(null, operations);
+        }
+
+        chrome.syncFileSystem.requestFileSystem(function(fs) {
+            if (!fs) {
+                // Fallback to non-sync filesystem
+                console.log("Failed to get a sync file system, going to request a local filesystem instead.");
+                (window.requestFileSystem || window.webkitRequestFileSystem)(window.PERSISTENT, 100*1024*1024, function(fs) {
+                    console.log("Successfully obtained a local file system!");
+                    wrapFilesystem(fs.root);
+                }, function(err) {
+                    console.error("Failed to request local filesystem", err);
+                    require(["../lib/ui"], function(ui) {
+                        ui.unblockUI();
+                        ui.prompt({
+                            message: "Your Chrome does not seem to support local file systems, nor sync file systems, we need this to operate."
+                        });
+                    });    
+                });
+            } else {
+                wrapFilesystem(fs.root);
+            }
         });
     };
 });
