@@ -8,11 +8,14 @@ define(function(require, exports, module) {
     var icons = require("./lib/icons");
 
     var barEl;
+    
+    eventbus.declare("projecttitlechanged");
 
     exports.hook = function() {
         eventbus.once("editorloaded", update);
         eventbus.once("ioavailable", update);
         eventbus.on("configchanged", update);
+        eventbus.on("projecttitlechanged", update);
     };
 
     function update() {

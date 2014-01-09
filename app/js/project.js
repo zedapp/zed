@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var options = require("./lib/options");
     var history = require("./lib/history");
+    var command = require("./command");
 
     eventbus.declare('ioavailable');
 
@@ -48,7 +49,7 @@ define(function(require, exports, module) {
                 syncfs("notes", function(err, io) {
                     // In order to not confuse users, we'll prefill the project with a welcome.md file
                     io.listFiles(function(err, files) {
-                        if(err) {
+                        if (err) {
                             return console.error("List file error", err);
                         }
                         if (files.length === 0) {
@@ -71,7 +72,7 @@ define(function(require, exports, module) {
         } else if (url.indexOf("dropbox:") === 0) {
             require(["./fs/dropbox"], function(dropboxfs) {
                 var path = url.substring("dropbox:".length);
-                history.pushProject(path, url);
+                history.pushProject(path.slice(1), url);
                 dropboxfs(path, function(err, io) {
                     setupMethods(io);
                 });
@@ -96,8 +97,10 @@ define(function(require, exports, module) {
                             return chrome.app.window.current().close();
                         }
                         var id = chrome.fileSystem.retainEntry(dir);
-                        history.pushProject(dir.fullPath, "local:" + id);
-                        options.set("title", dir.fullPath);
+                        var title = dir.fullPath.slice(1);
+                        history.pushProject(title, "local:" + id);
+                        options.set("title", title);
+                        options.set("url", "local:" + id);
                         localfs(dir, function(err, io) {
                             setupMethods(io);
                         });
@@ -114,4 +117,42 @@ define(function(require, exports, module) {
     exports.init = function() {
         $("title").text(options.get("title") + " [ Zed ]");
     };
+
+    command.define("Project:Open Local Folder", {
+        exec: function() {
+            chrome.app.window.create('editor.html?url=local:&title=Local Folder&chromeapp=true', {
+                frame: 'chrome',
+                width: 720,
+                height: 400,
+            });
+        },
+        readOnly: true
+    });
+
+    command.define("Project:Open Project Picker", {
+        exec: function() {
+            window.opener.focusMe();
+        },
+        readOnly: true
+    });
+
+    command.define("Project:Rename", {
+        exec: function() {
+            require(["./lib/history", "./lib/options", "./lib/ui"], function(history, options, ui) {
+                ui.prompt({
+                    message: "Rename project to:",
+                    input: options.get('title')
+                }, function(err, name) {
+                    if (!name) {
+                        // canceled
+                        return;
+                    }
+                    options.set("title", name);
+                    history.renameProject(options.get("url"), name);
+                    eventbus.emit("projecttitlechanged");
+                });
+            });
+        },
+        readOnly: true
+    });
 });

@@ -128,24 +128,6 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Project:Open Local Folder", {
-        exec: function() {
-            chrome.app.window.create('editor.html?url=local:&title=Local Folder&chromeapp=true', {
-                frame: 'chrome',
-                width: 720,
-                height: 400,
-            });
-        },
-        readOnly: true
-    });
-    
-    exports.define("Project:Open Project Picker", {
-        exec: function() {
-            window.opener.focusMe();
-        },
-        readOnly: true
-    });
-
     exports.define("Configuration:Edit Preferences", {
         exec: function() {
             chrome.app.window.create('editor.html?url=config:&title=Configuration&chromeapp=true', {

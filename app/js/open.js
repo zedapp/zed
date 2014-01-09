@@ -20,8 +20,8 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
     // Keeps references to open project's Chrome windows
     var openProjects = {};
     // We're storing recent projects in local storage
-    var projectCache = [];
-    var validProjectCache = [];
+    var projectCache = null;
+    var validProjectCache = null;
 
     function open(url, title) {
         var openProject = openProjects[url];
@@ -129,7 +129,7 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         return projects;
     }
 
-    function updateRecentProjects() {
+    function updateRecentProjects(callback) {
         history.getProjects(function(err, projects) {
             if (_.isEqual(projects, projectCache)) {
                 return;
@@ -151,6 +151,7 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
             }, function() {
                 validProjectCache = validProjects;
                 updateProjectList();
+                _.isFunction(callback) && callback();
             });
         });
     }
@@ -203,6 +204,15 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
                 event.preventDefault();
                 event.stopPropagation();
                 break;
+            case keyCode('Delete'):
+                var selectedEl = $(".projects a").eq(selectIdx);
+                var url = selectedEl.data("url");
+                return history.removeProject(url, function() {
+                    updateRecentProjects(function() {
+                        selectIdx = Math.min(getAllVisibleProjects().length - 1, selectIdx);
+                        updateProjectSelection();
+                    });
+                });
         }
         updateProjectSelection();
     });
