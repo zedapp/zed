@@ -281,6 +281,11 @@ div.preview-vsplit2-right-2 {
     max-height: 80%;
     overflow: scroll;
 }
+
+.dynatree-container {
+    border: none !important;
+}
+
 #blockui {
     position: absolute;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
