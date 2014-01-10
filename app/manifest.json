@@ -1,9 +1,10 @@
 {
-    "name": "Zed",
-    "version": "0.8.0",
+    "name": "Zed Code Editor",
+    "short_name": "Zed",
+    "version": "0.8.1",
     "manifest_version": 2,
     "minimum_chrome_version": "27",
-    "description": "Rethinking code editing.",
+    "description": "Offline-capable, feature rich, extensible code editor designed for Chrome",
     "offline_enabled": true,
     "app": {
         "background": {
