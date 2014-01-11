@@ -10,7 +10,7 @@ for more read the manual in the Manual project:
     * Pressing return does different things in different situations:
         * When an item is selected, it will jump to the selected file
         * If no item is selected, it will create a new file with this path
-* `Command-.`/`Ctrl-E`: Run an editor command.
+* `Command-.`/`Ctrl-.`: Run an editor command.
 * `Cmd-T`/`Alt-T`: Show file tree (useful for exploring projects you're
   not familiar with). Keys within the tree:
     * `Up`: Move up in the tree
