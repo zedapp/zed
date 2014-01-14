@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var config = require("./config");
     //var defaultConfiguration = JSON.parse(require("text!../config/config.default.json"));
     var modes = require("./modes");
+    var font = require("./lib/font");
     var whitespace = ace.require("ace/ext/whitespace");
 
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
@@ -58,6 +59,12 @@ define(function(require, exports, module) {
             edit.setHighlightSelectedWord(config.getPreference("highlightSelectedWord", session));
             edit.setBehavioursEnabled(config.getPreference("behaviorsEnabled", session)); // ( -> ()
             edit.setWrapBehavioursEnabled(config.getPreference("wrapBehaviorsEnabled", session)); // same as above but with selection
+            var fontFamily = config.getPreference("fontFamily");
+            if(font.isInstalled(fontFamily)) {
+                $(edit.container).css("font-family", config.getPreference("fontFamily"));
+            } else {
+                eventbus.emit("sessionactivityfailed", session, "Invalid font: " + fontFamily);
+            }
         },
         setSessionConfiguration: function(session) {
             session.setTabSize(config.getPreference("tabSize", session));

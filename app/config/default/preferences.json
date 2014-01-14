@@ -6,6 +6,7 @@
         "defaultMode": "ace/mode/text",
         "detectIndentation": true,
         "fontSize": 12,
+        "fontFamily": "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
         "showPrintMargin": true,
         "printMarginColumn": 80,
         "showInvisibles": false,
