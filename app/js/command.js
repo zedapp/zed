@@ -14,7 +14,7 @@ define(function(require, exports, module) {
         userCommands[name] = {
             exec: function(edit, session, callback) {
                 require(["./sandbox"], function(sandbox) {
-                    sandbox.execCommand(cmd, edit.getSession(), function(err, result) {
+                    sandbox.execCommand(name, cmd, edit.getSession(), function(err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -123,17 +123,6 @@ define(function(require, exports, module) {
                         exports.exec(cmd, edit, edit.getSession());
                     }
                 });
-            });
-        },
-        readOnly: true
-    });
-
-    exports.define("Configuration:Edit Preferences", {
-        exec: function() {
-            chrome.app.window.create('editor.html?url=config:&title=Configuration&chromeapp=true', {
-                frame: 'chrome',
-                width: 720,
-                height: 400,
             });
         },
         readOnly: true

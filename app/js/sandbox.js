@@ -12,6 +12,8 @@
 /*global define, $, _ */
 define(function(require, exports, module) {
     var command = require("./command");
+    var bgPage = require("./lib/background_page");
+    var options = require("./lib/options");
 
     var sandboxEl;
     var id;
@@ -77,6 +79,19 @@ define(function(require, exports, module) {
         }
     });
 
+
+    window.execSandboxApi = function(api, args, callback) {
+        var parts = api.split('.');
+        var mod = parts.slice(0, parts.length-1).join('/');
+        var call = parts[parts.length-1];
+        require(["./sandbox/impl/" + mod], function(mod) {
+            if (!mod[call]) {
+                return callback("No such method: " + call);
+            }
+            mod[call].apply(this, args.concat([callback]));
+        });
+    };
+    
     /**
      * Programmatically call a sandbox command, the spec argument has the following keys:
      * - scriptUrl: the URL (http, https or relative local path) of the require.js module
@@ -84,20 +99,27 @@ define(function(require, exports, module) {
      * Any other arguments added in spec are passed along as the first argument to the
      * module which is executed as a function.
      */
-    exports.execCommand = function(spec, session, callback) {
-        id++;
-        waitingForReply[id] = callback;
-        var scriptUrl = spec.scriptUrl;
-        if(scriptUrl[0] === "/") {
-            scriptUrl = "configfs!" + scriptUrl;
-        }
-        sandboxEl[0].contentWindow.postMessage({
-            url: scriptUrl,
-            data: _.extend({
+    exports.execCommand = function(name, spec, session, callback) {
+        if (spec.extId) {
+            // Extension call
+            bgPage.getBackgroundPage().execExtensionCommand(options.get("url"), name, spec, {
                 path: session.filename
-            }, spec),
-            id: id
-        }, '*');
+            }, callback);
+        } else {
+            id++;
+            waitingForReply[id] = callback;
+            var scriptUrl = spec.scriptUrl;
+            if (scriptUrl[0] === "/") {
+                scriptUrl = "configfs!" + scriptUrl;
+            }
+            sandboxEl[0].contentWindow.postMessage({
+                url: scriptUrl,
+                data: _.extend({
+                    path: session.filename
+                }, spec),
+                id: id
+            }, '*');
+        }
     };
 
     command.define("Sandbox:Reset", {

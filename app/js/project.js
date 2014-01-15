@@ -119,17 +119,6 @@ define(function(require, exports, module) {
         $("title").text(options.get("title") + " [ Zed ]");
     };
 
-    command.define("Project:Open Local Folder", {
-        exec: function() {
-            chrome.app.window.create('editor.html?url=local:&title=Local Folder&chromeapp=true', {
-                frame: 'chrome',
-                width: 720,
-                height: 400,
-            });
-        },
-        readOnly: true
-    });
-
     command.define("Project:Open Project Picker", {
         exec: function() {
             window.opener.focusMe();

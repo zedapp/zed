@@ -272,14 +272,6 @@
             "mac": "Command-P",
             "win": "Ctrl-P"
         },
-        "Configuration:Edit Preferences": {
-            "mac": "Command-,",
-            "win": "Ctrl-,"
-        },
-        "Project:Open Local Folder": {
-            "mac": "Command-O",
-            "win": "Ctrl-O"
-        },
         "Project:Open Project Picker": {
             "mac": "Command-Shift-O",
             "win": "Ctrl-Shift-O"

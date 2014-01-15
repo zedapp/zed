@@ -4,9 +4,11 @@ define(function(require, exports, module) {
     var configfs = null;
     var eventbus = require("./lib/eventbus");
     var async = require("./lib/async");
+    var bgPage = require("./lib/background_page");
 
     eventbus.declare("configchanged");
     eventbus.declare("configavailable");
+    eventbus.declare("configneedsreloading");
 
     var minimumConfiguration = {
         imports: [
@@ -25,6 +27,7 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.on("loadedfilelist", loadConfiguration);
+        eventbus.on("configneedsreloading", loadConfiguration);
 
         eventbus.on("sessionsaved", function(session) {
             if (session.filename === "/zedconfig.json") {
@@ -222,6 +225,12 @@ define(function(require, exports, module) {
         var rootFile = "/user.json";
         config = superExtend(base, minimumConfiguration);
         expandedConfiguration = _.extend({}, config);
+        // Expand with extension configs
+        var extensionConfigs = bgPage.getBackgroundPage().getAllConfigs();
+        _.each(extensionConfigs, function(cfg) {
+            config = superExtend(config, cfg);
+        });
+        // Continue
         clearWatchers();
         watchFile(configfs, rootFile, loadConfiguration);
         configfs.readFile(rootFile, function(err, config_) {

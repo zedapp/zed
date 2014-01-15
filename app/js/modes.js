@@ -102,7 +102,7 @@ define(function(require, exports, module) {
                         require(["./sandbox"], function(sandbox) {
                             var cmd = commandSpec.modeCommand[session.mode.language];
                             if (cmd) {
-                                sandbox.execCommand(cmd, session, function(err, result) {
+                                sandbox.execCommand(name, cmd, session, function(err, result) {
                                     if (err) {
                                         return console.error(err);
                                     }

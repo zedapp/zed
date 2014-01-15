@@ -22,6 +22,13 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
     // We're storing recent projects in local storage
     var projectCache = null;
     var validProjectCache = null;
+    
+    var backgroundPage = null;
+    
+    chrome.runtime.getBackgroundPage(function(bg) {
+        backgroundPage = bg;
+        openProjects = backgroundPage.projects;
+    });
 
     function open(url, title) {
         var openProject = openProjects[url];
