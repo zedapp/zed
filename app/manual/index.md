@@ -12,6 +12,7 @@ put your cursor on the file name and press `Command-Shift-E`/`Ctrl-Shift-E`.
 General
 -------
 
+* Managing projects: projects.md
 * Changelog: changelog.md
 * Zed's features: features.md
 * Essential keyboard shortcuts: cheatsheet.md

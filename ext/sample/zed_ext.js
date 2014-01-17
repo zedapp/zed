@@ -1,10 +1,12 @@
 /* global chrome */
 var zed = window.zed = {
     zedAppId: "pfmjnmeipppmcebplngmhfkleiinphhp",
-    $registerMessage: null,
     conn: null,
     reqId: 0,
     waitingForResponse: {},
+    /**
+     * Implements basic RPC
+     */
     sendRequest: function(req, callback) {
         req.reqId = zed.reqId++;
         zed.waitingForResponse[req.reqId] = callback || function() {};
@@ -13,14 +15,13 @@ var zed = window.zed = {
     register: function(config) {
         zed.conn = chrome.runtime.connect(zed.zedAppId);
         var manifest = chrome.runtime.getManifest();
-        this.$registerMessage = {
+        
+        zed.sendRequest({
             type: "register",
             name: manifest.name,
             version: manifest.version,
             config: config
-        };
-
-        zed.sendRequest(zed.$registerMessage, function(err) {
+        }, function(err) {
             if (err) {
                 console.error("Zed probably not started yet, will try again later");
 

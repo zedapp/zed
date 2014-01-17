@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.8.2
+-----
+* Initial implementation of Chrome-extension-to-extend-Zed support. Allowing users to write Chrome extensions that extend Zed's functionality. This feature is still in development.
+* Tweaking of manual (added "Projects" page)
+* Tweaked default project names slightly, tweaked font on non-Mac OSes of project picker window
+
+0.8.1
+-----
+Purely a Chrome Web Store SEO release (different application name and description).
+
 0.8.0
 -----
 * This release drops "zed --local" support, please use Chrome 31's+ Local Folder support instead

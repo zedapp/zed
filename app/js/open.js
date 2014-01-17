@@ -91,7 +91,7 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         var projects = validProjectCache.slice();
         var filterPhrase = filterInput.val().toLowerCase();
         projects.splice(0, 0, {
-            name: "Local Folder",
+            name: "Open Local Folder",
             url: "local:"
         }, {
             id: "dropbox-open",
