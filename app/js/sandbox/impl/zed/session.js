@@ -2,6 +2,7 @@ define(function(require, exports, module) {
     var session_manager = require("../../../session_manager");
     var Range = ace.require("ace/range").Range;
     var editor = require("../../../editor");
+    var InlineAnnotation = require("../../../lib/inline_annotation");
 
     function rangify(range) {
         return Range.fromPoints(range.start, range.end);
@@ -22,7 +23,20 @@ define(function(require, exports, module) {
             });
         },
         setAnnotations: function(path, annos, callback) {
-            getSession(path).setAnnotations(annos);
+            var session = getSession(path);
+            (session.annotations || []).forEach(function(anno) {
+                console.log("Removing anno", anno);
+                anno.remove();
+            });
+            session.annotations = [];
+            for(var i = 0; i < annos.length; i++) {
+                var anno = annos[i];
+                // If no endColum, no inline marker is required
+                if(anno.endColumn) {
+                    session.annotations.push(new InlineAnnotation(session, anno));
+                }
+            }
+            session.setAnnotations(annos);
             callback();
         },
         getText: function(path, callback) {

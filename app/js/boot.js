@@ -49,6 +49,8 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
         _.each(arguments, function(module) {
             if (module.hook) module.hook();
         });
+        
+        
         _.each(arguments, function(module) {
             if (module.init) module.init();
         });

@@ -120,6 +120,7 @@ define(function(require, exports, module) {
                 errors.push({
                     row: error.line - 1,
                     column: error.character - 1,
+
                     text: error.reason,
                     type: type,
                     raw: raw

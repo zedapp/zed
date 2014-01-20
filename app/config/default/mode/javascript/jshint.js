@@ -1031,7 +1031,7 @@ exports.register = function (linter) {
 				data: [ data.value ]
 			});
 		}
-
+		
 		if (data.value.substr(data.value.length - 1) === ".") {
 			// Warn about a trailing decimal point.
 			linter.warn("W047", {
