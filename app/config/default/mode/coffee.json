@@ -13,6 +13,9 @@
                 },
                 "Tools:Preview": {
                     "scriptUrl": "/default/mode/coffee/preview.js"
+                },
+                "Tools:Compile": {
+                    "scriptUrl": "/default/mode/coffee/compile.js"
                 }
             },
             "events": {
