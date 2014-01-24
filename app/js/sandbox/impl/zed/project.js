@@ -1,5 +1,6 @@
 define(function(require, exports, module) {
     var project = require("../../../project");
+    var eventbus = require("../../../lib/eventbus");
     return {
         readFile: function(path, callback) {
             project.readFile(path, function(err, text) {
@@ -22,6 +23,8 @@ define(function(require, exports, module) {
                         return callback(""+err);
                     }
                 }
+                // TODO: perhaps replace with different event?
+                eventbus.emit("newfilecreated", path);
                 callback();
             });
         },

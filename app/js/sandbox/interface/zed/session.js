@@ -48,6 +48,9 @@ define(function(require, exports, module) {
         },
         replaceRange: function(path, range, text, callback) {
             sandboxRequest("zed/session", "replaceRange", [path, range, text], callback);
+        },
+        flashMessage: function(path, message, length, callback) {
+            sandboxRequest("zed/session", "flashMessage", [path, message, length], callback);
         }
     };
 });

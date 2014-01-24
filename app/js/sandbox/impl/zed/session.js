@@ -3,6 +3,7 @@ define(function(require, exports, module) {
     var Range = ace.require("ace/range").Range;
     var editor = require("../../../editor");
     var InlineAnnotation = require("../../../lib/inline_annotation");
+    var eventbus = require("../../../lib/eventbus");
 
     function rangify(range) {
         return Range.fromPoints(range.start, range.end);
@@ -138,6 +139,14 @@ define(function(require, exports, module) {
 
             session.selection.clearSelection();
             session.selection.moveCursorToPosition(cursorPos);
+            callback();
+        },
+        flashMessage: function(path, message, length, callback) {
+            var session = getSession(path);
+            eventbus.emit("sessionactivitystarted", session, message);
+            setTimeout(function() {
+                eventbus.emit("sessionactivitycompleted", session);
+            }, length);
             callback();
         }
     };
