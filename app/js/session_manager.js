@@ -12,6 +12,7 @@ define(function(require, exports, module) {
     var state = require("./state");
     var locator = require("./lib/locator");
     var ui = require("./lib/ui");
+    var command = require("./command");
 
     eventbus.declare("switchsession");
     eventbus.declare("newfilecreated");
@@ -293,6 +294,13 @@ define(function(require, exports, module) {
             });
         });
     };
+    
+    command.define("File:Reload", {
+        exec: function(edit, session) {
+            handleChangedFile(session.filename);
+        },
+        readOnly: true
+    });
 
     exports.go = go;
     exports.handleChangedFile = handleChangedFile;
