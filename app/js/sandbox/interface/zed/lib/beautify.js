@@ -13,13 +13,13 @@ define(function(require, exports, module) {
             }
 
             function beautifyText(err, text) {
-                var beautified = beautifier(text);
-
-                if(wholeDocument) {
-                    session.setText(path, beautified, callback);
-                } else {
-                    session.replaceRange(path, selectionRange, beautified, callback);
-                }
+                beautifier(text, function(beautified) {
+                    if(wholeDocument) {
+                        session.setText(path, beautified, callback);
+                    } else {
+                        session.replaceRange(path, selectionRange, beautified, callback);
+                    }
+                });
             }
 
             if(wholeDocument) {
