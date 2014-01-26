@@ -13,7 +13,7 @@ define(function(require, exports, module) {
             }
 
             function beautifyText(err, text) {
-                beautifier(text, function(beautified) {
+                beautifier(text, function(err, beautified) {
                     if(wholeDocument) {
                         session.setText(path, beautified, callback);
                     } else {

@@ -4,8 +4,8 @@ define(function(require, exports, module) {
     var config = require("zed/config");
 
     function enhancedBeautifier(text, callback) {
-        config.getPreference("tabSize", function(tabSize) {
-            config.getPreference("useSoftTabs", function(useSoftTabs) {
+        config.getPreference("tabSize", function(err, tabSize) {
+            config.getPreference("useSoftTabs", function(err, useSoftTabs) {
                 var indentChar = ' ';
                 if (!useSoftTabs) {
                     indentChar = '\t';
@@ -18,7 +18,7 @@ define(function(require, exports, module) {
                 
                 // Some tweaks for generator functions
                 var beautified = beautifier(text, options);
-                callback(beautified);
+                callback(null, beautified);
             });  
         });
     }

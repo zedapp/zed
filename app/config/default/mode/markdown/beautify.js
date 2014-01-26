@@ -85,7 +85,7 @@ define(function(require, exports, module) {
                 }
             }
 
-            callback(lines.join("\n"));
+            callback(null, lines.join("\n"));
         }, callback);
     };
 });
