@@ -126,7 +126,7 @@ define(function(require, exports, module) {
                     raw: raw
                 });
             }
-            session.setAnnotations(path, errors, callback);
+            callback(null, errors);
         });
     };
 });

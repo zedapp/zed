@@ -17,7 +17,8 @@
                 }
             },
             "handlers": {
-                "change": ["Tools:Check", "Tools:CTags"]
+                "check": ["Tools:Check"],
+                "change": ["Tools:CTags"]
             }
         }
     }

@@ -15,14 +15,14 @@ define(function(require, exports, module) {
                 var match = lineRegex.exec(message);
                 if(match) {
                     var line = parseInt(match[1], 10);
-                    return session.setAnnotations(path, [{
+                    return callback(null, [{
                         row: line,
                         text: message.slice(0, match.index),
                         type: "error"
-                    }], callback);
+                    }]);
                 }
             }
-            session.setAnnotations(path, [], callback);
+            callback(null, []);
         });
     };
 });

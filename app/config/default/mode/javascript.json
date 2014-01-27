@@ -50,7 +50,8 @@
             },
 
             "handlers": {
-                "change": ["Tools:Check", "Tools:CTags"],
+                "change": ["Tools:CTags"],
+                "check": ["Tools:Check"],
                 "complete": ["Tools:Complete:Snippet"]
             }
         }

@@ -16,7 +16,7 @@
             },
 
             "handlers": {
-                "change": ["Tools:Check"]
+                "check": ["Tools:Check"]
             }
         }
     }
