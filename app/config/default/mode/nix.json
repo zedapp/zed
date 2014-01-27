@@ -175,7 +175,7 @@
                         "unsafeDiscardOutputDependency"]
                 }
             },
-            "events": {
+            "handlers": {
                 "change": ["Tools:CTags"],
                 "complete": ["Tools:Complete:Snippet", "Tools:Complete:Builtin"]
             },

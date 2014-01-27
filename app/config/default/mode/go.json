@@ -11,7 +11,7 @@
                 }
             },
 
-            "events": {
+            "handlers": {
                 "change": ["Tools:CTags"]
             },
 

@@ -17,7 +17,7 @@ define(function(require, exports, module) {
         modes: {},
         keys: {},
         commands: {},
-        events: {}
+        handlers: {}
     };
 
     var config = _.extend({}, minimumConfiguration);
@@ -180,8 +180,8 @@ define(function(require, exports, module) {
         return expandedConfiguration.preferences;
     };
 
-    exports.getEvents = function() {
-        return expandedConfiguration.events;
+    exports.getHandlers = function() {
+        return expandedConfiguration.handlers;
     };
 
     exports.getConfiguration = function() {

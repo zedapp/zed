@@ -13,7 +13,7 @@
                     "scriptUrl": "/default/mode/html/preview.js"
                 }
             },
-            "events": {
+            "handlers": {
                 "preview": ["Tools:Preview"]
             }
         }

@@ -5,22 +5,22 @@ define(function(require, exports, module) {
     var command = require("./command");
 
     /**
-     * This parts handles mode events, e.g. "change", "preview" etc.
+     * This parts handles mode handlers, e.g. "change", "preview" etc.
      */
 
-    var eventHandlerFn;
-    var lastEventPath;
+    var handlerFn;
+    var lastHandlerPath;
 
-    function triggerSessionCommandEvent(session, eventname, debounceTimeout) {
+    function runSessionHandler(session, handlerName, debounceTimeout) {
         var path = session.filename;
         var mode = session.mode;
         var commandNames = [];
 
-        if (mode && mode.events[eventname]) {
-            commandNames = commandNames.concat(mode.events[eventname]);
+        if (mode && mode.handlers[handlerName]) {
+            commandNames = commandNames.concat(mode.handlers[handlerName]);
         }
-        if (config.getEvents()[eventname]) {
-            commandNames = commandNames.concat(config.getEvents()[eventname]);
+        if (config.getHandlers()[handlerName]) {
+            commandNames = commandNames.concat(config.getHandlers()[handlerName]);
         }
 
         function runCommands() {
@@ -34,11 +34,11 @@ define(function(require, exports, module) {
 
         if (commandNames.length > 0) {
             if (debounceTimeout) {
-                if (path !== lastEventPath) {
-                    eventHandlerFn = _.debounce(runCommands, debounceTimeout);
-                    lastEventPath = path;
+                if (path !== lastHandlerPath) {
+                    handlerFn = _.debounce(runCommands, debounceTimeout);
+                    lastHandlerPath = path;
                 }
-                eventHandlerFn();
+                handlerFn();
             } else {
                 runCommands();
             }
@@ -49,14 +49,14 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.on("sessionchanged", function(session) {
-            triggerSessionCommandEvent(session, "change", 1000);
+            runSessionHandler(session, "change", 1000);
         });
         eventbus.on("modeset", function(session) {
-            triggerSessionCommandEvent(session, "change");
+            runSessionHandler(session, "change");
         });
 
         eventbus.on("preview", function(session) {
-            var didPreview = triggerSessionCommandEvent(session, "preview");
+            var didPreview = runSessionHandler(session, "preview");
             if (!didPreview) {
                 require(["./preview"], function(preview) {
                     preview.showPreview("Not supported.");

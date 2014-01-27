@@ -1,6 +1,5 @@
 Split-view Editing
 ==================
-
 Keys:
 
 * `Command-1`: No splits

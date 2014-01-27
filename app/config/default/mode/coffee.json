@@ -18,7 +18,7 @@
                     "scriptUrl": "/default/mode/coffee/compile.js"
                 }
             },
-            "events": {
+            "handlers": {
                 "change": ["Tools:Check", "Tools:CTags"],
                 "preview": ["Tools:Preview"]
             }

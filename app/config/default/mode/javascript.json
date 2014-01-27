@@ -49,7 +49,7 @@
                 }
             },
 
-            "events": {
+            "handlers": {
                 "change": ["Tools:Check", "Tools:CTags"],
                 "complete": ["Tools:Complete:Snippet"]
             }

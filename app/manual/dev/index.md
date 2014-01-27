@@ -1,6 +1,5 @@
 Zed Implementation Architecture
 ===============================
-
 Zed consists of two parts:
 
 1. The Zed Chrome application

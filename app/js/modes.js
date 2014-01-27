@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var command = require("./command");
     var path = require("./lib/path");
-    var events = require("./events");
+    var handlers = require("./handlers");
 
     eventbus.declare("modesloaded");
     eventbus.declare("modeset");
@@ -22,7 +22,7 @@ define(function(require, exports, module) {
         language: "text",
         name: "Plain Text",
         highlighter: "ace/mode/text",
-        events: {},
+        handlers: {},
         commands: {},
         preferences: {},
         keys: {},
