@@ -35,7 +35,7 @@ define(function(require, exports, module) {
     }
 
     return function(data, callback) {
-        beautify(data.path, function(content) {
+        beautify(data.path, function(content, callback) {
             var width = 80;
             var lines = content.split("\n");
 
@@ -85,7 +85,7 @@ define(function(require, exports, module) {
                 }
             }
 
-            return lines.join("\n");
+            callback(null, lines.join("\n"));
         }, callback);
     };
 });
