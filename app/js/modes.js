@@ -46,6 +46,9 @@ define(function(require, exports, module) {
             if (!mode.preferences) {
                 mode.preferences = {};
             }
+            if (!mode.handlers) {
+                mode.handlers = {};
+            }
         });
     }
 

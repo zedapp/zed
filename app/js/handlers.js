@@ -62,7 +62,6 @@ define(function(require, exports, module) {
     }
 
     function setAnnotations(session, annos) {
-        console.log("Annotations!", annos);
         (session.annotations || []).forEach(function(anno) {
             anno.remove();
         });
