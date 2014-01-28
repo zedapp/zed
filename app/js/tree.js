@@ -61,12 +61,13 @@ define(function(require, exports, module) {
             $("#file-tree").remove();
         });
     };
-
+    
+    var ignoreActivate = true;
     function showTree(treeId, edit, list, sep, onSelect) {
         var editorEl = $(edit.container);
         var treeEl = $("#" + treeId);
         
-        var ignoreActivate = true;
+        ignoreActivate = true;
         var lastFocusEl = null;
 
         function close() {
