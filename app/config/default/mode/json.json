@@ -15,8 +15,8 @@
                 }
             },
 
-            "events": {
-                "change": ["Tools:Check"]
+            "handlers": {
+                "check": ["Tools:Check"]
             }
         }
     }

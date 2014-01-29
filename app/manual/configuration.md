@@ -27,7 +27,8 @@ Configuration is done in Zed's JSON format, which looks as follows:
         "preferences": {...},
         "modes": {...},
         "commands": {...},
-        "keys": {...}
+        "keys": {...},
+        "handlers": {...}
     }
 
 Each key is optional.
@@ -126,8 +127,8 @@ Let's start with a simple new "zed" mode:
                 }
             },
 
-            "events": {
-                "change": ["Tools:Check"]
+            "handlers": {
+                "check": ["Tools:Check"]
             },
 
             "keys": {
@@ -149,11 +150,12 @@ As can be seen, in a mode we can define a few things:
 * "filenames": the filenames to use the mode for (e.g. "Makefile").
 * "commands": custom commands specific to this mode (see the Commands section
   later in this document).
-* "events": what events trigger a specific command automatically,
-  currently the following events are supported:
+* "handlers": what handlers trigger a specific command automatically,
+  currently the following handlers are supported:
   - "change": triggered when the text in a file changes (throttled every few
     seconds).
   - "preview": triggered when the Preview panel needs updating.
+  - "check": triggered when static verification is requested, should return a list of annotations.
   - "complete": triggered when the user requests code completion, should return a list of possible completions.
 * "preferences": preference overrides specific to this mode.
 * "keys": key overrides specific to this mode.

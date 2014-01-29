@@ -44,6 +44,9 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     break;
                 case 'api':
                     var project = projects[req.project];
+                    if(!project) {
+                        return console.error("No such project:", req.project);
+                    }
                     project.contentWindow.execSandboxApi(req.api, req.args, function(err, result) {
                         port.postMessage({
                             replyTo: req.reqId,

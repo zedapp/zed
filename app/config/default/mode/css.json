@@ -16,8 +16,9 @@
                     "scriptUrl": "/default/mode/css/ctags.js"
                 }
             },
-            "events": {
-                "change": ["Tools:Check", "Tools:CTags"]
+            "handlers": {
+                "check": ["Tools:Check"],
+                "change": ["Tools:CTags"]
             }
         }
     }

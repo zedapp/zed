@@ -12,8 +12,8 @@ define(function(require, exports, module) {
 
     var completer = {
         getCompletions: function(edit, session, pos, prefix, callback) {
-            var modeCompleteCommands = session.mode.events.complete;
-            var globalCompleteCommands = config.getEvents().complete;
+            var modeCompleteCommands = session.mode.handlers.complete;
+            var globalCompleteCommands = config.getHandlers().complete;
             var results = [];
             var completeCommands = [];
             if (modeCompleteCommands) {

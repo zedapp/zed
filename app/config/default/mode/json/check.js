@@ -10,13 +10,13 @@ define(function(require, exports, module) {
                 parse(text);
             } catch (e) {
                 var lines = text.substring(0, e.at).split("\n");
-                return session.setAnnotations(path, [{
+                return callback(null, [{
                     row: lines.length-1,
                     text: e.message,
                     type: "error"
                 }], callback);
             }
-            session.setAnnotations(path, [], callback);
+            callback(null, []);
         });
     };
 });

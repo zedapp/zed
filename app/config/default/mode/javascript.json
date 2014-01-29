@@ -49,8 +49,9 @@
                 }
             },
 
-            "events": {
-                "change": ["Tools:Check", "Tools:CTags"],
+            "handlers": {
+                "change": ["Tools:CTags"],
+                "check": ["Tools:Check"],
                 "complete": ["Tools:Complete:Snippet"]
             }
         }

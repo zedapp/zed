@@ -20,7 +20,7 @@
                 "wordWrapColumn": 80
             },
 
-            "events": {
+            "handlers": {
                 "preview": ["Tools:Preview"]
             }
         }

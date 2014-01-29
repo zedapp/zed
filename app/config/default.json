@@ -4,6 +4,6 @@
         "/default/modes.json",
         "/default/keys.json",
         "/default/commands.json",
-        "/default/events.json"
+        "/default/handlers.json"
     ]
 }
