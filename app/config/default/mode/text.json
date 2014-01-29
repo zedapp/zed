@@ -3,7 +3,16 @@
         "text": {
             "name": "Plain Text",
             "highlighter": "ace/mode/text",
-            "extensions": []
+            "extensions": [],
+            
+            "commands": {
+                "Tools:Check:Spelling": {
+                    "scriptUrl": "/default/spellcheck/check.js"
+                }
+            },
+            "handlers": {
+                "check": ["Tools:Check:Spelling"]
+            }
         }
     }
 }

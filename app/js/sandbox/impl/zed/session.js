@@ -41,7 +41,11 @@ define(function(require, exports, module) {
             callback();
         },
         getText: function(path, callback) {
-            callback(null, getSession(path).getValue());
+            var session = getSession(path);
+            if(!session) {
+                return callback("No session for: " + path);
+            }
+            callback(null, session.getValue());
         },
         setText: function(path, text, callback) {
             var session = getSession(path);
