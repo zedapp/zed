@@ -8,6 +8,7 @@ define(function(require, exports, module) {
     var options = require("./lib/options");
     var history = require("./lib/history");
     var command = require("./command");
+    var bgPage = require("./lib/background_page");
 
     eventbus.declare('ioavailable');
 
@@ -102,6 +103,7 @@ define(function(require, exports, module) {
                         history.pushProject(title, "local:" + id);
                         options.set("title", title);
                         options.set("url", "local:" + id);
+                        bgPage.getBackgroundPage().projects["local:" + id] = chrome.app.window.current();
                         localfs(dir, function(err, io) {
                             setupMethods(io);
                         });
