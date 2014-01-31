@@ -7,7 +7,7 @@ define(function(require, exports, module) {
         this.session = session;
         this.info = info;
         this.startAnchor = new Anchor(session.getDocument(), info.row, info.column);
-        this.endAnchor = new Anchor(session.getDocument(), info.row, info.endColumn);
+        this.endAnchor = new Anchor(session.getDocument(), info.row, info.endColumn - 1);
         this.startAnchor.on("change", this.update.bind(this));
         this.endAnchor.on("change", this.update.bind(this));
         this.marker = null;
@@ -16,7 +16,11 @@ define(function(require, exports, module) {
 
     InlineAnnotation.prototype = {
         update: function() {
-            var range = Range.fromPoints(this.startAnchor.getPosition(), this.endAnchor.getPosition());
+            var endPos = this.endAnchor.getPosition();
+            var range = Range.fromPoints(this.startAnchor.getPosition(), {
+                row: endPos.row,
+                column: endPos.column + 1
+            });
             if (this.marker) {
                 this.session.removeMarker(this.marker);
             }

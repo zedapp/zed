@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     var indexToPos = require("zed/util").indexToPos;
     var Typo = require("configfs!./typo.js");
 
-    var RE_WORD = /\w/;
+    var RE_WORD = /[A-Za-z]/;
     var affData = null;
     var wordsData = null;
     var dict;
