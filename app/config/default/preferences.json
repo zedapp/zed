@@ -29,6 +29,7 @@
         "hygienicModeRemote": true,
         "recentFolderHistory": 10,
         "showContextBar": false,
-        "dimInactiveEditors": true
+        "dimInactiveEditors": true,
+        "spellCheck": false
     }
 }
