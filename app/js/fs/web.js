@@ -1,7 +1,7 @@
 /*global define, $ */
 define(function(require, exports, module) {
     var poll_watcher = require("./poll_watcher");
-    
+
     return function(url, callback) {
         var mode = "directory"; // or: file
         var fileModeFilename; // if mode === "file"
@@ -69,15 +69,18 @@ define(function(require, exports, module) {
                     return callback(500);
                 }
             }
+            watcher.lockFile(path);
             $.ajax(url + path, {
                 type: 'PUT',
                 data: content,
                 dataType: 'text',
                 success: function(res, status, xhr) {
                     watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
+                    watcher.unlockFile(path);
                     callback(null, res);
                 },
                 error: function(xhr) {
+                    watcher.unlockFile(path);
                     callback(xhr.status || xhr.statusText);
                 }
             });
@@ -103,7 +106,7 @@ define(function(require, exports, module) {
         function unwatchFile(path, callback) {
             watcher.unwatchFile(path, callback);
         }
-        
+
         function getCacheTag(path, callback) {
             $.ajax(url + path, {
                 type: 'HEAD',
@@ -116,7 +119,7 @@ define(function(require, exports, module) {
                 }
             });
         }
-        
+
         // Check if we're dealing with one file
         $.ajax(url, {
             type: 'HEAD',
@@ -140,9 +143,9 @@ define(function(require, exports, module) {
                     unwatchFile: unwatchFile,
                     getCacheTag: getCacheTag
                 };
-                
+
                 watcher = poll_watcher(fs, 5000);
-                
+
                 callback(null, fs);
             },
             error: function(xhr) {

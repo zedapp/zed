@@ -50,6 +50,7 @@ define(function(require, exports, module) {
                 },
                 writeFile: function(path, content, callback) {
                     var encodedPath = encodePath(path);
+                    watcher.lockFile(path);
                     root.getFile(encodedPath, {
                         create: true
                     }, function(fileEntry) {
@@ -61,20 +62,28 @@ define(function(require, exports, module) {
                                     fileWriter.onwriteend = function() {
                                         fileEntry.file(function(stat) {
                                             watcher.setCacheTag(path, "" + stat.lastModifiedDate);
+                                            watcher.unlockFile(path);
                                             callback();
                                         });
                                     };
                                     fileWriter.onerror = function(e) {
+                                        watcher.unlockFile(path);
                                         callback(e.toString());
                                     };
 
                                     var blob = new Blob([content]);
                                     fileWriter.write(blob);
-                                }, callback);
+                                }, function(err) {
+                                    watcher.unlockFile(path);
+                                    callback(err);
+                                });
                             };
                             fileTruncater.truncate(0);
                         });
-                    }, callback);
+                    }, function(err) {
+                        watcher.unlockFile(path);
+                        callback(err);
+                    });
                 },
                 deleteFile: function(path, callback) {
                     var encodedPath = encodePath(path);

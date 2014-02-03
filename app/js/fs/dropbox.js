@@ -95,14 +95,18 @@ define(function(require, exports, module) {
             }
 
             function writeFile(path, content, callback) {
+                
+                watcher.lockFile(path);
                 var fullPath = addRoot(path);
 
                 function doWrite(callback) {
                     dropbox.writeFile(fullPath, content, function(err, stat) {
                         if (err) {
+                            watcher.unlockFile(path);
                             return callback(err);
                         }
                         watcher.setCacheTag(stat.versionTag);
+                        watcher.unlockFile(path);
                         callback();
                     });
                 }
@@ -112,11 +116,13 @@ define(function(require, exports, module) {
                         // Presumably directory did not yet exist
                         mkdirs(dirname(fullPath), function(err) {
                             if (err) {
+                                watcher.unlockFile(path);
                                 return callback(err);
                             }
                             doWrite(callback);
                         });
                     }
+                    watcher.unlockFile(path);
                     callback();
                 });
             }

@@ -33,16 +33,18 @@ define(function(require, exports, module) {
                 callback();
             } else {
                 mkdirs(parts.slice(0, parts.length - 1).join("/"), function(err) {
-                    if(err) {
+                    if (err) {
                         return callback(err);
                     }
-                    root.getDirectory(path, {create: true}, function() {
+                    root.getDirectory(path, {
+                        create: true
+                    }, function() {
                         callback();
                     }, callback);
                 });
             }
         }
-        
+
         var fs = {
             listFiles: function(callback) {
                 var files = [];
@@ -51,7 +53,7 @@ define(function(require, exports, module) {
                     var reader = dir.createReader();
                     reader.readEntries(function(entries) {
                         async.parForEach(entries, function(entry, next) {
-                            if(entry.name[0] === ".") {
+                            if (entry.name[0] === ".") {
                                 return next();
                             }
                             if (entry.isDirectory) {
@@ -78,15 +80,17 @@ define(function(require, exports, module) {
                     };
                     f.file(function(file) {
                         fileReader.readAsText(file);
-                        watcher.setCacheTag(path, ""+file.lastModifiedDate);
+                        watcher.setCacheTag(path, "" + file.lastModifiedDate);
                     });
                 }, callback);
             },
             writeFile: function(path, content, callback) {
+                watcher.lockFile(path);
                 var fullPath = addRoot(path);
                 // First ensure parent dir exists
                 mkdirs(dirname(fullPath), function(err) {
-                    if(err) {
+                    if (err) {
+                        watcher.unlockFile(path);
                         return callback(err);
                     }
                     root.getFile(fullPath, {
@@ -99,21 +103,29 @@ define(function(require, exports, module) {
                                 fileEntry.createWriter(function(fileWriter) {
                                     fileWriter.onwriteend = function() {
                                         fileEntry.file(function(stat) {
-                                            watcher.setCacheTag(path, ""+stat.lastModifiedDate);
+                                            watcher.setCacheTag(path, "" + stat.lastModifiedDate);
+                                            watcher.unlockFile(path);
                                             callback();
                                         });
                                     };
                                     fileWriter.onerror = function(e) {
+                                        watcher.unlockFile(path);
                                         callback(e.toString());
                                     };
 
                                     var blob = new Blob([content]);
                                     fileWriter.write(blob);
-                                }, callback);
+                                }, function(err) {
+                                    watcher.unlockFile(path);
+                                    callback(err);
+                                });
                             };
                             fileTruncater.truncate(0);
                         });
-                    }, callback);
+                    }, function(err) {
+                        watcher.unlockFile(path);
+                        callback(err);
+                    });
                 });
             },
             deleteFile: function(path, callback) {
@@ -134,7 +146,7 @@ define(function(require, exports, module) {
                 var fullPath = addRoot(path);
                 root.getFile(fullPath, {}, function(f) {
                     f.file(function(stat) {
-                        var tag = ""+stat.lastModifiedDate;
+                        var tag = "" + stat.lastModifiedDate;
                         callback(null, tag);
                     });
                 }, function() {
@@ -142,7 +154,7 @@ define(function(require, exports, module) {
                 });
             }
         };
-        
+
         var watcher = poll_watcher(fs, 3000);
         callback(null, fs);
     };

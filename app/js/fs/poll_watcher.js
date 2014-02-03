@@ -2,10 +2,19 @@ define(function(require, exports, module) {
     return function(fs, pollInterval) {
         var tagCache = {};
         var fileWatchers = {};
+        var fileLocks = {};
+        
+        var LOCK_TIMEOUT = 30 * 1000; // 30 seconds
 
         function pollFiles() {
             Object.keys(fileWatchers).forEach(function(path) {
+                // If nobody's listening, let's not poll
                 if (fileWatchers[path].length === 0) {
+                    return;
+                }
+                
+                // If the file is locked (e.g. write going on), let's not poll
+                if(fileLocks[path] && fileLocks[path] > Date.now() - LOCK_TIMEOUT) {
                     return;
                 }
                 
@@ -54,6 +63,12 @@ define(function(require, exports, module) {
             },
             setCacheTag: function(path, tag) {
                 tagCache[path] = tag;
+            },
+            lockFile: function(path) {
+                fileLocks[path] = Date.now();
+            },
+            unlockFile: function(path) {
+                delete fileLocks[path];
             }
         };
     };
