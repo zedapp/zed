@@ -2,7 +2,7 @@
     "name": "Zed Code Editor",
     "short_name": "Zed",
     "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8z2r2kv2TCLfzePucrK+cxiWCHADWrUNMsLv8cS5La48FVLXuQGe8n8AnPsiejL1QB7jzQMwE6iOD40qSE2jm4A+Dnf4HoVmNe80crRlUG8QvRg6ki4pIvEif01kLl2MLPPkRnolZVJfB/P92W+vJYjtQYcQ+Mre0vn4WWcUf1wIDAQAB",
-    "version": "0.8.3",
+    "version": "0.8.4",
     "manifest_version": 2,
     "minimum_chrome_version": "27",
     "description": "Offline-capable, feature rich, extensible code editor designed for Chrome",

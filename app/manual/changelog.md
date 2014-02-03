@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.8.4
+-----
+* Added better PHP support (builtins, ctag indexing)
+* Implemented file locking to avoid the file watcher picking up a changed file while it is being written
+* Replaced showdown with pagedown for Markdown previewing
+* Renamed `events` to `handlers` in configuration files
+* Tree pop-up and disappear fix (thanks TheKiteEatingTree!)
+* Added `check` handler to allow multiple extensions to contribute to the inline error markers
+* HTML/CSS beautifiers now take tabSize preference into account (thanks TheKiteEatingTree!)
+* Added a super initial version of a spell checker (disabled by default for now, enable by switching the `spellCheck` preference to `true`), no correction suggestions yet, US English only.
+
 0.8.2
 -----
 * Initial implementation of Chrome-extension-to-extend-Zed support. Allowing users to write Chrome extensions that extend Zed's functionality. This feature is still in development.
