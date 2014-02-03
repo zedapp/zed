@@ -54,11 +54,12 @@
 /default/mode/lua.json
 /default/mode/makefile.json
 /default/mode/markdown/beautify.js
+/default/mode/markdown/pagedown.js
 /default/mode/markdown/preview.js
-/default/mode/markdown/showdown.js
 /default/mode/markdown.json
 /default/mode/nix/ctags.js
 /default/mode/nix.json
+/default/mode/php/ctags.js
 /default/mode/php.json
 /default/mode/plist.json
 /default/mode/protobuf.json
@@ -73,5 +74,10 @@
 /default/mode/yaml.json
 /default/modes.json
 /default/preferences.json
+/default/spellcheck/check.js
+/default/spellcheck/en_US/en_US.aff
+/default/spellcheck/en_US/en_US.dic
+/default/spellcheck/en_US/README.md
+/default/spellcheck/typo.js
 /default.json
 /user.json
