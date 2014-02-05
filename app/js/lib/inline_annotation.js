@@ -1,7 +1,7 @@
 /* global ace, define*/
 define(function(require, exports, module) {
-    var Anchor = ace.require("ace/anchor").Anchor;
-    var Range = ace.require("ace/range").Range;
+    var Anchor = require("ace/anchor").Anchor;
+    var Range = require("ace/range").Range;
 
     function InlineAnnotation(session, info) {
         this.session = session;

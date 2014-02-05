@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     "use strict";
 
     var command = require("./command");
-    var Autocomplete = ace.require("ace/autocomplete").Autocomplete;
+    var Autocomplete = require("ace/autocomplete").Autocomplete;
 
     var async = require("async");
     var config = require("./config");

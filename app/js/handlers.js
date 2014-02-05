@@ -16,17 +16,31 @@ define(function(require, exports, module) {
         var mode = session.mode;
         var commandNames = [];
 
-        if (mode && mode.handlers[handlerName]) {
-            commandNames = commandNames.concat(mode.handlers[handlerName]);
-        }
-        if (config.getHandlers()[handlerName]) {
-            commandNames = commandNames.concat(config.getHandlers()[handlerName]);
-        }
+        require(["./editor"], function(editor) {
+            var editors = editor.getEditors();
+            var edit = null;
+            
+            _.each(editors, function(edit_) {
+                if(edit_.getSession() === session) {
+                    edit = edit_;
+                }
+            });
+            
+            if(!edit) {
+                // Session is not currently visible, won't run commands
+                return;
+            }
+            
+            if (mode && mode.handlers[handlerName]) {
+                commandNames = commandNames.concat(mode.handlers[handlerName]);
+            }
+            if (config.getHandlers()[handlerName]) {
+                commandNames = commandNames.concat(config.getHandlers()[handlerName]);
+            }
 
-        function runCommands() {
-            var waitingFor = commandNames.length;
-            var results = [];
-            require(["./editor"], function(editor) {
+            function runCommands() {
+                var waitingFor = commandNames.length;
+                var results = [];
                 var edit = editor.getActiveEditor();
                 commandNames.forEach(function(commandName) {
                     command.exec(commandName, edit, session, function(err, results_) {
@@ -40,28 +54,29 @@ define(function(require, exports, module) {
                         }
                     });
                 });
-            });
-            if (waitingFor === 0) {
-                callback(null, results);
-            }
-        }
-        
-        if (commandNames.length > 0) {
-            if (debounceTimeout) {
-                var id = path + ':' + handlerName;
-                if (!handlerFns[id]) {
-                    handlerFns[id] = _.debounce(runCommands, debounceTimeout);
+                if (waitingFor === 0) {
+                    callback(null, results);
                 }
-                handlerFns[id]();
-            } else {
-                runCommands();
             }
-        }
 
-        return commandNames.length > 0;
+            if (commandNames.length > 0) {
+                if (debounceTimeout) {
+                    var id = path + ':' + handlerName;
+                    if (!handlerFns[id]) {
+                        handlerFns[id] = _.debounce(runCommands, debounceTimeout);
+                    }
+                    handlerFns[id]();
+                } else {
+                    runCommands();
+                }
+            }
+        });
     }
 
+    exports.runSessionHandler = runSessionHandler;
+
     function setAnnotations(session, annos) {
+        annos = annos || [];
         (session.annotations || []).forEach(function(anno) {
             anno.remove();
         });
@@ -78,17 +93,21 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.on("sessionchanged", function(session) {
-            runSessionHandler(session, "change", 1000);
-            runSessionHandler(session, "check", 1000, function(err, annos) {
-                setAnnotations(session, annos);
-            });
+            analyze(session);
         });
         eventbus.on("modeset", function(session) {
+            analyze(session);
+        });
+        eventbus.on("switchsession", function(edit, session) {
+            analyze(session, true);
+        });
+        
+        function analyze(session, instant) {
             runSessionHandler(session, "change");
-            runSessionHandler(session, "check", 1000, function(err, annos) {
+            runSessionHandler(session, "check", instant ? null : 1000, function(err, annos) {
                 setAnnotations(session, annos);
             });
-        });
+        }
 
         eventbus.on("preview", function(session) {
             var didPreview = runSessionHandler(session, "preview");

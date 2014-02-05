@@ -100,6 +100,10 @@ define(function(require, exports, module) {
      * module which is executed as a function.
      */
     exports.execCommand = function(name, spec, session, callback) {
+        if(session.$cmdInfo) {
+            spec = _.extend(spec, session.$cmdInfo);
+            session.$cmdInfo = null;
+        }
         if (spec.extId) {
             // Extension call
             bgPage.getBackgroundPage().execExtensionCommand(options.get("url"), name, spec, {

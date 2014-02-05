@@ -9,6 +9,15 @@
         },
         "Tools:Complete:Text": {
             "scriptUrl": "/default/command/text_completer.js"
+        },
+        "Tools:Spelling:Check": {
+            "scriptUrl": "/default/spellcheck/check.js"
+        },
+        "Tools:Spelling:Fix": {
+            "scriptUrl": "/default/spellcheck/fix.js"
+        },
+        "Tools:Spelling:Change": {
+            "scriptUrl": "/default/spellcheck/change.js"
         }
     }
 }

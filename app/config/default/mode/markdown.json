@@ -12,9 +12,6 @@
                 },
                 "Tools:Preview": {
                     "scriptUrl": "/default/mode/markdown/preview.js"
-                },
-                "Tools:Check:Spelling": {
-                    "scriptUrl": "/default/spellcheck/check.js"
                 }
             },
 
@@ -25,7 +22,8 @@
 
             "handlers": {
                 "preview": ["Tools:Preview"],
-                "check": ["Tools:Check:Spelling"]
+                "check": ["Tools:Spelling:Check"],
+                "fix": ["Tools:Spelling:Fix"]
             }
         }
     }

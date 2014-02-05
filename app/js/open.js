@@ -32,6 +32,10 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
 
     function open(url, title) {
         var openProject = openProjects[url];
+        if(openProject && !openProject.contentWindow.window) {
+            // Window was close and we weren't notified
+            delete openProjects[url];
+        }
         if(openProject) {
             openProject.focus();
         } else {
@@ -192,6 +196,8 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
                 if(projects.length > 0) {
                     $(".projects a").eq(selectIdx).click();
                     filterInput.val("");
+                    updateProjectList();
+                    event.preventDefault();
                 }
                 break;
             case keyCode('Up'):
@@ -210,6 +216,10 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
                 }
                 event.preventDefault();
                 event.stopPropagation();
+                break;
+            case keyCode('Esc'):
+                filterInput.val("");
+                updateProjectList();
                 break;
             case keyCode('Delete'):
                 var selectedEl = $(".projects a").eq(selectIdx);

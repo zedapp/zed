@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
     var session_manager = require("../../../session_manager");
-    var Range = ace.require("ace/range").Range;
+    var Range = require("ace/range").Range;
     var editor = require("../../../editor");
     var InlineAnnotation = require("../../../lib/inline_annotation");
     var eventbus = require("../../../lib/eventbus");

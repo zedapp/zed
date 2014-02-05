@@ -7,7 +7,7 @@ define(function(require, exports, module) {
     //var defaultConfiguration = JSON.parse(require("text!../config/config.default.json"));
     var modes = require("./modes");
     var font = require("./lib/font");
-    var whitespace = ace.require("ace/ext/whitespace");
+    var whitespace = require("ace/ext/whitespace");
 
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
     var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-:]/;
@@ -201,7 +201,7 @@ define(function(require, exports, module) {
             };
         },
         setSessionState: function(session, state) {
-            var Range = ace.require("ace/range").Range;
+            var Range = require("ace/range").Range;
 
             // Turns JSONified Range objects back into real Ranges
             function rangify(ar) {
@@ -234,7 +234,7 @@ define(function(require, exports, module) {
         getIdentifierUnderCursorRange: function(edit, regex) {
             regex = regex || IDENT_REGEX;
             edit = edit || editor.getActiveEditor();
-            var Range = ace.require("ace/range").Range;
+            var Range = require("ace/range").Range;
             var session = edit.getSession();
             var cursor = edit.getCursorPosition();
             var line = session.getLine(cursor.row);
@@ -263,7 +263,7 @@ define(function(require, exports, module) {
     };
 
     function find(session, needle, dir) {
-        var Search = ace.require("./search").Search;
+        var Search = require("ace/search").Search;
         var search = new Search();
         search.$options.wrap = true;
         search.$options.needle = needle;

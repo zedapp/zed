@@ -4,7 +4,6 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var command = require("./command");
     var path = require("./lib/path");
-    var handlers = require("./handlers");
 
     eventbus.declare("modesloaded");
     eventbus.declare("modeset");

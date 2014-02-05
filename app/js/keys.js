@@ -5,11 +5,11 @@
 /*global define, ace, _*/
 define(function(require, exports, module) {
     "use strict";
-    var lang = ace.require("ace/lib/lang");
+    var lang = require("ace/lib/lang");
 
-    var CommandManager = ace.require("ace/commands/command_manager").CommandManager;
-    var useragent = ace.require("ace/lib/useragent");
-    var KeyBinding = ace.require("ace/keyboard/keybinding").KeyBinding;
+    var CommandManager = require("ace/commands/command_manager").CommandManager;
+    var useragent = require("ace/lib/useragent");
+    var KeyBinding = require("ace/keyboard/keybinding").KeyBinding;
 
     var eventbus = require("./lib/eventbus");
     var editor = require("./editor");
@@ -69,41 +69,6 @@ define(function(require, exports, module) {
                 updateEditor(edit);
             });
         });
-    };
-
-    // Hacky way of temporarily overriding the key handlers, used e.g. during
-    // code complete mode
-    var oldOnCommandKey = null;
-    var oldOnTextInput = null;
-    exports.tempRebindKeys = function(keyHandler) {
-        var edit = editor.getActiveEditor();
-        if (oldOnCommandKey) {
-            throw new Error("Keys already temporarily bound!");
-        }
-        oldOnCommandKey = edit.keyBinding.onCommandKey;
-        edit.keyBinding.onCommandKey = function(event) {
-            var args = arguments;
-            keyHandler(event, function() {
-                oldOnCommandKey.apply(edit.keyBinding, args);
-            });
-        };
-        oldOnTextInput = edit.keyBinding.onTextInput;
-        edit.keyBinding.onTextInput = function(event) {
-            var args = arguments;
-            keyHandler(event, function() {
-                oldOnTextInput.apply(edit.keyBinding, args);
-            });
-        };
-    };
-
-    exports.resetTempRebindKeys = function() {
-        var edit = editor.getActiveEditor();
-        if (oldOnCommandKey) {
-            edit.keyBinding.onCommandKey = oldOnCommandKey;
-            edit.keyBinding.onTextInput = oldOnTextInput;
-            oldOnCommandKey = null;
-            oldOnTextInput = null;
-        }
     };
 
     function loadCommands(mode) {

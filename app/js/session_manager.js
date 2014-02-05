@@ -4,7 +4,7 @@
 /*global define, ace, _ */
 define(function(require, exports, module) {
     "use strict";
-    var Range = ace.require("ace/range").Range;
+    var Range = require("ace/range").Range;
     var async = require("./lib/async");
     var eventbus = require("./lib/eventbus");
     var project = require("./project");

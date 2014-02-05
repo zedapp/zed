@@ -1,14 +1,10 @@
 define(function(require, exports, module) {
     var session = require("zed/session");
-    var configfs = require("zed/configfs");
     var config = require("zed/config");
     var indexToPos = require("zed/util").indexToPos;
-    var Typo = require("configfs!./typo.js");
+    var dict = require("configfs!./dict.js");
 
     var RE_WORD = /[A-Za-z]/;
-    var affData = null;
-    var wordsData = null;
-    var dict;
 
     return function(info, callback) {
         config.getPreference("spellCheck", function(err, shouldSpellCheck) {
@@ -17,7 +13,7 @@ define(function(require, exports, module) {
             }
             var path = info.path;
             
-            loadDict(function(err, dict) {
+            dict.loadDict(function(err, dict) {
                 session.getText(path, function(err, text) {
                     if(err) {
                         return callback("Error while spell checking: " + err);
@@ -43,30 +39,6 @@ define(function(require, exports, module) {
             });
         });
     };
-
-    function loadDict(callback) {
-        if (dict) {
-            callback(null, dict);
-        } else {
-            configfs.readFile("/default/spellcheck/en_US/en_US.aff", function(err, affData_) {
-                if (err) {
-                    return callback(err);
-                }
-                affData = affData_;
-                configfs.readFile("/default/spellcheck/en_US/en_US.dic", function(err, wordsData_) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    
-                    wordsData = wordsData_;
-
-                    dict = new Typo("en_US", affData, wordsData);
-                    callback(null, dict);
-                });
-            });
-        }
-    }
-
 
     function textToWordsWithPositions(text) {
         var word = '';

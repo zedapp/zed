@@ -2,7 +2,7 @@
 define(function(require, exports, module) {
     "use strict";
 
-    var useragent = ace.require("ace/lib/useragent");
+    var useragent = require("ace/lib/useragent");
     var eventbus = require("./lib/eventbus");
 
     var commands = {};
@@ -14,7 +14,7 @@ define(function(require, exports, module) {
         userCommands[name] = {
             exec: function(edit, session, callback) {
                 require(["./sandbox"], function(sandbox) {
-                    sandbox.execCommand(name, cmd, edit.getSession(), function(err, result) {
+                    sandbox.execCommand(name, cmd, session, function(err, result) {
                         if (err) {
                             console.error(err);
                         }
@@ -56,7 +56,7 @@ define(function(require, exports, module) {
         return commands[path];
     };
 
-    exports.exec = function(path, edit, session, otherArgs) {
+    exports.exec = function(path, edit, session, callback) {
         var def = exports.lookup(path);
         if (!session.getTokenAt) { // Check if this is a session object
             console.error("Did not pass in session to exec", arguments);

@@ -5,7 +5,7 @@ define(function(require, exports, module) {
     var path = require("./path");
     var keyCode = require("./key_code");
     var eventbus = require("../lib/eventbus");
-    var AcePopup = ace.require("ace/autocomplete/popup").AcePopup;
+    var AcePopup = require("ace/autocomplete/popup").AcePopup;
 
     /**
      * Supported options

@@ -74,10 +74,13 @@
 /default/mode/yaml.json
 /default/modes.json
 /default/preferences.json
+/default/spellcheck/change.js
 /default/spellcheck/check.js
+/default/spellcheck/dict.js
 /default/spellcheck/en_US/en_US.aff
 /default/spellcheck/en_US/en_US.dic
 /default/spellcheck/en_US/README.md
+/default/spellcheck/fix.js
 /default/spellcheck/typo.js
 /default.json
 /user.json

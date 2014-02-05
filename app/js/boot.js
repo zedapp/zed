@@ -11,7 +11,7 @@ require.config({
 require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
     "use strict";
 
-    var useragent = ace.require("ace/lib/useragent");
+    var useragent = require("ace/lib/useragent");
 
     var modules = [
         "./command",
@@ -32,7 +32,8 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
         "./file",
         "./preview",
         "./dnd",
-        "./handlers"
+        "./handlers",
+        "./fix"
     ];
     require(modules, function() {
         var session_manager = require("./session_manager");

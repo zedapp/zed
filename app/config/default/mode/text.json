@@ -5,13 +5,9 @@
             "highlighter": "ace/mode/text",
             "extensions": [],
             
-            "commands": {
-                "Tools:Check:Spelling": {
-                    "scriptUrl": "/default/spellcheck/check.js"
-                }
-            },
             "handlers": {
-                "check": ["Tools:Check:Spelling"]
+                "check": ["Tools:Spelling:Check"],
+                "fix": ["Tools:Spelling:Fix"]
             }
         }
     }
