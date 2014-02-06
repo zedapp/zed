@@ -12,7 +12,7 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
     "use strict";
 
     var useragent = require("ace/lib/useragent");
-
+    
     var modules = [
         "./command",
         "./editor",

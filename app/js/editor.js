@@ -890,6 +890,13 @@ define(function(require, exports, module) {
             config.setPreference("trimTrailingWhiteSpaceOnSave", !config.getPreference("trimTrailingWhiteSpaceOnSave"));
         }
     });
+    
+    command.define("Configuration:Preferences:Toggle Spell Check", {
+        exec: function() {
+            config.setPreference("spellCheck", !config.getPreference("spellCheck"));
+        },
+        readOnly: true
+    });
 
     // Create theme commands
     editor.themes.forEach(function(theme) {

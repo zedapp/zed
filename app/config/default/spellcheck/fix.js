@@ -25,11 +25,11 @@ define(function(require, exports, module) {
                         var wordRange = {
                             start: {
                                 row: cursorPos.row,
-                                column: 0
+                                column: null
                             },
                             end: {
                                 row: cursorPos.row,
-                                column: Infinity
+                                column: null
                             }
                         };
                         // Find word beginning
@@ -37,12 +37,12 @@ define(function(require, exports, module) {
                             var ch = line[i];
                             if (RE_WORD.exec(ch)) {
                                 currentWord += ch;
-                                if(!wordRange.start.column) {
+                                if(wordRange.start.column === null) {
                                     wordRange.start.column = i;
                                 }
                             } else {
                                 currentWord = '';
-                                wordRange.start.column = 0;
+                                wordRange.start.column = null;
                             }
                         }
                         // Append until end of word
