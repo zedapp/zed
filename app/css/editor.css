@@ -197,6 +197,7 @@ div.preview-vsplit2-right-2 {
 #results .ace_autocomplete {
     border: 1px;
     position: relative !important;
+    box-shadow: none !important;
     width: 100% !important;
     background: none;
 }
