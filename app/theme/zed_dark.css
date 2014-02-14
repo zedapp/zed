@@ -1,0 +1,110 @@
+ .ace-zeddark .ace_gutter {
+     background: #222;
+     color: #999;
+ }
+ .ace-zeddark .ace_print-margin {
+     width: 1px;
+     background: #444;
+ }
+ .ace-zeddark {
+     background-color: #303030;
+     color: #EDEDED;
+ }
+ .ace-zeddark .ace_cursor {
+     color: #FFFFFF;
+ }
+ .ace-zeddark .ace_marker-layer .ace_selection {
+     background: #505050;
+ }
+ .ace-zeddark.ace_multiselect .ace_selection.ace_start {
+     box-shadow: 0 0 3px 0px #000000;
+     border-radius: 2px;
+ }
+ .ace-zeddark .ace_marker-layer .ace_step {
+     background: rgb(198, 219, 174);
+ }
+ .ace-zeddark .ace_marker-layer .ace_bracket {
+     margin: -1px 0 0 -1px;
+     border: 1px solid rgba(202, 226, 251, 0.24);
+ }
+ .ace-zeddark .ace_marker-layer .ace_active-line {
+     background: rgba(255, 255, 255, 0.14);
+ }
+ .ace-zeddark .ace_gutter-active-line {
+     background-color: rgba(255, 255, 255, 0.14);
+ }
+ .ace-zeddark .ace_marker-layer .ace_selected-word {
+     border: 1px solid #333333;
+ }
+ .ace-zeddark .ace_fold {
+     background-color: #96CBFE;
+     border-color: #EDEDED;
+ }
+ 
+ .ace-zeddark .ace_name {
+     color: #00D308;
+ }
+ 
+ .ace-zeddark .ace_keyword {
+     color:#96CBFE;
+ }
+ .ace-zeddark .ace_keyword.ace_operator {
+     color:#EDEDED;
+ }
+ .ace-zeddark .ace_constant {
+     color:#99CC99;
+ }
+ .ace-zeddark .ace_constant.ace_numeric {
+     color:#FFDDFD;
+ }
+ .ace-zeddark .ace_support {
+     color:#FFFFB6;
+ }
+ .ace-zeddark .ace_support.ace_function {
+     /*color:#DAD085;*/
+     color:#DADD85;
+ }
+ .ace-zeddark .ace_support.ace_constant {
+     color:#FFD2A7;
+ }
+ .ace-zeddark .ace_storage {
+     /*color:#CFCB90;*/
+     color:#96CBFE;
+ }
+ .ace-zeddark .ace_invalid.ace_illegal {
+     color:#FD5FF1;
+     background-color:rgba(86, 45, 86, 0.75);
+ }
+ .ace-zeddark .ace_invalid.ace_deprecated {
+     text-decoration:underline;
+     font-style:italic;
+     color:#FD5FF1;
+ }
+ .ace-zeddark .ace_identifier {
+     color: #E7E7E4;
+ }
+ .ace-zeddark .ace_string {
+     color: #E8ECB0;
+ }
+ .ace-zeddark .ace_string.ace_regexp {
+     color:#E9C062;
+ }
+ .ace-zeddark .ace_comment {
+     color:#7C7C7C;
+ }
+ .ace-zeddark .ace_variable {
+     /*color:#C6C5FE;*/
+     color: #E7E7E4;
+ }
+ .ace-zeddark .ace_meta.ace_tag {
+     color:#96CBFE;
+ }
+ .ace-zeddark .ace_entity.ace_other.ace_attribute-name {
+     color:#FFD7B1;
+ }
+ .ace-zeddark .ace_markup.ace_heading {
+     color:#FEDCC5;
+ }
+ .ace-zeddark .ace_markup.ace_list {
+     color:#E1D4B9;
+ }
