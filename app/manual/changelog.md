@@ -7,6 +7,7 @@ Changelog
 * Adds support for "Tools:Fix", a generic infrastructure to run arbitrary commands that can "fix" code or text (e.g. fix a spelling mistake, offer thesaurus based word suggestions, rename a variable etc.). Fix is bound to `Command-Enter`/`Ctrl-Enter`
 * Adds a fixer for the spell checker
 * Faster editor load: no longer analyzes all open files on editor open, but does so on demand.
+* Goto panel now supports PgUp and PgDown as well as holding Up/Down/Tab/Shift-Tab keys to keep scrolling.
 
 0.8.4
 -----
