@@ -8,7 +8,11 @@ define(function(require, exports, module) {
         Return: 13,
         Space: 32,
         Backspace: 8,
-        Delete: 46
+        Delete: 46,
+        PgUp: 33,
+        PgDown: 34,
+        End: 35,
+        Home: 36
     };
     
     return function(key) {

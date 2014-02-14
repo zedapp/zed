@@ -62,30 +62,24 @@ define(function(require, exports, module) {
         if (options.text) {
             input.val(options.text);
         }
-
+        
+        var ignoreKeyup = false;
+        
         input.keyup(function(event) {
-            switch (event.keyCode) {
-                case keyCode('Esc'):
-                    cancel();
-                    break;
-                case keyCode('Up'):
-                    go('up');
-                    break;
-                case keyCode('Down'):
-                    go('down');
-                    break;
-                case keyCode('Return'):
-                    select();
-                    break;
-                case keyCode('Tab'):
-                    break;
-                default:
-                    if (lastPhrase != input.val()) {
-                        updateResults();
-                        triggerOnChange();
-                    }
+            if(ignoreKeyup) {
+                ignoreKeyup = false;
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+            if(event.keyCode === keyCode('Return')) {
+                select();
+            } else if (lastPhrase != input.val()) {
+                updateResults();
+                triggerOnChange();
             }
         });
+
         input.keydown(function(event) {
             switch (event.keyCode) {
                 case keyCode('Space'):
@@ -98,6 +92,44 @@ define(function(require, exports, module) {
                         event.preventDefault();
                     }
                     break;
+                case keyCode('Tab'):
+                    // Tab
+                    if (event.shiftKey) {
+                        go('up');
+                    } else {
+                        go('down');
+                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    ignoreKeyup = true;
+                    break;
+                case keyCode('Esc'):
+                    cancel();
+                    break;
+                case keyCode('Up'):
+                    go('up');
+                    ignoreKeyup = true;
+                    break;
+                case keyCode('Down'):
+                    go('down');
+                    ignoreKeyup = true;
+                    break;
+                case keyCode('PgUp'):
+                    for(var i = 0; i < 10; i++) {
+                        go('up');
+                    }
+                    ignoreKeyup = true;
+                    break;
+                case keyCode('PgDown'):
+                    for(var i = 0; i < 10; i++) {
+                        go('down');
+                    }
+                    ignoreKeyup = true;
+                    break;
+                case keyCode('Home'):
+                case keyCode('End'):
+                    ignoreKeyup = true;
+                    break;
                 case keyCode('Backspace'):
                     // backspace
                     var val = input.val();
@@ -108,16 +140,6 @@ define(function(require, exports, module) {
                         input.val(path.dirname(input.val()) + "/");
                         event.preventDefault();
                     }
-                    break;
-                case keyCode('Tab'):
-                    // Tab
-                    if (event.shiftKey) {
-                        go('up');
-                    } else {
-                        go('down');
-                    }
-                    event.preventDefault();
-                    event.stopPropagation();
                     break;
             }
         });
@@ -144,10 +166,10 @@ define(function(require, exports, module) {
 
             switch (where) {
                 case "up":
-                    row = row < 0 ? max : row - 1;
+                    row = Math.max(0, row - 1);
                     break;
                 case "down":
-                    row = row >= max ? -1 : row + 1;
+                    row = Math.min(max, row + 1);
                     break;
                 case "start":
                     row = 0;

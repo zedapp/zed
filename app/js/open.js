@@ -63,8 +63,8 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         }
         // Only check http(s) links
         if (url.indexOf("http") !== 0) {
-            remoteEditInput.val("");
-            return open(url, url);
+            $("#hint").html("<span class='error'>ERROR</span>: URL does seem to run a (recent) Zed server.");
+            return;
         }
         $.ajax({
             type: "POST",
@@ -189,7 +189,10 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         }
     });
 
-    filterInput.keydown(function(event) {
+    $("body").keydown(function(event) {
+        if(event.target === remoteEditInput[0]) {
+            return;
+        }
         switch(event.keyCode) {
             case keyCode('Return'):
                 var projects = updateProjectList();
