@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.8.5
+-----
+
+* Adds support for "Tools:Fix", a generic infrastructure to run arbitrary commands that can "fix" code or text (e.g. fix a spelling mistake, offer thesaurus based word suggestions, rename a variable etc.). Fix is bound to `Command-Enter`/`Ctrl-Enter`
+* Adds a fixer for the spell checker
+* Faster editor load: no longer analyzes all open files on editor open, but does so on demand.
+
 0.8.4
 -----
 * Added better PHP support (builtins, ctag indexing)
