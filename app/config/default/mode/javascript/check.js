@@ -30,9 +30,12 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+/* global define*/
+
 define(function(require, exports, module) {
     var lint = require("configfs!./jshint.js");
     var session = require("zed/session");
+    var identRegex = /[a-zA-Z\$_0-9]/;
 
     function startRegex(arr) {
         return RegExp("^(" + arr.join("|") + ")");
@@ -73,6 +76,44 @@ define(function(require, exports, module) {
     }
 
 
+
+    function findIdentifierRange(line, startColumn) {
+        var pos = {
+            column: startColumn,
+            endColumn: undefined
+        };
+        if (!line) {
+            return pos;
+        }
+        // Look backwards
+        for (var i = startColumn; i >= 0; i--) {
+            var ch = line[i];
+            if (identRegex.exec(ch)) {
+                pos.column = i;
+                break;
+            }
+        }
+        for (var i = pos.column; i >= 0; i--) {
+            var ch = line[i];
+            if (!identRegex.exec(ch)) {
+                pos.column = i + 1;
+                break;
+            }
+        }
+        // And ahead
+        for (var i = pos.column; i <= line.length; i++) {
+            var ch = line[i];
+            if (!identRegex.exec(ch) || !ch) {
+                if (i !== pos.column) {
+                    pos.endColumn = i;
+                }
+                break;
+            }
+        }
+        return pos;
+    }
+
+
     return function(info, callback) {
         var path = info.path;
         session.getText(path, function(err, value) {
@@ -80,6 +121,7 @@ define(function(require, exports, module) {
             if (!value) {
                 return callback(null, []);
             }
+            var lines = value.split("\n");
             var errors = [];
 
             // js hint reports many false errors
@@ -117,10 +159,14 @@ define(function(require, exports, module) {
                     type = "info";
                 }
 
+                var line = lines[error.line - 1];
+                var pos = findIdentifierRange(line, error.character - 1);
+                // console.log("Error", error, pos);
+
                 errors.push({
                     row: error.line - 1,
-                    column: error.character - 1,
-
+                    column: pos.column,
+                    endColumn: pos.endColumn,
                     text: error.reason,
                     type: type,
                     raw: raw
