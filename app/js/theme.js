@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     var dom = require("ace/lib/dom");
     var useragent = require("ace/lib/useragent");
     var command = require("./command");
+    var eventbus = require("./lib/eventbus");
     var defaultTheme = 'zed_dark';
 
     var cssFileLoaded = {};
@@ -29,9 +30,8 @@ define(function(require, exports, module) {
 
     exports.setTheme = function(name) {
         var theme = config.getTheme(name) || config.getTheme(defaultTheme);
-        var cssFile = theme.css;
         loadCss(theme.css, function() {
-            $("body").attr("class", theme.cssClass + (theme.dark ? " dark" : " ") + (!useragent.isMac ? " non_mac" : " "));
+            $("body").attr("class", theme.cssClass + (theme.dark ? " dark ace_dark" : " ") + (!useragent.isMac ? " non_mac" : " mac"));
         });
     };
 

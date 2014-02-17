@@ -364,6 +364,9 @@ body.non_mac ::-webkit-scrollbar-thumb:horizontal {
 body.non_mac ::-webkit-scrollbar-thumb:hover {
     -webkit-box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.9), inset 0 0 0 4px rgba(128, 128, 128, 0.9);
 }
+body.mac.dark .ace_content {
+    cursor: default;
+}
 /* Markers */
 .marker-highlight-warning {
     position: absolute;
@@ -378,5 +381,10 @@ body.non_mac ::-webkit-scrollbar-thumb:hover {
 .marker-highlight-info {
     position: absolute;
     border-bottom: solid 1px blue;
+    z-index: 1000;
+}
+.dark .marker-highlight-info {
+    position: absolute;
+    border-bottom: solid 1px #9191FF;
     z-index: 1000;
 }
