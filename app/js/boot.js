@@ -10,8 +10,6 @@ require.config({
 /* global ace, $, _ */
 require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
     "use strict";
-
-    var useragent = require("ace/lib/useragent");
     
     var modules = [
         "./command",
@@ -33,14 +31,11 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
         "./preview",
         "./dnd",
         "./handlers",
-        "./fix"
+        "./fix",
+        "./theme"
     ];
     require(modules, function() {
         var session_manager = require("./session_manager");
-
-        if (!useragent.isMac) {
-            $("body").addClass("non_mac");
-        }
 
         session_manager.specialDocs['zed:start'] = {
             mode: 'ace/mode/markdown',

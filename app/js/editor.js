@@ -18,33 +18,24 @@ define(function(require, exports, module) {
     var activeEditor = null;
 
     var editor = module.exports = {
-        themes: [
-            "ace/theme/ambiance", "ace/theme/chaos",
-            "ace/theme/chrome", "ace/theme/clouds",
-            "ace/theme/clouds_midnight", "ace/theme/cobalt",
-            "ace/theme/crimson_editor", "ace/theme/dawn",
-            "ace/theme/dreamweaver", "ace/theme/eclipse",
-            "ace/theme/github", "ace/theme/idle_fingers", "ace/theme/kr",
-            "ace/theme/merbivore", "ace/theme/merbivore_soft",
-            "ace/theme/mono_industrial", "ace/theme/monokai",
-            "ace/theme/pastel_on_dark", "ace/theme/solarized_dark",
-            "ace/theme/solarized_light", "ace/theme/textmate",
-            "ace/theme/tomorrow", "ace/theme/tomorrow_night",
-            "ace/theme/tomorrow_night_blue", "ace/theme/tomorrow_night_bright",
-            "ace/theme/tomorrow_night_eighties", "ace/theme/twilight",
-            "ace/theme/vibrant_ink", "ace/theme/xcode",
-            "ace/theme/katzenmilch", "ace/theme/kuroir"],
         setEditorConfiguration: function(edit) {
             var session = edit.getSession();
-            edit.renderer.once("themeLoaded", function(event) {
-                var theme = event.theme;
-                if (theme.isDark) {
-                    $("body").addClass("black");
-                } else {
-                    $("body").removeClass("black");
-                }
-            });
-            edit.setTheme(config.getPreference("theme", session));
+            // edit.renderer.once("themeLoaded", function(event) {
+            //     var theme = event.theme;
+            //     if (theme.isDark) {
+            //         $("body").addClass("black");
+            //     } else {
+            //         $("body").removeClass("black");
+            //     }
+            // });
+            // var theme = config.getPreference("theme");
+            // if(theme.indexOf("ace/") === 0) {
+            //     edit.setTheme(theme);
+            // } else {
+            //     require([theme], function(themeObj) {
+            //         edit.setTheme(themeObj);
+            //     });
+            // }
             edit.setHighlightActiveLine(config.getPreference("highlightActiveLine", session));
             edit.setHighlightGutterLine(config.getPreference("highlightGutterLine", session));
             edit.setFontSize(config.getPreference("fontSize", session));
@@ -60,7 +51,7 @@ define(function(require, exports, module) {
             edit.setBehavioursEnabled(config.getPreference("behaviorsEnabled", session)); // ( -> ()
             edit.setWrapBehavioursEnabled(config.getPreference("wrapBehaviorsEnabled", session)); // same as above but with selection
             var fontFamily = config.getPreference("fontFamily");
-            if(font.isInstalled(fontFamily)) {
+            if (font.isInstalled(fontFamily)) {
                 $(edit.container).css("font-family", config.getPreference("fontFamily"));
             } else {
                 eventbus.emit("sessionactivityfailed", session, "Invalid font: " + fontFamily);
@@ -122,9 +113,20 @@ define(function(require, exports, module) {
 
             editors.forEach(function(editor) {
                 editor.setShowPrintMargin(false);
+                // Disable ACE's built-in theming
+                editor.setTheme({
+                    cssClass: "_",
+                    cssText: " "
+                });
                 editor.on("focus", function() {
                     activeEditor = editor;
+                    editor.renderer.$cursorLayer.setSmoothBlinking(true);
                     eventbus.emit("splitswitched", editor);
+                });
+                editor.on("blur", function() {
+                    require(["./session_manager"], function(session_manager) {
+                        session_manager.saveSession(editor.getSession());
+                    });
                 });
             });
 
@@ -166,7 +168,7 @@ define(function(require, exports, module) {
         switchSession: function(session, edit) {
             edit = edit || editor.getActiveEditor();
             edit.setSession(session);
-            edit.setReadOnly(!!session.readOnly);
+            edit.setReadOnly( !! session.readOnly);
             eventbus.emit("switchsession", edit, session);
         },
         getActiveEditor: function() {
@@ -823,14 +825,18 @@ define(function(require, exports, module) {
 
     command.define("Find:Next", {
         exec: function(editor) {
-            editor.findNext({wholeWord: false});
+            editor.findNext({
+                wholeWord: false
+            });
         },
         readOnly: true
     });
 
     command.define("Find:Previous", {
         exec: function(editor) {
-            editor.findPrevious({wholeWord: false});
+            editor.findPrevious({
+                wholeWord: false
+            });
         },
         readOnly: true
     });
@@ -890,26 +896,11 @@ define(function(require, exports, module) {
             config.setPreference("trimTrailingWhiteSpaceOnSave", !config.getPreference("trimTrailingWhiteSpaceOnSave"));
         }
     });
-    
+
     command.define("Configuration:Preferences:Toggle Spell Check", {
         exec: function() {
             config.setPreference("spellCheck", !config.getPreference("spellCheck"));
         },
         readOnly: true
     });
-
-    // Create theme commands
-    editor.themes.forEach(function(theme) {
-        var parts = theme.split('/');
-        var name = parts[parts.length - 1];
-        name = name[0].toUpperCase() + name.substring(1).replace("_", " ");
-
-        command.define("Configuration:Preferences:Theme:" + name, {
-            exec: function() {
-                config.setPreference("theme", theme);
-            },
-            readOnly: true
-        });
-    });
-
 });

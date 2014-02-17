@@ -17,7 +17,8 @@ define(function(require, exports, module) {
         modes: {},
         keys: {},
         commands: {},
-        handlers: {}
+        handlers: {},
+        themes: {}
     };
 
     var config = _.extend({}, minimumConfiguration);
@@ -126,11 +127,12 @@ define(function(require, exports, module) {
                     }
                     try {
                         var json = JSON.parse(text);
-                        expandConfiguration(json, next);
                     } catch (e) {
-                        console.error(e);
+                        console.error("In file", imp, e);
                         next();
+                        return;
                     }
+                    expandConfiguration(json, next);
                 }
 
                 configfs.readFile(imp, handleFile);
@@ -183,6 +185,13 @@ define(function(require, exports, module) {
     exports.getHandlers = function() {
         return expandedConfiguration.handlers;
     };
+    
+    exports.getTheme = function(name) {
+        return expandedConfiguration.themes[name];
+    };
+    exports.getThemes = function() {
+        return expandedConfiguration.themes;
+    };
 
     exports.getConfiguration = function() {
         return expandedConfiguration;
@@ -216,6 +225,10 @@ define(function(require, exports, module) {
     }
 
     exports.loadConfiguration = loadConfiguration;
+    
+    exports.getFs = function() {
+        return configfs;
+    }
 
     /**
      * Extend the project config (or the empty object, if not present)

@@ -3,9 +3,6 @@ body {
     overflow: hidden;
     background-color: #fff;
 }
-body.black {
-    background-color: #000;
-}
 .inactive-editor {
     opacity: 0.80;
 }
@@ -190,6 +187,7 @@ div.preview-vsplit2-right-2 {
 }
 #gotohint {
     background: #eee;
+    color: #000;
     margin-top: -3px;
     padding: 2px;
     font-size: 11px;
@@ -208,6 +206,7 @@ div.preview-vsplit2-right-2 {
     background-color: #eee;
     border: 1px solid #aaa;
     z-index: 999;
+    color: #000;
 }
 .editbar.active {
     background-color: #ddd;
@@ -245,6 +244,7 @@ div.preview-vsplit2-right-2 {
     border-bottom: 1px solid #ccc;
     padding-left: 35px;
     font-weight: bold;
+    color: #000;
 }
 #contextbar img {
     position: absolute;
@@ -257,6 +257,9 @@ div.preview-vsplit2-right-2 {
 }
 .ace_autocomplete {
     width: 300px;
+}
+.dark .ace_autocomplete {
+    border: 1px solid #000;
 }
 .ace_completion-highlight {
     text-decoration: underline;
@@ -310,6 +313,7 @@ div.preview-vsplit2-right-2 {
 #dialog {
     position: fixed;
     border: solid 1px #ccc;
+    color: #000;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
     padding: 10px;

@@ -1,0 +1,202 @@
+{
+    "themes": {
+        "zed_dark": {
+            "name": "Zed Dark",
+            "dark": true,
+            "cssClass": "ace-zeddark",
+            "css": "/default/theme/zed_dark.css"
+        },
+        "chrome": {
+            "name": "Chrome",
+            "dark": false,
+            "cssClass": "ace-chrome",
+            "css": "/default/theme/chrome.css"
+        },
+        "clouds": {
+            "name": "Clouds",
+            "dark": false,
+            "cssClass": "ace-clouds",
+            "css": "/default/theme/clouds.css"
+        },
+        "crimson_editor": {
+            "name": "Crimson Editor",
+            "dark": false,
+            "cssClass": "ace-crimson-editor",
+            "css": "/default/theme/chrimson_editor.css"
+        },
+        "dawn": {
+            "name": "Dawn",
+            "dark": false,
+            "cssClass": "ace-dawn",
+            "css": "/default/theme/dawn.css"
+        },
+        "dreamweaver": {
+            "name": "Dreamweaver",
+            "dark": false,
+            "cssClass": "ace-dreamweaver",
+            "css": "/default/theme/dreamweaver.css"
+        },
+        "eclipse": {
+            "name": "Eclipse",
+            "dark": false,
+            "cssClass": "ace-eclipse",
+            "css": "/default/theme/eclipse.css"
+        },
+        "github": {
+            "name": "Github",
+            "dark": false,
+            "cssClass": "ace-github",
+            "css": "/default/theme/github.css"
+        },
+        "solarized_light": {
+            "name": "Solarized Light",
+            "dark": false,
+            "cssClass": "ace-solarized-light",
+            "css": "/default/theme/solarized_light.css"
+        },
+        "textmate": {
+            "name": "Textmate",
+            "dark": false,
+            "cssClass": "ace-tm",
+            "css": "/default/theme/textmate.css"
+        },
+        "tomorrow": {
+            "name": "Tomorrow",
+            "dark": false,
+            "cssClass": "ace-tomorrow",
+            "css": "/default/theme/tomorrow.css"
+        },
+        "xcode": {
+            "name": "XCode",
+            "dark": false,
+            "cssClass": "ace-xcode",
+            "css": "/default/theme/xcode.css"
+        },
+        "kuroir": {
+            "name": "Kuroir",
+            "dark": false,
+            "cssClass": "ace-kuroir-light",
+            "css": "/default/theme/kuroir.css"
+        },
+        "katzenmilch": {
+            "name": "Katzenmilch",
+            "dark": false,
+            "cssClass": "ace-katzenmilch",
+            "css": "/default/theme/katzenmilch.css"
+        },
+        "ambiance": {
+            "name": "Ambiance",
+            "dark": true,
+            "cssClass": "ace-ambiance",
+            "css": "/default/theme/ambiance.css"
+        },
+        "chaos": {
+            "name": "Chaos",
+            "dark": true,
+            "cssClass": "ace-chaos",
+            "css": "/default/theme/chaos.css"
+        },
+        "clouds_midnight": {
+            "name": "Clouds Midnight",
+            "dark": true,
+            "cssClass": "ace-clouds-midnight",
+            "css": "/default/theme/clouds_midnight.css"
+        },
+        "cobalt": {
+            "name": "Cobalt",
+            "dark": true,
+            "cssClass": "ace-cobalt",
+            "css": "/default/theme/cobalt.css"
+        },
+        "idle_fingers": {
+            "name": "Idle Fingers",
+            "dark": true,
+            "cssClass": "ace-idle-fingers",
+            "css": "/default/theme/idle_fingers.css"
+        },
+        "kr_theme": {
+            "name": "krTheme",
+            "dark": true,
+            "cssClass": "ace-kr-theme",
+            "css": "/default/theme/kr_theme.css"
+        },
+        "merbivore": {
+            "name": "Merbivore",
+            "dark": true,
+            "cssClass": "ace-merbivore",
+            "css": "/default/theme/merbivore.css"
+        },
+        "merbivore_soft": {
+            "name": "Merbivore Soft",
+            "dark": true,
+            "cssClass": "ace-merbivore-soft",
+            "css": "/default/theme/merbivore_soft.css"
+        },
+        "mono_industrial": {
+            "name": "Mono Industrial",
+            "dark": true,
+            "cssClass": "ace-mono-industrial",
+            "css": "/default/theme/mono_industrial.css"
+        },
+        "monokai": {
+            "name": "Monokai",
+            "dark": true,
+            "cssClass": "ace-monokai",
+            "css": "/default/theme/monokai.css"
+        },
+        "pastel_on_dark": {
+            "name": "Pastel on Dark",
+            "dark": true,
+            "cssClass": "ace-pastel-on-dark",
+            "css": "/default/theme/pastel_on_dark.css"
+        },
+        "solarized_dark": {
+            "name": "Solarized Dark",
+            "dark": true,
+            "cssClass": "ace-solarized-dark",
+            "css": "/default/theme/solarized_dark.css"
+        },
+        "terminal": {
+            "name": "Terminal",
+            "dark": true,
+            "cssClass": "ace-terminal-theme",
+            "css": "/default/theme/terminal.css"
+        },
+        "tomorrow_night": {
+            "name": "Tomorrow Night",
+            "dark": true,
+            "cssClass": "ace-tomorrow-night",
+            "css": "/default/theme/tomorrow_night.css"
+        },
+        "tomorrow_night_blue": {
+            "name": "Tomorrow Night Blue",
+            "dark": true,
+            "cssClass": "ace-tomorrow-night-blue",
+            "css": "/default/theme/tomorrow_night_blue.css"
+        },
+        "tomorrow_night_bright": {
+            "name": "Tomorrow Night Bright",
+            "dark": true,
+            "cssClass": "ace-tomorrow-night-bright",
+            "css": "/default/theme/tomorrow_night_bright.css"
+        },
+        "tomorrow_night_eighties": {
+            "name": "Tomorrow Night 80s",
+            "dark": true,
+            "cssClass": "ace-tomorrow-night-eighties",
+            "css": "/default/theme/tomorrow_night_eighties.css"
+        },
+        "twilight": {
+            "name": "Twilight",
+            "dark": true,
+            "cssClass": "ace-twilight",
+            "css": "/default/theme/twilight.css"
+        },
+        "vibrant_ink": {
+            "name": "Vibrant Ink",
+            "dark": true,
+            "cssClass": "ace-vibrant-ink",
+            "css": "/default/theme/vibrant_ink.css"
+        }
+    }
+}

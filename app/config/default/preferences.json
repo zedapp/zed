@@ -1,6 +1,6 @@
 {
     "preferences": {
-        "theme": "ace/theme/textmate",
+        "theme": "theme/zed_dark",
         "highlightActiveLine": true,
         "highlightGutterLine": true,
         "defaultMode": "ace/mode/text",

@@ -139,11 +139,12 @@ define(function(require, exports, module) {
     command.define("Command:Command Tree", {
         exec: function(edit) {
             showTree("command-tree", edit, command.allCommands().sort(), ":", function(cmd) {
+                console.log("Selected somethign!", cmd);
                 cmd = cmd.substring(1); // Strip leading ':'
                 var recentCommands = state.get("recent.commands") || {};
                 recentCommands[cmd] = Date.now();
                 state.set("recent.commands", recentCommands);
-                command.exec(cmd, edit);
+                command.exec(cmd, edit, edit.getSession());
             });
         },
         readOnly: true

@@ -4,6 +4,7 @@
         "/default/modes.json",
         "/default/keys.json",
         "/default/commands.json",
-        "/default/handlers.json"
+        "/default/handlers.json",
+        "/default/themes.json"
     ]
 }

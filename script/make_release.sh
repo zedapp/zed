@@ -13,6 +13,7 @@ mkdir -p release
 go-darwin-386 build -o release/zed-Darwin-i386
 go-darwin-amd64 build -o release/zed-Darwin-x86_64
 go-linux-386 build -o release/zed-Linux-i386
+go-linux-386 build -o release/zed-Linux-i686
 go-linux-amd64 build -o release/zed-Linux-x86_64
 go-linux-arm build -o release/zed-Linux-armv61
 go-freebsd-386 build -o release/zed-FreeBSD-i386

@@ -7,7 +7,7 @@
      background: #444;
  }
  .ace-zeddark {
-     background-color: #303030;
+     background-color: #000;
      color: #EDEDED;
  }
  .ace-zeddark .ace_cursor {
@@ -40,11 +40,9 @@
      background-color: #96CBFE;
      border-color: #EDEDED;
  }
- 
  .ace-zeddark .ace_name {
-     color: #00D308;
+     color: #77D542;
  }
- 
  .ace-zeddark .ace_keyword {
      color:#96CBFE;
  }
