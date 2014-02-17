@@ -1,4 +1,4 @@
-/* global $*/
+/* global $, _*/
 define(function(require, exports, module) {
     var config = require("./config");
     var dom = require("ace/lib/dom");
@@ -23,7 +23,7 @@ define(function(require, exports, module) {
                         exports.setTheme(name);
                     },
                     readOnly: true
-                })
+                });
             });
         });
     };
