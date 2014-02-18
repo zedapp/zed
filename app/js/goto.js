@@ -12,6 +12,7 @@ define(function(require, exports, module) {
     var locator = require("./lib/locator");
 
     var fileCache = [];
+    var filteredFileCache = [];
 
     eventbus.declare("loadedfilelist");
 
@@ -47,7 +48,32 @@ define(function(require, exports, module) {
         console.log("Fetching file list...");
         project.listFiles(function(err, files) {
             fileCache = files;
-            eventbus.emit("loadedfilelist");
+            require(["./config"], function(config) {
+                updateFilteredFileCache(config);
+                eventbus.emit("loadedfilelist");
+            })
+        });
+    }
+
+    function escapeRegExp(str) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
+    function wildcardToRegexp(str) {
+        str = escapeRegExp(str);
+        str = str.replace(/\\\*/g, ".*");
+        return "^" + str + "$";
+    }
+
+    function updateFilteredFileCache(config) {
+        var excludes = config.getPreference("gotoExclude");
+        if(!excludes || excludes.length === 0) {
+            filteredFileCache = fileCache;
+            return;
+        }
+        var regex = new RegExp(excludes.map(wildcardToRegexp).join("|"));
+        filteredFileCache = fileCache.filter(function(path) {
+            return !regex.exec(path);
         });
     }
 
@@ -66,6 +92,9 @@ define(function(require, exports, module) {
             if (index !== -1) {
                 fileCache.splice(index, 1);
             }
+        });
+        eventbus.on("configchanged", function(config) {
+            updateFilteredFileCache(config);
         });
     };
 
@@ -111,7 +140,7 @@ define(function(require, exports, module) {
                 } else if (phrase[0] === '/') {
                     var results = {};
                     phrase = phrase.toLowerCase();
-                    fileCache.forEach(function(file) {
+                    filteredFileCache.forEach(function(file) {
                         var fileNorm = file.toLowerCase();
                         var score = 1;
 
@@ -138,7 +167,7 @@ define(function(require, exports, module) {
                         });
                     });
                 } else {
-                    resultList = fuzzyfind(fileCache, phrase);
+                    resultList = fuzzyfind(filteredFileCache, phrase);
                     resultList.forEach(function(result) {
                         result.name = result.path;
                         if (sessions[result.path]) {
@@ -260,6 +289,6 @@ define(function(require, exports, module) {
     });
 
     exports.getFileCache = function() {
-        return fileCache;
+        return filteredFileCache;
     };
 });

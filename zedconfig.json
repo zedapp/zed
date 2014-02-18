@@ -1,0 +1,6 @@
+{
+    "preferences": {
+        "tabSize": 4,
+        "gotoExclude": ["/release/zed-*"]
+    }
+}

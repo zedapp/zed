@@ -1,5 +1,6 @@
 define(function(require, exports, module) {
     var project = require("../../../project");
+    var goto = require("../../../goto");
     var eventbus = require("../../../lib/eventbus");
     return {
         readFile: function(path, callback) {
@@ -29,7 +30,7 @@ define(function(require, exports, module) {
             });
         },
         listFiles: function(callback) {
-            project.listFiles(callback);
+            callback(null, goto.getFileCache());
         }
     };
 });

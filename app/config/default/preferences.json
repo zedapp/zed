@@ -30,6 +30,7 @@
         "recentFolderHistory": 10,
         "showContextBar": false,
         "dimInactiveEditors": true,
-        "spellCheck": false
+        "spellCheck": false,
+        "gotoExclude": []
     }
 }
