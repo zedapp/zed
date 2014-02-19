@@ -25,6 +25,8 @@ define(function(require, exports, module) {
      */
     function resetSandbox() {
         if (sandboxEl) {
+            // sandboxEl[0].clearData({}, {cache: true}, function() {
+            // });
             sandboxEl.remove();
         }
         $("body").append('<webview id="sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
@@ -34,8 +36,6 @@ define(function(require, exports, module) {
         sandbox.addEventListener("contentload", function() {
             sandbox.executeScript({
                 code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js")
-            }, function(result) {
-                console.log("Result", result);
             });
         });
         waitingForReply = {};
