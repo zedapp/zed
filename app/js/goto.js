@@ -48,8 +48,11 @@ define(function(require, exports, module) {
         console.log("Fetching file list...");
         project.listFiles(function(err, files) {
             fileCache = files;
-            require(["./config"], function(config) {
-                updateFilteredFileCache(config);
+            require(["./session_manager"], function(session_manager) {
+                Object.keys(session_manager.specialDocs).forEach(function(path) {
+                    fileCache.push(path);
+                });
+                updateFilteredFileCache();
                 eventbus.emit("loadedfilelist");
             })
         });
@@ -65,15 +68,17 @@ define(function(require, exports, module) {
         return "^" + str + "$";
     }
 
-    function updateFilteredFileCache(config) {
-        var excludes = config.getPreference("gotoExclude");
-        if(!excludes || excludes.length === 0) {
-            filteredFileCache = fileCache;
-            return;
-        }
-        var regex = new RegExp(excludes.map(wildcardToRegexp).join("|"));
-        filteredFileCache = fileCache.filter(function(path) {
-            return !regex.exec(path);
+    function updateFilteredFileCache() {
+        require(["./config"], function(config) {
+            var excludes = config.getPreference("gotoExclude");
+            if (!excludes || excludes.length === 0) {
+                filteredFileCache = fileCache;
+                return;
+            }
+            var regex = new RegExp(excludes.map(wildcardToRegexp).join("|"));
+            filteredFileCache = fileCache.filter(function(path) {
+                return !regex.exec(path);
+            });
         });
     }
 
@@ -85,16 +90,18 @@ define(function(require, exports, module) {
         eventbus.on("newfilecreated", function(path) {
             if (fileCache.indexOf(path) === -1) {
                 fileCache.push(path);
+                updateFilteredFileCache();
             }
         });
         eventbus.on("filedeleted", function(path) {
             var index = fileCache.indexOf(path);
             if (index !== -1) {
                 fileCache.splice(index, 1);
+                updateFilteredFileCache();
             }
         });
         eventbus.on("configchanged", function(config) {
-            updateFilteredFileCache(config);
+            updateFilteredFileCache();
         });
     };
 
@@ -227,12 +234,11 @@ define(function(require, exports, module) {
                 onSelect: function(file, phrase) {
                     var currentPath = session.filename;
                     var fileOnly, loc, phraseParts;
+                    phraseParts = locator.parse(phrase);
                     if (file !== phrase) {
-                        phraseParts = locator.parse(phrase);
                         fileOnly = file || currentPath;
                         loc = phraseParts[1];
                     } else {
-                        phraseParts = locator.parse(phrase);
                         fileOnly = phraseParts[0] || currentPath;
                         loc = phraseParts[1];
                     }

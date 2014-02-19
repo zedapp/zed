@@ -158,7 +158,7 @@ define(function(require, exports, module) {
         config.preferences[key] = value;
         whenConfigurationAvailable(function() {
             userConfig.preferences[key] = value;
-            configfs.writeFile("/user.json", JSON.stringify(config, null, 4), function(err) {
+            configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4), function(err) {
                 if(err) {
                     console.error("Error during writing config:", err);
                 }

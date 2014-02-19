@@ -4,7 +4,7 @@
             "name": "Markdown",
             "highlighter": "ace/mode/markdown",
             "extensions": ["md", "txt", "markdown"],
-            "filenames": ["zed:start"],
+            "filenames": ["zed::start"],
 
             "commands": {
                 "Tools:Beautify": {

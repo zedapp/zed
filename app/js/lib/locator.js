@@ -7,6 +7,8 @@ define(function(require, exports, module) {
         var parts = path.split(':');
         if(parts.length === 1) {
             return parts;
+        } else if(parts.length > 2 && !parts[1]) { // zed::bla
+            return [path];
         } else {
             return [parts[0], parts.slice(1).join(":")];
         }

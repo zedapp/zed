@@ -2,7 +2,7 @@ define(function(require, exports, module) {
     var ui = require("zed/ui");
     var project = require("zed/project");
     var session = require("zed/session");
-    var async = require("lib/async");
+    var async = require("zed/lib/async");
 
     var filterExtensions = ["pdf", "gz", "tgz", "bz2", "zip",
         "exe", "jpg", "jpeg", "gif", "png"];
@@ -43,9 +43,9 @@ define(function(require, exports, module) {
             if (!phrase) {
                 return callback();
             }
-            session.goto("zed:search", function() {
+            session.goto("zed::search", function() {
                 function append(text) {
-                    session.append("zed:search", text, function() {});
+                    session.append("zed::search", text, function() {});
                 }
 
                 var results = 0;
@@ -57,7 +57,7 @@ define(function(require, exports, module) {
                         return filterExtensions.indexOf(ext) === -1;
                     });
 
-                    session.setText("zed:search", "Searching " + fileList.length + " files for '" + phrase + "'...\nPut your cursor on the result press Enter to jump.\n", function() {});
+                    session.setText("zed::search", "Searching " + fileList.length + " files for '" + phrase + "'...\nPut your cursor on the result press Enter to jump.\n", function() {});
                     async.eachLimit(fileList, 10, function(path, next) {
                         if (results >= MAX_RESULTS) {
                             return next();

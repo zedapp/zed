@@ -28,7 +28,7 @@ define(function(require, exports, module) {
     // Used to detect changes in editor state
     var oldstateJSON = null;
 
-    // Currently only used for zed:start
+    // Currently only used for zed::start
     exports.specialDocs = {}; // {content: ..., mode: ..., readonly: true}
 
     function setupSave(session) {
@@ -81,7 +81,7 @@ define(function(require, exports, module) {
     function updateState() {
         state.set("session.current", editor.getEditors().map(function(e) {
             if (e.getSession().dontPersist) {
-                return "zed:start";
+                return "zed::start";
             } else {
                 return e.getSession().filename;
             }
@@ -200,7 +200,7 @@ define(function(require, exports, module) {
 
         if (sessions[path]) {
             show(sessions[path]);
-        } else if (path.indexOf("zed:") === 0) {
+        } else if (path.indexOf("zed::") === 0) {
             var session = editor.createSession(path, "");
             session.readOnly = true;
             session.dontPersist = true;
@@ -267,7 +267,7 @@ define(function(require, exports, module) {
         async.waitForEvents(eventbus, ["stateloaded", "modesloaded"], function() {
             var sessionStates = state.get("session.open") || {};
 
-            go("zed:start");
+            go("zed::start");
 
             async.parForEach(Object.keys(sessionStates), function(path, next) {
                 var sessionState = sessionStates[path];

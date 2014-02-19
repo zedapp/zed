@@ -1,7 +1,7 @@
 /* global _ */
 define(function(require, exports, module) {
     var session = require("zed/session");
-    var Map = require("lib/collection").Map;
+    var Map = require("zed/lib/collection").Map;
 
     var splitRegex = /[^a-zA-Z_0-9\$\-]+/;
 

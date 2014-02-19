@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
-    var editor = require("../../../editor");
-    var config = require("../../../config");
+    var editor = require("../../editor");
+    var config = require("../../config");
 
     return {
         getPreference: function(preference, callback) {

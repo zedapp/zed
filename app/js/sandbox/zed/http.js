@@ -1,6 +1,6 @@
 /* global define */
 define(function(require, exports, module) {
-    var http_cache = require("../../../http_cache");
+    var http_cache = require("../../http_cache");
     
     return {
         fetchUrl: function(url, callback) {

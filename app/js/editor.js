@@ -4,7 +4,6 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var command = require("./command");
     var config = require("./config");
-    //var defaultConfiguration = JSON.parse(require("text!../config/config.default.json"));
     var modes = require("./modes");
     var font = require("./lib/font");
     var whitespace = require("ace/ext/whitespace");
@@ -20,22 +19,6 @@ define(function(require, exports, module) {
     var editor = module.exports = {
         setEditorConfiguration: function(edit) {
             var session = edit.getSession();
-            // edit.renderer.once("themeLoaded", function(event) {
-            //     var theme = event.theme;
-            //     if (theme.isDark) {
-            //         $("body").addClass("black");
-            //     } else {
-            //         $("body").removeClass("black");
-            //     }
-            // });
-            // var theme = config.getPreference("theme");
-            // if(theme.indexOf("ace/") === 0) {
-            //     edit.setTheme(theme);
-            // } else {
-            //     require([theme], function(themeObj) {
-            //         edit.setTheme(themeObj);
-            //     });
-            // }
             edit.setHighlightActiveLine(config.getPreference("highlightActiveLine", session));
             edit.setHighlightGutterLine(config.getPreference("highlightGutterLine", session));
             edit.setFontSize(config.getPreference("fontSize", session));
@@ -88,7 +71,7 @@ define(function(require, exports, module) {
                 require(["./session_manager"], function(session_manager) {
                     editors.forEach(function(edit) {
                         if (edit.getSession().filename === path) {
-                            session_manager.go("zed:start", edit);
+                            session_manager.go("zed::start", edit);
                         }
                     });
                 });

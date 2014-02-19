@@ -1,6 +1,6 @@
 /* global define */
 define(function(require, exports, module) {
-    var config = require("../../../config");
+    var config = require("../../config");
     
     return {
         readFile: function(path, callback) {

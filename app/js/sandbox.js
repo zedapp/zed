@@ -27,8 +27,17 @@ define(function(require, exports, module) {
         if (sandboxEl) {
             sandboxEl.remove();
         }
-        $("body").append('<iframe src="sandbox.html" id="sandbox" style="display: none;">');
+        $("body").append('<webview id="sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
         sandboxEl = $("#sandbox");
+        var sandbox = sandboxEl[0];
+        sandboxEl.css("left", "-1000px");
+        sandbox.addEventListener("contentload", function() {
+            sandbox.executeScript({
+                code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js")
+            }, function(result) {
+                console.log("Result", result);
+            });
+        });
         waitingForReply = {};
         id = 0;
     }
@@ -42,7 +51,7 @@ define(function(require, exports, module) {
      */
     function handleApiRequest(event) {
         var data = event.data;
-        require(["./sandbox/impl/" + data.module], function(mod) {
+        require(["./sandbox/" + data.module], function(mod) {
             if (!mod[data.call]) {
                 return event.source.postMessage({
                     replyTo: data.id,
@@ -82,16 +91,16 @@ define(function(require, exports, module) {
 
     window.execSandboxApi = function(api, args, callback) {
         var parts = api.split('.');
-        var mod = parts.slice(0, parts.length-1).join('/');
-        var call = parts[parts.length-1];
-        require(["./sandbox/impl/" + mod], function(mod) {
+        var mod = parts.slice(0, parts.length - 1).join('/');
+        var call = parts[parts.length - 1];
+        require(["./sandbox/" + mod], function(mod) {
             if (!mod[call]) {
                 return callback("No such method: " + call);
             }
             mod[call].apply(this, args.concat([callback]));
         });
     };
-    
+
     /**
      * Programmatically call a sandbox command, the spec argument has the following keys:
      * - scriptUrl: the URL (http, https or relative local path) of the require.js module
@@ -100,7 +109,7 @@ define(function(require, exports, module) {
      * module which is executed as a function.
      */
     exports.execCommand = function(name, spec, session, callback) {
-        if(session.$cmdInfo) {
+        if (session.$cmdInfo) {
             spec = _.extend(spec, session.$cmdInfo);
             session.$cmdInfo = null;
         }
@@ -125,9 +134,18 @@ define(function(require, exports, module) {
             }, '*');
         }
     };
-
+    
     command.define("Sandbox:Reset", {
         exec: resetSandbox,
         readOnly: true
     });
+    
+    command.define("Sandbox:Show", {
+        exec: function() {
+            sandboxEl.css("left", "50px");
+            setTimeout(function() {
+                sandboxEl.css("left", "-1000px");
+            }, 5000);
+        }
+    })
 });

@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    var ui = require("../../../lib/ui");
+    var ui = require("../../lib/ui");
     return {
         prompt: function(message, inputText, width, height, callback) {
             ui.prompt({

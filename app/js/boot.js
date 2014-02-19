@@ -3,7 +3,7 @@ require.config({
     baseUrl: "js",
     paths: {
         "text": "../dep/text",
-        "async": "../dep/async"
+        "async": "../config/api/zed/lib/async"
     },
 });
 
@@ -37,7 +37,7 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
     require(modules, function() {
         var session_manager = require("./session_manager");
 
-        session_manager.specialDocs['zed:start'] = {
+        session_manager.specialDocs['zed::start'] = {
             mode: 'ace/mode/markdown',
             content: cheatsheet
         };

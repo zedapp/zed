@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    var configfs = require("zed/configfs");
+    var configfs = require("zed/config_fs");
     var Typo = require("configfs!./typo.js");
     
     var affData = null;

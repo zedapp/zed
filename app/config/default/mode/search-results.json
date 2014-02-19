@@ -3,7 +3,7 @@
         "search-results": {
             "name": "Zed Search Results",
             "highlighter": "ace/mode/markdown",
-            "filenames": ["zed:search"],
+            "filenames": ["zed::search"],
 
             "keys": {
                 "Search Results:Open File": "Enter"

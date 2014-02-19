@@ -12,8 +12,5 @@ as require.js modules as follows:
 
 The implementations in this directory conist of two parts:
 
-* Proxies defined in interface/, which shuttle the request from the sandbox to 
-  the Zed application via `sandboxRequest`, which uses HTML5's postMessage to
-  communicate with its parent.
-* Implementations defined in impl/, which contain the actual implementation
-  of the APIs running inside the Zed application.
+* Proxies defined in `/app/config/api`, which shuttle the request from the sandbox to the Zed application via `sandboxRequest`, which uses HTML5's postMessage to communicate with its parent.
+* Implementations defined in `/app/js/sandbox` (this directory), which contain the actual implementation of the APIs running inside the Zed application.

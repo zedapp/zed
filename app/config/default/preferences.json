@@ -31,6 +31,6 @@
         "showContextBar": false,
         "dimInactiveEditors": true,
         "spellCheck": false,
-        "gotoExclude": []
+        "gotoExclude": ["/tags"]
     }
 }

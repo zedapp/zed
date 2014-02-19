@@ -20,8 +20,8 @@ define(function(require, exports, module) {
         },
         keys: function() {
             var keys = [];
-            for(var key in this.items) {
-                if(this.items.hasOwnProperty(key)) {
+            for (var key in this.items) {
+                if (this.items.hasOwnProperty(key)) {
                     keys.push(key.substring(1));
                 }
             }

@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
-    var project = require("../../../project");
-    var goto = require("../../../goto");
-    var eventbus = require("../../../lib/eventbus");
+    var project = require("../../project");
+    var goto = require("../../goto");
+    var eventbus = require("../../lib/eventbus");
     return {
         readFile: function(path, callback) {
             project.readFile(path, function(err, text) {

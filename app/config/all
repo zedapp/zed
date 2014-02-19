@@ -1,5 +1,17 @@
 
 /.zedstate
+/api/zed/config.js
+/api/zed/config_fs.js
+/api/zed/ctags.js
+/api/zed/http.js
+/api/zed/lib/async.js
+/api/zed/lib/beautify.js
+/api/zed/lib/collection.js
+/api/zed/preview.js
+/api/zed/project.js
+/api/zed/session.js
+/api/zed/ui.js
+/api/zed/util.js
 /default/command/builtin_completer.js
 /default/command/ctags_completer.js
 /default/command/search.js

@@ -2,7 +2,7 @@
 define(function(require, exports, module) {
     var session = require("zed/session");
     var ctags = require("zed/ctags");
-    var Map = require("lib/collection").Map;
+    var Map = require("zed/lib/collection").Map;
 
     return function(info, callback) {
         var path = info.path;

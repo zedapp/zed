@@ -3,6 +3,17 @@ body {
     overflow: hidden;
     background-color: #fff;
 }
+
+#sandbox {
+  z-index: 500;
+  position: absolute;
+  left: 50px;
+  right: 0;
+  top: 50px;
+  width: 500px;
+  height: 200px;
+}
+
 .inactive-editor {
     opacity: 0.80;
 }
