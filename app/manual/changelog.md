@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.9.0
+-----
+* Theme overhaul: themes are now part of Zed itself (they were part of ACE before), created using configuration files in the Configuration project. Users can now create custom themes as well from within the Configuration project. A theme can, in theory, theme any element of the Zed UI (but for now, just theme the editor).
+* Created a custom dark Zed theme, which is now the default.
+* Moved the extension sandbox into a Chrome `<webview>` which lives in its own process and therefore no longer blocks the editor event loop.
+* Trying to infer position information from JSHint messages, thereby underlining warnings and errors inline rather than just with a gutter marker.
+* Configuration project now has a README
+* New `gotoExclude` preference with a list of patterns (use `*` as a wildcard) for files to exclude from goto (and project-wide search).
+* Fixed bug where Zed would always say "No preview available" even when it was available.
+
 0.8.5
 -----
 

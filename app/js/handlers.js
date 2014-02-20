@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 
         var editors = editor.getEditors();
         var edit = null;
-
+        
         _.each(editors, function(edit_) {
             if (edit_.getSession() === session) {
                 edit = edit_;
