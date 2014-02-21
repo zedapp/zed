@@ -1,7 +1,6 @@
 
 /.zedstate
 /changelog.md
-/cheatsheet.md
 /configuration.md
 /ctags.md
 /cursors.md
@@ -12,6 +11,7 @@
 /howto/navigation.md
 /howto/remote.md
 /index.md
+/intro.md
 /projects.md
 /protips.md
 /sandbox.md

@@ -15,7 +15,7 @@ General
 * Managing projects: projects.md
 * Changelog: changelog.md
 * Zed's features: features.md
-* Essential keyboard shortcuts: cheatsheet.md
+* Essential keyboard shortcuts: intro.md
 * Configuring and extending Zed: configuration.md
 * Tips and tricks: protips.md
 
