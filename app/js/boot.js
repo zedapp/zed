@@ -32,7 +32,8 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
         "./dnd",
         "./handlers",
         "./fix",
-        "./theme"
+        "./theme",
+        "./zpm"
     ];
     require(modules, function() {
         var session_manager = require("./session_manager");

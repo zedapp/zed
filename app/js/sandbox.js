@@ -38,6 +38,9 @@ define(function(require, exports, module) {
                 code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js")
             });
         });
+        sandbox.addEventListener('consolemessage', function(e) {
+            console.log('sandbox logged a message: ', e.message);
+        });
         waitingForReply = {};
         id = 0;
     }
