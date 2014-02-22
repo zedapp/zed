@@ -8,7 +8,7 @@ require.config({
 });
 
 /* global ace, $, _ */
-require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
+require(["text!../manual/intro.md"], function(introText) {
     "use strict";
     
     var modules = [
@@ -40,7 +40,7 @@ require(["text!../manual/cheatsheet.md"], function(cheatsheet) {
 
         session_manager.specialDocs['zed::start'] = {
             mode: 'ace/mode/markdown',
-            content: cheatsheet
+            content: introText
         };
 
         _.each(arguments, function(module) {

@@ -211,9 +211,10 @@ div.preview-vsplit2-right-2 {
     background: none;
 }
 .editbar {
+    padding-top: 5px;
+    padding-bottom: 5px;
     position: absolute;
     bottom: 0;
-    /*height: 25px;*/
     background-color: #eee;
     border: 1px solid #aaa;
     z-index: 999;
@@ -231,7 +232,7 @@ div.preview-vsplit2-right-2 {
 .editbar .info {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 5px;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     padding-right: 8px;

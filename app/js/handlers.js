@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     var config = require("./config");
     var command = require("./command");
     var InlineAnnotation = require("./lib/inline_annotation");
+    var editor = require("./editor");
 
     /**
      * This parts handles mode handlers, e.g. "change", "preview" etc.
@@ -16,61 +17,62 @@ define(function(require, exports, module) {
         var mode = session.mode;
         var commandNames = [];
 
-        require(["./editor"], function(editor) {
-            var editors = editor.getEditors();
-            var edit = null;
-            
-            _.each(editors, function(edit_) {
-                if(edit_.getSession() === session) {
-                    edit = edit_;
-                }
-            });
-            
-            if(!edit) {
-                // Session is not currently visible, won't run commands
-                return;
-            }
-            
-            if (mode && mode.handlers[handlerName]) {
-                commandNames = commandNames.concat(mode.handlers[handlerName]);
-            }
-            if (config.getHandlers()[handlerName]) {
-                commandNames = commandNames.concat(config.getHandlers()[handlerName]);
-            }
-
-            function runCommands() {
-                var waitingFor = commandNames.length;
-                var results = [];
-                var edit = editor.getActiveEditor();
-                commandNames.forEach(function(commandName) {
-                    command.exec(commandName, edit, session, function(err, results_) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        results = results.concat(results_);
-                        waitingFor--;
-                        if (waitingFor === 0) {
-                            _.isFunction(callback) && callback(null, results);
-                        }
-                    });
-                });
-                if (waitingFor === 0) {
-                    callback(null, results);
-                }
-            }
-
-            if (commandNames.length > 0) {
-                if (debounceTimeout) {
-                    var id = path + ':' + handlerName;
-                    if (!handlerFns[id]) {
-                        handlerFns[id] = _.debounce(runCommands, debounceTimeout);
-                    }
-                    handlerFns[id]();
-                } else {
-                    runCommands();
-                }
+        var editors = editor.getEditors();
+        var edit = null;
+        
+        _.each(editors, function(edit_) {
+            if (edit_.getSession() === session) {
+                edit = edit_;
             }
         });
+
+        if (!edit) {
+            // Session is not currently visible, won't run commands
+            return;
+        }
+
+        if (mode && mode.handlers[handlerName]) {
+            commandNames = commandNames.concat(mode.handlers[handlerName]);
+        }
+        if (config.getHandlers()[handlerName]) {
+            commandNames = commandNames.concat(config.getHandlers()[handlerName]);
+        }
+
+        function runCommands() {
+            var waitingFor = commandNames.length;
+            var results = [];
+            var edit = editor.getActiveEditor();
+            commandNames.forEach(function(commandName) {
+                command.exec(commandName, edit, session, function(err, results_) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    results = results.concat(results_);
+                    waitingFor--;
+                    if (waitingFor === 0) {
+                        _.isFunction(callback) && callback(null, results);
+                    }
+                });
+            });
+            if (waitingFor === 0) {
+                callback(null, results);
+            }
+        }
+
+        if (commandNames.length > 0) {
+            if (debounceTimeout) {
+                var id = path + ':' + handlerName;
+                if (!handlerFns[id]) {
+                    handlerFns[id] = _.debounce(runCommands, debounceTimeout);
+                }
+                handlerFns[id]();
+            } else {
+                runCommands();
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     exports.runSessionHandler = runSessionHandler;
@@ -101,7 +103,7 @@ define(function(require, exports, module) {
         eventbus.on("switchsession", function(edit, session) {
             analyze(session, true);
         });
-        
+
         function analyze(session, instant) {
             runSessionHandler(session, "change");
             runSessionHandler(session, "check", instant ? null : 1000, function(err, annos) {
