@@ -1,6 +1,6 @@
 Welcome to Zed
 ==============
-To start editing files in this project, press `Command-E` on Mac, or `Ctrl-E` on Windows/Linux/ChromeOS. If you prefer a tree view of your files, press `Alt-T`. To find all available commands and keyboard shortcut press `Command-.`/`Ctrl-.`
+To start editing files in this project, press `Command-E` on Mac, or `Ctrl-E` on Windows/Linux/ChromeOS. If you prefer a tree view of your files, press `Ctrl-T`. To find all available commands and keyboard shortcut press `Command-.`/`Ctrl-.`
 
 Useful keys
 -----------
@@ -10,7 +10,7 @@ Useful keys
     * Press `Up`/`Down` or `Tab`/`Shift-Tab` to walk over results
     * Pressing `Return` either opens the selected file, or creates a new file with the name you typed in if none currently exists.
 * `Command-.`/`Ctrl-.`: Run an editor command.
-* `Cmd-T`/`Alt-T`: Show file tree (useful for exploring projects you're
+* `Cmd-T`/`Ctrl-T`: Show file tree (useful for exploring projects you're
   not familiar with). Keys within the tree:
     * `Up`: Move up in the tree
     * `Down`: Move down in the tree

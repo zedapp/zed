@@ -216,7 +216,6 @@
             "mac": "Ctrl-K"
         },
         "Edit:Outdent": "Shift-Tab",
-        "Edit:Transpose Letters": "Ctrl-T",
         "Edit:Uppercase": "Ctrl-U",
         "Edit:Lowercase": "Ctrl-Shift-U",
         "Edit:Complete": "Tab",
@@ -266,7 +265,7 @@
         },
         "Navigate:File Tree": {
             "mac": "Alt-T|Command-T",
-            "win": "Alt-T"
+            "win": "Alt-T|Ctrl-T"
         },
         "Tools:Beautify": {
             "mac": "Command-Shift-B",
