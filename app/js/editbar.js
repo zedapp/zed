@@ -83,14 +83,17 @@ define(function(require, exports, module) {
         });
         eventbus.on("configchanged", function(config) {
             var fontSize = config.getPreference("fontSize");
+            var fontFamily = config.getPreference("fontFamily");
             editor.getEditors(true).forEach(function(edit) {
-                var editBarHeight = fontSize + 13;
-                edit.editbarEl.height(editBarHeight);
-                edit.editbarEl.find(".path").css("font-size", fontSize + "px")
-                    .css("line-height", (editBarHeight - 2) + "px");
+                var pathEl = edit.editbarEl.find(".path");
+                pathEl.css("font-size", fontSize + "px")
+                      .css("font-family", fontFamily);
                 edit.editbarEl.find(".info").css("font-size", (fontSize - 3) + "px")
-                    .css("line-height", (editBarHeight - 2) + "px");
-                $(edit.container).css("bottom", (editBarHeight + 2) + "px");
+                                            .css("font-family", fontFamily);
+                setTimeout(function() {
+                    $(edit.container).css("bottom", (pathEl.outerHeight(true) + 13) + "px");
+
+                });
             });
         });
     };

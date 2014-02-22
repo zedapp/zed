@@ -211,9 +211,10 @@ div.preview-vsplit2-right-2 {
     background: none;
 }
 .editbar {
+    padding-top: 5px;
+    padding-bottom: 5px;
     position: absolute;
     bottom: 0;
-    /*height: 25px;*/
     background-color: #eee;
     border: 1px solid #aaa;
     z-index: 999;

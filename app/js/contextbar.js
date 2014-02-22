@@ -21,6 +21,7 @@ define(function(require, exports, module) {
     function update() {
         var showContextBar = config.getPreference("showContextBar");
         var fontSize = config.getPreference("fontSize");
+        var fontFamily = config.getPreference("fontFamily");
         var barHeight = fontSize + 13;
 
         if(showContextBar && !barEl) {
@@ -39,8 +40,8 @@ define(function(require, exports, module) {
 
             barEl.height(barHeight)
                  .css("font-size",   fontSize + "px")
-                 .css("line-height", barHeight + "px")
-                 .css("padding-left", (fontSize + 15) + "px");
+                 .css("padding-left", (fontSize + 15) + "px")
+                 .css("font-family", fontFamily);
             barEl.find("img").css("height", fontSize + "px")
                              .css("width",  fontSize + "px");
         }
