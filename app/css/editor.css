@@ -232,7 +232,7 @@ div.preview-vsplit2-right-2 {
 .editbar .info {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 5px;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     padding-right: 8px;
