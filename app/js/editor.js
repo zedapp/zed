@@ -823,6 +823,21 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
+    
+    command.define("Find:All", {
+        exec: function(edit) {
+            var phrase;
+            if (edit.selection.isEmpty()) {
+                phrase = editor.getIdentifierUnderCursor();
+            } else {
+                phrase = edit.getSession().getTextRange(edit.getSelectionRange());
+            }
+            edit.findAll(phrase, {
+                wholeWord: false
+            });
+        },
+        readOnly: true
+    });
 
     command.define("Find:Next Instance Of Identifier", {
         exec: function(edit) {
