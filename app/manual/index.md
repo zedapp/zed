@@ -22,6 +22,7 @@ General
 How to
 ------
 
+* Search & Replace: howto/search_replace.md
 * Edit remote files with Zed: howto/remote.md
 * Navigate a project: howto/navigation.md
 
