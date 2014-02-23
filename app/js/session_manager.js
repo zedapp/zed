@@ -202,9 +202,7 @@ define(function(require, exports, module) {
             show(sessions[path]);
         } else if (path.indexOf("zed::") === 0) {
             var session = editor.createSession(path, "");
-            if (path !== "zed::zpm") {
-                session.readOnly = true;
-            }
+            session.readOnly = true;
             session.dontPersist = true;
             show(session);
             sessions[path] = session;
@@ -241,7 +239,7 @@ define(function(require, exports, module) {
             }
 
             // File watching
-            if (!session.readOnly && !session.dontPersist) {
+            if (!session.readOnly) {
                 session.watcherFn = function(path, kind) {
                     ui.unblockUI();
                     if (kind === "changed") {

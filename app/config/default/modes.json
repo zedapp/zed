@@ -32,6 +32,7 @@
         "/default/mode/xsl.json",
         "/default/mode/yaml.json",
         "/default/mode/makefile.json",
-        "/default/mode/search-results.json"
+        "/default/mode/search-results.json",
+        "/default/mode/installed-extensions.json"
     ]
 }

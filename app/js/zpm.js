@@ -6,7 +6,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var ui = require("./lib/ui");
 
-    function getInstalledPackages(callback) {
+    exports.getInstalledExtensions = function(callback) {
         var configfs = config.getFs();
         configfs.readFile("/zpm/installed.json", function(err, installed) {
             try {
@@ -20,14 +20,14 @@ define(function(require, exports, module) {
                 callback(e);
             }
         });
-    }
+    };
 
     exports.hook = function() {
     };
     
     exports.install = function(url, callback) {
         $.getJSON(url + "package.json", function(data) {
-            getInstalledPackages(function(err, installed) {
+            exports.getInstalledExtensions(function(err, installed) {
                 if (err) {
                     return callback(err);
                 }
@@ -99,7 +99,7 @@ define(function(require, exports, module) {
     }
     
     exports.apply = function(id, callback) {
-        getInstalledPackages(function(err, installed) {
+        exports.getInstalledExtensions(function(err, installed) {
             if (err) {
                 return callback(err);
             }
@@ -130,7 +130,7 @@ define(function(require, exports, module) {
     }
     
     exports.unapply = function(id, callback) {
-        getInstalledPackages(function(err, installed) {
+        exports.getInstalledExtensions(function(err, installed) {
             if (err) {
                 return callback(err);
             }
@@ -140,7 +140,7 @@ define(function(require, exports, module) {
     };
     
     exports.uninstall = function(id, callback) {
-        getInstalledPackages(function(err, installed) {
+        exports.getInstalledExtensions(function(err, installed) {
             if (err) {
                 return callback(err);
             }
@@ -185,38 +185,8 @@ define(function(require, exports, module) {
             }
         });
     };
-
-    command.define("Tools:Zpm:Terminal", {
-        exec: function() {
-            require(["./editor", "./session_manager"], function(editor, session_manager) {
-                var edit = editor.getActiveEditor();
-                session_manager.go("zed::zpm", edit, edit.getSession());
-            });
-        }
-    });
     
-    command.define("Tools:Zpm:Install", {
-       exec: function() {
-           setTimeout(function() {
-               ui.prompt({
-                   width: 400,
-                   height: 150,
-                   message: "URL to install extension from:",
-                   input: ""
-               }, function(err, url) {
-                  exports.install(url, function(err) {
-                      if (err) {
-                          ui.prompt({message: err});
-                      } else {
-                          ui.prompt({message: "Extension installed!"});
-                      }
-                  }); 
-               });
-           }, 0);
-       } 
-    });
-    
-    command.define("Tools:Zpm:Uninstall", {
+    command.define("Zpm:Uninstall", {
        exec: function() {
            setTimeout(function() {
                ui.prompt({
