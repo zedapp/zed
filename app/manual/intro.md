@@ -2,7 +2,7 @@ Welcome to Zed
 ==============
 For the latest Zed news check out http://zedapp.org and check out the Manual project for documentation.
 
-To start editing files in this project, press `Command-E` on Mac, or `Ctrl-E` on Windows/Linux/ChromeOS. If you prefer a tree view of your files, press `Ctrl-T`. To find all available commands and keyboard shortcut press `Command-.`/`Ctrl-.`
+To start editing files in this project, press `Command-E` on Mac, or `Ctrl-E` on Windows/Linux/ChromeOS. If you prefer a tree view of your files, press `Command-T`/`Ctrl-T`. To find all available commands and keyboard shortcut press `Command-.`/`Ctrl-.`
 
 Useful keys
 -----------
@@ -19,7 +19,7 @@ Useful keys
     * `Left`: Collapse node
     * `Right`: Expand node
     * `Enter`: Open file
-* `Command-Shift-B`/`Ctrl-Shift-B`: Beautify the selected piece of (HTML, CSS, Javascript) code.
+* `Command-F`/`Ctrl-F`: Find within file, use `Command-G`/`Ctrl-K` to find next match, or `Command-Shift-G`/`Ctrl-Shift-K` to put cursors on all.
 * `Command-1`/`Ctrl-1`: 1 split
 * `Command-2`/`Ctrl-2`: 2 vertical splits (press repeatedly to cycle between
   split sizes)
