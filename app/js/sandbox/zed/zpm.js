@@ -10,6 +10,15 @@ define(function(require, exports, module) {
         },
         uninstall: function(id, callback) {
             zpm.uninstall(id, callback);
+        },
+        update: function(id, callback) {
+            zpm.update(id, callback);
+        },
+        updateAll: function(callback) {
+            zpm.updateAll(false, callback);
+        },
+        toggleAutoUpdate: function(id, callback) {
+            zpm.toggleAutoUpdate(id, callback);
         }
     };
 });

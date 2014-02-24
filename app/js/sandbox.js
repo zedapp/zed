@@ -39,7 +39,7 @@ define(function(require, exports, module) {
             });
         });
         sandbox.addEventListener('consolemessage', function(e) {
-            console.log('sandbox logged a message: ' + e.message);
+            console.log('sandbox logged a message: ' + e.message + '. line ' + e.line);
         });
         waitingForReply = {};
         id = 0;

@@ -9,6 +9,15 @@ define(function(require, exports, module) {
         },
         uninstall: function(id, callback) {
             sandboxRequest("zed/zpm", "uninstall", [id], callback);
+        },
+        update: function(id, callback) {
+            sandboxRequest("zed/zpm", "update", [id], callback);
+        },
+        updateAll: function(callback) {
+            sandboxRequest("zed/zpm", "updateAll", [], callback);
+        },
+        toggleAutoUpdate: function(id, callback) {
+            sandboxRequest("zed/zpm", "toggleAutoUpdate", [id], callback);
         }
     };
 });
