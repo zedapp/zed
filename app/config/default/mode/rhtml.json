@@ -1,7 +1,9 @@
 {
-    "rhtml": {
-        "name": "RHTML",
-        "highlighter": "ace/mode/rhtml",
-        "extensions": ["rhtml", "html.erb"]
+    "modes": {
+        "rhtml": {
+            "name": "RHTML",
+            "highlighter": "ace/mode/rhtml",
+            "extensions": ["rhtml", "html.erb"]
+        }
     }
 }
