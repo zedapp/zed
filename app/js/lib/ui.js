@@ -28,7 +28,7 @@ define(function(require, exports, module) {
         var currentPath = options.currentPath;
 
         var edit = editor.getActiveEditor();
-        $("body").append("<div id='goto'><input type='text' id='gotoinput' placeholder='" + placeholder + "'/><div id='gotohint'></div><div id='results'>");
+        $("body").append("<div id='goto'><input type='text' id='gotoinput' spellcheck='false' autocomplete='off' placeholder='" + placeholder + "'/><div id='gotohint'></div><div id='results'>");
 
         var editorEl = $(edit.container);
         var gotoEl = $("#goto");

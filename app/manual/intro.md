@@ -11,7 +11,7 @@ Useful keys
     * In an empty box, press space to complete the directory of the currently open document.
     * Press `Up`/`Down` or `Tab`/`Shift-Tab` to walk over results
     * Pressing `Return` either opens the selected file, or creates a new file with the name you typed in if none currently exists.
-* `Command-.`/`Ctrl-.`: Run an editor command.
+* `Command-.`/`Ctrl-.`: Run an editor command (`Command-Shift.`/`Ctrl-Shift-.` to see commands as a tree).
 * `Cmd-T`/`Ctrl-T`: Show file tree (useful for exploring projects you're
   not familiar with). Keys within the tree:
     * `Up`: Move up in the tree
@@ -19,7 +19,7 @@ Useful keys
     * `Left`: Collapse node
     * `Right`: Expand node
     * `Enter`: Open file
-* `Command-F`/`Ctrl-F`: Find within file, use `Command-G`/`Ctrl-K` to find next match, or `Command-Shift-G`/`Ctrl-Shift-K` to put cursors on all.
+* `Command-F`/`Ctrl-F`: Find within file, use `Command-G`/`Ctrl-K` to find next match, or ``Ctrl-Alt-F` to put cursors on all.
 * `Command-1`/`Ctrl-1`: 1 split
 * `Command-2`/`Ctrl-2`: 2 vertical splits (press repeatedly to cycle between
   split sizes)

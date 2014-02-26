@@ -173,10 +173,7 @@ define(function(require, exports, module) {
         }
 
         if (exports.specialDocs[path]) {
-            var doc = exports.specialDocs[path];
-            var session = editor.createSession(path, doc.content);
-            session.readOnly = true;
-            session.setMode(doc.mode);
+            var session = exports.specialDocs[path];
             editor.switchSession(session, edit);
             callback && callback(null, session);
             return;
