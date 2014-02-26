@@ -25,6 +25,7 @@
         "/default/mode/plist.json",
         "/default/mode/protobuf.json",
         "/default/mode/python.json",
+        "/default/mode/rhtml.json",
         "/default/mode/ruby.json",
         "/default/mode/sh.json",
         "/default/mode/text.json",
