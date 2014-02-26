@@ -14,13 +14,13 @@ define(function(require, exports, module) {
         var parts = path.split("/");
         return parts[parts.length - 1];
     };
-    
+
     exports.ext = function(path) {
         var filename = exports.filename(path);
         var parts = filename.split('.');
         if(parts.length === 1) {
             return null;
         }
-        return parts[parts.length - 1];
+        return parts.slice(1).join(".");
     };
 });
