@@ -128,8 +128,13 @@ define(function(require, exports, module) {
             // report them as error only if code is actually invalid
             var maxErrorLevel = isValidJS(value) ? "warning" : "error";
 
+            var globals;
+            if (info.options) {
+                globals = info.options.globals;
+            }
+
             // var start = new Date();
-            lint(value, info.options);
+            lint(value, info.options, globals);
             var results = lint.errors;
 
             for (var i = 0; i < results.length; i++) {
