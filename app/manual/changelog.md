@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.9.3
+-----
+* Added RHTML mode (thanks Scott Wadden!)
+* Added the ability to add extra globals for JSHint (thanks Bartek Szopka!)
+* `zed::log` document that gives some information of what Zed is doing behind the scenes (eventually this will also contain sandbox messages).
+
 0.9.2
 -----
 * Bound `Find:All` to `Ctrl-Alt-F`
