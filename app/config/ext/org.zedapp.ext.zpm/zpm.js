@@ -1,20 +1,13 @@
-/* global $, _*/
 define(function(require, exports, module) {
     "use strict";
-    var config = require("./config");
-    var eventbus = require("./lib/eventbus");
-    var async = require("async");
+    var configfs = require("zed/config_fs");
+    var async = require("zed/lib/async");
+    var http = require("zed/http");
     
-    var extensionsFile = "/default/zpm/installed.json";
-    
-    exports.hook = function() {
-        eventbus.once("configavailable", function() {
-            exports.updateAll(true);
-        });
-    };
+    var extensionsFile = "/ext/org.zedapp.ext.zpm/data/installed.json";
+    var extensionsFolder = "/ext/";
 
     exports.getInstalledExtensions = function(callback) {
-        var configfs = config.getFs();
         configfs.readFile(extensionsFile, function(err, installed) {
             try {
                 if (err) {
@@ -30,7 +23,10 @@ define(function(require, exports, module) {
     };
     
     exports.install = function(url, callback) {
-        $.getJSON(url + "package.json", function(data) {
+        http.get(url + "package.json", "json", function(err, data) {
+            if (err) {
+                return callback("Could not download " + url + "package.json");
+            }
             exports.getInstalledExtensions(function(err, installed) {
                 if (err) {
                     return callback(err);
@@ -66,7 +62,6 @@ define(function(require, exports, module) {
                             deleteExtensionFiles(data.id, files);
                             return callback(err);
                         }
-                        var configfs = config.getFs();
                         configfs.writeFile(extensionsFile, JSON.stringify(installed, null, 4), function(err) {
                             if (err) {
                                 deleteExtensionFiles(data.id, files);
@@ -78,8 +73,6 @@ define(function(require, exports, module) {
                     });
                 });
             });
-        }).fail(function() {
-            callback("Could not download " + url + "package.json");
         });
     };
     
@@ -97,7 +90,6 @@ define(function(require, exports, module) {
                     return callback(err);
                 }
                 delete installed[id];
-                var configfs = config.getFs();
                 configfs.writeFile(extensionsFile, JSON.stringify(installed, null, 4), function(err) {
                     if (err) {
                         return callback(err);
@@ -126,7 +118,7 @@ define(function(require, exports, module) {
             }
             
             extensions[id].autoUpdate = !extensions[id].autoUpdate;
-            config.getFs().writeFile(extensionsFile, JSON.stringify(extensions, null, 4), function(err) {
+            configfs.writeFile(extensionsFile, JSON.stringify(extensions, null, 4), function(err) {
                 if (err) {
                     return callback(err);
                 }
@@ -154,8 +146,11 @@ define(function(require, exports, module) {
             if (err) {
                 return callback && callback(err);
             }
-            
-            async.each(_.pairs(extensions), function(idExtPair, next) {
+            var idExtPairs = [];
+            for (var id in extensions) {
+                idExtPairs.push([id, extensions[id]]);
+            }
+            async.each(idExtPairs, function(idExtPair, next) {
                 if (!autoUpdate || idExtPair[1].autoUpdate) {
                     update(idExtPair[0], idExtPair[1], extensions, function(err) {
                         if (err) {
@@ -171,19 +166,19 @@ define(function(require, exports, module) {
     };
     
     function downloadExtensionFiles(url, id, files, callback) {
-        var configfs = config.getFs();
-        var folder = "/" + id + "/";
+        var folder = extensionsFolder + id + "/";
         
         async.each(files, function(file, next) {
-            $.get(url + file, function(data) {
+            http.get(url + file, "text", function(err, data) {
+                if (err) {
+                    return callback("Could not download " + url + file);
+                }
                 configfs.writeFile(folder + file, data, function(err) {
                     if (err) {
                         return callback(err);
                     }
                     next();
                 });
-            }, "text").fail(function() {
-               callback("Could not download " + url + file); 
             });
         }, function() {
             callback(null);
@@ -191,8 +186,7 @@ define(function(require, exports, module) {
     }
     
     function deleteExtensionFiles(id, files, callback) {
-        var configfs = config.getFs();
-        var folder = "/" + id + "/";
+        var folder = extensionsFolder + id + "/";
         
         async.each(files, function(file, next) {
             configfs.deleteFile(folder + file, function(err) {
@@ -207,7 +201,10 @@ define(function(require, exports, module) {
     }
     
     function update(id, extension, extensions, callback) {
-        $.getJSON(extension.url + "package.json", function(data) {
+        http.get(extension.url + "package.json", "json", function(err, data) {
+            if (err) {
+                return callback("Could not download package.json");
+            }
             if (versionCompare(data.version, extension.version, {zeroExtend: true}) > 0) {
                 if (!data.files) {
                     data.files = [];
@@ -228,7 +225,9 @@ define(function(require, exports, module) {
                     if (err) {
                         return callback(err);
                     }
-                    var filesToDelete = _.difference(oldFiles, files);
+                    var filesToDelete = oldFiles.filter(function(file) {
+                        return files.indexOf(file) < 0;
+                    });
                     deleteExtensionFiles(id, filesToDelete, function(err) {
                         if (err) {
                             return callback(err);
@@ -238,24 +237,21 @@ define(function(require, exports, module) {
                                 if (err) {
                                     return callback(err);
                                 }
-                                config.getFs().writeFile(extensionsFile, JSON.stringify(extensions, null, 4), callback);
+                                configfs.writeFile(extensionsFile, JSON.stringify(extensions, null, 4), callback);
                             });
                         } else {
-                            config.getFs().writeFile(extensionsFile, JSON.stringify(extensions, null, 4), callback);
+                            configfs.writeFile(extensionsFile, JSON.stringify(extensions, null, 4), callback);
                         }
                     });
                 });
             } else {
                 callback(null);
             }
-        }).fail(function() {
-            callback("Could not download package.json");
         });
     }
     
     function apply(id, extension, callback) {
-        var configFile = "/" + id + "/" + extension.configFile;
-        var configfs = config.getFs();
+        var configFile = extensionsFolder + id + "/" + extension.configFile;
         configfs.readFile("/user.json", function(err, config_) {
             try {
                 var json = JSON.parse(config_);
@@ -268,8 +264,7 @@ define(function(require, exports, module) {
     }
     
     function unapply(id, extension, callback) {
-        var configFile = "/" + id + "/" + extension.configFile;
-        var configfs = config.getFs();
+        var configFile = extensionsFolder + id + "/" + extension.configFile;
         configfs.readFile("/user.json", function(err, config_) {
             try {
                 var json = JSON.parse(config_);
@@ -289,9 +284,8 @@ define(function(require, exports, module) {
     }
     
     function reapply(id, oldConfig, newConfig, callback) {
-        oldConfig = "/" + id + "/" + oldConfig;
-        newConfig = "/" + id + "/" + newConfig;
-        var configfs = config.getFs();
+        oldConfig = extensionsFolder + id + "/" + oldConfig;
+        newConfig = extensionsFolder + id + "/" + newConfig;
         configfs.readFile("/user.json", function(err, config_) {
             try {
                 var json = JSON.parse(config_);

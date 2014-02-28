@@ -1,0 +1,41 @@
+{
+    "modes": {
+        "installed-extensions": {
+            "name": "Installed Extensions",
+            "highlighter": "ace/mode/markdown",
+            "filenames": ["zed::zpm::installed"],
+
+            "keys": {
+                "Installed Extensions:Execute Command": "Enter"
+            },
+
+            "commands": {
+                "Installed Extensions:Execute Command": {
+                    "scriptUrl": "/ext/org.zedapp.ext.zpm/installed_extensions/execute.js"
+                }
+            },
+
+            "preferences": {
+                "showGutter": false,
+                "showPrintMargin": false
+            }
+        }
+    },
+    "commands": {
+        "Tools:Zpm:Installed Extensions": {
+            "scriptUrl": "/ext/org.zedapp.ext.zpm/installed_extensions.js",
+            "readOnly": true
+        },
+        "Tools:Zpm:Install": {
+            "scriptUrl": "/ext/org.zedapp.ext.zpm/install.js",
+            "readOnly": true
+        },
+        "Tools:Zpm:AutoUpdate": {
+            "scriptUrl": "/ext/org.zedapp.ext.zpm/auto_update.js",
+            "readOnly": true
+        }
+    },
+    "handlers": {
+        "init": ["Tools:Zpm:AutoUpdate"]
+    }
+}

@@ -1,8 +1,8 @@
 define(function(require, exports, module) {
     var session = require("zed/session");
-    var zpm = require("zed/zpm");
+    var zpm = require("configfs!./../zpm.js");
     var ui = require("zed/ui");
-    var listExtensions = require("configfs!/default/zpm/installed_extensions.js");
+    var listExtensions = require("configfs!./../installed_extensions.js");
 
     return function(info, callback) {
         var path = info.path;
@@ -22,7 +22,7 @@ define(function(require, exports, module) {
                 
                 var line = lines[pos.row];
                 if (pos.row === 3 && line === "Command: Update All") {
-                    zpm.updateAll(function(err) {
+                    zpm.updateAll(false, function(err) {
                         giveFeedback(err, "Extensions updated!");
                     });
                 } else if (line === "Commands: Uninstall      Update      Turn Off Automatic Updates" || line === "Commands: Uninstall      Update      Turn On Automatic Updates") {

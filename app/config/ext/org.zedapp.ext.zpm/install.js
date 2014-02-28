@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
     var ui = require("zed/ui");
-    var zpm = require("zed/zpm");
+    var zpm = require("configfs!./zpm.js");
 
     return function(info, callback) {
        ui.prompt("URL to install extension from:", "", 400, 150, function(err, url) {

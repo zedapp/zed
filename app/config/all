@@ -128,9 +128,13 @@
 /default/theme/xcode.css
 /default/theme/zed_dark.css
 /default/themes.json
-/default/zpm/install.js
-/default/zpm/installed.json
-/default/zpm/installed_extensions.js
 /default.json
+/ext/org.zedapp.ext.zpm/auto_update.js
+/ext/org.zedapp.ext.zpm/data/installed.json
+/ext/org.zedapp.ext.zpm/install.js
+/ext/org.zedapp.ext.zpm/installed_extensions.js
+/ext/org.zedapp.ext.zpm/installed_extensions/execute.js
+/ext/org.zedapp.ext.zpm/zpm.js
+/ext/org.zedapp.ext.zpm/zpm.json
 /README.md
 /user.json

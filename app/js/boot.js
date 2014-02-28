@@ -32,8 +32,7 @@ require(["text!../manual/intro.md"], function(introText) {
         "./dnd",
         "./handlers",
         "./fix",
-        "./theme",
-        "./zpm"
+        "./theme"
     ];
     require(modules, function() {
         var session_manager = require("./session_manager");

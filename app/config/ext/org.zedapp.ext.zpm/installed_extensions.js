@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
     var session = require("zed/session");
-    var zpm = require("zed/zpm");
+    var zpm = require("configfs!./zpm.js");
     
     return function(info, callback) {
         session.goto("zed::zpm::installed", function() {
