@@ -60,10 +60,7 @@
             "mac": "Command-Shift-G",
             "win": "Ctrl-Shift-K"
         },
-        "Find:All": {
-            "win": "Ctrl-Shift-K",
-            "mac": "Command-Shift-G"
-        },
+        "Find:All": "Ctrl-Alt-F",
         "Find:Find In Project": {
             "mac": "Command-Shift-F",
             "win": "Ctrl-Shift-F"

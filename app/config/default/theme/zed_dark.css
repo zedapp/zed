@@ -7,7 +7,7 @@
      background: #444;
  }
  .ace-zeddark {
-     background-color: #000;
+     background-color: #333;
      color: #EDEDED;
  }
  .ace-zeddark .ace_cursor {
@@ -88,7 +88,7 @@
      color:#E9C062;
  }
  .ace-zeddark .ace_comment {
-     color:#7C7C7C;
+     color:#7F7F7F;
  }
  .ace-zeddark .ace_variable {
      /*color:#C6C5FE;*/

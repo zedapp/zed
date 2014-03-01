@@ -1,6 +1,23 @@
 Changelog
 =========
 
+0.9.3
+-----
+* Added RHTML mode (thanks Scott Wadden!)
+* Added the ability to add extra globals for JSHint (thanks Bartek Szopka!)
+* `zed::log` document that gives some information of what Zed is doing behind the scenes (eventually this will also contain sandbox messages).
+
+0.9.2
+-----
+* Bound `Find:All` to `Ctrl-Alt-F`
+
+0.9.1
+-----
+* Improved intro text when first entering the Zed editor (previously the "Zed Cheatsheet"
+* Bind opening the tree to `Ctrl-T` on Linux/Windows/ChromeOS
+* Use font set in preferences for context bar end edit bar
+* Find:All command to put cursors on all instances of the current selection
+
 0.9.0
 -----
 * Theme overhaul: themes are now part of Zed itself (they were part of ACE before), created using configuration files in the Configuration project. Users can now create custom themes as well from within the Configuration project. A theme can, in theory, theme any element of the Zed UI (but for now, just theme the editor).

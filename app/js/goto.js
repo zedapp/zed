@@ -54,7 +54,7 @@ define(function(require, exports, module) {
                 });
                 updateFilteredFileCache();
                 eventbus.emit("loadedfilelist");
-            })
+            });
         });
     }
 
