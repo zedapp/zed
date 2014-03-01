@@ -52,7 +52,7 @@ define(function(require, exports, module) {
 
     function saveSession(session) {
         var path = session.filename;
-        if(!path || !session.dirty) {
+        if (!path || !session.dirty) {
             return;
         }
         // If this is a new file, this is the moment that it's going to
@@ -74,7 +74,7 @@ define(function(require, exports, module) {
             }
         });
     }
-    
+
     exports.saveSession = saveSession;
 
     // TODO: Move this to state.js?
@@ -130,34 +130,59 @@ define(function(require, exports, module) {
     /**
      * Reloads a file when it has been changed on disk (observed by a file watcher)
      */
-    function handleChangedFile(path) {
+    function handleChangedFile(path, ask) {
         var session = sessions[path];
         if (!session) {
             return;
         }
-        project.readFile(path, function(err, text) {
-            if (err) {
-                return console.error("Could not load file:", path);
+        ui.prompt({
+            message: "File '" + path + "' changed on disk, reload (Ok) or keep original (Cancel)?"
+        }, function(err, yes) {
+            if (yes) {
+                project.readFile(path, function(err, text) {
+                    if (err) {
+                        return console.error("Could not load file:", path);
+                    }
+                    session.ignoreChange = true;
+
+                    // Save scroll/cursor state
+                    var scrollTop = session.getScrollTop();
+                    var scrollLeft = session.getScrollLeft();
+                    var cursorPos = session.selection.getCursor();
+
+                    var lineCount = session.getLength();
+                    var range = new Range(0, 0, lineCount, session.getLine(lineCount - 1).length);
+
+                    session.replace(range, text);
+
+                    // Restore
+                    session.selection.clearSelection();
+                    session.selection.moveCursorToPosition(cursorPos);
+                    session.setScrollTop(scrollTop);
+                    session.setScrollLeft(scrollLeft);
+
+                    session.ignoreChange = false;
+                });
+            } else {
+                // Create backup of changed file on disk
+                project.readFile(path, function(err, text) {
+                    if (err) {
+                        return console.error("Could not load file:", path);
+                    }
+                    project.writeFile(path + ".bak", text, function(err) {
+                        if(err) {
+                            return console.error("Could not write backup file", path + ".bak");
+                        }
+                        project.writeFile(path, session.getValue(), function(err) {
+                            if(err) {
+                                return console.error("Could not write local copy to", path);
+                            }
+                            console.log("Did not reload file, saved backup of disk-version in", path + ".bak");
+                        });
+                    });
+                });
             }
-            session.ignoreChange = true;
 
-            // Save scroll/cursor state
-            var scrollTop = session.getScrollTop();
-            var scrollLeft = session.getScrollLeft();
-            var cursorPos = session.selection.getCursor();
-
-            var lineCount = session.getLength();
-            var range = new Range(0, 0, lineCount, session.getLine(lineCount - 1).length);
-
-            session.replace(range, text);
-
-            // Restore
-            session.selection.clearSelection();
-            session.selection.moveCursorToPosition(cursorPos);
-            session.setScrollTop(scrollTop);
-            session.setScrollLeft(scrollLeft);
-
-            session.ignoreChange = false;
         });
     }
 
