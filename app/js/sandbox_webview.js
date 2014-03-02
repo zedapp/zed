@@ -67,3 +67,26 @@ window.addEventListener('message', function(event) {
         });
     });
 });
+
+// Override console.log etc
+
+var oldLog = console.log;
+var oldWarn = console.warn;
+var oldError = console.info;
+var oldInfo = console.info;
+var noop = function() {};
+window.console.log = log("log", oldLog);
+window.console.warn = log("warn", oldWarn);
+window.console.error = log("error", oldError);
+window.console.info = log("info", oldInfo);
+
+window.addEventListener("error", function(err) {
+    log("error", noop)(err.message, err.filename, err.lineno, err.stack);
+});
+
+function log(level, oldFn) {
+    return function() {
+        oldFn.apply(console, arguments);
+        sandboxRequest("zed/log", "log", [level, Array.prototype.slice.call(arguments, 0)], function(){});
+    };
+}
