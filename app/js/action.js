@@ -5,9 +5,9 @@ define(function(require, exports, module) {
     var runSessionHandler = require("./handlers").runSessionHandler;
     var eventbus = require("./lib/eventbus");
 
-    function showFixes(edit, fixes) {
+    function showActions(edit, actions) {
         var popup = new AcePopup(document.body || document.documentElement);
-        $(popup.container).addClass("fixbox");
+        $(popup.container).addClass("actionbox");
         var keyboardHandler = new HashHandler();
         keyboardHandler.bindKeys({
             "Up": function(editor) {
@@ -24,7 +24,7 @@ define(function(require, exports, module) {
             }
         });
 
-        popup.setData(fixes);
+        popup.setData(actions);
         show();
 
         function show() {
@@ -51,9 +51,9 @@ define(function(require, exports, module) {
         }
 
         function runFix() {
-            var fix = popup.getData(popup.getRow());
+            var action = popup.getData(popup.getRow());
             close();
-            fix.onSelect(edit);
+            action.onSelect(edit);
         }
 
         function init() {
@@ -110,7 +110,7 @@ define(function(require, exports, module) {
     function handlerResultToFixResult(result) {
         return {
             caption: result.caption,
-            meta: "fix",
+            meta: "action",
             onSelect: function(edit) {
                 var session = edit.getSession();
                 // SUPER ugly hack to pass in additional info to the command
@@ -120,16 +120,16 @@ define(function(require, exports, module) {
         };
     }
 
-    command.define("Tools:Fix", {
+    command.define("Tools:Action", {
         exec: function(edit, session) {
-            runSessionHandler(session, "fix", null, function(err, results) {
+            runSessionHandler(session, "action", null, function(err, results) {
                 if (err) {
-                    return console.error("Error running fix", err);
+                    return console.error("Error running action", err);
                 }
                 if (results.length > 0) {
-                    showFixes(edit, results.map(handlerResultToFixResult));
+                    showActions(edit, results.map(handlerResultToFixResult));
                 } else {
-                    eventbus.emit("sessionactivityfailed", session, "No fixes available");
+                    eventbus.emit("sessionactivityfailed", session, "No actions available");
                 }
             });
 
