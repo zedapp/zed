@@ -1,6 +1,8 @@
+/*global define, _*/
 define(function(require, exports, module) {
     var editor = require("../../editor");
     var config = require("../../config");
+    var session_manager = require("../../session_manager");
 
     return {
         getPreference: function(preference, callback) {

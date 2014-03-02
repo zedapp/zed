@@ -122,7 +122,6 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         eventbus.once("configchanged", function() {
-            console.log("configchanged - init");
             runHandler("init");
         });
         eventbus.on("sessionchanged", function(session) {

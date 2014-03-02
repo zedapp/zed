@@ -1,3 +1,4 @@
+/*global define*/
 define(function(require, exports, module) {
     "use strict";
     var configfs = require("zed/config_fs");
@@ -200,15 +201,37 @@ define(function(require, exports, module) {
         });
     }
     
+    function copyFiles(folder, newFolder, files, callback) {
+        folder += "/";
+        newFolder += "/";
+        async.each(files, function(file, next) {
+            configfs.readFile(folder + file, function(err, content) {
+                if (err) {
+                    return callback(err);
+                }
+                configfs.writeFile(newFolder + file, content, function(err) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    next();
+                });
+            });
+        }, function() {
+            callback && callback(null);
+        });
+    }
+    
     function update(id, extension, extensions, callback) {
         http.get(extension.url + "package.json", "json", function(err, data) {
             if (err) {
                 return callback("Could not download package.json");
             }
             if (versionCompare(data.version, extension.version, {zeroExtend: true}) > 0) {
+                console.log('updating');
                 if (!data.files) {
                     data.files = [];
                 }
+                var folder = extensionsFolder + id;
                 var oldFiles = extension.files.slice(0);
                 oldFiles.push(extension.configFile);
                 var oldConfigFile = extension.configFile;
@@ -221,27 +244,60 @@ define(function(require, exports, module) {
                 
                 var files = data.files.slice(0);
                 files.push(data.configFile);
-                downloadExtensionFiles(extension.url, id, files, function(err) {
+                downloadExtensionFiles(extension.url, id + ".update", files, function(err) {
                     if (err) {
+                        deleteExtensionFiles(id + ".update", files);
                         return callback(err);
                     }
-                    var filesToDelete = oldFiles.filter(function(file) {
-                        return files.indexOf(file) < 0;
-                    });
-                    deleteExtensionFiles(id, filesToDelete, function(err) {
+                    copyFiles(folder, folder + ".old", oldFiles, function(err) {
                         if (err) {
+                            deleteExtensionFiles(id + ".old", oldFiles);
+                            deleteExtensionFiles(id + ".update", files);
                             return callback(err);
                         }
-                        if (oldConfigFile !== data.configFile) {
-                            reapply(id, oldConfigFile, data.configFile, function(err) {
-                                if (err) {
-                                    return callback(err);
-                                }
-                                configfs.writeFile(extensionsFile, JSON.stringify(extensions, null, 4), callback);
+                        
+                        copyFiles(folder + ".update", folder, files, function(err) {
+                            function rollback(err) {
+                                copyFiles(folder + ".old", folder, oldFiles, function() {
+                                    deleteExtensionFiles(id + ".update", files);
+                                    deleteExtensionFiles(id + ".old", oldFiles);
+                                    callback(err);
+                                });
+                            }
+                            if (err) {
+                                return rollback(err);
+                            }
+                            
+                            var filesToDelete = oldFiles.filter(function(file) {
+                                return files.indexOf(file) < 0;
                             });
-                        } else {
-                            configfs.writeFile(extensionsFile, JSON.stringify(extensions, null, 4), callback);
-                        }
+                            if (oldConfigFile !== data.configFile) {
+                                reapply(id, oldConfigFile, data.configFile, function(err) {
+                                    if (err) {
+                                        return rollback(err);
+                                    }
+                                    configfs.writeFile(extensionsFile, JSON.stringify(extensions, null, 4), function(err) {
+                                        if (err) {
+                                            return rollback(err);
+                                        }
+                                        deleteExtensionFiles(id + ".update", files);
+                                        deleteExtensionFiles(id + ".old", oldFiles);
+                                        deleteExtensionFiles(id, filesToDelete);
+                                        callback(null);
+                                    });
+                                });
+                            } else {
+                                configfs.writeFile(extensionsFile, JSON.stringify(extensions, null, 4), function(err) {
+                                    if (err) {
+                                        return rollback(err);
+                                    }
+                                    deleteExtensionFiles(id + ".update", files);
+                                    deleteExtensionFiles(id + ".old", oldFiles);
+                                    deleteExtensionFiles(id, filesToDelete);
+                                    callback(null);
+                                });
+                            }
+                        });
                     });
                 });
             } else {

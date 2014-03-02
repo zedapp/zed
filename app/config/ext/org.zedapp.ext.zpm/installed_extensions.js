@@ -14,7 +14,7 @@ define(function(require, exports, module) {
                     return;
                 }
                 session.setText("zed::zpm::installed", "This is a list of your installed extensions. \nPut your cursor on a command and press Enter to execute it.\n", function() {});
-                append("\nCommand: Update All\n");
+                append("\nCommands: [Install New]      [Update All]\n");
                 var extension;
                 for (var id in extensions) {
                     extension = extensions[id];
@@ -23,11 +23,11 @@ define(function(require, exports, module) {
                     append("Version: " + extension.version + "\n");
                     append("URL: " + extension.url + "\n");
                     append("Description: " + extension.description + "\n");
-                    append("Commands: Uninstall      Update      ");
+                    append("Commands: [Uninstall]      [Update]      ");
                     if (extension.autoUpdate) {
-                        append("Turn Off Automatic Updates\n");
+                        append("[Turn Off Automatic Updates]\n");
                     } else {
-                        append("Turn On Automatic Updates\n");
+                        append("[Turn On Automatic Updates]\n");
                     }
                 }
                 session.setCursorPosition("zed::zpm::installed", {
