@@ -25,11 +25,11 @@ define(function(require, exports, module) {
                         var wordRange = {
                             start: {
                                 row: cursorPos.row,
-                                column: null
+                                column: 0
                             },
                             end: {
                                 row: cursorPos.row,
-                                column: null
+                                column: line.length
                             }
                         };
                         // Find word beginning
