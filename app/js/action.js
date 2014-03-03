@@ -1,3 +1,4 @@
+/*global $, define*/
 define(function(require, exports, module) {
     var command = require("./command");
     var AcePopup = require("ace/autocomplete/popup").AcePopup;
@@ -5,27 +6,43 @@ define(function(require, exports, module) {
     var runSessionHandler = require("./handlers").runSessionHandler;
     var eventbus = require("./lib/eventbus");
 
-    function showActions(edit, actions) {
+    function showActions(edit, session) {
         var popup = new AcePopup(document.body || document.documentElement);
         $(popup.container).addClass("actionbox");
         var keyboardHandler = new HashHandler();
         keyboardHandler.bindKeys({
-            "Up": function(editor) {
+            "Up": function() {
                 go("up");
             },
-            "Down": function(editor) {
+            "Down": function() {
                 go("down");
             },
-            "Esc": function(editor) {
+            "Esc": function() {
                 close();
             },
-            "Return": function(editor) {
+            "Return": function() {
                 runFix();
             }
         });
 
-        popup.setData(actions);
+        //popup.setData(actions);
+        popup.setData([{
+            caption: "Loading..."
+        }]);
         show();
+        runSessionHandler(session, "action", null, function(err, results) {
+            if (err) {
+                return console.error("Error running action", err);
+            }
+            if (results.length > 0) {
+                popup.setData(results.map(handlerResultToFixResult));
+            } else {
+                popup.setData([{caption: "No actions available."}]);
+                setTimeout(function() {
+                    close();
+                }, 1000);
+            }
+        });
 
         function show() {
             var renderer = edit.renderer;
@@ -122,17 +139,7 @@ define(function(require, exports, module) {
 
     command.define("Tools:Action", {
         exec: function(edit, session) {
-            runSessionHandler(session, "action", null, function(err, results) {
-                if (err) {
-                    return console.error("Error running action", err);
-                }
-                if (results.length > 0) {
-                    showActions(edit, results.map(handlerResultToFixResult));
-                } else {
-                    eventbus.emit("sessionactivityfailed", session, "No actions available");
-                }
-            });
-
+            showActions(edit, session);
         }
     });
 });
