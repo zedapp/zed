@@ -1,6 +1,7 @@
 {
     "imports": [
-        "/default.json"
+        "/default.json",
+        "/ext/org.zedapp.ext.zpm/zpm.json"
     ],
     "preferences": {},
     "modes": {},

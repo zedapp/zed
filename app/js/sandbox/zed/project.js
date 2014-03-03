@@ -2,6 +2,7 @@ define(function(require, exports, module) {
     var project = require("../../project");
     var goto = require("../../goto");
     var eventbus = require("../../lib/eventbus");
+    var options = require("../../lib/options");
     return {
         readFile: function(path, callback) {
             project.readFile(path, function(err, text) {
@@ -31,6 +32,16 @@ define(function(require, exports, module) {
         },
         listFiles: function(callback) {
             callback(null, goto.getFileCache());
+        },
+        reloadFileList: function(callback) {
+            callback(null, goto.fetchFileList());
+        },
+        isConfig: function(callback) {
+            if (options.get("url").indexOf("config:") === 0) {
+                callback(null, true);
+            } else {
+                callback(null, false);
+            }
         }
     };
 });
