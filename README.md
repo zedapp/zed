@@ -7,7 +7,7 @@ Welcome to [Zed](http://zedapp.org), a code editor built using web technologies,
 * Always visible file tree
 * Menus and buttons and bells and whistles
 
-What you get instead is a bare bones, simple yet powerful editor that focusses on what matters most: making you as productive at editing code and text as possible. To enable this, Zed has:
+What you get instead is a bare bones, simple yet powerful editor that focuses on what matters most: making you as productive at editing code and text as possible. To enable this, Zed has:
 
 * Multiple cursors. Once mastered, you will never edit code the same way again.
 * Code completion based on symbols defined in your project, current file and
