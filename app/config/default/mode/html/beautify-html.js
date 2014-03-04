@@ -36,8 +36,6 @@
     });
 */
 
-define(function(require, exports, module) {
-
 module.exports = style_html;
 
 
@@ -577,5 +575,3 @@ function style_html(html_source, options) {
   }
   return multi_parser.output.join('');
 }
-
-});

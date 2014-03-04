@@ -84,17 +84,21 @@ define(function(require, exports, module) {
         eventbus.on("configchanged", function(config) {
             var fontSize = config.getPreference("fontSize");
             var fontFamily = config.getPreference("fontFamily");
-            editor.getEditors(true).forEach(function(edit) {
+            var editors = editor.getEditors(true);
+            editors.forEach(function(edit) {
                 var pathEl = edit.editbarEl.find(".path");
                 pathEl.css("font-size", fontSize + "px")
                       .css("font-family", fontFamily);
                 edit.editbarEl.find(".info").css("font-size", (fontSize - 3) + "px")
                                             .css("font-family", fontFamily);
-                setTimeout(function() {
-                    $(edit.container).css("bottom", (pathEl.outerHeight(true) + 13) + "px");
-
-                });
             });
+            setTimeout(function() {
+                var pathEl = editors[0].editbarEl.find(".path");
+                editors.forEach(function(edit) {
+                    $(edit.container).css("bottom", (pathEl.outerHeight(true) + 13) + "px");
+                    edit.resize();
+                });
+            }, 200);
         });
     };
 

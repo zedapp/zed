@@ -98,20 +98,15 @@ Preferences
 -----------
 Preferences can be set in multiple ways:
 
-* Using commands, e.g. "Configuration:Preferences:Toggle Context Bar", these
-  will automatically update the value in your /user.json file.
+* Using commands, e.g. "Configuration:Preferences:Toggle Context Bar", these will automatically update the value in your /user.json file.
 * By editing them by hand in your configuration JSON file
 
-All available preferences and their default values can be found in the
-/default/preferences.json file in the Configuration project. They can all
-be overridden in your /user.json or zedconfig.json file or any file you
-import from there.
+All available preferences and their default values can be found in the /default/preferences.json file in the Configuration project. They can all be overridden in your /user.json or zedconfig.json file or any file you import from there.
 
 Modes
 -----
 
-Zed comes with a number of language-modes. These modes can be extended
-arbitrarily by adding to the "modes" section of a configuration.
+Zed comes with a number of language-modes. These modes can be extended arbitrarily by adding to the "modes" section of a configuration.
 
 Let's start with a simple new "zed" mode:
 
@@ -163,9 +158,7 @@ As can be seen, in a mode we can define a few things:
 Commands
 --------
 
-In this section you can define custom commands. Each command is mapped to a
-JavaScript require.js module that is to return a simple function taking two
-arguments: options, and a callback to be called when completed.
+In this section you can define custom commands. Each command is mapped to a JavaScript CommonJS module that is to return a simple function taking two arguments: options, and a callback to be called when completed.
 
 Let's look at an example config:
 
@@ -178,62 +171,45 @@ Let's look at an example config:
         }
     }
 
-The scriptUrl specified can be any require.js module, loaded from anywhere
-(e.g. http, https). If the URL starts with a slash, it is assumed to
-be located in the Configuration project itself.
+The scriptUrl specified can be any CommonJS module, loaded from anywhere (e.g. http, https). If the URL starts with a slash, it is assumed to be located in the Configuration project itself.
 
-In our Configuration project we create a JavaScript file
-/user/command/summarize.js as follows to implement this command:
+In our Configuration project we create a JavaScript file /user/command/summarize.js as follows to implement this command:
 
-    define(function(require, exports, module) {
-        var session = require("zed/session");
+    var session = require("zed/session");
 
-        return function(options, callback) {
-            var text = "Zed is cool";
+    module.exports = function(options, callback) {
+        var text = "Zed is cool";
 
-            if(options.length === "long") {
-                text = "Zed is super duper cool!";
-            }
-            session.setText(options.path, text, callback);
-        };
-    });
+        if(options.length === "long") {
+            text = "Zed is super duper cool!";
+        }
+        session.setText(options.path, text, callback);
+    };
 
-This defines a simple require.js module that imports one of Zed's sandbox
-APIs (sandbox.md) named "zed/session", which gives you access to open sessions
-(files). The module exports (returns) a function taking two arguments:
+This defines a simple CommonJS module that imports one of Zed's sandbox APIs (sandbox.md) named "zed/session", which gives you access to open sessions (files). The module exports (returns) a function taking two arguments:
 
 * options: which contains everything specified in the body of the command spec,
   so in this case: a "scriptUrl" and "length" key, as well as an extra "path"
   key that specifies the path of the currently active file.
 * callback: which should be called when the command has done its work.
 
-Commands are run in the Zed Sandbox (sandbox.md), which is running in a separate
-process for safety and safe code reloading reasons. As a result, you do not have
-access to all built-in Zed's core APIs. However, there is a growing number of
-specific APIs exposed to you (like the zed/session API in the example), check
-sandbox.md for more information.
+Commands are run in the Zed Sandbox (sandbox.md), which is running in a separate process for safety and safe code reloading reasons. As a result, you do not have access to all built-in Zed's core APIs. However, there is a growing number of specific APIs exposed to you (like the zed/session API in the example), check sandbox.md for more information.
 
-If you make changes to your command's JavaScript and would like to reload,
-you can do so by running the "Sandbox:Reset" command.
+If you make changes to your command's JavaScript and would like to reload, you can do so by running the "Sandbox:Reset" command.
 
-For inspiration, it's useful to have a look at the commands defined under
-/default/mode/* in the Configuration project. Here you'll see that many of
-the features of Zed are implemented as sandboxed custom commands:
+For inspiration, it's useful to have a look at the commands defined under /default/mode/* in the Configuration project. Here you'll see that many of the features of Zed are implemented as sandboxed custom commands:
 
 * On-the-fly checking of code (e.g. using jshint for JavaScript)
 * Code beautification
 * Preview rendering
 * CTag providers
 
-In fact, concepts like "checking" and "beautification" are not built-in Zed
-features at all, they're 100% defined using custom mode-specific sandboxed
-commands.
+In fact, concepts like "checking" and "beautification" are not built-in Zed features at all, they're 100% defined using custom mode-specific sandboxed commands.
 
 Keys
 ----
 
-Keys specifications specify command name to keyboard shortcut mappings. Let's
-look at a snippet from /default/keys.json:
+Keys specifications specify command name to keyboard shortcut mappings. Let's look at a snippet from /default/keys.json:
 
     {
         "keys": {
@@ -245,11 +221,7 @@ look at a snippet from /default/keys.json:
         }
     }
 
-The format is simple: the command names (either built-in or custom) are the
-keys, the values are either a shortcut key string, or if you want to have
-specific version for Mac and non-Mac platforms, a "mac" and "win" (which is
-also used for Linux) key. To provide multiple options, separate them with a
-pipe (|).
+The format is simple: the command names (either built-in or custom) are the keys, the values are either a shortcut key string, or if you want to have specific version for Mac and non-Mac platforms, a "mac" and "win" (which is also used for Linux) key. To provide multiple options, separate them with a pipe (|).
 
 Modifier keys that are supported:
 

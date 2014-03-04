@@ -1,6 +1,4 @@
 // Source: https://github.com/cfinke/Typo.js
-define(function(require, exports, module) {
-    
 
 'use strict';
 
@@ -769,6 +767,4 @@ Typo.prototype = {
 	}
 };
 
-return Typo;
-
-});
+module.exports = Typo;

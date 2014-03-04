@@ -38,6 +38,9 @@ define(function(require, exports, module) {
                 code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js")
             });
         });
+        sandbox.addEventListener('consolemessage', function(e) {
+            console.log('[Sandbox]: ' + e.message + ' (line: ' + e.line + ')');
+        });
         waitingForReply = {};
         id = 0;
     }
@@ -134,12 +137,12 @@ define(function(require, exports, module) {
             }, '*');
         }
     };
-    
+
     command.define("Sandbox:Reset", {
         exec: resetSandbox,
         readOnly: true
     });
-    
+
     command.define("Sandbox:Show", {
         exec: function() {
             sandboxEl.css("left", "50px");
