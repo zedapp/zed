@@ -293,7 +293,9 @@ define(function(require, exports, module) {
 
         editor.getActiveEditor().blur();
         dialogEl.focus();
-        $("body").bind("keyup", keyHandler);
+        setTimeout(function() {
+            $("body").bind("keyup", keyHandler);
+        }, 100);
 
         function keyHandler(event) {
             switch (event.keyCode) {

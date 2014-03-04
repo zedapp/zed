@@ -9,11 +9,29 @@ define(function(require, exports, module) {
         // As syncfs does not yet support creating directories, we'll use it as a flat namespace
         // https://groups.google.com/a/chromium.org/forum/#!topic/chromium-apps/v-uK6IPOCE8
         function decodePath(path) {
+            path = normalizePath(path);
             return "/" + path.substring(namespace.length).replace(/\|/g, "/");
         }
 
         function encodePath(path) {
+            path = normalizePath(path);
             return namespace + path.substring(1).replace(/\//g, "|", path);
+        }
+
+        function normalizePath(path) {
+            path = path.replace(/\/\/+/g, '/');
+            var parts = path.split('/');
+            for (var i = 0; i < parts.length; i++) {
+                var el = parts[i];
+                if (el === ".") {
+                    parts.splice(i, 1);
+                    i--;
+                } else if (el == "..") {
+                    parts.splice(i - 1, 2);
+                    i -= 2;
+                }
+            }
+            return parts.join('/');
         }
 
         function wrapFilesystem(root) {
@@ -120,7 +138,7 @@ define(function(require, exports, module) {
             if (!fs) {
                 // Fallback to non-sync filesystem
                 console.log("Failed to get a sync file system, going to request a local filesystem instead.");
-                (window.requestFileSystem || window.webkitRequestFileSystem)(window.PERSISTENT, 100*1024*1024, function(fs) {
+                (window.requestFileSystem || window.webkitRequestFileSystem)(window.PERSISTENT, 100 * 1024 * 1024, function(fs) {
                     console.log("Successfully obtained a local file system!");
                     wrapFilesystem(fs.root);
                 }, function(err) {
@@ -130,7 +148,7 @@ define(function(require, exports, module) {
                         ui.prompt({
                             message: "Your Chrome does not seem to support local file systems, nor sync file systems, we need this to operate."
                         });
-                    });    
+                    });
                 });
             } else {
                 wrapFilesystem(fs.root);

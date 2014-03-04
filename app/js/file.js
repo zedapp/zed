@@ -7,6 +7,8 @@ define(function(require, exports, module) {
     var command = require("./command");
     var project = require("./project");
     var session_manager = require("./session_manager");
+    var goto = require("./goto");
+    var async = require("async");
 
     function confirmDelete(edit) {
         var path = edit.getSession().filename;
@@ -36,7 +38,7 @@ define(function(require, exports, module) {
             if (newPath) {
                 eventbus.emit("sessionactivitystarted", edit.getSession(), "Renaming");
                 project.writeFile(newPath, session.getValue(), function(err) {
-                    if(err) {
+                    if (err) {
                         return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not write to file: " + err);
                     }
                     // TODO: Copy session state
@@ -68,5 +70,38 @@ define(function(require, exports, module) {
                 renameFile(edit);
             }, 0);
         }
+    });
+
+    command.define("File:Delete Tree", {
+        exec: function() {
+            setTimeout(function() {
+                ui.prompt({
+                    message: "Prefix of tree to delete:",
+                    input: ""
+                }, function(err, prefix) {
+                    if (prefix) {
+                        ui.prompt({
+                            message: "Are you sure you want to delete all files under " + prefix + "?"
+                        }, function(err, yes) {
+                            if(!yes) {
+                                return;
+                            }
+                            project.listFiles(function(err, files) {
+                                files = _.filter(files, function(path) {
+                                    return path.indexOf(prefix) === 0;
+                                });
+                                async.each(files, function(path, next) {
+                                    project.deleteFile(path, next);
+                                }, function() {
+                                    goto.fetchFileList();
+                                    console.log("All files under", prefix, "removed!");
+                                });
+                            });
+                        });
+                    }
+                });
+            });
+        },
+        readOnly: true
     });
 });

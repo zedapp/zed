@@ -13,6 +13,7 @@ define(function(require, exports, module) {
     var locator = require("./lib/locator");
     var ui = require("./lib/ui");
     var command = require("./command");
+    var options = require("./lib/options");
 
     eventbus.declare("switchsession");
     eventbus.declare("newfilecreated");
@@ -22,6 +23,7 @@ define(function(require, exports, module) {
     eventbus.declare("sessionsaved");
     eventbus.declare("sessionchanged");
     eventbus.declare("allsessionsloaded");
+    eventbus.declare("inited");
 
     var sessions = {};
 
@@ -135,34 +137,15 @@ define(function(require, exports, module) {
         if (!session) {
             return;
         }
+        // Don't do the asking for a reload dance when this is the config project
+        if(options.get("url").indexOf("config:") === 0) {
+            return reloadFile();
+        }
         ui.prompt({
             message: "File '" + path + "' changed on disk, reload (Ok) or keep original (Cancel)?"
         }, function(err, yes) {
             if (yes) {
-                project.readFile(path, function(err, text) {
-                    if (err) {
-                        return console.error("Could not load file:", path);
-                    }
-                    session.ignoreChange = true;
-
-                    // Save scroll/cursor state
-                    var scrollTop = session.getScrollTop();
-                    var scrollLeft = session.getScrollLeft();
-                    var cursorPos = session.selection.getCursor();
-
-                    var lineCount = session.getLength();
-                    var range = new Range(0, 0, lineCount, session.getLine(lineCount - 1).length);
-
-                    session.replace(range, text);
-
-                    // Restore
-                    session.selection.clearSelection();
-                    session.selection.moveCursorToPosition(cursorPos);
-                    session.setScrollTop(scrollTop);
-                    session.setScrollLeft(scrollLeft);
-
-                    session.ignoreChange = false;
-                });
+                reloadFile();
             } else {
                 // Create backup of changed file on disk
                 project.readFile(path, function(err, text) {
@@ -170,11 +153,11 @@ define(function(require, exports, module) {
                         return console.error("Could not load file:", path);
                     }
                     project.writeFile(path + ".bak", text, function(err) {
-                        if(err) {
+                        if (err) {
                             return console.error("Could not write backup file", path + ".bak");
                         }
                         project.writeFile(path, session.getValue(), function(err) {
-                            if(err) {
+                            if (err) {
                                 return console.error("Could not write local copy to", path);
                             }
                             console.log("Did not reload file, saved backup of disk-version in", path + ".bak");
@@ -184,6 +167,33 @@ define(function(require, exports, module) {
             }
 
         });
+
+        function reloadFile() {
+            project.readFile(path, function(err, text) {
+                if (err) {
+                    return console.error("Could not load file:", path);
+                }
+                session.ignoreChange = true;
+
+                // Save scroll/cursor state
+                var scrollTop = session.getScrollTop();
+                var scrollLeft = session.getScrollLeft();
+                var cursorPos = session.selection.getCursor();
+
+                var lineCount = session.getLength();
+                var range = new Range(0, 0, lineCount, session.getLine(lineCount - 1).length);
+
+                session.replace(range, text);
+
+                // Restore
+                session.selection.clearSelection();
+                session.selection.moveCursorToPosition(cursorPos);
+                session.setScrollTop(scrollTop);
+                session.setScrollLeft(scrollLeft);
+
+                session.ignoreChange = false;
+            });
+        }
     }
 
     /**
@@ -317,6 +327,7 @@ define(function(require, exports, module) {
         ui.blockUI("Loading project and file list. One moment please...");
 
         async.waitForEvents(eventbus, ["loadedfilelist", "stateloaded", "configchanged"], function() {
+            eventbus.emit("inited");
             ui.unblockUI();
         });
 
