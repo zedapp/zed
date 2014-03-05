@@ -193,7 +193,7 @@ exports.installAll = function(callback) {
                 if (err) {
                     return console.error("Error installing packages", err);
                 }
-                callback(null, notYetInstalled.length > true);
+                callback(null, notYetInstalled.length > 0);
             });
         });
     });
