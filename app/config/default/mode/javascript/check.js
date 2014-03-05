@@ -101,7 +101,7 @@ module.exports = function(info, callback) {
         // var start = new Date();
         lint(value, info.options, globals);
         var results = lint.errors;
-
+        
         for (var i = 0; i < results.length; i++) {
             var error = results[i];
             if (!error) continue;
@@ -130,6 +130,14 @@ module.exports = function(info, callback) {
             }
 
             var line = lines[error.line - 1];
+            
+            if (line) {
+                var match = line.match(/\t/g);
+                if (match) {
+                    error.character -= (match.length * 3);
+                }
+            }
+            
             var pos = findIdentifierRange(line, error.character - 1);
             // console.log("Error", error, pos);
 
