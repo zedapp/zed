@@ -108,7 +108,6 @@ define(function(require, exports, module) {
 
         var stateJSON = state.toJSON();
         if (stateJSON !== oldstateJSON) {
-            console.log("Saving state.");
             state.save();
         }
 
