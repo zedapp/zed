@@ -21,6 +21,7 @@
         "/default/mode/lua.json",
         "/default/mode/markdown.json",
         "/default/mode/nix.json",
+        "/default/mode/perl.json",
         "/default/mode/php.json",
         "/default/mode/plist.json",
         "/default/mode/protobuf.json",

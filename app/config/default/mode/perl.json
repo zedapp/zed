@@ -1,0 +1,9 @@
+{
+    "modes": {
+        "perl": {
+            "name": "Perl",
+            "highlighter": "ace/mode/perl",
+            "extensions": ["pl", "pm"]
+        }
+    }
+}
