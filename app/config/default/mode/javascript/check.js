@@ -132,9 +132,12 @@ module.exports = function(info, callback) {
             var line = lines[error.line - 1];
             
             if (line) {
+                // JSHint automatically converts tabs (\t) into 4 characters,
+                // whereas in the source file it's only one, so let's remove
+                // all "bonus" spaces (3 per tab) from the character position.
                 var match = line.match(/\t/g);
                 if (match) {
-                    error.character -= (match.length * 3);
+                    error.character -= match.length * 3;
                 }
             }
             
