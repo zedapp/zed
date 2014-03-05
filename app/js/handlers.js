@@ -55,7 +55,7 @@ define(function(require, exports, module) {
                 });
             });
             if (waitingFor === 0) {
-                callback(null, results);
+                _.isFunction(callback) && callback(null, results);
             }
         }
 
@@ -71,6 +71,7 @@ define(function(require, exports, module) {
             }
             return true;
         } else {
+            _.isFunction(callback) && callback();
             return false;
         }
     }

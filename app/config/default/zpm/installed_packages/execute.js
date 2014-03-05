@@ -26,7 +26,7 @@ return function(info, callback) {
             function reloadConfig() {
                 project.isConfig(function(err, isConfig) {
                     if (isConfig) {
-                        project.reloadConfig();
+                        project.reloadFileList();
                     }
                     config.reload();
                 });
