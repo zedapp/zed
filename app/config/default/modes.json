@@ -27,6 +27,7 @@
         "/default/mode/python.json",
         "/default/mode/rhtml.json",
         "/default/mode/ruby.json",
+        "/default/mode/sass.json",
         "/default/mode/sh.json",
         "/default/mode/text.json",
         "/default/mode/xml.json",
