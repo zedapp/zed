@@ -55,8 +55,12 @@ return function(info, callback) {
                     zpm.uninstall(id, function(err) {
                         if (!err) {
                             reloadConfig();
+                            zpm.removeFromConfig(id, function(err) {
+                                giveFeedback(err, "Extension uninstalled!");
+                            });
+                        } else {
+                            giveFeedback(err);
                         }
-                        giveFeedback(err, "Extension uninstalled!");
                     });
                 } else if (pos.column >= 27 && pos.column <= 35) {
                     zpm.update(id, function(err) {

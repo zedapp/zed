@@ -167,7 +167,7 @@ exports.updateAll = function(autoUpdate, callback) {
                     if (err) {
                         return callback && callback(err);
                     }
-                    if(updated) {
+                    if (updated) {
                         anyUpdates = true;
                     }
                     next();
@@ -321,6 +321,41 @@ function update(uri, pkg, packages, callback) {
         }
     });
 }
+
+
+exports.addToConfig = function(uri, callback) {
+    configfs.readFile("/user.json", function(err, config_) {
+        try {
+            var json = JSON.parse(config_);
+            if(!json.packages) {
+                json.packages = [];
+            }
+            json.packages.push(uri);
+            configfs.writeFile("/user.json", JSON.stringify(json, null, 4), callback);
+        } catch (e) {
+            callback(e);
+        }
+    });
+};
+
+exports.removeFromConfig = function (uri, callback) {
+    configfs.readFile("/user.json", function(err, config_) {
+        try {
+            var json = JSON.parse(config_);
+            var index = json.packages.indexOf(uri);
+            if (index > -1) {
+                json.packages.splice(index, 1);
+                configfs.writeFile("/user.json", JSON.stringify(json, null, 4), function(err) {
+                    callback && callback(err);
+                });
+            } else {
+                callback && callback();
+            }
+        } catch (e) {
+            callback && callback(e);
+        }
+    });
+};
 
 /**
  * Code taken from:
