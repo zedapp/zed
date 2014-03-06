@@ -39,6 +39,10 @@
         "Select:Page Down": "Shift-PageDown",
         "Select:Page Up": "Shift-PageUp",
         "Select:To Matching Brace": "Ctrl-Shift-5",
+        "Select:Sort Lines": {
+            "win": "Ctrl-Shift-S",
+            "mac": "Command-Shift-S"
+        },
         "Select:Duplicate": {
             "win": "Ctrl-Shift-D",
             "mac": "Command-Shift-D"

@@ -4,6 +4,9 @@
             "scriptUrl": "/default/command/search.js",
             "readOnly": true
         },
+        "Select:Sort Lines": {
+            "scriptUrl": "/default/command/sort_selection.js"
+        },
         "Tools:Complete:CTags": {
             "scriptUrl": "/default/command/ctags_completer.js"
         },
