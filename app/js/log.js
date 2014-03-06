@@ -1,3 +1,4 @@
+/* global define, _ */
 define(function(require, exports, module) {
     // zed::log document is set up in `boot.js`
     var session_manager = require("./session_manager");

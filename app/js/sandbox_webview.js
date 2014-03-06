@@ -5,7 +5,7 @@ define("configfs", [], {
     load: function(name, req, onload, config) {
         sandboxRequest("zed/configfs", "readFile", [name], function(err, text) {
             if (err) {
-                return console.error("Error while loading file", err);
+                return console.error("Error while loading file", name, err);
             }
             onload.fromText(amdTransformer(text));
         });
@@ -24,7 +24,7 @@ function amdTransformer(source) {
             var newMod = mod;
             if (mod.indexOf("zed/") === 0) {
                 newMod = "configfs!/api/" + mod;
-            } else if (mod.indexOf("./") === 0) {
+            } else if (mod.indexOf(".") === 0) {
                 newMod = "configfs!" + mod;
             } else {
                 return all;
@@ -46,7 +46,7 @@ var waitingForReply = {};
 
 window.sandboxRequest = function(module, call, args, callback) {
     id++;
-    waitingForReply[id] = callback;
+    waitingForReply[id] = callback || function() {};
     source.postMessage({
         type: "request",
         id: id,
@@ -92,7 +92,6 @@ window.addEventListener('message', function(event) {
 });
 
 // Override console.log etc
-/*
 var oldLog = console.log;
 var oldWarn = console.warn;
 var oldError = console.info;
@@ -107,10 +106,22 @@ window.addEventListener("error", function(err) {
     log("error", noop)(err.message, err.filename, err.lineno, err.stack);
 });
 
+
 function log(level, oldFn) {
+    function toLogEntry(args) {
+        var s = '';
+        _.each(args, function(arg) {
+            if (_.isString(arg)) {
+                s += arg;
+            } else {
+                s += JSON.stringify(arg, null, 2);
+            }
+            s += ' ';
+        });
+        return s;
+    }
     return function() {
-        oldFn.apply(console, arguments);
-        sandboxRequest("zed/log", "log", [level, Array.prototype.slice.call(arguments, 0)], function() {});
+        oldFn.call(console, toLogEntry(arguments));
+        // sandboxRequest("zed/log", "log", [level, Array.prototype.slice.call(arguments, 0)], function() {});
     };
 }
-*/

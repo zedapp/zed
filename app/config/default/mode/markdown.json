@@ -21,9 +21,7 @@
             },
 
             "handlers": {
-                "preview": ["Tools:Preview"],
-                "check": ["Tools:Spelling:Check"],
-                "action": ["Tools:Spelling:Fix"]
+                "preview": ["Tools:Preview"]
             }
         }
     }

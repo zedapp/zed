@@ -21,7 +21,11 @@ define(function(require, exports, module) {
     exports.filterBox = function(options) {
         var placeholder = options.placeholder || "";
         var filter = options.filter;
-        var onSelect = options.onSelect;
+        var onSelect = function(selection, inputVal) {
+            setTimeout(function() {
+                options.onSelect(selection, inputVal);
+            });
+        };
         var onChange = options.onChange;
         var onCancel = options.onCancel;
         var hint = options.hint;
@@ -293,7 +297,9 @@ define(function(require, exports, module) {
 
         editor.getActiveEditor().blur();
         dialogEl.focus();
-        $("body").bind("keyup", keyHandler);
+        setTimeout(function() {
+            $("body").bind("keyup", keyHandler);
+        }, 100);
 
         function keyHandler(event) {
             switch (event.keyCode) {

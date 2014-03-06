@@ -55,7 +55,7 @@ define(function(require, exports, module) {
                 });
             });
             if (waitingFor === 0) {
-                callback(null, results);
+                _.isFunction(callback) && callback(null, results);
             }
         }
 
@@ -71,6 +71,7 @@ define(function(require, exports, module) {
             }
             return true;
         } else {
+            _.isFunction(callback) && callback();
             return false;
         }
     }
@@ -121,8 +122,11 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
-        eventbus.once("configchanged", function() {
+        eventbus.once("inited", function() {
             runHandler("init");
+        });
+        eventbus.on("configchanged", function() {
+            runHandler("configchanged");
         });
         eventbus.on("sessionchanged", function(session) {
             analyze(session);

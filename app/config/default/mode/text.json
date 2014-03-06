@@ -3,12 +3,7 @@
         "text": {
             "name": "Plain Text",
             "highlighter": "ace/mode/text",
-            "extensions": [],
-            
-            "handlers": {
-                "check": ["Tools:Spelling:Check"],
-                "action": ["Tools:Spelling:Fix"]
-            }
+            "extensions": []
         }
     }
 }
