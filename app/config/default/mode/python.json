@@ -3,7 +3,29 @@
         "python": {
             "name": "Python",
             "highlighter": "ace/mode/python",
-            "extensions": ["py"]
+            "extensions": ["py"],
+            "commands": {
+                "Tools:Complete:Snippet": {
+                    "scriptUrl": "/default/command/snippet_completer.js",
+                    "snippets": {
+                        "from": "from ${1} import ${2}",
+                        "try": "try:\n\t${1}",
+                        "except": "except ${1}:\n\t${2}",
+                        "finally": "finally:\n\t${1}",
+                        "while": "while ${1}:\n\t${2}",
+                        "for": "for ${1} in ${2}:\n\t${3}",
+                        "if": "if ${1}:\n\t${2}",
+                        "elif": "elif ${1}:\n\t${2}",
+                        "else": "else:\n\t${1}",
+                        "with": "with ${1}:\n\t${2}",
+                        "def": "def ${1}(${2}):\n\t${3}",
+                        "class": "class ${1}:\n\t${2}"
+                    }
+                }
+            },
+            "handlers": {
+                "complete": ["Tools:Complete:Snippet"]
+            }
         }
     }
 }
