@@ -7,7 +7,7 @@
 
             "commands": {
                 "Tools:Check": {
-                    "scriptUrl": "/default/mode/javascript/check.js",
+                    "scriptUrl": "./javascript/check.js",
                     "options": {
                         "undef": true,
                         "unused": true,
@@ -28,11 +28,11 @@
                     }
                 },
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/javascript/ctags.js"
+                    "scriptUrl": "./javascript/ctags.js"
                 },
 
                 "Tools:Beautify": {
-                    "scriptUrl": "/default/mode/javascript/beautify.js"
+                    "scriptUrl": "./javascript/beautify.js"
                 },
 
                 "Tools:Complete:Snippet": {

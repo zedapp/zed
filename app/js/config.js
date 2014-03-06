@@ -5,6 +5,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var async = require("./lib/async");
     var bgPage = require("./lib/background_page");
+    var path = require("./lib/path");
 
     eventbus.declare("configchanged");
     eventbus.declare("configavailable");
@@ -74,7 +75,7 @@ define(function(require, exports, module) {
             return newArray;
         } else if (_.isObject(dest)) {
             dest = _.extend({}, dest); // shallow clone
-            if(source) {
+            if (source) {
                 for (var p in source) {
                     if (source.hasOwnProperty(p)) {
                         if (dest[p] === undefined) {
@@ -118,10 +119,10 @@ define(function(require, exports, module) {
         var imports = setts.imports;
         delete setts.imports;
         expandedConfiguration = superExtend(expandedConfiguration, setts);
-        
-        if(setts.packages && setts.packages.length > 0) {
+
+        if (setts.packages && setts.packages.length > 0) {
             _.each(setts.packages, function(uri) {
-                if(!importedPackages[uri]) {
+                if (!importedPackages[uri]) {
                     imports.push("/packages/" + uri.replace(/:/g, '/') + "/config.json");
                     importedPackages[uri] = true;
                 }
@@ -143,6 +144,7 @@ define(function(require, exports, module) {
                         next();
                         return;
                     }
+                    resolveRelativePaths(json, imp);
                     expandConfiguration(json, importedPackages, next);
                 }
 
@@ -170,7 +172,7 @@ define(function(require, exports, module) {
         whenConfigurationAvailable(function() {
             userConfig.preferences[key] = value;
             configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4), function(err) {
-                if(err) {
+                if (err) {
                     console.error("Error during writing config:", err);
                 }
             });
@@ -196,7 +198,7 @@ define(function(require, exports, module) {
     exports.getHandlers = function() {
         return expandedConfiguration.handlers;
     };
-    
+
     exports.getTheme = function(name) {
         return expandedConfiguration.themes[name];
     };
@@ -236,10 +238,7 @@ define(function(require, exports, module) {
     }
 
     exports.loadConfiguration = loadConfiguration;
-    
-    exports.getFs = function() {
-        return configfs;
-    }
+
 
     /**
      * Extend the project config (or the empty object, if not present)
@@ -260,6 +259,7 @@ define(function(require, exports, module) {
         configfs.readFile(rootFile, function(err, config_) {
             try {
                 var json = JSON.parse(config_);
+                resolveRelativePaths(json, rootFile);
                 userConfig = json;
                 config = superExtend(config, json);
                 expandConfiguration(config, {}, function() {
@@ -271,6 +271,41 @@ define(function(require, exports, module) {
             }
         });
     }
+
+    /**
+     * This function finds all relative script and import paths
+     * (scriptUrl keys and for imports) and replaces them with
+     * absolute ones
+     */
+    function resolveRelativePaths(configJson, jsonPath) {
+        var dir = path.dirname(jsonPath);
+        if (configJson.imports) {
+            configJson.imports = _.map(configJson.imports, function(imp) {
+                if (imp[0] === '.' && imp[1] === '/') {
+                    return dir + imp.substring(1);
+                } else {
+                    return imp;
+                }
+            });
+        }
+        if (configJson.commands) {
+            _.each(configJson.commands, function(cmd, name) {
+                if (cmd.scriptUrl && cmd.scriptUrl[0] === '.' && cmd.scriptUrl[1] === '/') {
+                    configJson.commands[name].scriptUrl = dir + cmd.scriptUrl.substring(1);
+                }
+            });
+        }
+        if (configJson.modes) {
+            _.each(configJson.modes, function(mode) {
+                resolveRelativePaths(mode, jsonPath);
+            });
+        }
+        return configJson;
+    }
+
+    exports.getFs = function() {
+        return configfs;
+    };
 
     require(["./command", "./session_manager"], function(command, session_manager) {
         command.define("Configuration:Reload", {
@@ -301,7 +336,7 @@ define(function(require, exports, module) {
             },
             readOnly: true
         });
-        
+
         command.define("Configuration:Show Full", {
             exec: function(edit, session) {
                 session_manager.go("zed::config", edit, session, function(err, session) {
