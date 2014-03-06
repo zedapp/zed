@@ -20,7 +20,6 @@ module.exports = function() {
                     append("\n" + pkg.name + "\n");
                     append("ID: " + id + "\n");
                     append("Version: " + pkg.version + "\n");
-                    append("URL: " + pkg.url + "\n");
                     append("Description: " + pkg.description + "\n");
                     append("Commands: [Uninstall]      [Update]      ");
                     if (pkg.autoUpdate) {
