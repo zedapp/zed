@@ -39,7 +39,7 @@ define(function(require, exports, module) {
             });
         });
         sandbox.addEventListener('consolemessage', function(e) {
-            console.log('sandbox logged a message: ' + e.message + '. line ' + e.line);
+            console.log('[Sandbox]: ' + e.message + ' (line: ' + e.line + ')');
         });
         waitingForReply = {};
         id = 0;
@@ -137,12 +137,12 @@ define(function(require, exports, module) {
             }, '*');
         }
     };
-    
+
     command.define("Sandbox:Reset", {
         exec: resetSandbox,
         readOnly: true
     });
-    
+
     command.define("Sandbox:Show", {
         exec: function() {
             sandboxEl.css("left", "50px");

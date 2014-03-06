@@ -268,7 +268,7 @@
             "mac": "Command-Shift-B",
             "win": "Ctrl-Shift-B"
         },
-        "Tools:Fix": {
+        "Tools:Action": {
             "mac": "Command-Enter",
             "win": "Ctrl-Enter"
         },

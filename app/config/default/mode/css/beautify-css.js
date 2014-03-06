@@ -27,8 +27,6 @@
     });
 */
 
-define(function(require, exports, module) {
-
 module.exports = css_beautify;
 
 
@@ -204,5 +202,3 @@ function css_beautify(source_text, options) {
     var sweetCode = output.join('').replace(/[\n ]+$/, '');
     return sweetCode;
 }
-
-});

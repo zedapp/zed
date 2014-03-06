@@ -155,7 +155,9 @@ define(function(require, exports, module) {
                             score = sessions[file].lastUse;
                         }
 
-                        if (fileNorm.substring(0, phrase.length) === phrase) results[file] = score;
+                        if (fileNorm.substring(0, phrase.length) === phrase) {
+                            results[file] = score;
+                        }
                     });
                     resultList = [];
                     if (fileCache.indexOf(phrase) === -1) {

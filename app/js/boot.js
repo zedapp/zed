@@ -31,7 +31,7 @@ require(["text!../manual/intro.md"], function(introText) {
         "./preview",
         "./dnd",
         "./handlers",
-        "./fix",
+        "./action",
         "./theme",
         "./log"];
     require(modules, function() {

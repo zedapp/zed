@@ -1,4 +1,3 @@
-define(function(require, exports, module) {
 /*!
 CSSLint
 Copyright (c) 2011 Nicole Sullivan and Nicholas C. Zakas. All rights reserved.
@@ -1187,8 +1186,8 @@ MediaFeature.prototype.constructor = MediaFeature;
  * @class MediaQuery
  * @extends parserlib.util.SyntaxUnit
  * @constructor
- * @param {String} modifier The modifier "not" or "only" (or null).
  * @param {String} mediaType The type of media (i.e., "print").
+ * @param {String} modifier The modifier "not" or "only" (or null).
  * @param {Array} parts Array of selectors parts making up this selector.
  * @param {int} line The line of text on which the unit resides.
  * @param {int} col The column of text on which the unit resides.
@@ -8516,4 +8515,3 @@ CSSLint.addRule({
 exports.CSSLint = CSSLint;
 
 
-});

@@ -56,8 +56,6 @@
 
 */
 
-define(function(require, exports, module) {
-
 module.exports = js_beautify;
 
 function js_beautify(js_source_text, options) {
@@ -1354,5 +1352,3 @@ function js_beautify(js_source_text, options) {
     return sweet_code;
 
 }
-
-});

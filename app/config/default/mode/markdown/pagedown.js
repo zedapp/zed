@@ -33,7 +33,6 @@
  * THE SOFTWARE.
  */
  
-define(function(require, exports, module) {
     
 var Markdown = exports;
 
@@ -1442,5 +1441,3 @@ var Markdown = exports;
     }; // end of the Markdown.Converter constructor
 
 })();
-
-});

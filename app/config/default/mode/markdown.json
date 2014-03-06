@@ -23,7 +23,7 @@
             "handlers": {
                 "preview": ["Tools:Preview"],
                 "check": ["Tools:Spelling:Check"],
-                "fix": ["Tools:Spelling:Fix"]
+                "action": ["Tools:Spelling:Fix"]
             }
         }
     }

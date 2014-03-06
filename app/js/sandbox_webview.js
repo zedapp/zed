@@ -7,14 +7,37 @@ define("configfs", [], {
             if (err) {
                 return console.error("Error while loading file", err);
             }
-            text = text.replace(/require\s*\((["'])zed\/(.+)["']\)/g, function(all, q, mod) {
-                return "require(" + q + "configfs!/api/zed/" + mod + (/\.js$/.exec(mod) ? "" : ".js") + q + ")";
-            })
-            //                       .replace(/require\s*\((["'])\.\/(.+)["']\)/g, function(all, q, mod) { return "require(" + q + "configfs!./" + mod + (/\.js$/.exec(mod) ? "" : ".js") + q + ")"; })
-            onload.fromText(text);
+            onload.fromText(amdTransformer(text));
         });
     }
 });
+
+/**
+ * This rewrites extension code in two minor ways:
+ * - requires are rewritten to all point to configfs!
+ * - AMD wrappers are added if they're not already there'
+ */
+function amdTransformer(source) {
+    // If this source file is not doing funky stuff like overriding require
+    if (!/require\s*=/.exec(source)) {
+        source = source.replace(/require\s*\((["'])(.+)["']\)/g, function(all, q, mod) {
+            var newMod = mod;
+            if (mod.indexOf("zed/") === 0) {
+                newMod = "configfs!/api/" + mod;
+            } else if (mod.indexOf("./") === 0) {
+                newMod = "configfs!" + mod;
+            } else {
+                return all;
+            }
+            return "require(" + q + newMod + (/\.js$/.exec(newMod) ? "" : ".js") + q + ")";
+        });
+    }
+    // If no AMD wrapper is there yet, add it
+    if (source.indexOf("define(function(") === -1) {
+        source = "define(function(require, exports, module) {" + source + "\n});"
+    }
+    return source;
+}
 
 var source;
 var origin;
@@ -67,3 +90,27 @@ window.addEventListener('message', function(event) {
         });
     });
 });
+
+// Override console.log etc
+/*
+var oldLog = console.log;
+var oldWarn = console.warn;
+var oldError = console.info;
+var oldInfo = console.info;
+var noop = function() {};
+window.console.log = log("log", oldLog);
+window.console.warn = log("warn", oldWarn);
+window.console.error = log("error", oldError);
+window.console.info = log("info", oldInfo);
+
+window.addEventListener("error", function(err) {
+    log("error", noop)(err.message, err.filename, err.lineno, err.stack);
+});
+
+function log(level, oldFn) {
+    return function() {
+        oldFn.apply(console, arguments);
+        sandboxRequest("zed/log", "log", [level, Array.prototype.slice.call(arguments, 0)], function() {});
+    };
+}
+*/

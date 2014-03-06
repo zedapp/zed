@@ -199,8 +199,7 @@ define(function(require, exports, module) {
 
         if (exports.specialDocs[path]) {
             var session = exports.specialDocs[path];
-            editor.switchSession(session, edit);
-            callback && callback(null, session);
+            show(session);
             return;
         }
         var pathParts = path.split(':');

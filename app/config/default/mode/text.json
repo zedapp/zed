@@ -7,7 +7,7 @@
             
             "handlers": {
                 "check": ["Tools:Spelling:Check"],
-                "fix": ["Tools:Spelling:Fix"]
+                "action": ["Tools:Spelling:Fix"]
             }
         }
     }

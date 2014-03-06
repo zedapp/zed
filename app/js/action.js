@@ -1,3 +1,4 @@
+/*global $, define*/
 define(function(require, exports, module) {
     var command = require("./command");
     var AcePopup = require("ace/autocomplete/popup").AcePopup;
@@ -5,27 +6,43 @@ define(function(require, exports, module) {
     var runSessionHandler = require("./handlers").runSessionHandler;
     var eventbus = require("./lib/eventbus");
 
-    function showFixes(edit, fixes) {
+    function showActions(edit, session) {
         var popup = new AcePopup(document.body || document.documentElement);
-        $(popup.container).addClass("fixbox");
+        $(popup.container).addClass("actionbox");
         var keyboardHandler = new HashHandler();
         keyboardHandler.bindKeys({
-            "Up": function(editor) {
+            "Up": function() {
                 go("up");
             },
-            "Down": function(editor) {
+            "Down": function() {
                 go("down");
             },
-            "Esc": function(editor) {
+            "Esc": function() {
                 close();
             },
-            "Return": function(editor) {
+            "Return": function() {
                 runFix();
             }
         });
 
-        popup.setData(fixes);
+        //popup.setData(actions);
+        popup.setData([{
+            caption: "Loading..."
+        }]);
         show();
+        runSessionHandler(session, "action", null, function(err, results) {
+            if (err) {
+                return console.error("Error running action", err);
+            }
+            if (results.length > 0) {
+                popup.setData(results.map(handlerResultToFixResult));
+            } else {
+                popup.setData([{caption: "No actions available."}]);
+                setTimeout(function() {
+                    close();
+                }, 1000);
+            }
+        });
 
         function show() {
             var renderer = edit.renderer;
@@ -51,9 +68,9 @@ define(function(require, exports, module) {
         }
 
         function runFix() {
-            var fix = popup.getData(popup.getRow());
+            var action = popup.getData(popup.getRow());
             close();
-            fix.onSelect(edit);
+            action.onSelect(edit);
         }
 
         function init() {
@@ -110,7 +127,7 @@ define(function(require, exports, module) {
     function handlerResultToFixResult(result) {
         return {
             caption: result.caption,
-            meta: "fix",
+            meta: "action",
             onSelect: function(edit) {
                 var session = edit.getSession();
                 // SUPER ugly hack to pass in additional info to the command
@@ -120,19 +137,9 @@ define(function(require, exports, module) {
         };
     }
 
-    command.define("Tools:Fix", {
+    command.define("Tools:Action", {
         exec: function(edit, session) {
-            runSessionHandler(session, "fix", null, function(err, results) {
-                if (err) {
-                    return console.error("Error running fix", err);
-                }
-                if (results.length > 0) {
-                    showFixes(edit, results.map(handlerResultToFixResult));
-                } else {
-                    eventbus.emit("sessionactivityfailed", session, "No fixes available");
-                }
-            });
-
+            showActions(edit, session);
         }
     });
 });
