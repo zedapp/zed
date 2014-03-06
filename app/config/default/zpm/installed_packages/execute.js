@@ -49,7 +49,7 @@ return function(info, callback) {
                     });
                 }
             } else if (line === "Commands: [Uninstall]      [Update]      [Turn Off Automatic Updates]" || line === "Commands: [Uninstall]      [Update]      [Turn On Automatic Updates]") {
-                var idLine = lines[pos.row - 4];
+                var idLine = lines[pos.row - 3];
                 var id = idLine.substr(4);
                 if (pos.column >= 10 && pos.column <= 21) {
                     zpm.uninstall(id, function(err) {
