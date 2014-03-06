@@ -5,6 +5,7 @@
         "/default/keys.json",
         "/default/commands.json",
         "/default/handlers.json",
-        "/default/themes.json"
+        "/default/themes.json",
+        "/default/zpm/zpm.json"
     ]
 }

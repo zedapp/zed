@@ -9,4 +9,10 @@ module.exports = {
     listFiles: function(callback) {
         sandboxRequest("zed/project", "listFiles", [], callback);
     },
+    reloadFileList: function(callback) {
+        sandboxRequest("zed/project", "reloadFileList", [], callback);
+    },
+    isConfig: function(callback) {
+        sandboxRequest("zed/project", "isConfig", [], callback);
+    }
 };

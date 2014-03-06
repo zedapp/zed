@@ -18,7 +18,8 @@ define(function(require, exports, module) {
         keys: {},
         commands: {},
         handlers: {},
-        themes: {}
+        themes: {},
+        packages: []
     };
 
     var config = _.extend({}, minimumConfiguration);
@@ -112,11 +113,20 @@ define(function(require, exports, module) {
     /**
      * Recursively import "imports" into the `expandedConfiguration` variable
      */
-    function expandConfiguration(setts, callback) {
+    function expandConfiguration(setts, importedPackages, callback) {
         setts = _.extend({}, setts);
         var imports = setts.imports;
         delete setts.imports;
         expandedConfiguration = superExtend(expandedConfiguration, setts);
+        
+        if(setts.packages && setts.packages.length > 0) {
+            _.each(setts.packages, function(uri) {
+                if(!importedPackages[uri]) {
+                    imports.push("/packages/" + uri.replace(/:/g, '/') + "/config.json");
+                    importedPackages[uri] = true;
+                }
+            });
+        }
 
         if (imports) {
             async.forEach(imports, function(imp, next) {
@@ -125,14 +135,15 @@ define(function(require, exports, module) {
                         console.warn("Error loading", imp, err);
                         return next();
                     }
+                    var json;
                     try {
-                        var json = JSON.parse(text);
+                        json = JSON.parse(text);
                     } catch (e) {
                         console.error("In file", imp, e);
                         next();
                         return;
                     }
-                    expandConfiguration(json, next);
+                    expandConfiguration(json, importedPackages, next);
                 }
 
                 configfs.readFile(imp, handleFile);
@@ -251,7 +262,7 @@ define(function(require, exports, module) {
                 var json = JSON.parse(config_);
                 userConfig = json;
                 config = superExtend(config, json);
-                expandConfiguration(config, function() {
+                expandConfiguration(config, {}, function() {
                     eventbus.emit("configchanged", exports);
                     _.isFunction(callback) && callback(null, exports);
                 });
@@ -261,7 +272,7 @@ define(function(require, exports, module) {
         });
     }
 
-    require(["./command"], function(command) {
+    require(["./command", "./session_manager"], function(command, session_manager) {
         command.define("Configuration:Reload", {
             exec: function() {
                 loadConfiguration();
@@ -290,5 +301,15 @@ define(function(require, exports, module) {
             },
             readOnly: true
         });
+        
+        command.define("Configuration:Show Full", {
+            exec: function(edit, session) {
+                session_manager.go("zed::config", edit, session, function(err, session) {
+                    session.setMode("ace/mode/json");
+                    session.setValue(JSON.stringify(expandedConfiguration, null, 4));
+                });
+            },
+            readOnly: true
+        })
     });
 });

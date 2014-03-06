@@ -55,7 +55,7 @@ define(function(require, exports, module) {
                 });
             });
             if (waitingFor === 0) {
-                callback(null, results);
+                _.isFunction(callback) && callback(null, results);
             }
         }
 
@@ -71,7 +71,35 @@ define(function(require, exports, module) {
             }
             return true;
         } else {
+            _.isFunction(callback) && callback();
             return false;
+        }
+    }
+    
+    function runHandler(handlerName, callback) {
+        var commandNames = [];
+        if (config.getHandlers()[handlerName]) {
+            commandNames = commandNames.concat(config.getHandlers()[handlerName]);
+        }
+        
+        var waitingFor = commandNames.length;
+        var results = [];
+        var edit = editor.getActiveEditor();
+        var session = edit.getSession();
+        commandNames.forEach(function(commandName) {
+            command.exec(commandName, edit, session, function(err, results_) {
+                if (err) {
+                    return callback(err);
+                }
+                results = results.concat(results_);
+                waitingFor--;
+                if (waitingFor === 0) {
+                    _.isFunction(callback) && callback(null, results);
+                }
+            });
+        });
+        if (waitingFor === 0) {
+            _.isFunction(callback) && callback(null, results);
         }
     }
 
@@ -94,6 +122,12 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
+        eventbus.once("inited", function() {
+            runHandler("init");
+        });
+        eventbus.on("configchanged", function() {
+            runHandler("configchanged");
+        });
         eventbus.on("sessionchanged", function(session) {
             analyze(session);
         });

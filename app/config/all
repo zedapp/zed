@@ -130,6 +130,14 @@
 /default/theme/xcode.css
 /default/theme/zed_dark.css
 /default/themes.json
+/default/zpm/auto_update.js
+/default/zpm/install.js
+/default/zpm/install_config.js
+/default/zpm/installed_packages/execute.js
+/default/zpm/installed_packages.js
+/default/zpm/zpm.js
+/default/zpm/zpm.json
 /default.json
+/packages/installed.json
 /README.md
 /user.json
