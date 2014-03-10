@@ -20,12 +20,10 @@ define(function(require, exports, module) {
 
     function update() {
         var showContextBar = config.getPreference("showContextBar");
-        var fontSize = config.getPreference("fontSize");
-        var fontFamily = config.getPreference("fontFamily");
-        var barHeight = fontSize + 13;
+        var barHeight = 30;
 
         if(showContextBar && !barEl) {
-            barEl = $("<div id='contextbar'>");
+            barEl = $("<div id='contextbar'><div class='windowbuttons'></div><div class='title'></div><div class='fullscreen'></div>");
             $("body").append(barEl);
         } else if(!showContextBar && barEl) {
             barEl.remove();
@@ -33,17 +31,37 @@ define(function(require, exports, module) {
         }
 
         if(showContextBar) {
-            var url = options.get('url');
             var title = options.get('title');
+            var titleEl = barEl.find(".title");
 
-            barEl.html("<img src='" + icons.protocolIcon(url) + "'/>" + title + " &raquo;");
-
-            barEl.height(barHeight)
-                 .css("font-size",   fontSize + "px")
-                 .css("padding-left", (fontSize + 15) + "px")
-                 .css("font-family", fontFamily);
-            barEl.find("img").css("height", fontSize + "px")
-                             .css("width",  fontSize + "px");
+            titleEl.html("<img src='img/zed-small.png'/>" + title + " &raquo;");
+            
+            var buttonsEl = barEl.find(".windowbuttons");
+            buttonsEl.mousemove(function() {
+                buttonsEl.css("background-position-y", '-16px');
+            });
+            buttonsEl.mouseout(function() {
+                buttonsEl.css("background-position-y", '0');
+            });
+            buttonsEl.click(function(evt) {
+                var x = evt.clientX - 7;
+                var win = chrome.app.window.current();
+                if(x >= 0 && x <= 17) {
+                    // close
+                    win.close();
+                } else if(x > 17 && x <= 37) {
+                    // minimize
+                    win.minimize();
+                } else {
+                    // maximize
+                    if(win.isMaximized()) {
+                        win.restore();
+                    } else {
+                        win.maximize();
+                    }
+                }
+            });
+            
         }
 
         editor.getEditors(true).forEach(function(edit) {

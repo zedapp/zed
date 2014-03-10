@@ -2,6 +2,7 @@ body {
     font-family: Tahoma, Arial;
     overflow: hidden;
     background-color: #fff;
+    -webkit-app-region: drag;
 }
 
 #sandbox {
@@ -241,29 +242,7 @@ div.preview-vsplit2-right-2 {
 .editbar .error {
     color: red;
 }
-#contextbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 25px;
-    line-height: 25px;
-    background-color: #fff;
-    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    font-size: 13px;
-    border-bottom: 1px solid #000;
-    z-index: 1000;
-    border-bottom: 1px solid #ccc;
-    padding-left: 35px;
-    font-weight: bold;
-    color: #000;
-}
-#contextbar img {
-    position: absolute;
-    left: 8px;
-    top: 8px;
-    height: 13px;
-}
+
 .hidden {
     display: none;
 }
@@ -399,4 +378,54 @@ body.mac.dark .ace_content {
     position: absolute;
     border-bottom: solid 1px #9191FF;
     z-index: 1000;
+}
+
+#contextbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    line-height: 30px;
+    background-color: #333;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 13px;
+    z-index: 1000;
+    border-bottom: 1px solid #111;
+    padding-left: 35px;
+    font-weight: bold;
+    color: #000;
+    -webkit-app-region: drag;
+}
+
+#contextbar .windowbuttons {
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    width: 54px;
+    height: 16px;
+    background: url("../img/mac-buttons.png");
+}
+
+#contextbar .fullscreen {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    background: url("../img/mac-fullscreen.png");
+}
+
+#contextbar .title {
+    position: relative;
+    left: 60px;
+    color: #fff;
+}
+
+#contextbar .title img {
+    position: absolute;
+    left: -25px;
+    top: 6px;
+    width: 18px;
+    height: 18px;
 }
