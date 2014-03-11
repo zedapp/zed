@@ -92,7 +92,7 @@
         },
         "Edit:Remove Word Right": {
             "win": "Ctrl-Delete",
-            "mac": "Alt-Delete"
+            "mac": "Alt-D"
         },
         "Cursor:File Start": {
             "mac": "Command-Up",
