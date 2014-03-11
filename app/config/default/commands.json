@@ -5,7 +5,10 @@
             "readOnly": true
         },
         "Select:Sort Lines": {
-            "scriptUrl": "/default/command/sort_selection.js"
+            "scriptUrl": "./command/sort_selection.js"
+        },
+        "Edit:Trim Whitespace": {
+            "scriptUrl": "./command/trim_whitespace.js"
         },
         "Tools:Complete:CTags": {
             "scriptUrl": "./command/ctags_completer.js"
