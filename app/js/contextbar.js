@@ -8,7 +8,7 @@ define(function(require, exports, module) {
     var icons = require("./lib/icons");
 
     var barEl;
-    
+
     eventbus.declare("projecttitlechanged");
 
     exports.hook = function() {
@@ -22,20 +22,21 @@ define(function(require, exports, module) {
         var showContextBar = config.getPreference("showContextBar");
         var barHeight = 30;
 
-        if(showContextBar && !barEl) {
-            barEl = $("<div id='contextbar'><div class='windowbuttons'></div><div class='title'></div><div class='fullscreen'></div>");
+        if (showContextBar && !barEl) {
+            barEl = $("<div id='contextbar'><div class='windowbuttons'><div class='close'></div><div class='minimize'></div><div class='maximize'></div></div><div class='title'></div><div class='fullscreen'></div>");
             $("body").append(barEl);
-        } else if(!showContextBar && barEl) {
+        } else if (!showContextBar && barEl) {
             barEl.remove();
             barEl = null;
         }
 
-        if(showContextBar) {
+        if (showContextBar) {
             var title = options.get('title');
             var titleEl = barEl.find(".title");
+            var win = chrome.app.window.current();
 
             titleEl.html("<img src='img/zed-small.png'/>" + title + " &raquo;");
-            
+
             var buttonsEl = barEl.find(".windowbuttons");
             buttonsEl.mousemove(function() {
                 buttonsEl.css("background-position-y", '-16px');
@@ -43,32 +44,26 @@ define(function(require, exports, module) {
             buttonsEl.mouseout(function() {
                 buttonsEl.css("background-position-y", '0');
             });
-            buttonsEl.click(function(evt) {
-                var x = evt.clientX - 7;
-                var win = chrome.app.window.current();
-                if(x >= 0 && x <= 17) {
-                    // close
-                    win.close();
-                } else if(x > 17 && x <= 37) {
-                    // minimize
-                    win.minimize();
+            buttonsEl.find(".close").click(function() {
+                win.close();
+            });
+            buttonsEl.find(".minimize").click(function() {
+                win.minimize();
+            });
+            buttonsEl.find(".maximize").click(function() {
+                if (win.isMaximized()) {
+                    win.restore();
                 } else {
-                    // maximize
-                    if(win.isMaximized()) {
-                        win.restore();
-                    } else {
-                        win.maximize();
-                    }
+                    win.maximize();
                 }
             });
-            
         }
 
         editor.getEditors(true).forEach(function(edit) {
-            $(edit.container).css("top", showContextBar ? (barHeight+1) + "px": "0");
+            $(edit.container).css("top", showContextBar ? (barHeight + 1) + "px" : "0");
             edit.resize();
         });
-        $("#preview-wrapper").css("top", showContextBar ? (barHeight+1) + "px": "0");
+        $("#preview-wrapper").css("top", showContextBar ? (barHeight + 1) + "px" : "0");
     }
 
     command.define("Configuration:Preferences:Toggle Context Bar", {
