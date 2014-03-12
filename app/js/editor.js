@@ -79,7 +79,8 @@ define(function(require, exports, module) {
 
             eventbus.on("sessionbeforesave", function() {
                 if (config.getPreference("trimTrailingWhiteSpaceOnSave")) {
-                    editor.trimTrailingWhitespace(editor.getActiveEditor());
+                    // I'm not sure what to put here to make this keep working.
+                    //editor.trimTrailingWhitespace(editor.getActiveEditor());
                 }
             });
         },
@@ -115,24 +116,6 @@ define(function(require, exports, module) {
 
             editor.setActiveEditor(editors[0]);
             eventbus.emit("editorloaded", exports);
-        },
-        trimTrailingWhitespace: function(edit) {
-            var currentLine = edit.getCursorPosition().row;
-            var session = edit.getSession();
-            var doc = session.getDocument();
-            var lines = doc.getAllLines();
-
-            var min = config.getPreference("trimEmptyLines") ? -1 : 0;
-
-            for (var i = 0, l = lines.length; i < l; i++) {
-                if (i === currentLine) {
-                    continue;
-                }
-                var line = lines[i];
-                var index = line.search(/\s+$/);
-
-                if (index > min) doc.removeInLine(i, index, line.length);
-            }
         },
         createSession: function(path, content) {
             var mode = modes.getModeForPath(path);
@@ -782,12 +765,6 @@ define(function(require, exports, module) {
     command.define("Edit:Detect Indentation", {
         exec: function(edit) {
             whitespace.detectIndentation(edit.session);
-        }
-    });
-
-    command.define("Edit:Trim Trailing Space", {
-        exec: function(edit) {
-            editor.trimTrailingWhitespace(edit, true);
         }
     });
 
