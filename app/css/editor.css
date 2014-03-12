@@ -448,3 +448,9 @@ body.mac.dark .ace_content {
     color: #fff;
     text-align: center;
 }
+#contextbar .title img {
+    vertical-align: top;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+}

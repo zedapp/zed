@@ -1,4 +1,4 @@
-/*global define, $, _ */
+/*global define, $, _, chrome */
 define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
     var editor = require("./editor");
@@ -13,7 +13,6 @@ define(function(require, exports, module) {
 
     var barEl = $("<div id='contextbar'><div class='windowbuttons'><div class='close'></div><div class='minimize'></div><div class='maximize'></div></div><div class='title'></div><div class='fullscreen'></div>");
     $("body").append(barEl);
-
 
     exports.hook = function() {
         eventbus.once("editorloaded", update);
@@ -97,14 +96,13 @@ define(function(require, exports, module) {
     };
 
     function update() {
-        var showContextBar = config.getPreference("showContextBar");
         var barHeight = 46;
 
         var title = options.get('title');
         var titleEl = barEl.find(".title");
         var win = chrome.app.window.current();
 
-        titleEl.text(title);
+        titleEl.html("<img src='img/zed-small.png'/>" + title);
 
         var buttonsEl = barEl.find(".windowbuttons");
         buttonsEl.mousemove(function() {
