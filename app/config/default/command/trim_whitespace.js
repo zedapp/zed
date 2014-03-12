@@ -1,37 +1,38 @@
 var session = require("zed/session");
 var config = require("zed/config");
-var stuff = {};
 
-module.exports = function (options, callback) {
-    stuff.path = options.path;
-    stuff.final_callback = callback;
+function StripperConstructor(options, callback) {
+    this.path = options.path;
+    this.final = callback;
 
-    config.getPreference("trimEmptyLines", getPrefs);
+    config.getPreference("trimEmptyLines", this.getPrefs.bind(this));
+}
+
+var Stripper = StripperConstructor.prototype;
+
+Stripper.getPrefs = function(err, trimEmpty) {
+    this.min = trimEmpty ? -1 : 0;
+
+    session.getCursorPosition(this.path, this.getLine.bind(this));
 };
 
-function getPrefs(err, trimEmpty) {
-    stuff.min = trimEmpty ? -1 : 0;
+Stripper.getLine = function(err, cursor) {
+    this.currentLine = cursor.row;
 
-    session.getCursorPosition(stuff.path, getLine);
-}
+    session.getAllLines(this.path, this.strip.bind(this));
+};
 
-function getLine(err, cursor) {
-    stuff.currentLine = cursor.row;
-
-    session.getAllLines(stuff.path, strip);
-}
-
-function strip(err, lines) {
+Stripper.strip = function(err, lines) {
     // Strip spaces from the ends of lines.
     for (var i = 0; i < lines.length; i++) {
         // Preserve spaces on the line we're on.
-        if (i == stuff.currentLine) {
+        if (i == this.currentLine) {
             continue;
         }
 
         // Don't do the strip if the line contains only spaces
         // and the preference to trimEmptyLines isn't set.
-        if (lines[i].search(/\s+$/) > stuff.min) {
+        if (lines[i].search(/\s+$/) > this.min) {
             lines[i] = lines[i].replace(/\s+$/, "");
         }
     }
@@ -44,5 +45,9 @@ function strip(err, lines) {
     // Ensure that the file ends with one single newline.
     lines.push("");
 
-    session.setText(stuff.path, lines.join("\n"), stuff.final_callback);
-}
+    session.setText(this.path, lines.join("\n"), this.final);
+};
+
+module.exports = function(options, callback) {
+    new StripperConstructor(options, callback);
+};
