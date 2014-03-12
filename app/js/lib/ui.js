@@ -42,7 +42,7 @@ define(function(require, exports, module) {
 
         gotoEl.css("left", (editorEl.offset().left + 40) + "px");
         gotoEl.css("width", (editorEl.width() - 80) + "px");
-        gotoEl.css("top", editorEl.offset().top + "px");
+        // gotoEl.css("top", editorEl.offset().top + "px");
         var popup = new AcePopup($("#results")[0]);
         popup.on("click", function(e) {
             select();

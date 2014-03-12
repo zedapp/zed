@@ -4,17 +4,15 @@ body {
     background-color: #fff;
     -webkit-app-region: drag;
 }
-
 #sandbox {
-  z-index: 500;
-  position: absolute;
-  left: 50px;
-  right: 0;
-  top: 50px;
-  width: 500px;
-  height: 200px;
+    z-index: 500;
+    position: absolute;
+    left: 50px;
+    right: 0;
+    top: 50px;
+    width: 500px;
+    height: 200px;
 }
-
 .inactive-editor {
     opacity: 0.80;
 }
@@ -174,61 +172,74 @@ div.preview-vsplit2-right-2 {
 }
 #goto {
     position: fixed;
-    border-left: solid 1px black;
-    border-bottom: solid 1px black;
-    border-right: solid 1px black;
-    background: #fff;
+    /*border-left: solid 1px #888;*/
+    /*border-bottom: solid 1px #888;*/
+    /*border-right: solid 1px #888;*/
+    background: #222;
     padding: 0;
-    z-index: 999;
+    z-index: 1000;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
+    top: 22px;
 }
 #goto input {
     font-size: 12px;
     width: 100%;
     box-sizing: border-box;
-    padding: 5px;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     outline-width: 0;
-    border-left: 0;
-    border-right: 0;
-    border-bottom: 1px dotted gray;
-    border-top: 0;
+    border: 0;
+    padding: 2px 8px 2px 8px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    background-color: #000;
+    color: #fff;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
 #gotohint {
-    background: #eee;
-    color: #000;
+    border-right: solid 1px #888;
+    border-left: solid 1px #888;
+    background: #666;
+    color: #fff;
     margin-top: -3px;
     padding: 2px;
     font-size: 11px;
 }
+
+#results {
+    border-right: solid 1px #888;
+    border-left: solid 1px #888;
+    border-bottom: solid 1px #888;
+}
+
 #results .ace_autocomplete {
-    border: 1px;
     position: relative !important;
     box-shadow: none !important;
     width: 100% !important;
     background: none;
+    border: 0 !important;
 }
 .editbar {
-    padding-top: 5px;
-    padding-bottom: 5px;
     position: absolute;
-    bottom: 0;
-    background-color: #eee;
-    border: 1px solid #aaa;
+    top: 25px;
     z-index: 999;
-    color: #000;
+    color: #ccc;
+    text-align: center;
 }
 .editbar.active {
-    background-color: #ddd;
+    color: #fff;
 }
 .editbar .path {
-    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
-    padding-right: 3px;
-    padding-left: 5px;
+    font-weight: normal;
+    margin: 0 auto;
+    display: inline-block;
+    padding: 2px 8px 2px 8px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    background-color: #000;
 }
 .editbar .info {
     position: absolute;
@@ -242,32 +253,35 @@ div.preview-vsplit2-right-2 {
 .editbar .error {
     color: red;
 }
-
 .hidden {
     display: none;
 }
 .ace_autocomplete {
     width: 300px;
+    background-color: #333;
+    color: #ccc;
 }
 .dark .ace_autocomplete {
-    border: 1px solid #000;
+    border-top: 0;
+    border-right: 1px solid #888;
+    border-left: 1px solid #888;
+    border-bottom: 1px solid #888;
 }
-.ace_completion-highlight {
+.ace_autocomplete .ace_completion-highlight {
     text-decoration: underline;
+    color: #fff !important;
     text-shadow: none !important;
 }
 .ace_line-hover {
     border: 0 !important;
-    background: #33CCFF !important;
+    background: #555 !important;
 }
 .ace_autocomplete .ace_active-line {
-    background-color: #33CCFF !important;
+    background-color: #555 !important;
 }
-
 .actionbox.ace_autocomplete {
     background: #eee !important;
 }
-
 .tree {
     position: fixed;
     border-left: solid 1px black;
@@ -281,11 +295,9 @@ div.preview-vsplit2-right-2 {
     max-height: 80%;
     overflow: scroll;
 }
-
 .dynatree-container {
     border: none !important;
 }
-
 #blockui {
     position: absolute;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
@@ -359,7 +371,7 @@ body.mac.dark .ace_content {
     cursor: default;
 }
 /* Markers */
-.marker-highlight-warning {
+ .marker-highlight-warning {
     position: absolute;
     border-bottom: solid 1px #CCCC00;
     z-index: 1000;
@@ -379,14 +391,12 @@ body.mac.dark .ace_content {
     border-bottom: solid 1px #9191FF;
     z-index: 1000;
 }
-
 #contextbar {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 30px;
-    line-height: 30px;
+    height: 45px;
     background-color: #333;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
@@ -397,44 +407,31 @@ body.mac.dark .ace_content {
     color: #000;
     -webkit-app-region: drag;
 }
-
 #contextbar .windowbuttons {
     position: absolute;
-    top: 8px;
-    left: 7px;
+    top: 7px;
+    left: 9px;
     width: 54px;
     height: 16px;
 }
-
 .windowbuttons .close {
     display: inline-block;
-    /*position: absolute;*/
-    /*top: 8px;*/
-    /*left: 7px;*/
     width: 16px;
     height: 16px;
     background: url("../img/mac-buttons.png") 0 0;
 }
-.windowbuttons .minimize {
-    display: inline-block;
-    /*position: absolute;*/
-    /*top: 8px;*/
-    /*left: 22px;*/
-    width: 16px;
-    height: 16px;
-    background: url("../img/mac-buttons.png") 16px 0;
-}
-
 .windowbuttons .maximize {
     display: inline-block;
-    /*position: absolute;*/
-    /*top: 8px;*/
-    /*left: 43px;*/
     width: 16px;
     height: 16px;
-    background: url("../img/mac-buttons.png") 32px 0;
+    background: url("../img/mac-buttons.png") 15px 0;
 }
-
+.windowbuttons .minimize {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/mac-buttons.png") 35px 0;
+}
 #contextbar .fullscreen {
     position: absolute;
     right: 5px;
@@ -443,17 +440,11 @@ body.mac.dark .ace_content {
     height: 20px;
     background: url("../img/mac-fullscreen.png");
 }
-
 #contextbar .title {
-    position: relative;
-    left: 60px;
-    color: #fff;
-}
-
-#contextbar .title img {
     position: absolute;
-    left: -25px;
-    top: 6px;
-    width: 18px;
-    height: 18px;
+    top: 5px;
+    left: 60px;
+    right: 60px;
+    color: #fff;
+    text-align: center;
 }
