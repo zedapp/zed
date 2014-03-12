@@ -895,6 +895,12 @@ define(function(require, exports, module) {
         }
     });
 
+    command.define("Configuration:Preferences:Toggle Trim Whitespace On Empty Lines", {
+        exec: function() {
+            config.setPreference("trimEmptyLines", !config.getPreference("trimEmptyLines"));
+        }
+    });
+
     command.define("Configuration:Preferences:Toggle Spell Check", {
         exec: function() {
             config.setPreference("spellCheck", !config.getPreference("spellCheck"));
