@@ -76,13 +76,6 @@ define(function(require, exports, module) {
                     });
                 });
             });
-
-            eventbus.on("sessionbeforesave", function() {
-                if (config.getPreference("trimTrailingWhiteSpaceOnSave")) {
-                    // I'm not sure what to put here to make this keep working.
-                    //editor.trimTrailingWhitespace(editor.getActiveEditor());
-                }
-            });
         },
         init: function() {
             $("body").append("<div id='editor0' class='editor-single'>");
@@ -800,7 +793,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Find:All", {
         exec: function(edit) {
             var phrase;
@@ -866,6 +859,9 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
+    // TODO: This is currently broken (no code observes the value of this preference)
+    // Need to make this command toggle the presence of the handler instead.
+    //     "handlers": { "change": ["Edit:Trim Whitespace"] },
     command.define("Configuration:Preferences:Toggle Trim Trailing Whitespace On Save", {
         exec: function() {
             config.setPreference("trimTrailingWhiteSpaceOnSave", !config.getPreference("trimTrailingWhiteSpaceOnSave"));
