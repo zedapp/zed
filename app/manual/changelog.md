@@ -1,6 +1,24 @@
 Changelog
 =========
 
+0.9.4
+-----
+This is a release with some major new features, but they're not well documented and a bit hidden, so we'll wait a bit to expose them more seriously. I'm very happy to see that an increasing number of people are starting to contribute, in this release: TheKiteEatingTree, robru and dsrw. Thanks all!
+
+* ZPM! We now have a package manager built-in, more information, and more heavy use of this on this in future releases (by TheKiteEatingTree)
+* Sandbox code can now use CommonJS syntax without the require.js boiler plate (see new version of included sandbox extensions)
+* Minor theme tweaks
+* New `zed::log` document that gives you access to internal Zed (and sandbox) log messages
+* Language support:
+    * Sass language support (by dsrw)
+    * Perl language support
+    * Python snippets (by robru)
+    * JSHint fix where the wrong word was underlined when using tabs (by TheKiteEatingTree)
+* Selected line sorter command (by robru)
+* Ability to move Configuration project to local folder (via `Configuration:Store in Local Folder`)
+* Trim Whitespace on empty lines toggle command (by robru)
+* Key binding tweaks (by robru)
+
 0.9.3
 -----
 * Added RHTML mode (thanks Scott Wadden!)
