@@ -285,7 +285,7 @@
         },
         "Window:Close": {
             "mac": "Command-W",
-            "win": "Alt-F4"
+            "win": "Alt-F4|Ctrl-W"
         }
     }
 }
