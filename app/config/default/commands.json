@@ -1,5 +1,8 @@
 {
     "commands": {
+        "Configuration:Preferences:Toggle Trim Whitespace On Save": {
+            "scriptUrl": "./command/toggle_whitespace_save.js"
+        },
         "Find:Find In Project": {
             "scriptUrl": "./command/search.js",
             "readOnly": true

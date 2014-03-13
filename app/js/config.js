@@ -185,17 +185,10 @@ define(function(require, exports, module) {
         });
     };
 
-    exports.toggleHandler = function(signal, value) {
-        var handlers = userConfig.handlers[signal] || [];
-        var index = handlers.indexOf(value);
-        if (index > -1) {
-            handlers.splice(index, 1);
-        } else {
-            handlers.push(value);
-        }
-        userConfig.handlers[signal] = handlers;
-        eventbus.emit("configchanged", exports);
-        whenConfigurationAvailable(writeUserPrefs);
+    exports.togglePreference = function(key, session) {
+        var newvalue = !exports.getPreference(key, session);
+        exports.setPreference(key, newvalue);
+        return newvalue;
     };
 
     exports.getModes = function() {

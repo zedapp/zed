@@ -859,12 +859,6 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Configuration:Preferences:Toggle Trim Whitespace On Save", {
-        exec: function() {
-            config.toggleHandler("save", "Edit:Trim Whitespace");
-        }
-    });
-
     command.define("Configuration:Preferences:Toggle Trim Whitespace On Empty Lines", {
         exec: function() {
             config.setPreference("trimEmptyLines", !config.getPreference("trimEmptyLines"));
