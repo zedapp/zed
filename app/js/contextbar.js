@@ -102,7 +102,7 @@ define(function(require, exports, module) {
         var titleEl = barEl.find(".title");
         var win = chrome.app.window.current();
 
-        titleEl.html("<img src='img/zed-small.png'/>" + title);
+        titleEl.html("<img src='img/zed-small.png'/>" + title + " ");
 
         var buttonsEl = barEl.find(".windowbuttons");
         buttonsEl.mousemove(function() {

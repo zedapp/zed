@@ -403,7 +403,6 @@ body.mac.dark .ace_content {
     z-index: 1000;
     border-bottom: 1px solid #111;
     padding-left: 35px;
-    font-weight: bold;
     color: #000;
     -webkit-app-region: drag;
 }
