@@ -124,7 +124,14 @@ define(function(require, exports, module) {
                 win.maximize();
             }
         });
-
+        barEl.find(".fullscreen").mouseup(function() {
+            if(win.isFullscreen()) {
+                win.restore();
+            } else {
+                win.fullscreen();
+            }
+        });
+        
         editor.getEditors(true).forEach(function(edit) {
             $(edit.container).css("top", barHeight + "px");
             edit.resize();

@@ -172,16 +172,20 @@ div.preview-vsplit2-right-2 {
 }
 #goto {
     position: fixed;
-    /*border-left: solid 1px #888;*/
-    /*border-bottom: solid 1px #888;*/
-    /*border-right: solid 1px #888;*/
-    background: #222;
     padding: 0;
     z-index: 1000;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
     top: 22px;
+    background: #aaa;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
 }
+
+body.dark #goto {
+    background: #222;
+}
+
 #goto input {
     font-size: 12px;
     width: 100%;
@@ -191,12 +195,16 @@ div.preview-vsplit2-right-2 {
     outline-width: 0;
     border: 0;
     padding: 2px 8px 2px 8px;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    background-color: #aaa;
+    color: #000;
+}
+
+body.dark #goto input {
     background-color: #000;
     color: #fff;
-    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
+
 #gotohint {
     border-right: solid 1px #888;
     border-left: solid 1px #888;
@@ -206,13 +214,11 @@ div.preview-vsplit2-right-2 {
     padding: 2px;
     font-size: 11px;
 }
-
 #results {
     border-right: solid 1px #888;
     border-left: solid 1px #888;
     border-bottom: solid 1px #888;
 }
-
 #results .ace_autocomplete {
     position: relative !important;
     box-shadow: none !important;
@@ -224,14 +230,20 @@ div.preview-vsplit2-right-2 {
     position: absolute;
     top: 25px;
     z-index: 999;
-    color: #ccc;
     text-align: center;
+    color: #555;
 }
-.editbar.active {
+body.dark .editbar {
+    color: #ccc;
+}
+body.dark .editbar.active {
     color: #fff;
 }
+.editbar.active {
+    color: #000;
+}
 .editbar .path {
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     font-weight: normal;
     margin: 0 auto;
@@ -239,6 +251,9 @@ div.preview-vsplit2-right-2 {
     padding: 2px 8px 2px 8px;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
+    background-color: #aaa;
+}
+body.dark .editbar .path {
     background-color: #000;
 }
 .editbar .info {
@@ -258,10 +273,12 @@ div.preview-vsplit2-right-2 {
 }
 .ace_autocomplete {
     width: 300px;
+    background-color: #aaa;
+    color: #000;
+}
+body.dark .ace_autocomplete {
     background-color: #333;
     color: #ccc;
-}
-.dark .ace_autocomplete {
     border-top: 0;
     border-right: 1px solid #888;
     border-left: 1px solid #888;
@@ -269,14 +286,25 @@ div.preview-vsplit2-right-2 {
 }
 .ace_autocomplete .ace_completion-highlight {
     text-decoration: underline;
-    color: #fff !important;
     text-shadow: none !important;
+    color: #333 !important;
+}
+body.dark .ace_autocomplete .ace_completion-highlight {
+    color: #fff !important;
 }
 .ace_line-hover {
     border: 0 !important;
+    background: #eee !important;
+}
+
+body.dark .ace_line-hover {
     background: #555 !important;
 }
+
 .ace_autocomplete .ace_active-line {
+    background-color: #eee !important;
+}
+body.dark .ace_autocomplete .ace_active-line {
     background-color: #555 !important;
 }
 .actionbox.ace_autocomplete {
@@ -397,14 +425,19 @@ body.mac.dark .ace_content {
     left: 0;
     right: 0;
     height: 45px;
-    background-color: #333;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     z-index: 1000;
-    border-bottom: 1px solid #111;
     padding-left: 35px;
-    color: #000;
     -webkit-app-region: drag;
+    background-color: #ccc;
+    color: #fff;
+    border-bottom: 1px solid #aaa;
+}
+body.dark #contextbar {
+    background-color: #333;
+    color: #000;
+    border-bottom: 1px solid #111;
 }
 #contextbar .windowbuttons {
     position: absolute;
@@ -444,8 +477,11 @@ body.mac.dark .ace_content {
     top: 5px;
     left: 60px;
     right: 60px;
-    color: #fff;
     text-align: center;
+    color: #000;
+}
+body.dark #contextbar .title {
+    color: #fff;
 }
 #contextbar .title img {
     vertical-align: top;
