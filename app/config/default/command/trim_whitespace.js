@@ -5,12 +5,18 @@ function StripperConstructor(options, callback) {
     this.path = options.path;
     this.final = callback;
 
-    config.getPreference("trimEmptyLines", this.getPrefs.bind(this));
+    config.getPreference("trimWhitespaceOnSave", this.getSave.bind(this));
 }
 
 var Stripper = StripperConstructor.prototype;
 
-Stripper.getPrefs = function(err, trimEmpty) {
+Stripper.getSave = function(err, trimWhitespaceOnSave) {
+    if (trimWhitespaceOnSave) {
+        config.getPreference("trimEmptyLines", this.getEmpty.bind(this));
+    }
+};
+
+Stripper.getEmpty = function(err, trimEmpty) {
     this.min = trimEmpty ? -1 : 0;
 
     session.getCursorPosition(this.path, this.getLine.bind(this));
