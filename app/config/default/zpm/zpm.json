@@ -12,7 +12,8 @@
             "commands": {
                 "Installed Packages:Execute Command": {
                     "scriptUrl": "/default/zpm/installed_packages/execute.js"
-                }
+                },
+                "internal": true
             },
 
             "preferences": {
@@ -32,11 +33,13 @@
         },
         "Tools:Zpm:Auto Update": {
             "scriptUrl": "/default/zpm/auto_update.js",
-            "readOnly": true
+            "readOnly": true,
+            "internal": true
         },
         "Tools:Zpm:Install From Config": {
             "scriptUrl": "/default/zpm/install_config.js",
-            "readOnly": true
+            "readOnly": true,
+            "internal": true
         }
     },
     "handlers": {

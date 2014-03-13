@@ -27,7 +27,8 @@ define(function(require, exports, module) {
                     });
                 });
             },
-            readOnly: cmd.readOnly
+            readOnly: cmd.readOnly,
+            internal: cmd.internal
         });
     }
 
@@ -107,7 +108,10 @@ define(function(require, exports, module) {
                                 return true;
                             }
                             var modeName = session.mode.language;
-                            return command.modeCommand[modeName];
+                            return command.modeCommand[modeName] && !command.modeCommand[modeName].internal;
+                        }
+                        if(command.internal) {
+                            return false;
                         }
                         return true;
                     });

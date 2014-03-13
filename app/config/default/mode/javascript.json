@@ -25,10 +25,12 @@
                         "expr": true,
                         "multistr": true,
                         "globalstrict": true
-                    }
+                    },
+                    "internal": true
                 },
                 "Tools:CTags": {
-                    "scriptUrl": "./javascript/ctags.js"
+                    "scriptUrl": "./javascript/ctags.js",
+                    "internal": true
                 },
 
                 "Tools:Beautify": {
@@ -45,7 +47,8 @@
                         "forEach": "forEach(function(${0:el}) {\n\t${1}\n});",
                         "setTimeout": "setTimeout(function() {\n\t${1}\n}, ${2:0})",
                         "iterkeys": "Object.keys(${1:obj}).forEach(function(${2:key}) {\n\t${3}\n});"
-                    }
+                    },
+                    "internal": true
                 }
             },
 

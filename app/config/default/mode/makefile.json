@@ -3,8 +3,9 @@
         "makefile": {
             "name": "Makefile",
             "highlighter": "ace/mode/makefile",
-            "filenames": ["Makefile"],
-            
+            "filenames": [
+                "GNUmakefile", "makefile", "Makefile"
+                ],
             "preferences": {
                 "useSoftTabs": false
             }
