@@ -6,7 +6,7 @@ define(function(require, exports, module) {
     var eventbus = require("./lib/eventbus");
 
     var commands = {};
-    
+
     // Commands coming from configuration somehow (user commands, theme commands)
     var configCommands = {};
 
@@ -30,7 +30,7 @@ define(function(require, exports, module) {
             readOnly: cmd.readOnly
         });
     }
-    
+
     exports.hook = function() {
         eventbus.on("configchanged", function(config) {
             configCommands = {};
@@ -53,12 +53,12 @@ define(function(require, exports, module) {
         def.name = path;
         commands[path] = def;
     };
-    
+
     exports.defineConfig = function(path, def) {
         def.name = path;
         configCommands[path] = def;
     };
-    
+
 
     exports.lookup = function(path) {
         var cmd = configCommands[path];
@@ -143,7 +143,7 @@ define(function(require, exports, module) {
     exports.define("Configuration:Preferences:Toggle Highlight Active Line", {
         exec: function() {
             require(["./config"], function(config) {
-                config.setPreference("highlightActiveLine", !config.getPreference("highlightActiveLine"));
+                config.togglePreference("highlightActiveLine");
             });
         },
         readOnly: true
@@ -152,7 +152,7 @@ define(function(require, exports, module) {
     exports.define("Configuration:Preferences:Toggle Highlight Gutter Line", {
         exec: function() {
             require(["./config"], function(config) {
-                config.setPreference("highlightGutterLine", !config.getPreference("highlightGutterLine"));
+                config.togglePreference("highlightGutterLine");
             });
         },
         readOnly: true
@@ -161,7 +161,7 @@ define(function(require, exports, module) {
     exports.define("Configuration:Preferences:Toggle Show Print Margin", {
         exec: function() {
             require(["./config"], function(config) {
-                config.setPreference("showPrintMargin", !config.getPreference("showPrintMargin"));
+                config.togglePreference("showPrintMargin");
             });
         },
         readOnly: true
@@ -170,7 +170,7 @@ define(function(require, exports, module) {
     exports.define("Configuration:Preferences:Toggle Show Invisibles", {
         exec: function() {
             require(["./config"], function(config) {
-                config.setPreference("showInvisibles", !config.getPreference("showInvisibles"));
+                config.togglePreference("showInvisibles");
             });
         },
         readOnly: true
@@ -179,7 +179,7 @@ define(function(require, exports, module) {
     exports.define("Configuration:Preferences:Toggle Display Indent Guides", {
         exec: function() {
             require(["./config"], function(config) {
-                config.setPreference("displayIndentGuides", !config.getPreference("displayIndentGuides"));
+                config.togglePreference("displayIndentGuides");
             });
         },
         readOnly: true
@@ -188,7 +188,7 @@ define(function(require, exports, module) {
     exports.define("Configuration:Preferences:Toggle Show Gutter", {
         exec: function() {
             require(["./config"], function(config) {
-                config.setPreference("showGutter", !config.getPreference("showGutter"));
+                config.togglePreference("showGutter");
             });
         },
         readOnly: true

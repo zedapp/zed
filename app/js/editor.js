@@ -840,7 +840,7 @@ define(function(require, exports, module) {
     // SETTINGS
     command.define("Configuration:Preferences:Toggle Word Wrap", {
         exec: function() {
-            config.setPreference("wordWrap", !config.getPreference("wordWrap"));
+            config.togglePreference("wordWrap");
         },
         readOnly: true
     });
@@ -861,13 +861,13 @@ define(function(require, exports, module) {
 
     command.define("Configuration:Preferences:Toggle Trim Whitespace On Empty Lines", {
         exec: function() {
-            config.setPreference("trimEmptyLines", !config.getPreference("trimEmptyLines"));
+            config.togglePreference("trimEmptyLines");
         }
     });
 
     command.define("Configuration:Preferences:Toggle Spell Check", {
         exec: function() {
-            config.setPreference("spellCheck", !config.getPreference("spellCheck"));
+            config.togglePreference("spellCheck");
         },
         readOnly: true
     });
