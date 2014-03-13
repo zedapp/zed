@@ -11,7 +11,8 @@
                 },
 
                 "Tools:Check": {
-                    "scriptUrl": "/default/mode/json/check.js"
+                    "scriptUrl": "/default/mode/json/check.js",
+                    "internal": true
                 }
             },
 
