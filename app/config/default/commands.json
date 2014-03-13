@@ -1,5 +1,8 @@
 {
     "commands": {
+        "Configuration:Preferences:Toggle Trim Whitespace On Empty Lines": {
+            "scriptUrl": "./command/toggle_whitespace_empty_lines.js"
+        },
         "Configuration:Preferences:Toggle Trim Whitespace On Save": {
             "scriptUrl": "./command/toggle_whitespace_save.js"
         },

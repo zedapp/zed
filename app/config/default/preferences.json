@@ -23,7 +23,7 @@
         "wordWrap": false,
         "wordWrapColumn": null,
         "previewDelay": 500,
-        "trimTrailingWhiteSpaceOnSave": false,
+        "trimWhitespaceOnSave": false,
         "trimEmptyLines": true,
         "hygienicMode": false,
         "hygienicModeRemote": true,
