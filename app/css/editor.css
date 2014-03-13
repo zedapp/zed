@@ -470,7 +470,12 @@ body.dark #contextbar {
     top: 2px;
     width: 20px;
     height: 20px;
-    background: url("../img/mac-fullscreen.png");
+    background: url("../img/light-fullscreen.png");
+    background-size: 20px 20px;
+}
+body.dark #contextbar .fullscreen {
+    background: url("../img/dark-fullscreen.png");
+    background-size: 20px 20px;
 }
 #contextbar .title {
     position: absolute;
