@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 
         var editors = editor.getEditors();
         var edit = null;
-        
+
         _.each(editors, function(edit_) {
             if (edit_.getSession() === session) {
                 edit = edit_;
@@ -75,13 +75,13 @@ define(function(require, exports, module) {
             return false;
         }
     }
-    
+
     function runHandler(handlerName, callback) {
         var commandNames = [];
         if (config.getHandlers()[handlerName]) {
             commandNames = commandNames.concat(config.getHandlers()[handlerName]);
         }
-        
+
         var waitingFor = commandNames.length;
         var results = [];
         var edit = editor.getActiveEditor();
@@ -127,6 +127,9 @@ define(function(require, exports, module) {
         });
         eventbus.on("configchanged", function() {
             runHandler("configchanged");
+        });
+        eventbus.on("sessionbeforesave", function(session) {
+            runSessionHandler(session, "presave");
         });
         eventbus.on("sessionchanged", function(session) {
             analyze(session);
