@@ -185,6 +185,19 @@ define(function(require, exports, module) {
         });
     };
 
+    exports.toggleHandler = function(signal, value) {
+        var handlers = userConfig.handlers[signal] || [];
+        var index = handlers.indexOf(value);
+        if (index > -1) {
+            handlers.splice(index, 1);
+        } else {
+            handlers.push(value);
+        }
+        userConfig.handlers[signal] = handlers;
+        eventbus.emit("configchanged", exports);
+        whenConfigurationAvailable(writeUserPrefs);
+    };
+
     exports.getModes = function() {
         return expandedConfiguration.modes;
     };
@@ -203,16 +216,6 @@ define(function(require, exports, module) {
 
     exports.getHandlers = function() {
         return expandedConfiguration.handlers;
-    };
-
-    exports.getUserHandlers = function() {
-        return userConfig.handlers;
-    };
-
-    exports.setUserHandlers = function(handlers) {
-        userConfig.handlers = handlers;
-        eventbus.emit("configchanged", exports);
-        whenConfigurationAvailable(writeUserPrefs);
     };
 
     exports.getTheme = function(name) {
