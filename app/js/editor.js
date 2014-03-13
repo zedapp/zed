@@ -861,7 +861,7 @@ define(function(require, exports, module) {
 
     command.define("Configuration:Preferences:Toggle Trim Whitespace On Save", {
         exec: function() {
-            config.toggleHandler("presave", "Edit:Trim Whitespace");
+            config.toggleHandler("save", "Edit:Trim Whitespace");
         }
     });
 

@@ -129,7 +129,7 @@ define(function(require, exports, module) {
             runHandler("configchanged");
         });
         eventbus.on("sessionbeforesave", function(session) {
-            runSessionHandler(session, "presave");
+            runSessionHandler(session, "save");
         });
         eventbus.on("sessionchanged", function(session) {
             analyze(session);
