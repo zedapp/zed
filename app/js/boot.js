@@ -15,8 +15,8 @@ require(["text!../manual/intro.md"], function(introText) {
     
     var modules = [
         "./command",
+        "./window",
         "./editor",
-        // "./editbar",
         "./contextbar",
         "./config",
         "./goto",

@@ -282,6 +282,10 @@
         "Project:Open Project Picker": {
             "mac": "Command-Shift-O",
             "win": "Ctrl-Shift-O"
+        },
+        "Window:Close": {
+            "mac": "Command-W",
+            "win": "Alt-F4"
         }
     }
 }
