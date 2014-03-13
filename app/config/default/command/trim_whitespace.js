@@ -38,7 +38,7 @@ Stripper.strip = function(err, lines) {
     }
 
     // Strip newlines from the end of the file.
-    while (lines[lines.length - 1] === "") {
+    while (lines[lines.length - 1] === "" && lines.length > this.currentLine) {
         lines.pop();
     }
 
