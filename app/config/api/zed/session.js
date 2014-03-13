@@ -12,8 +12,8 @@ module.exports = {
     setText: function(path, text, callback) {
         sandboxRequest("zed/session", "setText", [path, text], callback);
     },
-    insertAtCursor: function(text, callback) {
-        sandboxRequest("zed/session", "insertAtCursor", [text], callback);
+    insertAtCursor: function(text, path, callback) {
+        sandboxRequest("zed/session", "insertAtCursor", [text, path], callback);
     },
     insert: function(path, pos, text, callback) {
         sandboxRequest("zed/session", "insert", [path, pos, text], callback);
