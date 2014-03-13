@@ -859,12 +859,18 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    // TODO: This is currently broken (no code observes the value of this preference)
-    // Need to make this command toggle the presence of the handler instead.
-    //     "handlers": { "change": ["Edit:Trim Whitespace"] },
-    command.define("Configuration:Preferences:Toggle Trim Trailing Whitespace On Save", {
+    command.define("Configuration:Preferences:Toggle Trim Whitespace On Save", {
         exec: function() {
-            config.setPreference("trimTrailingWhiteSpaceOnSave", !config.getPreference("trimTrailingWhiteSpaceOnSave"));
+            var handlers = config.getUserHandlers();
+            var presave = handlers.presave || [];
+            var index = presave.indexOf("Edit:Trim Whitespace");
+            if (index > -1) {
+                presave.splice(index, 1);
+            } else {
+                presave.push("Edit:Trim Whitespace");
+            }
+            handlers.presave = presave;
+            config.setUserHandlers(handlers);
         }
     });
 

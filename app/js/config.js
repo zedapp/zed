@@ -157,6 +157,16 @@ define(function(require, exports, module) {
         }
     }
 
+    function writeUserPrefs() {
+        configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4), function(err) {
+            if (err) {
+                console.error("Error during writing config:", err);
+            }
+        });
+    }
+
+    exports.writeUserPrefs = writeUserPrefs;
+
     exports.getPreference = function(key, session) {
         if (session && session.mode) {
             var mode = session.mode;
@@ -171,11 +181,7 @@ define(function(require, exports, module) {
         config.preferences[key] = value;
         whenConfigurationAvailable(function() {
             userConfig.preferences[key] = value;
-            configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4), function(err) {
-                if (err) {
-                    console.error("Error during writing config:", err);
-                }
-            });
+            writeUserPrefs();
         });
     };
 
@@ -197,6 +203,16 @@ define(function(require, exports, module) {
 
     exports.getHandlers = function() {
         return expandedConfiguration.handlers;
+    };
+
+    exports.getUserHandlers = function() {
+        return userConfig.handlers;
+    };
+
+    exports.setUserHandlers = function(handlers) {
+        userConfig.handlers = handlers;
+        eventbus.emit("configchanged", exports);
+        whenConfigurationAvailable(writeUserPrefs);
     };
 
     exports.getTheme = function(name) {
