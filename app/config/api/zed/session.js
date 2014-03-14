@@ -33,6 +33,12 @@ module.exports = {
     getTextRange: function(path, start, end, callback) {
         sandboxRequest("zed/session", "getTextRange", [path, start, end], callback);
     },
+    getCursorIndex: function(path, callback) {
+        sandboxRequest("zed/session", "getCursorIndex", [path], callback);
+    },
+    setCursorIndex: function(path, index, callback) {
+        sandboxRequest("zed/session", "setCursorIndex", [path, index], callback);
+    },
     getCursorPosition: function(path, callback) {
         sandboxRequest("zed/session", "getCursorPosition", [path], callback);
     },
