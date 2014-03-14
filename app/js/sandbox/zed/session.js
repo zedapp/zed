@@ -113,6 +113,29 @@ define(function(require, exports, module) {
         getTextRange: function(path, start, end, callback) {
             callback(null, getSession(path).getTextRange(rangify({start: start, end: end})));
         },
+        getCursorIndex: function(path, callback) {
+            var session = getSession(path);
+            var cursor = session.selection.getCursor();
+            var lines = session.getDocument().getAllLines();
+            var index = cursor.column;
+            lines.splice(cursor.row);
+            while (lines.length > 0) {
+                index += lines.pop().length + 1;
+            }
+            callback(null, index);
+        },
+        setCursorIndex: function(path, index, callback) {
+            var session = getSession(path);
+            var text = session.getValue().slice(0, index);
+            var lines = text.split("\n");
+            var pos = {
+                row: lines.length - 1,
+                column: lines[lines.length - 1].length
+            };
+            session.selection.clearSelection();
+            session.selection.moveCursorToPosition(pos);
+            callback();
+        },
         getCursorPosition: function(path, callback) {
             callback(null, getSession(path).selection.getCursor());
         },

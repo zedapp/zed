@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     var command = require("./command");
 
     var useragent = require("ace/lib/useragent");
+    var barEl;
 
     eventbus.declare("projecttitlechanged");
     eventbus.declare("sessionactivitystarted"); // session, name
@@ -38,11 +39,11 @@ define(function(require, exports, module) {
                 var editorClasses = _.filter(edit.container.getAttribute("class").split(" "), function(cls) {
                     return cls.indexOf("editor-") === 0;
                 });
-                var clsToAdd = "editbar-" + editorClasses[0].substring("editor-".length);
-                // Remove old editbar-* classes
+                var clsToAdd = "pathbar-" + editorClasses[0].substring("editor-".length);
+                // Remove old pathbar-* classes
                 var pathBarEl = edit.pathBarEl;
                 _.each(pathBarEl.attr("class").split(" "), function(cls) {
-                    if (cls.indexOf("editbar-") === 0) {
+                    if (cls.indexOf("pathbar-") === 0) {
                         pathBarEl.removeClass(cls);
                     }
                 });
@@ -53,7 +54,7 @@ define(function(require, exports, module) {
 
         eventbus.once("editorloaded", function() {
             editor.getEditors(true).forEach(function(edit) {
-                var el = $("<div class='editbar'><div class='path'></div><div class='info' 'display: none;'></div>");
+                var el = $("<div class='pathbar'><div class='path'></div><div class='info' 'display: none;'></div>");
                 barEl.append(el);
                 edit.pathBarEl = el;
             });
@@ -157,7 +158,7 @@ define(function(require, exports, module) {
 
     command.define("Configuration:Preferences:Toggle Context Bar", {
         exec: function() {
-            config.setPreference("showContextBar", !config.getPreference("showContextBar"));
+            config.togglePreference("showContextBar");
         },
         readOnly: true
     });

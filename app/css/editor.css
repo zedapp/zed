@@ -95,47 +95,47 @@ div.editor-vsplit3-right {
     bottom: 0;
     width: 33.3%;
 }
-div.editbar-single {
+div.pathbar-single {
     right: 0;
     left: 0;
 }
-div.editbar-disabled {
+div.pathbar-disabled {
     display: none;
 }
-div.editbar-vsplit2-left-0 {
+div.pathbar-vsplit2-left-0 {
     left: 0;
     width: 50%;
 }
-div.editbar-vsplit2-right-0 {
+div.pathbar-vsplit2-right-0 {
     right: 0;
     width: 50%;
 }
-div.editbar-vsplit2-left-1 {
+div.pathbar-vsplit2-left-1 {
     left: 0;
     width: 33.33%;
 }
-div.editbar-vsplit2-right-1 {
+div.pathbar-vsplit2-right-1 {
     right: 0;
     width: 66.66%;
 }
-div.editbar-vsplit2-left-2 {
+div.pathbar-vsplit2-left-2 {
     left: 0;
     width: 66.66%;
 }
-div.editbar-vsplit2-right-2 {
+div.pathbar-vsplit2-right-2 {
     right: 0;
     width: 33.33%;
 }
-div.editbar-vsplit3-left {
+div.pathbar-vsplit3-left {
     left: 0;
     width: 33.33%;
 }
-div.editbar-vsplit3-middle {
+div.pathbar-vsplit3-middle {
     left: 50%;
     margin-left: -16.666%;
     width: 33.33%;
 }
-div.editbar-vsplit3-right {
+div.pathbar-vsplit3-right {
     right: 0;
     width: 33.3%;
 }
@@ -226,23 +226,23 @@ body.dark #goto input {
     background: none;
     border: 0 !important;
 }
-.editbar {
+.pathbar {
     position: absolute;
     top: 25px;
     z-index: 999;
     text-align: center;
     color: #555;
 }
-body.dark .editbar {
+body.dark .pathbar {
     color: #ccc;
 }
-body.dark .editbar.active {
+body.dark .pathbar.active {
     color: #fff;
 }
-.editbar.active {
+.pathbar.active {
     color: #000;
 }
-.editbar .path {
+.pathbar .path {
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 13px;
     font-weight: normal;
@@ -253,10 +253,10 @@ body.dark .editbar.active {
     border-top-left-radius: 5px;
     background-color: #aaa;
 }
-body.dark .editbar .path {
+body.dark .pathbar .path {
     background-color: #000;
 }
-.editbar .info {
+.pathbar .info {
     position: absolute;
     right: 0;
     top: 5px;
@@ -265,7 +265,7 @@ body.dark .editbar .path {
     padding-right: 8px;
     color: #777;
 }
-.editbar .error {
+.pathbar .error {
     color: red;
 }
 .hidden {
