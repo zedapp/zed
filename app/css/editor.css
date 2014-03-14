@@ -519,6 +519,7 @@ body.non_mac .windowbuttons .minimize {
     height: 20px;
     background: url("../img/light-fullscreen.png");
     background-size: 20px 20px;
+    -webkit-app-region: no-drag;
 }
 body.dark #contextbar .fullscreen {
     background: url("../img/dark-fullscreen.png");
