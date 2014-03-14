@@ -10,10 +10,12 @@
                     "scriptUrl": "/default/mode/css/beautify.js"
                 },
                 "Tools:Check": {
-                    "scriptUrl": "/default/mode/css/check.js"
+                    "scriptUrl": "/default/mode/css/check.js",
+                    "internal": true
                 },
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/css/ctags.js"
+                    "scriptUrl": "/default/mode/css/ctags.js",
+                    "internal": true
                 }
             },
             "handlers": {

@@ -76,12 +76,6 @@ define(function(require, exports, module) {
                     });
                 });
             });
-
-            eventbus.on("sessionbeforesave", function() {
-                if (config.getPreference("trimTrailingWhiteSpaceOnSave")) {
-                    editor.trimTrailingWhitespace(editor.getActiveEditor());
-                }
-            });
         },
         init: function() {
             $("body").append("<div id='editor0' class='editor-single'>");
@@ -115,24 +109,6 @@ define(function(require, exports, module) {
 
             editor.setActiveEditor(editors[0]);
             eventbus.emit("editorloaded", exports);
-        },
-        trimTrailingWhitespace: function(edit) {
-            var currentLine = edit.getCursorPosition().row;
-            var session = edit.getSession();
-            var doc = session.getDocument();
-            var lines = doc.getAllLines();
-
-            var min = config.getPreference("trimEmptyLines") ? -1 : 0;
-
-            for (var i = 0, l = lines.length; i < l; i++) {
-                if (i === currentLine) {
-                    continue;
-                }
-                var line = lines[i];
-                var index = line.search(/\s+$/);
-
-                if (index > min) doc.removeInLine(i, index, line.length);
-            }
         },
         createSession: function(path, content) {
             var mode = modes.getModeForPath(path);
@@ -785,12 +761,6 @@ define(function(require, exports, module) {
         }
     });
 
-    command.define("Edit:Trim Trailing Space", {
-        exec: function(edit) {
-            editor.trimTrailingWhitespace(edit, true);
-        }
-    });
-
     command.define("Edit:Convert Indentation", {
         exec: function(edit) {
             // todo this command needs a way to get values for tabChar and tabLength
@@ -823,7 +793,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Find:All", {
         exec: function(edit) {
             var phrase;
@@ -870,7 +840,7 @@ define(function(require, exports, module) {
     // SETTINGS
     command.define("Configuration:Preferences:Toggle Word Wrap", {
         exec: function() {
-            config.setPreference("wordWrap", !config.getPreference("wordWrap"));
+            config.togglePreference("wordWrap");
         },
         readOnly: true
     });
@@ -889,21 +859,9 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    command.define("Configuration:Preferences:Toggle Trim Trailing Whitespace On Save", {
-        exec: function() {
-            config.setPreference("trimTrailingWhiteSpaceOnSave", !config.getPreference("trimTrailingWhiteSpaceOnSave"));
-        }
-    });
-
-    command.define("Configuration:Preferences:Toggle Trim Whitespace On Empty Lines", {
-        exec: function() {
-            config.setPreference("trimEmptyLines", !config.getPreference("trimEmptyLines"));
-        }
-    });
-
     command.define("Configuration:Preferences:Toggle Spell Check", {
         exec: function() {
-            config.setPreference("spellCheck", !config.getPreference("spellCheck"));
+            config.togglePreference("spellCheck");
         },
         readOnly: true
     });

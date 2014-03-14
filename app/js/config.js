@@ -157,6 +157,16 @@ define(function(require, exports, module) {
         }
     }
 
+    function writeUserPrefs() {
+        configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4), function(err) {
+            if (err) {
+                console.error("Error during writing config:", err);
+            }
+        });
+    }
+
+    exports.writeUserPrefs = writeUserPrefs;
+
     exports.getPreference = function(key, session) {
         if (session && session.mode) {
             var mode = session.mode;
@@ -171,12 +181,14 @@ define(function(require, exports, module) {
         config.preferences[key] = value;
         whenConfigurationAvailable(function() {
             userConfig.preferences[key] = value;
-            configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4), function(err) {
-                if (err) {
-                    console.error("Error during writing config:", err);
-                }
-            });
+            writeUserPrefs();
         });
+    };
+
+    exports.togglePreference = function(key, session) {
+        var newvalue = !exports.getPreference(key, session);
+        exports.setPreference(key, newvalue);
+        return newvalue;
     };
 
     exports.getModes = function() {

@@ -8,7 +8,7 @@ define(function(require, exports, module) {
     var icons = require("./lib/icons");
 
     var barEl;
-    
+
     eventbus.declare("projecttitlechanged");
 
     exports.hook = function() {
@@ -55,7 +55,7 @@ define(function(require, exports, module) {
 
     command.define("Configuration:Preferences:Toggle Context Bar", {
         exec: function() {
-            config.setPreference("showContextBar", !config.getPreference("showContextBar"));
+            config.togglePreference("showContextBar");
         },
         readOnly: true
     });
