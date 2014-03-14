@@ -6,12 +6,20 @@ define(function(require, exports, module) {
     var options = require("./lib/options");
     var command = require("./command");
 
+    var useragent = require("ace/lib/useragent");
+
     eventbus.declare("projecttitlechanged");
     eventbus.declare("sessionactivitystarted"); // session, name
     eventbus.declare("sessionactivitycompleted"); // session, name
     eventbus.declare("sessionactivityfailed"); // session, error
 
-    var barEl = $("<div id='contextbar'><div class='windowbuttons'><div class='close'></div><div class='minimize'></div><div class='maximize'></div></div><div class='title'></div><div class='fullscreen'></div>");
+    var winButtons;
+    if (useragent.isMac) {
+        winButtons = "<div class='close'></div><div class='minimize'></div><div class='maximize'></div>";
+    } else {
+        winButtons = "<div class='minimize'></div><div class='maximize'></div><div class='close'></div>";
+    }
+    var barEl = $("<div id='contextbar'><div class='windowbuttons'>" + winButtons + "</div><div class='title'></div><div class='fullscreen'></div>");
     $("body").append(barEl);
 
     exports.hook = function() {
@@ -105,40 +113,42 @@ define(function(require, exports, module) {
         titleEl.html("<img src='img/zed-small.png'/>" + title + " ");
 
         var buttonsEl = barEl.find(".windowbuttons");
-        buttonsEl.mousemove(function() {
-            buttonsEl.find("div").css("background-position-y", '-16px');
-        });
-        buttonsEl.mouseout(function() {
-            buttonsEl.find("div").css("background-position-y", '0');
-        });
-        buttonsEl.find(".close").mouseup(function() {
+        if (useragent.isMac) {
+            buttonsEl.mousemove(function() {
+                buttonsEl.find("div").css("background-position-y", '-16px');
+            });
+            buttonsEl.mouseout(function() {
+                buttonsEl.find("div").css("background-position-y", '0');
+            });
+        }
+        buttonsEl.find(".close").click(function() {
             win.close();
         });
-        buttonsEl.find(".minimize").mouseup(function() {
+        buttonsEl.find(".minimize").click(function() {
             win.minimize();
         });
-        buttonsEl.find(".maximize").mouseup(function() {
+        buttonsEl.find(".maximize").click(function() {
             if (win.isMaximized()) {
                 win.restore();
             } else {
                 win.maximize();
             }
         });
-        barEl.find(".fullscreen").mouseup(function() {
-            if(win.isFullscreen()) {
+        barEl.find(".fullscreen").click(function() {
+            if (win.isFullscreen()) {
                 win.restore();
             } else {
                 win.fullscreen();
             }
         });
-        
+
         editor.getEditors(true).forEach(function(edit) {
             $(edit.container).css("top", barHeight + "px");
             edit.resize();
         });
         $("#preview-wrapper").css("top", barHeight + "px");
     }
-    
+
     function switchSession(edit, session) {
         var filename = session.filename;
         edit.pathBarEl.find('.path').text(filename + (session.readOnly ? " [Read Only]" : ""));

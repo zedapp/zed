@@ -325,7 +325,18 @@ body.dark .ace_autocomplete .ace_active-line {
 }
 .dynatree-container {
     border: none !important;
+    background-color: #fff;
 }
+body.dark .dynatree-container {
+    background-color: #000;
+}
+body.dark .dynatree-container a {
+    color: #ddd;
+}
+body.dark .dynatree-focused a:link {
+    background-color: #333;
+}
+
 #blockui {
     position: absolute;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
@@ -441,29 +452,65 @@ body.dark #contextbar {
 }
 #contextbar .windowbuttons {
     position: absolute;
+    -webkit-app-region: no-drag;
+}
+
+body.mac #contextbar .windowbuttons {
     top: 7px;
     left: 9px;
     width: 54px;
     height: 16px;
 }
-.windowbuttons .close {
+
+body.non_mac #contextbar .windowbuttons {
+    right: 9px;
+    top: 7px;
+    width: 54px;
+    height: 16px;
+}
+
+body.non_mac #contextbar .fullscreen {
+    display: none;
+}
+
+body.mac .windowbuttons .close {
     display: inline-block;
     width: 16px;
     height: 16px;
     background: url("../img/mac-buttons.png") 0 0;
 }
-.windowbuttons .maximize {
+body.mac .windowbuttons .maximize {
     display: inline-block;
     width: 16px;
     height: 16px;
     background: url("../img/mac-buttons.png") 15px 0;
 }
-.windowbuttons .minimize {
+body.mac .windowbuttons .minimize {
     display: inline-block;
     width: 16px;
     height: 16px;
     background: url("../img/mac-buttons.png") 35px 0;
 }
+
+body.non_mac .windowbuttons .close {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons.png") 20px 0;
+}
+body.non_mac .windowbuttons .maximize {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons.png") 0 0;
+}
+body.non_mac .windowbuttons .minimize {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons.png") 35px 0;
+}
+
 #contextbar .fullscreen {
     position: absolute;
     right: 5px;
