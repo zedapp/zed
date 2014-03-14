@@ -258,11 +258,10 @@ body.dark .pathbar .path {
 }
 .pathbar .info {
     position: absolute;
-    right: 0;
-    top: 5px;
+    right: 10px;
+    top: 0;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    font-size: 13px;
-    padding-right: 8px;
+    font-size: 12px;
     color: #777;
 }
 .pathbar .error {
