@@ -58,8 +58,9 @@ define(function(require, exports, module) {
                 return callback("No session for: " + path);
             }
             var text = session.getValue();
-            var index = this.getCursorIndex();
-            callback(null, text.slice(0, index), index, text.slice(index));
+            this.getCursorIndex(path, function(err, index) {
+                callback(null, text.slice(0, index), index, text.slice(index));
+            });
         },
         setText: function(path, text, callback) {
             var session = getSession(path);
