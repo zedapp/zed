@@ -11,10 +11,8 @@ define(function(require, exports, module) {
             callback(null, pref);
         },
         togglePreference: function(preference, callback) {
-            var edit = editor.getActiveEditor();
-            var session = edit.getSession();
-            var pref = config.togglePreference(preference, session);
-            callback(null, pref);
+            callback(null, config.togglePreference(
+                preference, editor.getActiveSession()));
         },
         get: function(name, callback) {
             callback(null, config.getConfiguration()[name]);
