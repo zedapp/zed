@@ -10,7 +10,12 @@ define(function(require, exports, module) {
     }
 
     function getSession(path) {
-        var session = session_manager.getSessions()[path];
+        var session;
+        if (path) {
+            session = session_manager.getSessions()[path];
+        } else {
+            session = editor.getActiveSession();
+        }
         return session;
     }
 
@@ -47,6 +52,15 @@ define(function(require, exports, module) {
             }
             callback(null, session.getValue());
         },
+        getBeforeAndAfter: function(path, callback) {
+            var session = getSession(path);
+            if(!session) {
+                return callback("No session for: " + path);
+            }
+            var text = session.getValue();
+            var index = this.getCursorIndex();
+            callback(null, text.slice(0, index), index, text.slice(index));
+        },
         setText: function(path, text, callback) {
             var session = getSession(path);
 
@@ -67,7 +81,7 @@ define(function(require, exports, module) {
             callback();
         },
         insertAtCursor: function(path, text, callback) {
-            var session = path ? getSession(path) : editor.getActiveSession();
+            var session = getSession(path);
             session.insert(session.selection.getCursor(), text);
             callback();
         },
