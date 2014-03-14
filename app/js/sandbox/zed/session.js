@@ -10,13 +10,8 @@ define(function(require, exports, module) {
     }
 
     function getSession(path) {
-        var session;
-        if (path) {
-            session = session_manager.getSessions()[path];
-        } else {
-            session = editor.getActiveSession();
-        }
-        return session;
+        return path ? session_manager.getSessions()[path]
+                    : editor.getActiveSession();
     }
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
