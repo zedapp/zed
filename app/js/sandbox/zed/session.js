@@ -66,7 +66,7 @@ define(function(require, exports, module) {
             session.setScrollLeft(scrollLeft);
             callback();
         },
-        insertAtCursor: function(text, path, callback) {
+        insertAtCursor: function(path, text, callback) {
             var session = path ? getSession(path) : editor.getActiveSession();
             session.insert(session.selection.getCursor(), text);
             callback();
