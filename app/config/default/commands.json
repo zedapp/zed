@@ -1,10 +1,48 @@
 {
     "commands": {
+        "Configuration:Preferences:Toggle Context Bar": {
+            "scriptUrl": "./command/toggle_context_bar.js",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Display Indent Guides": {
+            "scriptUrl": "./command/toggle_display_indent_guides.js",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Highlight Active Line": {
+            "scriptUrl": "./command/toggle_highlight_active_line.js",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Highlight Gutter Line": {
+            "scriptUrl": "./command/toggle_highlight_gutter_line.js",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Gutter": {
+            "scriptUrl": "./command/toggle_show_gutter.js",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Invisibles": {
+            "scriptUrl": "./command/toggle_show_invisibles.js",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Print Margin": {
+            "scriptUrl": "./command/toggle_show_print_margin.js",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Spell Check": {
+            "scriptUrl": "./command/toggle_spell_check.js",
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Trim Whitespace On Empty Lines": {
-            "scriptUrl": "./command/toggle_whitespace_empty_lines.js"
+            "scriptUrl": "./command/toggle_whitespace_empty_lines.js",
+            "readOnly": true
         },
         "Configuration:Preferences:Toggle Trim Whitespace On Save": {
-            "scriptUrl": "./command/toggle_whitespace_save.js"
+            "scriptUrl": "./command/toggle_whitespace_save.js",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Word Wrap": {
+            "scriptUrl": "./command/toggle_word_wrap.js",
+            "readOnly": true
         },
         "Edit:Trim Whitespace": {
             "scriptUrl": "./command/stripper.js"
