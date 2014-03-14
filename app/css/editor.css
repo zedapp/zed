@@ -469,10 +469,6 @@ body.non_mac #contextbar .windowbuttons {
     height: 16px;
 }
 
-body.non_mac #contextbar .fullscreen {
-    display: none;
-}
-
 body.mac .windowbuttons .close {
     display: inline-block;
     width: 16px;
@@ -496,15 +492,33 @@ body.non_mac .windowbuttons .close {
     display: inline-block;
     width: 16px;
     height: 16px;
-    background: url("../img/win-buttons.png") 20px 0;
+    background: url("../img/win-buttons-light.png") 20px 0;
 }
 body.non_mac .windowbuttons .maximize {
     display: inline-block;
     width: 16px;
     height: 16px;
-    background: url("../img/win-buttons.png") 0 0;
+    background: url("../img/win-buttons-light.png") 0 0;
 }
 body.non_mac .windowbuttons .minimize {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons-light.png") 35px 0;
+}
+body.non_mac.dark .windowbuttons .close {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons.png") 20px 0;
+}
+body.non_mac.dark .windowbuttons .maximize {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons.png") 0 0;
+}
+body.non_mac.dark .windowbuttons .minimize {
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -525,6 +539,17 @@ body.dark #contextbar .fullscreen {
     background: url("../img/dark-fullscreen.png");
     background-size: 20px 20px;
 }
+
+body.non_mac #contextbar .fullscreen {
+    position: absolute;
+    right: inherit;
+    left: 5px;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+}
+
+
 #contextbar .title {
     position: absolute;
     top: 5px;
