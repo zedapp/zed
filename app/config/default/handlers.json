@@ -1,6 +1,6 @@
 {
     "handlers": {
         "complete": ["Tools:Complete:CTags", "Tools:Complete:Text"],
-        "save": ["Edit:Trim Whitespace"]
+        "save": ["Edit:Auto Trim Whitespace"]
     }
 }

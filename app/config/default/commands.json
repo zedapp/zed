@@ -7,7 +7,11 @@
             "scriptUrl": "./command/toggle_whitespace_save.js"
         },
         "Edit:Trim Whitespace": {
-            "scriptUrl": "./command/trim_whitespace.js"
+            "scriptUrl": "./command/stripper.js"
+        },
+        "Edit:Auto Trim Whitespace": {
+            "scriptUrl": "./command/autostripper.js",
+            "internal": true
         },
         "Find:Find In Project": {
             "scriptUrl": "./command/search.js",

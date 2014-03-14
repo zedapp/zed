@@ -5,16 +5,10 @@ function StripperConstructor(options, callback) {
     this.path = options.path;
     this.final = callback;
 
-    config.getPreference("trimWhitespaceOnSave", this.getSave.bind(this));
+    config.getPreference("trimEmptyLines", this.getEmpty.bind(this));
 }
 
 var Stripper = StripperConstructor.prototype;
-
-Stripper.getSave = function(err, trimWhitespaceOnSave) {
-    if (trimWhitespaceOnSave) {
-        config.getPreference("trimEmptyLines", this.getEmpty.bind(this));
-    }
-};
 
 Stripper.getEmpty = function(err, trimEmpty) {
     this.min = trimEmpty ? -1 : 0;
