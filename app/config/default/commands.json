@@ -1,11 +1,24 @@
 {
     "commands": {
+        "Configuration:Preferences:Toggle Trim Whitespace On Empty Lines": {
+            "scriptUrl": "./command/toggle_whitespace_empty_lines.js"
+        },
+        "Configuration:Preferences:Toggle Trim Whitespace On Save": {
+            "scriptUrl": "./command/toggle_whitespace_save.js"
+        },
+        "Edit:Trim Whitespace": {
+            "scriptUrl": "./command/stripper.js"
+        },
+        "Edit:Auto Trim Whitespace": {
+            "scriptUrl": "./command/autostripper.js",
+            "internal": true
+        },
         "Find:Find In Project": {
             "scriptUrl": "./command/search.js",
             "readOnly": true
         },
         "Select:Sort Lines": {
-            "scriptUrl": "/default/command/sort_selection.js"
+            "scriptUrl": "./command/sort_selection.js"
         },
         "Tools:Complete:CTags": {
             "scriptUrl": "./command/ctags_completer.js"
