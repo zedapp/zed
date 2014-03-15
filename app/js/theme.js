@@ -46,7 +46,8 @@ define(function(require, exports, module) {
                 return console.error("Error setting theme", err);
             }
             fs.readFile("/user.css", function(err, userCss) {
-                dom.importCssString(cssCode + (userCss || ""));
+                userCss = userCss ? userCss.replace(new RegExp(";", "g"), " !important;") : ""
+                dom.importCssString(cssCode + userCss);
                 cssFileLoaded[cssFile] = true;
                 callback();
             })
