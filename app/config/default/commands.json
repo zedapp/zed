@@ -25,6 +25,10 @@
         },
         "Tools:Complete:Text": {
             "scriptUrl": "./command/text_completer.js"
+        },
+        "Window:Fullscreen": {
+            "scriptUrl": "./command/toggle_fullscreen.js",
+            "readOnly": true
         }
     }
 }
