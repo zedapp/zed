@@ -1,47 +1,58 @@
 {
     "commands": {
         "Configuration:Preferences:Toggle Context Bar": {
-            "scriptUrl": "./command/toggle_context_bar.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showContextBar",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Display Indent Guides": {
-            "scriptUrl": "./command/toggle_display_indent_guides.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "displayIndentGuides",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Highlight Active Line": {
-            "scriptUrl": "./command/toggle_highlight_active_line.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "highlightActiveLine",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Highlight Gutter Line": {
-            "scriptUrl": "./command/toggle_highlight_gutter_line.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "highlightGutterLine",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Show Gutter": {
-            "scriptUrl": "./command/toggle_show_gutter.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showGutter",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Show Invisibles": {
-            "scriptUrl": "./command/toggle_show_invisibles.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showInvisibles",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Show Print Margin": {
-            "scriptUrl": "./command/toggle_show_print_margin.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showPrintMargin",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Spell Check": {
-            "scriptUrl": "./command/toggle_spell_check.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "spellCheck",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Trim Whitespace On Empty Lines": {
-            "scriptUrl": "./command/toggle_whitespace_empty_lines.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "trimEmptyLines",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Trim Whitespace On Save": {
-            "scriptUrl": "./command/toggle_whitespace_save.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "trimWhitespaceOnSave",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Word Wrap": {
-            "scriptUrl": "./command/toggle_word_wrap.js",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "wordWrap",
             "readOnly": true
         },
         "Edit:Trim Whitespace": {
