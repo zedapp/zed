@@ -8,6 +8,7 @@
         "displayIndentGuides": true,
         "fontFamily": "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
         "fontSize": 12,
+        "globalAutoRevert": false,
         "gotoExclude": ["/tags"],
         "highlightActiveLine": true,
         "highlightGutterLine": true,

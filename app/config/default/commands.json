@@ -1,5 +1,10 @@
 {
     "commands": {
+        "Configuration:Preferences:Toggle Auto Revert": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "globalAutoRevert",
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Context Bar": {
             "scriptUrl": "./command/toggle.js",
             "preference": "showContextBar",

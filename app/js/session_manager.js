@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     "use strict";
     var Range = require("ace/range").Range;
     var async = require("./lib/async");
+    var config = require("./config");
     var eventbus = require("./lib/eventbus");
     var project = require("./project");
     var editor = require("./editor");
@@ -136,8 +137,10 @@ define(function(require, exports, module) {
         if (!session) {
             return;
         }
-        // Don't do the asking for a reload dance when this is the config project
-        if(options.get("url").indexOf("config:") === 0) {
+        // Don't do the asking for a reload dance when this is the config project,
+        // or if the preference to automatically revert is set.
+        if ((options.get("url").indexOf("config:") === 0) ||
+            (config.getPreference("globalAutoRevert"))) {
             return reloadFile();
         }
         ui.prompt({
