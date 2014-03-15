@@ -40,13 +40,16 @@ define(function(require, exports, module) {
         if(cssFileLoaded[cssFile]) {
             return callback();
         }
-        config.getFs().readFile(cssFile, function(err, cssCode) {
+        var fs = config.getFs();
+        fs.readFile(cssFile, function(err, cssCode) {
             if (err) {
                 return console.error("Error setting theme", err);
             }
-            dom.importCssString(cssCode);
-            cssFileLoaded[cssFile] = true;
-            callback();
+            fs.readFile("/user.css", function(err, userCss) {
+                dom.importCssString(cssCode + (userCss || ""));
+                cssFileLoaded[cssFile] = true;
+                callback();
+            })
         });
     }
 });
