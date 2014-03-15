@@ -17,6 +17,15 @@ define(function(require, exports, module) {
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
 
     return {
+        toggleFullscreen: function(callback) {
+            var win = chrome.app.window.current();
+            if (win.isFullscreen()) {
+                win.restore();
+            } else {
+                win.fullscreen();
+            }
+            callback();
+        },
         goto: function(path, callback) {
             var edit = editor.getActiveEditor();
             session_manager.go(path, edit, edit.getSession(), function(err) {

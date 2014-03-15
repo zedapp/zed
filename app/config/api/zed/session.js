@@ -1,5 +1,8 @@
 /* global sandboxRequest*/
 module.exports = {
+    toggleFullscreen: function(callback) {
+        sandboxRequest("zed/session", "toggleFullscreen", [], callback);
+    },
     goto: function(path, callback) {
         sandboxRequest("zed/session", "goto", [path], callback);
     },
