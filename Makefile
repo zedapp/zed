@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 
 SHELL = /bin/bash
+OS := $(shell uname -s)
+PROC := $(shell uname -m)
 
 install-dep:
 	curl -L https://github.com/zefhemel/ace-builds/archive/master.tar.gz | tar xzf -
@@ -33,3 +35,9 @@ index-%:
 
 indexes: index-manual index-config
 	@true
+
+download:
+	curl http://get.zedapp.org/zed-$(OS)-$(PROC) > zed
+	chmod +x zed
+	@echo "Zed downloaded into current directory, to start: ./zed"
+	@echo "For help: ./zed --help"
