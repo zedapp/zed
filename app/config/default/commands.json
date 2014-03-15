@@ -10,7 +10,7 @@
             "scriptUrl": "./command/stripper.js"
         },
         "Edit:Auto Trim Whitespace": {
-            "scriptUrl": "./command/autostripper.js",
+            "scriptUrl": "./command/stripper.js",
             "internal": true
         },
         "Find:Find In Project": {
