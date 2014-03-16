@@ -144,60 +144,6 @@ define(function(require, exports, module) {
         readOnly: true
     });
 
-    exports.define("Configuration:Preferences:Toggle Highlight Active Line", {
-        exec: function() {
-            require(["./config"], function(config) {
-                config.togglePreference("highlightActiveLine");
-            });
-        },
-        readOnly: true
-    });
-
-    exports.define("Configuration:Preferences:Toggle Highlight Gutter Line", {
-        exec: function() {
-            require(["./config"], function(config) {
-                config.togglePreference("highlightGutterLine");
-            });
-        },
-        readOnly: true
-    });
-
-    exports.define("Configuration:Preferences:Toggle Show Print Margin", {
-        exec: function() {
-            require(["./config"], function(config) {
-                config.togglePreference("showPrintMargin");
-            });
-        },
-        readOnly: true
-    });
-
-    exports.define("Configuration:Preferences:Toggle Show Invisibles", {
-        exec: function() {
-            require(["./config"], function(config) {
-                config.togglePreference("showInvisibles");
-            });
-        },
-        readOnly: true
-    });
-
-    exports.define("Configuration:Preferences:Toggle Display Indent Guides", {
-        exec: function() {
-            require(["./config"], function(config) {
-                config.togglePreference("displayIndentGuides");
-            });
-        },
-        readOnly: true
-    });
-
-    exports.define("Configuration:Preferences:Toggle Show Gutter", {
-        exec: function() {
-            require(["./config"], function(config) {
-                config.togglePreference("showGutter");
-            });
-        },
-        readOnly: true
-    });
-
     exports.define("Configuration:Reset Editor State", {
         exec: function() {
             require(["./state"], function(state) {

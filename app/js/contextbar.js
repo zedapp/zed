@@ -4,7 +4,6 @@ define(function(require, exports, module) {
     var editor = require("./editor");
     var config = require("./config");
     var options = require("./lib/options");
-    var command = require("./command");
     var icons = require("./lib/icons");
 
     var barEl;
@@ -52,11 +51,4 @@ define(function(require, exports, module) {
         });
         $("#preview-wrapper").css("top", showContextBar ? (barHeight+1) + "px": "0");
     }
-
-    command.define("Configuration:Preferences:Toggle Context Bar", {
-        exec: function() {
-            config.togglePreference("showContextBar");
-        },
-        readOnly: true
-    });
 });
