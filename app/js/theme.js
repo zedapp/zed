@@ -1,18 +1,19 @@
 /* global $, _*/
 define(function(require, exports, module) {
     var config = require("./config");
-    var dom = require("ace/lib/dom");
     var useragent = require("ace/lib/useragent");
     var command = require("./command");
     var eventbus = require("./lib/eventbus");
+    var async = require("./lib/async");
     var defaultTheme = 'zed_dark';
 
-    var cssFileLoaded = {};
+    var cssFileLoaded = "";
 
     exports.hook = function() {
         eventbus.on("configchanged", function(config) {
             var themeName = config.getPreference("theme");
             exports.setTheme(themeName);
+            loadUserCss();
         });
         eventbus.on("configcommandsreset", function(config) {
             var allThemes = config.getThemes();
@@ -26,6 +27,9 @@ define(function(require, exports, module) {
                 });
             });
         });
+        config.whenConfigurationAvailable(function(configfs) {
+            configfs.watchFile("/user.css", loadUserCss);
+        });
     };
 
     exports.setTheme = function(name) {
@@ -35,18 +39,44 @@ define(function(require, exports, module) {
         });
     };
 
-    function loadCss(cssFile, callback) {
+    function loadCss(cssFiles, callback) {
+        var allFiles = cssFiles;
+        if (_.isArray(cssFiles)) {
+            allFiles = cssFiles[0];
+            for (var i = 1; i < cssFiles.length; i++) {
+                allFiles += cssFiles[i];
+            }
+        } else {
+            cssFiles = [cssFiles];
+        }
         // Don't have to load the CSS twice
-        if(cssFileLoaded[cssFile]) {
+        if (cssFileLoaded === allFiles) {
             return callback();
         }
-        config.getFs().readFile(cssFile, function(err, cssCode) {
-            if (err) {
-                return console.error("Error setting theme", err);
-            }
-            dom.importCssString(cssCode);
-            cssFileLoaded[cssFile] = true;
+        
+        var cssCode = "";
+        var configfs = config.getFs();
+        async.forEach(cssFiles, function(file, next) {
+            configfs.readFile(file, function(err, cssCode_) {
+                if (err) {
+                    return console.error("Error setting theme", err);
+                }
+                cssCode += cssCode_ + "\n";
+                next();
+            });
+        }, function() {
+            $('#theme-css').html(cssCode);
+            cssFileLoaded = allFiles;
             callback();
+        });
+    }
+    
+    function loadUserCss() {
+        config.getFs().readFile("/user.css", function(err, cssCode) {
+            if (err) {
+                return console.error("Error loading user css", err);
+            }
+            $("#user-css").html(cssCode);
         });
     }
 });
