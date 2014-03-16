@@ -20,7 +20,7 @@ define(function(require, exports, module) {
     } else {
         winButtons = "<div class='minimize'></div><div class='maximize'></div><div class='close'></div>";
     }
-    var barEl = $("<div id='contextbar'><div class='windowbuttons'>" + winButtons + "</div><div class='title'></div><div class='fullscreen'></div>");
+    var barEl = $("<div id='titlebar'><div class='windowbuttons'>" + winButtons + "</div><div class='title'></div><div class='fullscreen'></div>");
     $("body").append(barEl);
 
     exports.hook = function() {

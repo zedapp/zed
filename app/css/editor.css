@@ -429,7 +429,7 @@ body.mac.dark .ace_content {
     border-bottom: solid 1px #9191FF;
     z-index: 1000;
 }
-#contextbar {
+#titlebar {
     position: absolute;
     top: 0;
     left: 0;
@@ -444,24 +444,24 @@ body.mac.dark .ace_content {
     color: #fff;
     border-bottom: 1px solid #aaa;
 }
-body.dark #contextbar {
+body.dark #titlebar {
     background-color: #333;
     color: #000;
     border-bottom: 1px solid #111;
 }
-#contextbar .windowbuttons {
+#titlebar .windowbuttons {
     position: absolute;
     -webkit-app-region: no-drag;
 }
 
-body.mac #contextbar .windowbuttons {
+body.mac #titlebar .windowbuttons {
     top: 7px;
     left: 9px;
     width: 54px;
     height: 16px;
 }
 
-body.non_mac #contextbar .windowbuttons {
+body.non_mac #titlebar .windowbuttons {
     right: 9px;
     top: 7px;
     width: 54px;
@@ -526,7 +526,7 @@ body.non_mac.dark .windowbuttons .minimize {
     background: url("../img/win-buttons.png") 35px 0;
 }
 
-#contextbar .fullscreen {
+#titlebar .fullscreen {
     position: absolute;
     right: 5px;
     top: 2px;
@@ -536,12 +536,12 @@ body.non_mac.dark .windowbuttons .minimize {
     background-size: 20px 20px;
     -webkit-app-region: no-drag;
 }
-body.dark #contextbar .fullscreen {
+body.dark #titlebar .fullscreen {
     background: url("../img/dark-fullscreen.png");
     background-size: 20px 20px;
 }
 
-body.non_mac #contextbar .fullscreen {
+body.non_mac #titlebar .fullscreen {
     position: absolute;
     right: inherit;
     left: 5px;
@@ -551,7 +551,7 @@ body.non_mac #contextbar .fullscreen {
 }
 
 
-#contextbar .title {
+#titlebar .title {
     position: absolute;
     top: 5px;
     left: 60px;
@@ -559,10 +559,10 @@ body.non_mac #contextbar .fullscreen {
     text-align: center;
     color: #000;
 }
-body.dark #contextbar .title {
+body.dark #titlebar .title {
     color: #fff;
 }
-#contextbar .title img {
+#titlebar .title img {
     vertical-align: top;
     width: 16px;
     height: 16px;

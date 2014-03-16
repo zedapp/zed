@@ -17,7 +17,7 @@ require(["text!../manual/intro.md"], function(introText) {
         "./command",
         "./window",
         "./editor",
-        "./contextbar",
+        "./title_bar",
         "./config",
         "./goto",
         "./sandbox",
