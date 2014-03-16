@@ -39,15 +39,15 @@ define(function(require, exports, module) {
         });
     };
 
-    function loadCss(cssFile, callback) {
-        var allFiles = cssFile;
-        if (_.isArray(cssFile)) {
-            allFiles = cssFile[0];
-            for (var i = 1; i < cssFile.length; i++) {
-                allFiles += cssFile[i];
+    function loadCss(cssFiles, callback) {
+        var allFiles = cssFiles;
+        if (_.isArray(cssFiles)) {
+            allFiles = cssFiles[0];
+            for (var i = 1; i < cssFiles.length; i++) {
+                allFiles += cssFiles[i];
             }
         } else {
-            cssFile = [cssFile];
+            cssFiles = [cssFiles];
         }
         // Don't have to load the CSS twice
         if (cssFileLoaded === allFiles) {
@@ -56,7 +56,7 @@ define(function(require, exports, module) {
         
         var cssCode = "";
         var configfs = config.getFs();
-        async.forEach(cssFile, function(file, next) {
+        async.forEach(cssFiles, function(file, next) {
             configfs.readFile(file, function(err, cssCode_) {
                 if (err) {
                     return console.error("Error setting theme", err);
