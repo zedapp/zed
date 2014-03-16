@@ -279,11 +279,13 @@ function update(uri, pkg, packages, callback) {
 
             downloadPackageFiles(uriToUrl(uri), uri + ".update", files, function(err) {
                 if (err) {
+                    console.error("Error downloading", err);
                     deletePackageFiles(uri + ".update", files);
                     return callback(err);
                 }
                 copyFiles(folder, folder + ".old", oldFiles, function(err) {
                     if (err) {
+                        console.error("Error copying 1", err);
                         deletePackageFiles(uri + ".old", oldFiles);
                         deletePackageFiles(uri + ".update", files);
                         return callback(err);
@@ -298,6 +300,7 @@ function update(uri, pkg, packages, callback) {
                             });
                         }
                         if (err) {
+                            console.error("Error copying 2", err);
                             return rollback(err);
                         }
 

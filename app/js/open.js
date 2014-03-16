@@ -40,7 +40,8 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
             openProject.focus();
         } else {
             chrome.app.window.create('editor.html?url=' + url + "&title=" + title + '&chromeapp=true', {
-                frame: 'chrome',
+                // frame: 'chrome',
+                frame: 'none',
                 width: 720,
                 height: 400,
             }, function(win) {

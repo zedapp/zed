@@ -152,6 +152,7 @@ As can be seen, in a mode we can define a few things:
   - "preview": triggered when the Preview panel needs updating.
   - "check": triggered when static verification is requested, should return a list of annotations.
   - "complete": triggered when the user requests code completion, should return a list of possible completions.
+  - "save": triggered when a file is being saved
 * "preferences": preference overrides specific to this mode.
 * "keys": key overrides specific to this mode.
 
