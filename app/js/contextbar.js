@@ -54,7 +54,7 @@ define(function(require, exports, module) {
 
         eventbus.once("editorloaded", function() {
             editor.getEditors(true).forEach(function(edit) {
-                var el = $("<div class='pathbar'><div class='path'></div><div class='info' 'display: none;'></div>");
+                var el = $("<div class='pathbar'><div class='path'>No file</div><div class='info' 'display: none;'></div>");
                 barEl.append(el);
                 edit.pathBarEl = el;
             });
@@ -113,12 +113,19 @@ define(function(require, exports, module) {
 
         titleEl.html("<img src='img/zed-small.png'/>" + title + " ");
 
+        // TODO: Rework this to toggle CSS styles
         var buttonsEl = barEl.find(".windowbuttons");
         if (useragent.isMac) {
             buttonsEl.mousemove(function() {
                 buttonsEl.find("div").css("background-position-y", '-16px');
             });
             buttonsEl.mouseout(function() {
+                buttonsEl.find("div").css("background-position-y", '0');
+            });
+            $(window).blur(function() {
+                buttonsEl.find("div").css("background-position-y", '-31px');
+            });
+            $(window).focus(function() {
                 buttonsEl.find("div").css("background-position-y", '0');
             });
         }
@@ -151,7 +158,7 @@ define(function(require, exports, module) {
     }
 
     function switchSession(edit, session) {
-        var filename = session.filename;
+        var filename = session.filename || "No file";
         edit.pathBarEl.find('.path').text(filename + (session.readOnly ? " [Read Only]" : ""));
         edit.pathBarEl.find('.info').html("");
     }

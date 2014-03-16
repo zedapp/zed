@@ -479,12 +479,14 @@ body.mac .windowbuttons .maximize {
     width: 16px;
     height: 16px;
     background: url("../img/mac-buttons.png") 15px 0;
+    margin-left: 3px;
 }
 body.mac .windowbuttons .minimize {
     display: inline-block;
     width: 16px;
     height: 16px;
     background: url("../img/mac-buttons.png") 35px 0;
+    margin-left: 3px;
 }
 
 body.non_mac .windowbuttons .close {
