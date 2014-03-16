@@ -286,6 +286,7 @@
         "Window:Close": {
             "mac": "Command-W",
             "win": "Alt-F4|Ctrl-W"
-        }
+        },
+        "Window:Fullscreen": "F11"
     }
 }

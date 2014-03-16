@@ -1,16 +1,70 @@
 {
     "commands": {
+        "Configuration:Preferences:Toggle Auto Revert": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "globalAutoRevert",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Context Bar": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showContextBar",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Display Indent Guides": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "displayIndentGuides",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Highlight Active Line": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "highlightActiveLine",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Highlight Gutter Line": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "highlightGutterLine",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Gutter": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showGutter",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Invisibles": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showInvisibles",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Print Margin": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showPrintMargin",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Spell Check": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "spellCheck",
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Trim Whitespace On Empty Lines": {
-            "scriptUrl": "./command/toggle_whitespace_empty_lines.js"
+            "scriptUrl": "./command/toggle.js",
+            "preference": "trimEmptyLines",
+            "readOnly": true
         },
         "Configuration:Preferences:Toggle Trim Whitespace On Save": {
-            "scriptUrl": "./command/toggle_whitespace_save.js"
+            "scriptUrl": "./command/toggle.js",
+            "preference": "trimWhitespaceOnSave",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Word Wrap": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "wordWrap",
+            "readOnly": true
         },
         "Edit:Trim Whitespace": {
             "scriptUrl": "./command/stripper.js"
         },
         "Edit:Auto Trim Whitespace": {
-            "scriptUrl": "./command/autostripper.js",
+            "scriptUrl": "./command/stripper.js",
             "internal": true
         },
         "Find:Find In Project": {

@@ -838,13 +838,6 @@ define(function(require, exports, module) {
     });
 
     // SETTINGS
-    command.define("Configuration:Preferences:Toggle Word Wrap", {
-        exec: function() {
-            config.togglePreference("wordWrap");
-        },
-        readOnly: true
-    });
-
     command.define("Configuration:Preferences:Increase Font Size", {
         exec: function() {
             config.setPreference("fontSize", config.getPreference("fontSize") + 1);
@@ -855,13 +848,6 @@ define(function(require, exports, module) {
     command.define("Configuration:Preferences:Decrease Font Size", {
         exec: function() {
             config.setPreference("fontSize", config.getPreference("fontSize") - 1);
-        },
-        readOnly: true
-    });
-
-    command.define("Configuration:Preferences:Toggle Spell Check", {
-        exec: function() {
-            config.togglePreference("spellCheck");
         },
         readOnly: true
     });

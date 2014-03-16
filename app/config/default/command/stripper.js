@@ -51,5 +51,15 @@ Stripper.prototype = {
 };
 
 module.exports = function(options, callback) {
-    new Stripper(options, callback);
+    if (options.internal) {
+        // Autostrip, but only if the preference is enabled.
+        config.getPreference("trimWhitespaceOnSave", function(err, trim) {
+            if (trim) {
+                new Stripper(options, callback);
+            }
+        })
+    } else {
+        // Manual invocation, strip unconditionally.
+        new Stripper(options, callback);
+    }
 };

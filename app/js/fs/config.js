@@ -30,7 +30,7 @@ define(function(require, exports, module) {
             function staticFs(callback) {
                 staticfs("config", {
                     readOnlyFn: function(path) {
-                        return path !== "/.zedstate" && path !== "/user.json";
+                        return path !== "/.zedstate" && path !== "/user.json" && path !== "/user.css";
                     }
                 }, callback);
             }
