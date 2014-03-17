@@ -3,12 +3,31 @@ define(function(require, exports, module) {
     "use strict";
 
     var command = require("./command");
-    var Autocomplete = require("ace/autocomplete").Autocomplete;
-
-    var async = require("async");
+    var eventbus = require("./lib/eventbus");
     var config = require("./config");
+    var editor = require("./editor");
+    var Autocomplete = require("ace/autocomplete").Autocomplete;
+    var async = require("async");
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
+    var completionRegex = /^[a-zA-Z_\$]$/;
+
+
+    exports.hook = function() {
+        eventbus.on("sessionchanged", function(session, delta) {
+            if (config.getPreference("continuousCompletion")) {
+                var edit = editorForSession(session);
+                if(!edit) {
+                    return;
+                }
+                throttledCompletionListener(edit, delta);
+            }
+        });
+        
+        eventbus.on("configchanged", function(config) {
+            throttledCompletionListener = _.throttle(completionListener, config.getPreference("continuousCompletionDelay"));
+        });
+    };
 
     var completer = {
         getCompletions: function(edit, session, pos, prefix, callback) {
@@ -62,7 +81,50 @@ define(function(require, exports, module) {
         return retrievePreceedingIdentifier(line, pos.column);
     }
 
-    Autocomplete.prototype.commands["Tab"] = function(editor) {
+    function editorForSession(session) {
+        var editors = editor.getEditors();
+
+        for (var i = 0; i < editors.length; i++) {
+            if (editors[i].session === session) {
+                return editors[i];
+            }
+        }
+    }
+    
+    function completionListener(edit, event) {
+        var change = event.data;
+        if (change.action !== "insertText") {
+            return;
+        }
+        if (!completionRegex.exec(change.text)) {
+            return;
+        }
+        if (!edit.completer || !edit.completer.activated) {
+            complete(edit, true);
+        }
+    }
+    
+    var throttledCompletionListener = completionListener;
+    
+    function complete(edit, continuousCompletion) {
+        if (!edit.completer) {
+            edit.completer = new Autocomplete();
+            edit.completers = [completer];
+        }
+        edit.completer.autoSelect = !continuousCompletion;
+        edit.completer.autoInsert = !continuousCompletion;
+        edit.completer.showPopup(edit);
+        if (edit.completer.popup) {
+            if(continuousCompletion) {
+                edit.completer.popup.setRow(-1);
+            } else {
+                edit.completer.goTo("start");
+            }
+            edit.completer.cancelContextMenu();
+        }
+    }
+
+    Autocomplete.prototype.commands.Tab = function(editor) {
         editor.completer.goTo("down");
     };
     Autocomplete.prototype.commands["Shift-Tab"] = function(editor) {
@@ -72,15 +134,7 @@ define(function(require, exports, module) {
     command.define("Edit:Complete", {
         exec: function(edit) {
             if (shouldComplete(edit)) {
-                if (!edit.completer) {
-                    edit.completer = new Autocomplete();
-                    edit.completers = [completer];
-                }
-                edit.completer.showPopup(edit);
-                if (edit.completer.popup) {
-                    edit.completer.goTo("start");
-                    edit.completer.cancelContextMenu();
-                }
+                complete(edit);
             } else {
                 if (edit.inMultiSelectMode) {
                     edit.forEachSelection({

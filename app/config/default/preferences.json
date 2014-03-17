@@ -32,6 +32,8 @@
         "useSoftTabs": true,
         "wordWrap": false,
         "wordWrapColumn": null,
-        "wrapBehaviorsEnabled": false
+        "wrapBehaviorsEnabled": false,
+        "continuousCompletion": false,
+        "continuousCompletionDelay": 250
     }
 }

@@ -264,6 +264,7 @@ body.dark .pathbar .path {
     font-size: 12px;
     color: #777;
 }
+
 .pathbar .error {
     color: red;
 }
@@ -276,12 +277,16 @@ body.dark .pathbar .path {
     color: #000;
 }
 body.dark .ace_autocomplete {
-    background-color: #333;
+    background-color: #888;
     color: #ccc;
     border-top: 0;
+    border-top: 1px dotted #888;
     border-right: 1px solid #888;
     border-left: 1px solid #888;
     border-bottom: 1px solid #888;
+}
+body.dark .ace_rightAlignedText {
+    color: #bbb;
 }
 .ace_autocomplete .ace_completion-highlight {
     text-decoration: underline;

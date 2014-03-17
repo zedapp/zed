@@ -323,7 +323,7 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach",
         readOnly: true
     });
-
+    
     command.define("Select:Word Left", {
         exec: function(editor) {
             editor.getSelection().selectWordLeft();

@@ -60,6 +60,11 @@
             "preference": "wordWrap",
             "readOnly": true
         },
+        "Configuration:Preferences:Toggle Continuous Completion": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "continuousCompletion",
+            "readOnly": true
+        },
         "Edit:Trim Whitespace": {
             "scriptUrl": "./command/stripper.js"
         },
