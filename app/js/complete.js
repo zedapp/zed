@@ -82,7 +82,15 @@ define(function(require, exports, module) {
                     edit.completer.cancelContextMenu();
                 }
             } else {
-                edit.indent();
+                if (edit.inMultiSelectMode) {
+                    edit.forEachSelection({
+                        exec: function(edit) {
+                            return edit.indent();
+                        }
+                    });
+                } else {
+                    edit.indent();
+                }
             }
         }
     });
