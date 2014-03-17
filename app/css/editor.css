@@ -252,6 +252,7 @@ body.dark .pathbar.active {
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
     background-color: #aaa;
+    -webkit-app-region: no-drag;
 }
 body.dark .pathbar .path {
     background-color: #000;
