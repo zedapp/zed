@@ -5,14 +5,16 @@ define(function(require, exports, module) {
 
     return {
         getPreference: function(preference, callback) {
-            var edit = editor.getActiveEditor();
-            var session = edit.getSession();
-            var pref = config.getPreference(preference, session);
-            callback(null, pref);
+            callback(null, config.getPreference(
+                preference, editor.getActiveSession()));
         },
         togglePreference: function(preference, callback) {
             callback(null, config.togglePreference(
                 preference, editor.getActiveSession()));
+        },
+        incrementInteger: function(preference, amount, callback) {
+            callback(null, config.incrementInteger(
+                preference, amount, editor.getActiveSession()));
         },
         get: function(name, callback) {
             callback(null, config.getConfiguration()[name]);

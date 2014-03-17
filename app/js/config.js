@@ -191,6 +191,12 @@ define(function(require, exports, module) {
         return newvalue;
     };
 
+    exports.incrementInteger = function(key, amount, session) {
+        var newvalue = exports.getPreference(key, session) + amount;
+        exports.setPreference(key, newvalue);
+        return newvalue;
+    };
+
     exports.getModes = function() {
         return expandedConfiguration.modes;
     };
