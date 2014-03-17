@@ -7,7 +7,6 @@ define(function(require, exports, module) {
     var command = require("./command");
 
     var useragent = require("ace/lib/useragent");
-    var barEl;
 
     eventbus.declare("projecttitlechanged");
     eventbus.declare("sessionactivitystarted"); // session, name
@@ -162,11 +161,4 @@ define(function(require, exports, module) {
         edit.pathBarEl.find('.path').text(filename + (session.readOnly ? " [Read Only]" : ""));
         edit.pathBarEl.find('.info').html("");
     }
-
-    command.define("Configuration:Preferences:Toggle Context Bar", {
-        exec: function() {
-            config.togglePreference("showContextBar");
-        },
-        readOnly: true
-    });
 });

@@ -5,11 +5,6 @@
             "preference": "globalAutoRevert",
             "readOnly": true
         },
-        "Configuration:Preferences:Toggle Context Bar": {
-            "scriptUrl": "./command/toggle.js",
-            "preference": "showContextBar",
-            "readOnly": true
-        },
         "Configuration:Preferences:Toggle Display Indent Guides": {
             "scriptUrl": "./command/toggle.js",
             "preference": "displayIndentGuides",
