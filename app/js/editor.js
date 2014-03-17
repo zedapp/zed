@@ -323,7 +323,7 @@ define(function(require, exports, module) {
         multiSelectAction: "forEach",
         readOnly: true
     });
-    
+
     command.define("Select:Word Left", {
         exec: function(editor) {
             editor.getSelection().selectWordLeft();
@@ -833,21 +833,6 @@ define(function(require, exports, module) {
                 caseSensitive: true,
                 wholeWord: true
             });
-        },
-        readOnly: true
-    });
-
-    // SETTINGS
-    command.define("Configuration:Preferences:Increase Font Size", {
-        exec: function() {
-            config.setPreference("fontSize", config.getPreference("fontSize") + 1);
-        },
-        readOnly: true
-    });
-
-    command.define("Configuration:Preferences:Decrease Font Size", {
-        exec: function() {
-            config.setPreference("fontSize", config.getPreference("fontSize") - 1);
         },
         readOnly: true
     });

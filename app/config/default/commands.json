@@ -1,5 +1,17 @@
 {
     "commands": {
+        "Configuration:Preferences:Decrease Font Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "fontSize",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Font Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "fontSize",
+            "amount": 1,
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Auto Revert": {
             "scriptUrl": "./command/toggle.js",
             "preference": "globalAutoRevert",
