@@ -23,7 +23,7 @@ define(function(require, exports, module) {
                 throttledCompletionListener(edit, delta);
             }
         });
-        
+
         eventbus.on("configchanged", function(config) {
             throttledCompletionListener = _.throttle(completionListener, config.getPreference("continuousCompletionDelay"));
         });
@@ -90,7 +90,7 @@ define(function(require, exports, module) {
             }
         }
     }
-    
+
     function completionListener(edit, event) {
         var change = event.data;
         if (change.action !== "insertText") {
@@ -103,23 +103,18 @@ define(function(require, exports, module) {
             complete(edit, true);
         }
     }
-    
+
     var throttledCompletionListener = completionListener;
-    
+
     function complete(edit, continuousCompletion) {
         if (!edit.completer) {
             edit.completer = new Autocomplete();
             edit.completers = [completer];
         }
-        edit.completer.autoSelect = !continuousCompletion;
         edit.completer.autoInsert = !continuousCompletion;
         edit.completer.showPopup(edit);
         if (edit.completer.popup) {
-            if(continuousCompletion) {
-                edit.completer.popup.setRow(-1);
-            } else {
-                edit.completer.goTo("start");
-            }
+            edit.completer.goTo("start");
             edit.completer.cancelContextMenu();
         }
     }

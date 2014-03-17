@@ -56,9 +56,7 @@ define(function(require, exports, module) {
                 var el = $("<div class='pathbar'><div class='path'>No file</div><div class='info' 'display: none;'></div>");
                 barEl.append(el);
                 el.find(".path").click(function() {
-                    require(["./command"], function(command) {
-                        command.exec("Navigate:Goto", edit, edit.session);
-                    });
+                    command.exec("Navigate:Goto", edit, edit.session);
                 });
                 edit.pathBarEl = el;
             });
