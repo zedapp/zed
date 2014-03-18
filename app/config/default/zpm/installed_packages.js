@@ -21,12 +21,7 @@ module.exports = function() {
                     append("ID: " + id + "\n");
                     append("Version: " + pkg.version + "\n");
                     append("Description: " + pkg.description + "\n");
-                    append("Commands: [Uninstall]      [Update]      ");
-                    if (pkg.autoUpdate) {
-                        append("[Turn Off Automatic Updates]\n");
-                    } else {
-                        append("[Turn On Automatic Updates]\n");
-                    }
+                    append("Commands: [Uninstall]      [Update]");
                 }
             }
             session.setCursorPosition("zed::zpm::installed", {

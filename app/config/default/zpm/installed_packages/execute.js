@@ -22,7 +22,7 @@ return function(info, callback) {
                     listExtensions();
                 }
             }
-            
+
             function reloadConfig() {
                 project.isConfig(function(err, isConfig) {
                     if (isConfig) {
@@ -31,7 +31,7 @@ return function(info, callback) {
                     config.reload();
                 });
             }
-            
+
             var line = lines[pos.row];
             if (pos.row === 3 && line === "Commands: [Install New]      [Update All]") {
                 if (pos.column >= 10 && pos.column <= 23) {
@@ -48,7 +48,7 @@ return function(info, callback) {
                         giveFeedback(err, "Extensions updated!");
                     });
                 }
-            } else if (line === "Commands: [Uninstall]      [Update]      [Turn Off Automatic Updates]" || line === "Commands: [Uninstall]      [Update]      [Turn On Automatic Updates]") {
+            } else if (line === "Commands: [Uninstall]      [Update]") {
                 var idLine = lines[pos.row - 3];
                 var id = idLine.substr(4);
                 if (pos.column >= 10 && pos.column <= 21) {
@@ -69,8 +69,6 @@ return function(info, callback) {
                         }
                         giveFeedback(err, "Extension updated!");
                     });
-                } else if (pos.column >= 41) {
-                    zpm.toggleAutoUpdate(id, giveFeedback);
                 }
             }
             callback();

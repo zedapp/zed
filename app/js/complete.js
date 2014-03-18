@@ -25,7 +25,7 @@ define(function(require, exports, module) {
         });
 
         eventbus.on("configchanged", function(config) {
-            throttledCompletionListener = _.throttle(completionListener, config.getPreference("continuousCompletionDelay"));
+            throttledCompletionListener = _.debounce(completionListener, config.getPreference("continuousCompletionDelay"));
         });
     };
 

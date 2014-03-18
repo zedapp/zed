@@ -10,6 +10,15 @@ install-dep:
 	mv ace-builds-master/ace app/ace
 	rm -rf ace-builds-master
 
+clone-packages:
+	cd app/packages
+	mkdir -p gh/zedapp
+	git clone https://github.com/zedapp/javascript-mode.git gh/zedapp/javascipt-mode
+
+clone-packages-git:
+	cd app/packages
+	git clone git@github.com:zedapp/javascript-mode.git
+
 golang-crosscompile:
 	git clone https://github.com/davecheney/golang-crosscompile.git
 
@@ -31,7 +40,7 @@ package:
 	cd app; zip ../zed.zip -r *
 
 index-%:
-	find app/$* -name '*.*' | sort | sed "s:^app/$*::" > app/$*/all
+	find app/$* -name '*.*' -not -path "*/.git/*" -not -path "*/.git" | sort | sed "s:^app/$*::" > app/$*/all
 
 indexes: index-manual index-config
 	@true

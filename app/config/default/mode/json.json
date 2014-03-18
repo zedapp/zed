@@ -7,7 +7,7 @@
 
             "commands": {
                 "Tools:Beautify": {
-                    "scriptUrl": "/default/mode/javascript/beautify.js"
+                    "scriptUrl": "/packages/gh/zedapp/javascript-mode/beautify.js"
                 },
 
                 "Tools:Check": {
