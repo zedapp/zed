@@ -184,6 +184,10 @@ define(function(require, exports, module) {
             session.selection.moveCursorToPosition(cursorPos);
             callback();
         },
+        isInsertingSnippet: function(path, callback) {
+            var edit = editor.getActiveEditor();
+            callback(null, !!edit.tabstopManager);
+        },
         flashMessage: function(path, message, length, callback) {
             var session = getSession(path);
             eventbus.emit("sessionactivitystarted", session, message);

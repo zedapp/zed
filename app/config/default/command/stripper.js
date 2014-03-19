@@ -12,7 +12,15 @@ Stripper.prototype = {
     getEmpty: function(err, trimEmpty) {
         this.min = trimEmpty ? -1 : 0;
 
-        session.getCursorPosition(this.path, this.getLine.bind(this));
+        session.isInsertingSnippet(this.path, this.insertingSnippet.bind(this));
+    },
+
+    insertingSnippet: function(err, inserting) {
+        if(inserting) {
+            this.final();
+        } else {
+            session.getCursorPosition(this.path, this.getLine.bind(this));
+        }
     },
 
     getLine: function(err, cursor) {
