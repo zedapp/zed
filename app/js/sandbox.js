@@ -137,6 +137,16 @@ define(function(require, exports, module) {
                 cursor: function() {
                     return session.selection.getCursor();
                 },
+                cursorIndex: function () {
+                    var cursor = session.selection.getCursor();
+                    var lines = session.getDocument().getAllLines();
+                    var index = cursor.column;
+                    lines.splice(cursor.row);
+                    while (lines.length > 0) {
+                        index += lines.pop().length + 1;
+                    }
+                    return index;
+                },
                 isInsertingSnippet: function() {
                     return editor.isInsertingSnippet();
                 },
