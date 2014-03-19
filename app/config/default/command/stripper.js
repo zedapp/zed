@@ -32,6 +32,10 @@ Stripper.prototype = {
             }
         }
 
+        this.checkEOF();
+    },
+
+    checkEOF: function() {
         var lastTwo = this.lines.slice(-2);
         if (lastTwo[1] !== "") {
             // Enforce newline at end of file.
