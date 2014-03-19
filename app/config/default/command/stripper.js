@@ -59,13 +59,8 @@ Stripper.prototype = {
 };
 
 module.exports = function(info, callback) {
-    if (info.internal) {
-        // Autostrip, but only if the preference is enabled.
-        if (info.inserts.preferences.trimWhitespaceOnSave) {
-            new Stripper(info, callback);
-        }
-    } else {
-        // Manual invocation, strip unconditionally.
+    // Don't auto-strip if the preference isn't set, but do allow manual use.
+    if (!(!info.inserts.preferences.trimWhitespaceOnSave && info.internal)) {
         new Stripper(info, callback);
     }
 };
