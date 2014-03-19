@@ -151,7 +151,7 @@ define(function(require, exports, module) {
             sandboxEl[0].contentWindow.postMessage({
                 url: scriptUrl,
                 data: _.extend({
-                    path: session.filename,
+                    path: session.filename
                 }, spec),
                 id: id
             }, '*');

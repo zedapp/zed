@@ -145,11 +145,21 @@
             "readOnly": true
         },
         "Edit:Trim Whitespace": {
-            "scriptUrl": "./command/stripper.js"
+            "scriptUrl": "./command/stripper.js",
+            "inserts": {
+                "cursor": true,
+                "preferences": true,
+                "text": true
+            }
         },
         "Edit:Auto Trim Whitespace": {
             "scriptUrl": "./command/stripper.js",
-            "internal": true
+            "internal": true,
+            "inserts": {
+                "cursor": true,
+                "preferences": true,
+                "text": true
+            }
         },
         "Find:Find In Project": {
             "scriptUrl": "./command/search.js",

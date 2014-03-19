@@ -1,39 +1,27 @@
 var session = require("zed/session");
-var config = require("zed/config");
 
-function Stripper(options, callback) {
-    this.path = options.path;
+function Stripper(info, callback) {
+    this.path = info.path;
+    this.min = info.inserts.preferences.trimEmptyLines ? -1 : 0;
+    this.lines = info.inserts.text.split("\n");
+    this.currentLine = info.inserts.cursor.row;
     this.final = callback;
 
-    config.getPreference("trimEmptyLines", this.getEmpty.bind(this));
+    session.isInsertingSnippet(this.path, this.insertingSnippet.bind(this));
 }
 
 Stripper.prototype = {
-    getEmpty: function(err, trimEmpty) {
-        this.min = trimEmpty ? -1 : 0;
-
-        session.isInsertingSnippet(this.path, this.insertingSnippet.bind(this));
-    },
-
     insertingSnippet: function(err, inserting) {
-        if(inserting) {
+        if (inserting) {
             this.final();
         } else {
-            session.getCursorPosition(this.path, this.getLine.bind(this));
+            this.stripTrailing();
         }
     },
 
-    getLine: function(err, cursor) {
-        this.currentLine = cursor.row;
-
-        session.getAllLines(this.path, this.stripTrailing.bind(this));
-    },
-
-    stripTrailing: function(err, lines) {
-        this.lines = lines;
-
+    stripTrailing: function() {
         // Strip spaces from the ends of lines.
-        for (var i = 0; i < lines.length; i++) {
+        for (var i = 0; i < this.lines.length; i++) {
             // Preserve spaces on the line we're on.
             if (i == this.currentLine) {
                 continue;
@@ -41,13 +29,13 @@ Stripper.prototype = {
 
             // Don't do the strip if the line contains only spaces
             // and the preference to trimEmptyLines isn't set.
-            var index = lines[i].search(/\s+$/);
-            if (index > this.min) {
-                session.removeInLine(this.path, i, index, lines[i].length);
+            var column = this.lines[i].search(/\s+$/);
+            if (column > this.min) {
+                session.removeInLine(this.path, i, column, this.lines[i].length);
             }
         }
 
-        var lastTwo = lines.slice(-2);
+        var lastTwo = this.lines.slice(-2);
         if (lastTwo[1] !== "") {
             // Enforce newline at end of file.
             session.append(this.path, "\n", this.final);
@@ -74,16 +62,14 @@ Stripper.prototype = {
     },
 };
 
-module.exports = function(options, callback) {
-    if (options.internal) {
+module.exports = function(info, callback) {
+    if (info.internal) {
         // Autostrip, but only if the preference is enabled.
-        config.getPreference("trimWhitespaceOnSave", function(err, trim) {
-            if (trim) {
-                new Stripper(options, callback);
-            }
-        })
+        if (info.inserts.preferences.trimWhitespaceOnSave) {
+            new Stripper(info, callback);
+        }
     } else {
         // Manual invocation, strip unconditionally.
-        new Stripper(options, callback);
+        new Stripper(info, callback);
     }
 };
