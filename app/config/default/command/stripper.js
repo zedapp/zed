@@ -5,14 +5,12 @@ function Stripper(info, callback) {
     this.min = info.inserts.preferences.trimEmptyLines ? -1 : 0;
     this.lines = info.inserts.lines;
     this.currentLine = info.inserts.cursor.row;
-    this.final = callback;
 
     // Don't strip mid-snippet.
-    if (info.inserts.isInsertingSnippet) {
-        callback();
-    } else {
+    if (!info.inserts.isInsertingSnippet) {
         this.stripTrailing();
     }
+    callback();
 }
 
 Stripper.prototype = {
@@ -44,7 +42,6 @@ Stripper.prototype = {
             // Strip blank lines from the end.
             this.stripEndLines();
         }
-        this.final();
     },
 
     stripEndLines: function() {
@@ -56,7 +53,7 @@ Stripper.prototype = {
             }
         }
         if (i < len - 1) {
-            session.removeLines(this.path, i, len, this.final);
+            session.removeLines(this.path, i, len);
         }
     },
 };
