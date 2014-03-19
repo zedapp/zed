@@ -156,11 +156,11 @@ define(function(require, exports, module) {
                 preferences: function() {
                     return config.getPreferences();
                 },
-                scrollLeft: function() {
-                    return session.getScrollLeft();
-                },
-                scrollTop: function() {
-                    return session.getScrollTop();
+                scrollPostion: function() {
+                    return {
+                        scrollTop: session.getScrollTop(),
+                        scrollLeft: session.getScrollLeft()
+                    }
                 },
                 selectionRange: function() {
                     return session.selection.getRange();
