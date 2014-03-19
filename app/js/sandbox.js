@@ -141,7 +141,7 @@ define(function(require, exports, module) {
                     return editor.isInsertingSnippet();
                 },
                 lines: function() {
-                    return session.getValue().split("\n");
+                    return session.getDocument().getAllLines();
                 },
                 preferences: function() {
                     return config.getPreferences();
