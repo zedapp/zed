@@ -10,8 +10,7 @@ define(function(require, exports, module) {
     }
 
     function getSession(path) {
-        var session = session_manager.getSessions()[path];
-        return session;
+        return path ? session_manager.getSessions()[path] : editor.getActiveSession();
     }
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
@@ -47,6 +46,9 @@ define(function(require, exports, module) {
             }
             callback(null, session.getValue());
         },
+        // Don't use setText unless you are really changing the entire contents
+        // of the document, because it interacts poorly with the selection,
+        // cursor position, undo history, etc.
         setText: function(path, text, callback) {
             var session = getSession(path);
 
@@ -67,7 +69,7 @@ define(function(require, exports, module) {
             callback();
         },
         insertAtCursor: function(path, text, callback) {
-            var session = path ? getSession(path) : editor.getActiveSession();
+            var session = getSession(path);
             session.insert(session.selection.getCursor(), text);
             callback();
         },
@@ -102,6 +104,14 @@ define(function(require, exports, module) {
         },
         getAllLines: function(path, callback) {
             callback(null, getSession(path).getDocument().getAllLines());
+        },
+        removeInLine: function(path, row, start, end, callback) {
+            getSession(path).getDocument().removeInLine(row, start, end);
+            callback();
+        },
+        removeLines: function(path, start, end, callback) {
+            getSession(path).getDocument().removeLines(start, end);
+            callback();
         },
         getSelectionRange: function(path, callback) {
             var range = getSession(path).selection.getRange();
@@ -172,6 +182,10 @@ define(function(require, exports, module) {
             session.selection.clearSelection();
             session.selection.moveCursorToPosition(cursorPos);
             callback();
+        },
+        isInsertingSnippet: function(path, callback) {
+            var edit = editor.getActiveEditor();
+            callback(null, !!edit.tabstopManager);
         },
         flashMessage: function(path, message, length, callback) {
             var session = getSession(path);

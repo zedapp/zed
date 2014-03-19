@@ -1,6 +1,20 @@
 Changelog
 =========
 
+0.10
+----
+* New skinnable window chrome! Slightly more compact and generally more awesome. The edit bar is gone and has been incorporated with the title bar now.
+* New and improved whitespace stripper that lives in the sandbox (by robru)
+* Added "internal" flag to commands to not show commands only useful for internal use
+* Window commands (`Window:Close`, `Window:Minimize` etc.) (by robru)
+* Various new sandbox APIs (by robru)
+* New `/user.css` file in Configuration project to override any editor style you like (independent of theme), changes apply on save (by TheKiteEatingTree)
+* Moved all preference toggling commands to sandbox (by robru)
+* New globalAutoRevert preference to automatically reload changed files without asking (by robru)
+* Initial implementation of continous code completion (not bug free yet and disabled by default under `continuousCompletion` preference).
+* Various bug fixes
+
+
 0.9.4
 -----
 This is a release with some major new features, but they're not well documented and a bit hidden, so we'll wait a bit to expose them more seriously. I'm very happy to see that an increasing number of people are starting to contribute, in this release: TheKiteEatingTree, robru and dsrw. Thanks all!
