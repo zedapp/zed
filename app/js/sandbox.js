@@ -165,6 +165,9 @@ define(function(require, exports, module) {
                 selectionRange: function() {
                     return session.selection.getRange();
                 },
+                selectionText: function () {
+                    return session.getTextRange(session.selection.getRange());
+                },
                 text: function() {
                     return session.getValue();
                 },
