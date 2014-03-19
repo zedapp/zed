@@ -10,13 +10,14 @@ require.config({
 /* global ace, $, _ */
 require(["text!../manual/intro.md"], function(introText) {
     "use strict";
-
+    
+    
+    
     var modules = [
         "./command",
         "./window",
         "./editor",
-        "./editbar",
-        "./contextbar",
+        "./title_bar",
         "./config",
         "./goto",
         "./sandbox",

@@ -61,7 +61,7 @@ define(function(require, exports, module) {
                     err: "No such method: " + mod
                 }, "*");
             }
-            mod[data.call].apply(this, data.args.concat([function(err, result) {
+            mod[data.call].apply(mod, data.args.concat([function(err, result) {
                 event.source.postMessage({
                     replyTo: data.id,
                     err: err,
@@ -150,5 +150,5 @@ define(function(require, exports, module) {
                 sandboxEl.css("left", "-1000px");
             }, 5000);
         }
-    })
+    });
 });

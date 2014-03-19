@@ -1,16 +1,154 @@
 {
     "commands": {
+        "Configuration:Preferences:Decrease Continuous Completion Delay": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "continuousCompletionDelay",
+            "amount": -50,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Continuous Completion Delay": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "continuousCompletionDelay",
+            "amount": 50,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Font Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "fontSize",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Font Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "fontSize",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Preview Delay": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "previewDelay",
+            "amount": -100,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Preview Delay": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "previewDelay",
+            "amount": 100,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Print Margin Column": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "printMarginColumn",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Print Margin Column": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "printMarginColumn",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Recent Folder History": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "recentFolderHistory",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Recent Folder History": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "recentFolderHistory",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Scroll Speed": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "scrollSpeed",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Scroll Speed": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "scrollSpeed",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Tab Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "tabSize",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Tab Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "tabSize",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Auto Revert": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "globalAutoRevert",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Display Indent Guides": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "displayIndentGuides",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Highlight Active Line": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "highlightActiveLine",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Highlight Gutter Line": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "highlightGutterLine",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Gutter": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showGutter",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Invisibles": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showInvisibles",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Show Print Margin": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showPrintMargin",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Spell Check": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "spellCheck",
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Trim Whitespace On Empty Lines": {
-            "scriptUrl": "./command/toggle_whitespace_empty_lines.js"
+            "scriptUrl": "./command/toggle.js",
+            "preference": "trimEmptyLines",
+            "readOnly": true
         },
         "Configuration:Preferences:Toggle Trim Whitespace On Save": {
-            "scriptUrl": "./command/toggle_whitespace_save.js"
+            "scriptUrl": "./command/toggle.js",
+            "preference": "trimWhitespaceOnSave",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Word Wrap": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "wordWrap",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Continuous Completion": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "continuousCompletion",
+            "readOnly": true
         },
         "Edit:Trim Whitespace": {
             "scriptUrl": "./command/stripper.js"
         },
         "Edit:Auto Trim Whitespace": {
-            "scriptUrl": "./command/autostripper.js",
+            "scriptUrl": "./command/stripper.js",
             "internal": true
         },
         "Find:Find In Project": {
