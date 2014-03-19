@@ -148,8 +148,9 @@
             "scriptUrl": "./command/stripper.js",
             "inserts": {
                 "cursor": true,
-                "preferences": true,
-                "text": true
+                "isInsertingSnippet": true,
+                "lines": true,
+                "preferences": true
             }
         },
         "Edit:Auto Trim Whitespace": {
@@ -157,8 +158,9 @@
             "internal": true,
             "inserts": {
                 "cursor": true,
-                "preferences": true,
-                "text": true
+                "isInsertingSnippet": true,
+                "lines": true,
+                "preferences": true
             }
         },
         "Find:Find In Project": {

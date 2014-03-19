@@ -3,22 +3,19 @@ var session = require("zed/session");
 function Stripper(info, callback) {
     this.path = info.path;
     this.min = info.inserts.preferences.trimEmptyLines ? -1 : 0;
-    this.lines = info.inserts.text.split("\n");
+    this.lines = info.inserts.lines;
     this.currentLine = info.inserts.cursor.row;
     this.final = callback;
 
-    session.isInsertingSnippet(this.path, this.insertingSnippet.bind(this));
+    // Don't strip mid-snippet.
+    if (info.inserts.isInsertingSnippet) {
+        callback();
+    } else {
+        this.stripTrailing();
+    }
 }
 
 Stripper.prototype = {
-    insertingSnippet: function(err, inserting) {
-        if (inserting) {
-            this.final();
-        } else {
-            this.stripTrailing();
-        }
-    },
-
     stripTrailing: function() {
         // Strip spaces from the ends of lines.
         for (var i = 0; i < this.lines.length; i++) {

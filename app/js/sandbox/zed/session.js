@@ -103,7 +103,7 @@ define(function(require, exports, module) {
             callback(null, identBuf.reverse().join(""));
         },
         getAllLines: function(path, callback) {
-            callback(null, getSession(path).getDocument().getAllLines());
+            callback(null, getSession(path).getAllLines());
         },
         removeInLine: function(path, row, start, end, callback) {
             getSession(path).getDocument().removeInLine(row, start, end);
@@ -184,8 +184,7 @@ define(function(require, exports, module) {
             callback();
         },
         isInsertingSnippet: function(path, callback) {
-            var edit = editor.getActiveEditor();
-            callback(null, !!edit.tabstopManager);
+            callback(null, editor.isInsertingSnippet());
         },
         flashMessage: function(path, message, length, callback) {
             var session = getSession(path);

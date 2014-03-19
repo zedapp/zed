@@ -115,7 +115,6 @@ define(function(require, exports, module) {
         oldstateJSON = stateJSON;
     }
 
-
     function loadFile(path, callback) {
         project.readFile(path, function(err, text, options) {
             if (err) {

@@ -11,6 +11,7 @@
  */
 /*global define, $, _ */
 define(function(require, exports, module) {
+    var editor = require("./editor");
     var command = require("./command");
     var config = require("./config");
     var bgPage = require("./lib/background_page");
@@ -139,6 +140,8 @@ define(function(require, exports, module) {
             // This data can be requested for insertion in commands.json
             var insertables = {
                 cursor: bind(session.selection, "getCursor"),
+                isInsertingSnippet: bind(editor, "isInsertingSnippet"),
+                lines: bind(session, "getAllLines"),
                 preferences: bind(config, "getPreferences"),
                 scrollLeft: bind(session, "getScrollLeft"),
                 scrollTop: bind(session, "getScrollTop"),
