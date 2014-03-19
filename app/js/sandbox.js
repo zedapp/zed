@@ -20,6 +20,13 @@ define(function(require, exports, module) {
     var id;
     var waitingForReply;
 
+    function nop() {}
+
+    // I really miss Python right now.
+    function bind(obj, method) {
+        return obj[method].bind(obj);
+    }
+
     /**
      * If we would like to reset our sandbox (e.d. to reload code), we can
      * simply delete and readd the iframe.
@@ -129,13 +136,22 @@ define(function(require, exports, module) {
             if (scriptUrl[0] === "/") {
                 scriptUrl = "configfs!" + scriptUrl;
             }
+            // This data can be requested for insertion in commands.json
+            var insertables = {
+                cursor: bind(session.selection, "getCursor"),
+                preferences: bind(config, "getPreferences"),
+                scrollLeft: bind(session, "getScrollLeft"),
+                scrollTop: bind(session, "getScrollTop"),
+                selectionRange: bind(session.selection, "getRange"),
+                text: bind(session, "getValue"),
+            };
+            for (var insert in (spec.inserts || {})) {
+                spec.inserts[insert] = (insertables[insert] || nop)();
+            }
             sandboxEl[0].contentWindow.postMessage({
                 url: scriptUrl,
                 data: _.extend({
                     path: session.filename,
-                    text: session.getValue(),
-                    config: config.getPreferences(),
-                    cursor: session.selection.getCursor()
                 }, spec),
                 id: id
             }, '*');
