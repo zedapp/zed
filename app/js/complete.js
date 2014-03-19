@@ -12,7 +12,6 @@ define(function(require, exports, module) {
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
     var completionRegex = /^[a-zA-Z_\$]$/;
 
-
     exports.hook = function() {
         eventbus.on("sessionchanged", function(session, delta) {
             if (config.getPreference("continuousCompletion")) {
@@ -20,12 +19,8 @@ define(function(require, exports, module) {
                 if(!edit) {
                     return;
                 }
-                throttledCompletionListener(edit, delta);
+                completionListener(edit, delta);
             }
-        });
-
-        eventbus.on("configchanged", function(config) {
-            throttledCompletionListener = _.throttle(completionListener, config.getPreference("continuousCompletionDelay"));
         });
     };
 
@@ -91,20 +86,23 @@ define(function(require, exports, module) {
         }
     }
 
+    var continuousCompletionTimerId;
+
     function completionListener(edit, event) {
         var change = event.data;
+        clearTimeout(continuousCompletionTimerId);
         if (change.action !== "insertText") {
             return;
         }
         if (!completionRegex.exec(change.text)) {
             return;
         }
-        if (!edit.completer || !edit.completer.activated) {
-            complete(edit, true);
-        }
+        continuousCompletionTimerId = setTimeout(function() {
+            if (!edit.completer || !edit.completer.activated) {
+                complete(edit, true);
+            }
+        }, config.getPreference("continuousCompletionDelay"));
     }
-
-    var throttledCompletionListener = completionListener;
 
     function complete(edit, continuousCompletion) {
         if (!edit.completer) {
