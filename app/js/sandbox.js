@@ -12,6 +12,7 @@
 /*global define, $, _ */
 define(function(require, exports, module) {
     var command = require("./command");
+    var config = require("./config");
     var bgPage = require("./lib/background_page");
     var options = require("./lib/options");
 
@@ -133,6 +134,7 @@ define(function(require, exports, module) {
                 data: _.extend({
                     path: session.filename,
                     text: session.getValue(),
+                    config: config.getPreferences(),
                     cursor: session.selection.getCursor()
                 }, spec),
                 id: id
