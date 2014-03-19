@@ -10,8 +10,7 @@ define(function(require, exports, module) {
     }
 
     function getSession(path) {
-        var session = session_manager.getSessions()[path];
-        return session;
+        return path ? session_manager.getSessions()[path] : editor.getActiveSession();
     }
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
@@ -67,7 +66,7 @@ define(function(require, exports, module) {
             callback();
         },
         insertAtCursor: function(path, text, callback) {
-            var session = path ? getSession(path) : editor.getActiveSession();
+            var session = getSession(path);
             session.insert(session.selection.getCursor(), text);
             callback();
         },
