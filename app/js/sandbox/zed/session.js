@@ -47,6 +47,9 @@ define(function(require, exports, module) {
             }
             callback(null, session.getValue());
         },
+        // Don't use setText unless you are really changing the entire contents
+        // of the document, because it interacts poorly with the selection,
+        // cursor position, undo history, etc.
         setText: function(path, text, callback) {
             var session = getSession(path);
 
@@ -102,6 +105,14 @@ define(function(require, exports, module) {
         },
         getAllLines: function(path, callback) {
             callback(null, getSession(path).getDocument().getAllLines());
+        },
+        removeInLine: function(path, row, start, end, callback) {
+            getSession(path).getDocument().removeInLine(row, start, end);
+            callback();
+        },
+        removeLines: function(path, start, end, callback) {
+            getSession(path).getDocument().removeLines(start, end);
+            callback();
         },
         getSelectionRange: function(path, callback) {
             var range = getSession(path).selection.getRange();
