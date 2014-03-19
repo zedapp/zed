@@ -118,9 +118,6 @@ define(function(require, exports, module) {
             session.setTabSize(config.getPreference("tabSize"));
             session.setUseSoftTabs(config.getPreference("useSoftTabs"));
             session.setUseWorker(false);
-            session.getAllLines = function() {
-                return this.getValue().split("\n");
-            };
             modes.setSessionMode(session, mode);
             if (config.getPreference("detectIndentation")) {
                 whitespace.detectIndentation(session);

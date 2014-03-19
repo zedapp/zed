@@ -103,7 +103,7 @@ define(function(require, exports, module) {
             callback(null, identBuf.reverse().join(""));
         },
         getAllLines: function(path, callback) {
-            callback(null, getSession(path).getAllLines());
+            callback(null, getSession(path).getDocument().getAllLines());
         },
         removeInLine: function(path, row, start, end, callback) {
             getSession(path).getDocument().removeInLine(row, start, end);
