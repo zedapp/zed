@@ -18,10 +18,12 @@ Stripper.prototype = {
     getLine: function(err, cursor) {
         this.currentLine = cursor.row;
 
-        session.getAllLines(this.path, this.strip.bind(this));
+        session.getAllLines(this.path, this.stripTrailing.bind(this));
     },
 
-    strip: function(err, lines) {
+    stripTrailing: function(err, lines) {
+        this.lines = lines;
+
         // Strip spaces from the ends of lines.
         for (var i = 0; i < lines.length; i++) {
             // Preserve spaces on the line we're on.
@@ -31,22 +33,36 @@ Stripper.prototype = {
 
             // Don't do the strip if the line contains only spaces
             // and the preference to trimEmptyLines isn't set.
-            if (lines[i].search(/\s+$/) > this.min) {
-                lines[i] = lines[i].replace(/\s+$/, "");
+            var index = lines[i].search(/\s+$/);
+            if (index > this.min) {
+                session.removeInLine(this.path, i, index, lines[i].length);
             }
         }
 
-        // Strip newlines from the end of the file,
-        // but not beyond the cursor position.
-        while ((lines[lines.length - 1] === "") &&
-               (lines.length > this.currentLine)) {
-            lines.pop();
+        var lastTwo = lines.slice(-2);
+        if (lastTwo[1] !== "") {
+            // Enforce newline at end of file.
+            session.append(this.path, "\n", this.final);
+        } else if (lastTwo[0] === "" && lastTwo[1] === "") {
+            // Strip blank lines from the end.
+            this.stripEndLines();
+        } else {
+            // Perfect!!
+            this.final();
         }
+    },
 
-        // Ensure that the file ends with one single newline.
-        lines.push("");
-
-        session.setText(this.path, lines.join("\n"), this.final);
+    stripEndLines: function() {
+        var len = this.lines.length;
+        // Don't strip beyond the cursor position.
+        for (var i = len; i > this.currentLine; i--) {
+            if (this.lines[i - 1] !== "") {
+                break;
+            }
+        }
+        if (i < len - 1) {
+            session.removeLines(this.path, i, len, this.final);
+        }
     },
 };
 
