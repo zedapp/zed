@@ -150,13 +150,13 @@ define(function(require, exports, module) {
                     return session.getScrollLeft();
                 },
                 scrollTop: function() {
-                    return session.getScrollTop()
+                    return session.getScrollTop();
                 },
                 selectionRange: function() {
-                    return session.selection.getRange()
+                    return session.selection.getRange();
                 },
                 text: function() {
-                    return session.getValue()
+                    return session.getValue();
                 },
             };
             for (var insert in (spec.inserts || {})) {
