@@ -239,7 +239,7 @@ function update(uri, pkg, callback) {
         if (err) {
             return callback("Could not download package.json");
         }
-        console.log("Current version", pkg.version, "new", data.version);
+        console.log(uri, "current version", pkg.version, "new", data.version);
         if (versionCompare(data.version, pkg.version, {
             zeroExtend: true
         }) > 0) {

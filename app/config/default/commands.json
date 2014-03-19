@@ -1,5 +1,89 @@
 {
     "commands": {
+        "Configuration:Preferences:Decrease Continuous Completion Delay": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "continuousCompletionDelay",
+            "amount": -50,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Continuous Completion Delay": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "continuousCompletionDelay",
+            "amount": 50,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Font Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "fontSize",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Font Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "fontSize",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Preview Delay": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "previewDelay",
+            "amount": -100,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Preview Delay": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "previewDelay",
+            "amount": 100,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Print Margin Column": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "printMarginColumn",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Print Margin Column": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "printMarginColumn",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Recent Folder History": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "recentFolderHistory",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Recent Folder History": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "recentFolderHistory",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Scroll Speed": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "scrollSpeed",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Scroll Speed": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "scrollSpeed",
+            "amount": 1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Decrease Tab Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "tabSize",
+            "amount": -1,
+            "readOnly": true
+        },
+        "Configuration:Preferences:Increase Tab Size": {
+            "scriptUrl": "./command/config_int.js",
+            "preference": "tabSize",
+            "amount": 1,
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Auto Revert": {
             "scriptUrl": "./command/toggle.js",
             "preference": "globalAutoRevert",

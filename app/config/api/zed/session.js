@@ -27,6 +27,12 @@ module.exports = {
     getAllLines: function(path, callback) {
         sandboxRequest("zed/session", "getAllLines", [path], callback);
     },
+    removeInLine: function(path, row, start, end, callback) {
+        sandboxRequest("zed/session", "removeInLine", [path, row, start, end], callback);
+    },
+    removeLines: function(path, start, end, callback) {
+        sandboxRequest("zed/session", "removeLines", [path, start, end], callback);
+    },
     getSelectionRange: function(path, callback) {
         sandboxRequest("zed/session", "getSelectionRange", [path], callback);
     },
@@ -56,6 +62,9 @@ module.exports = {
     },
     replaceRange: function(path, range, text, callback) {
         sandboxRequest("zed/session", "replaceRange", [path, range, text], callback);
+    },
+    isInsertingSnippet: function(path, callback) {
+        sandboxRequest("zed/session", "isInsertingSnippet", [path], callback);
     },
     flashMessage: function(path, message, length, callback) {
         sandboxRequest("zed/session", "flashMessage", [path, message, length], callback);
