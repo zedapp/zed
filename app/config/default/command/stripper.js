@@ -43,10 +43,8 @@ Stripper.prototype = {
         } else if (lastTwo[0] === "" && lastTwo[1] === "") {
             // Strip blank lines from the end.
             this.stripEndLines();
-        } else {
-            // Perfect!!
-            this.final();
         }
+        this.final();
     },
 
     stripEndLines: function() {
