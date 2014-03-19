@@ -10,8 +10,8 @@ define(function(require, exports, module) {
     }
 
     function getSession(path) {
-        var session = session_manager.getSessions()[path];
-        return session;
+        return path ? session_manager.getSessions()[path]
+                    : editor.getActiveSession();
     }
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
@@ -47,6 +47,16 @@ define(function(require, exports, module) {
             }
             callback(null, session.getValue());
         },
+        getBeforeAndAfter: function(path, callback) {
+            var session = getSession(path);
+            if(!session) {
+                return callback("No session for: " + path);
+            }
+            var text = session.getValue();
+            this.getCursorIndex(path, function(err, index) {
+                callback(null, text.slice(0, index), index, text.slice(index));
+            });
+        },
         setText: function(path, text, callback) {
             var session = getSession(path);
 
@@ -67,7 +77,7 @@ define(function(require, exports, module) {
             callback();
         },
         insertAtCursor: function(path, text, callback) {
-            var session = path ? getSession(path) : editor.getActiveSession();
+            var session = getSession(path);
             session.insert(session.selection.getCursor(), text);
             callback();
         },

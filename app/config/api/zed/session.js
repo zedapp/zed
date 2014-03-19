@@ -6,8 +6,11 @@ module.exports = {
     setAnnotations: function(path, annos, callback) {
         sandboxRequest("zed/session", "setAnnotations", [path, annos], callback);
     },
+    getBeforeAndAfter: function(path, callback) {
+        sandboxRequest("zed/session", "getBeforeAndAfter", [path], callback);
+    },
     getText: function(path, callback) {
-        sandboxRequest("zed/session", "getText", [path, ], callback);
+        sandboxRequest("zed/session", "getText", [path], callback);
     },
     setText: function(path, text, callback) {
         sandboxRequest("zed/session", "setText", [path, text], callback);
