@@ -60,13 +60,8 @@ define(function(require, exports, module) {
         configCommands[path] = def;
     };
 
-
     exports.lookup = function(path) {
-        var cmd = configCommands[path];
-        if (cmd) {
-            return cmd;
-        }
-        return commands[path];
+        return configCommands[path] || commands[path];
     };
 
     exports.exec = function(path, edit, session, callback) {
