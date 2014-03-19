@@ -119,7 +119,7 @@ define(function(require, exports, module) {
             session.setUseSoftTabs(config.getPreference("useSoftTabs"));
             session.setUseWorker(false);
             session.getAllLines = function() {
-                return session.getValue().split("\n");
+                return this.getValue().split("\n");
             };
             modes.setSessionMode(session, mode);
             if (config.getPreference("detectIndentation")) {
