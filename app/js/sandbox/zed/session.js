@@ -184,8 +184,7 @@ define(function(require, exports, module) {
             callback();
         },
         isInsertingSnippet: function(path, callback) {
-            var edit = editor.getActiveEditor();
-            callback(null, !!edit.tabstopManager);
+            callback(null, editor.isInsertingSnippet());
         },
         flashMessage: function(path, message, length, callback) {
             var session = getSession(path);

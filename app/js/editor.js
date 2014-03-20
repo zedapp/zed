@@ -130,6 +130,9 @@ define(function(require, exports, module) {
             edit.setReadOnly( !! session.readOnly);
             eventbus.emit("switchsession", edit, session);
         },
+        isInsertingSnippet: function() {
+            return !!activeEditor.tabstopManager;
+        },
         getActiveEditor: function() {
             return activeEditor;
         },
