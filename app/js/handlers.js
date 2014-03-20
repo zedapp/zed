@@ -10,7 +10,8 @@ define(function(require, exports, module) {
      * This parts handles mode handlers, e.g. "change", "preview" etc.
      */
 
-    var handlerFns = {};
+    var timeOutIds = {};
+    var timeOutMultiplicationFactor = 3;
 
     function runSessionHandler(session, handlerName, debounceTimeout, callback) {
         var path = session.filename;
@@ -42,6 +43,8 @@ define(function(require, exports, module) {
             var waitingFor = commandNames.length;
             var results = [];
             var edit = editor.getActiveEditor();
+            var before = Date.now();
+
             commandNames.forEach(function(commandName) {
                 command.exec(commandName, edit, session, function(err, results_) {
                     if (err) {
@@ -50,11 +53,17 @@ define(function(require, exports, module) {
                     results = results.concat(results_);
                     waitingFor--;
                     if (waitingFor === 0) {
-                        _.isFunction(callback) && callback(null, results);
+                        done();
                     }
                 });
             });
+
             if (waitingFor === 0) {
+                done();
+            }
+
+            function done() {
+                exports.updateHandlerTimeout("check", session.filename, before, 500);
                 _.isFunction(callback) && callback(null, results);
             }
         }
@@ -62,10 +71,10 @@ define(function(require, exports, module) {
         if (commandNames.length > 0) {
             if (debounceTimeout) {
                 var id = path + ':' + handlerName;
-                if (!handlerFns[id]) {
-                    handlerFns[id] = _.debounce(runCommands, debounceTimeout);
-                }
-                handlerFns[id]();
+                clearTimeout(timeOutIds[id]);
+                timeOutIds[id] = setTimeout(function() {
+                    runCommands();
+                }, debounceTimeout);
             } else {
                 runCommands();
             }
@@ -121,6 +130,41 @@ define(function(require, exports, module) {
         session.setAnnotations(annos);
     }
 
+
+    // handlerName -> { path -> timeout }
+    var timeOuts = {};
+    window.timeOuts = timeOuts;
+
+    /**
+     * Used to implement adaptive timing. This method records the time it took
+     * to execute a particular handler and multiplies it with a multiplciation factor
+     * to be used in the next timeout, making sure that expensive handlers aren't
+     * using up all CPU cycles in the sandbox.
+     */
+    exports.updateHandlerTimeout = function(handlerName, path, startTime, minTimeout) {
+        if (!timeOuts[handlerName]) {
+            timeOuts[handlerName] = {};
+        }
+        timeOuts[handlerName][path] = Math.max(minTimeout, (Date.now() - startTime) * timeOutMultiplicationFactor);
+    };
+
+    exports.getHandlerTimeout = function(handlerName, path, defaultTimeout) {
+        if (!timeOuts[handlerName]) {
+            return defaultTimeout;
+        }
+        return timeOuts[handlerName][path] || defaultTimeout;
+    };
+
+    /**
+     * Analyzes session and sets findings as annotations
+     */
+    function analyze(session, instant) {
+        runSessionHandler(session, "change", 1000);
+        runSessionHandler(session, "check", instant ? null : exports.getHandlerTimeout("check", session.filename, 2000), function(err, annos) {
+            setAnnotations(session, annos);
+        });
+    }
+
     exports.hook = function() {
         eventbus.once("inited", function() {
             runHandler("init");
@@ -141,12 +185,6 @@ define(function(require, exports, module) {
             analyze(session, true);
         });
 
-        function analyze(session, instant) {
-            runSessionHandler(session, "change");
-            runSessionHandler(session, "check", instant ? null : 1000, function(err, annos) {
-                setAnnotations(session, annos);
-            });
-        }
 
         eventbus.on("preview", function(session) {
             var didPreview = runSessionHandler(session, "preview");

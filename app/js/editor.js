@@ -13,6 +13,7 @@ define(function(require, exports, module) {
     var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-:]/;
 
     eventbus.declare("editorloaded");
+    eventbus.declare("selectionchanged");
 
     var editors = [];
     var activeEditor = null;
@@ -105,6 +106,9 @@ define(function(require, exports, module) {
                     require(["./session_manager"], function(session_manager) {
                         session_manager.saveSession(editor.getSession());
                     });
+                });
+                editor.on("changeSelection", function() {
+                    eventbus.emit("selectionchanged", editor);
                 });
             });
 

@@ -1,7 +1,7 @@
 var coffee = require("./coffee-script.js");
 var lineRegex = /on line (\d+)/;
 
-return function(info, callback) {
+module.exports = function(info, callback) {
     var text = info.inputs.text;
     try {
         coffee.compile(text);
