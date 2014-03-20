@@ -9,8 +9,10 @@ module.exports = function(info, callback) {
     var min = info.inserts.preferences.trimEmptyLines ? -1 : 0;
     var currentLine = info.inserts.cursor.row;
     var lines = info.inserts.lines;
+    var lastNonBlank = 0;
 
     for (var i = 0; i < lines.length; i++) {
+        if (/\S/.test(lines[i])) lastNonBlank = i;
         // Preserve spaces on the line we're on.
         if (i == currentLine) continue;
 
@@ -25,8 +27,7 @@ module.exports = function(info, callback) {
         return session.append(info.path, "\n", callback);
     } else {
         // Strip blank lines, but not above the cursor position.
-        var row = lines.length;
-        while ((row > currentLine) && (lines[row - 1] === "")) { row--; }
+        var row = Math.max(currentLine, lastNonBlank + 1);
         if (row < lines.length - 1) {
             return session.removeLines(info.path, row, lines.length, callback);
         }
