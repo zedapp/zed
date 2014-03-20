@@ -2,13 +2,13 @@ var session = require("zed/session");
 
 module.exports = function(info, callback) {
     // Don't strip while inserting snippets, or auto-strip when pref not set.
-    if (info.inserts.isInsertingSnippet || (!info.inserts.preferences.trimWhitespaceOnSave && info.internal)) {
+    if (info.inputs.isInsertingSnippet || (!info.inputs.preferences.trimWhitespaceOnSave && info.internal)) {
         return callback();
     }
 
-    var min = info.inserts.preferences.trimEmptyLines ? -1 : 0;
-    var currentLine = info.inserts.cursor.row;
-    var lines = info.inserts.lines;
+    var min = info.inputs.preferences.trimEmptyLines ? -1 : 0;
+    var currentLine = info.inputs.cursor.row;
+    var lines = info.inputs.lines;
     var lastNonBlank = 0;
 
     for (var i = 0; i < lines.length; i++) {

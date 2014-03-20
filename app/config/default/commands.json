@@ -146,7 +146,7 @@
         },
         "Edit:Trim Whitespace": {
             "scriptUrl": "./command/stripper.js",
-            "inserts": {
+            "inputs": {
                 "cursor": true,
                 "isInsertingSnippet": true,
                 "lines": true,
@@ -156,7 +156,7 @@
         "Edit:Auto Trim Whitespace": {
             "scriptUrl": "./command/stripper.js",
             "internal": true,
-            "inserts": {
+            "inputs": {
                 "cursor": true,
                 "isInsertingSnippet": true,
                 "lines": true,
@@ -169,7 +169,7 @@
         },
         "Select:Sort Lines": {
             "scriptUrl": "./command/sort_selection.js",
-            "inserts": {
+            "inputs": {
                 "selectionRange": true,
                 "selectionText": true
             }

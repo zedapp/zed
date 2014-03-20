@@ -132,8 +132,8 @@ define(function(require, exports, module) {
             if (scriptUrl[0] === "/") {
                 scriptUrl = "configfs!" + scriptUrl;
             }
-            // This data can be requested for insertion in commands.json
-            var insertables = {
+            // This data can be requested as input in commands.json
+            var inputables = {
                 cursor: function() {
                     return session.selection.getCursor();
                 },
@@ -172,8 +172,8 @@ define(function(require, exports, module) {
                     return session.getValue();
                 },
             };
-            for (var insert in (spec.inserts || {})) {
-                spec.inserts[insert] = (insertables[insert] || nop)();
+            for (var input in (spec.inputs || {})) {
+                spec.inputs[input] = (inputables[input] || nop)();
             }
             sandboxEl[0].contentWindow.postMessage({
                 url: scriptUrl,
