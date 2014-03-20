@@ -1,66 +1,35 @@
 var session = require("zed/session");
 
-function Stripper(info, callback) {
-    this.path = info.path;
-    this.min = info.inserts.preferences.trimEmptyLines ? -1 : 0;
-    this.lines = info.inserts.lines;
-    this.currentLine = info.inserts.cursor.row;
+module.exports = function(info, callback) {
+    // Don't strip while inserting snippets, or auto-strip when pref not set.
+    if (info.inserts.isInsertingSnippet || (!info.inserts.preferences.trimWhitespaceOnSave && info.internal)) {
+        return callback();
+    }
 
-    // Don't strip mid-snippet.
-    if (!info.inserts.isInsertingSnippet) {
-        this.stripTrailing();
+    var min = info.inserts.preferences.trimEmptyLines ? -1 : 0;
+    var currentLine = info.inserts.cursor.row;
+    var lines = info.inserts.lines;
+
+    for (var i = 0; i < lines.length; i++) {
+        // Preserve spaces on the line we're on.
+        if (i == currentLine) continue;
+
+        var column = lines[i].search(/\s+$/);
+        if (column > min) {
+            session.removeInLine(info.path, i, column, lines[i].length);
+        }
+    }
+
+    if (lines[lines.length - 1] !== "") {
+        // Enforce newline at end of file.
+        return session.append(info.path, "\n", callback);
+    } else {
+        // Strip blank lines, but not above the cursor position.
+        var row = lines.length;
+        while ((row > currentLine) && (lines[row - 1] === "")) { row--; }
+        if (row < lines.length - 1) {
+            return session.removeLines(info.path, row, lines.length, callback);
+        }
     }
     callback();
-}
-
-Stripper.prototype = {
-    stripTrailing: function() {
-        // Strip spaces from the ends of lines.
-        for (var i = 0; i < this.lines.length; i++) {
-            // Preserve spaces on the line we're on.
-            if (i == this.currentLine) {
-                continue;
-            }
-
-            // Don't do the strip if the line contains only spaces
-            // and the preference to trimEmptyLines isn't set.
-            var column = this.lines[i].search(/\s+$/);
-            if (column > this.min) {
-                session.removeInLine(this.path, i, column, this.lines[i].length);
-            }
-        }
-
-        this.checkEOF();
-    },
-
-    checkEOF: function() {
-        var lastTwo = this.lines.slice(-2);
-        if (lastTwo[1] !== "") {
-            // Enforce newline at end of file.
-            session.append(this.path, "\n", this.final);
-        } else if (lastTwo[0] === "" && lastTwo[1] === "") {
-            // Strip blank lines from the end.
-            this.stripEndLines();
-        }
-    },
-
-    stripEndLines: function() {
-        var len = this.lines.length;
-        // Don't strip beyond the cursor position.
-        for (var i = len; i > this.currentLine; i--) {
-            if (this.lines[i - 1] !== "") {
-                break;
-            }
-        }
-        if (i < len - 1) {
-            session.removeLines(this.path, i, len);
-        }
-    },
-};
-
-module.exports = function(info, callback) {
-    // Don't auto-strip if the preference isn't set, but do allow manual use.
-    if (!(!info.inserts.preferences.trimWhitespaceOnSave && info.internal)) {
-        new Stripper(info, callback);
-    }
 };
