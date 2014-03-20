@@ -27,7 +27,7 @@ module.exports = function(info, callback) {
         return session.append(info.path, "\n", callback);
     } else {
         // Strip blank lines, but not above the cursor position.
-        var row = Math.max(currentLine, lastNonBlank + 1);
+        var row = Math.max(currentLine, lastNonBlank) + 1;
         if (row < lines.length - 1) {
             return session.removeLines(info.path, row, lines.length, callback);
         }
