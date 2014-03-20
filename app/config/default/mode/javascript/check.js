@@ -79,80 +79,81 @@ function findIdentifierRange(line, startColumn) {
 }
 
 
+/**
+ * Required inputs: text
+ */
 module.exports = function(info, callback) {
-    var path = info.path;
-    session.getText(path, function(err, value) {
-        value = value.replace(/^#!.*\n/, "\n");
-        if (!value) {
-            return callback(null, []);
-        }
-        var lines = value.split("\n");
-        var errors = [];
+    var value = info.inputs.text;
+    value = value.replace(/^#!.*\n/, "\n");
+    if (!value) {
+        return callback(null, []);
+    }
+    var lines = value.split("\n");
+    var errors = [];
 
-        // js hint reports many false errors
-        // report them as error only if code is actually invalid
-        var maxErrorLevel = isValidJS(value) ? "warning" : "error";
+    // js hint reports many false errors
+    // report them as error only if code is actually invalid
+    var maxErrorLevel = isValidJS(value) ? "warning" : "error";
 
-        var globals;
-        if (info.options) {
-            globals = info.options.globals;
-        }
+    var globals;
+    if (info.options) {
+        globals = info.options.globals;
+    }
 
-        // var start = new Date();
-        lint(value, info.options, globals);
-        var results = lint.errors;
-        
-        for (var i = 0; i < results.length; i++) {
-            var error = results[i];
-            if (!error) continue;
-            var raw = error.raw;
-            var type = "warning";
+    // var start = new Date();
+    lint(value, info.options, globals);
+    var results = lint.errors;
 
-            if (raw == "Missing semicolon.") {
-                var str = error.evidence.substr(error.character);
-                str = str.charAt(str.search(/\S/));
-                if (maxErrorLevel == "error" && str && /[\w\d{(['"]/.test(str)) {
-                    error.reason = 'Missing ";" before statement';
-                    type = "error";
-                } else {
-                    type = "info";
-                }
-            } else if (disabledWarningsRe.test(raw)) {
-                continue;
-            } else if (infoRe.test(raw)) {
-                type = "info";
-            } else if (errorsRe.test(raw)) {
-                type = maxErrorLevel;
-            } else if (raw == "'{a}' is not defined.") {
-                type = "warning";
-            } else if (raw == "'{a}' is defined but never used.") {
+    for (var i = 0; i < results.length; i++) {
+        var error = results[i];
+        if (!error) continue;
+        var raw = error.raw;
+        var type = "warning";
+
+        if (raw == "Missing semicolon.") {
+            var str = error.evidence.substr(error.character);
+            str = str.charAt(str.search(/\S/));
+            if (maxErrorLevel == "error" && str && /[\w\d{(['"]/.test(str)) {
+                error.reason = 'Missing ";" before statement';
+                type = "error";
+            } else {
                 type = "info";
             }
-
-            var line = lines[error.line - 1];
-            
-            if (line) {
-                // JSHint automatically converts tabs (\t) into 4 characters,
-                // whereas in the source file it's only one, so let's remove
-                // all "bonus" spaces (3 per tab) from the character position.
-                var match = line.match(/\t/g);
-                if (match) {
-                    error.character -= match.length * 3;
-                }
-            }
-            
-            var pos = findIdentifierRange(line, error.character - 1);
-            // console.log("Error", error, pos);
-
-            errors.push({
-                row: error.line - 1,
-                column: pos.column,
-                endColumn: pos.endColumn,
-                text: error.reason,
-                type: type,
-                raw: raw
-            });
+        } else if (disabledWarningsRe.test(raw)) {
+            continue;
+        } else if (infoRe.test(raw)) {
+            type = "info";
+        } else if (errorsRe.test(raw)) {
+            type = maxErrorLevel;
+        } else if (raw == "'{a}' is not defined.") {
+            type = "warning";
+        } else if (raw == "'{a}' is defined but never used.") {
+            type = "info";
         }
-        callback(null, errors);
-    });
+
+        var line = lines[error.line - 1];
+
+        if (line) {
+            // JSHint automatically converts tabs (\t) into 4 characters,
+            // whereas in the source file it's only one, so let's remove
+            // all "bonus" spaces (3 per tab) from the character position.
+            var match = line.match(/\t/g);
+            if (match) {
+                error.character -= match.length * 3;
+            }
+        }
+
+        var pos = findIdentifierRange(line, error.character - 1);
+        // console.log("Error", error, pos);
+
+        errors.push({
+            row: error.line - 1,
+            column: pos.column,
+            endColumn: pos.endColumn,
+            text: error.reason,
+            type: type,
+            raw: raw
+        });
+    }
+    callback(null, errors);
 };

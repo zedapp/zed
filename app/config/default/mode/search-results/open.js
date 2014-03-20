@@ -1,21 +1,21 @@
 var session = require("zed/session");
 
+/**
+ * Inputs: lines, cursor
+ */
 module.exports = function(info, callback) {
-    var path = info.path;
+    var pos = info.inputs.cursor;
+    var lines = info.inputs.lines;
 
-    session.getCursorPosition(path, function(err, pos) {
-        session.getAllLines(path, function(err, lines) {
-            var line = lines[pos.row];
-            if(line[0] === "/") {
-                return session.goto(line, callback)
-            } else if(line[0] === "\t") {
-                line = lines[pos.row-1];
-                if(line[0] === "/") {
-                    return session.goto(line, callback);
-                }
-            }
-            // Do nothing
-            callback();
-        });
-    });
+    var line = lines[pos.row];
+    if (line[0] === "/") {
+        return session.goto(line, callback);
+    } else if (line[0] === "\t") {
+        line = lines[pos.row - 1];
+        if (line[0] === "/") {
+            return session.goto(line, callback);
+        }
+    }
+    // Do nothing
+    callback();
 };

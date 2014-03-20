@@ -26,15 +26,25 @@
                         "multistr": true,
                         "globalstrict": true
                     },
+                    "inputs": {
+                        "text": true
+                    },
                     "internal": true
                 },
                 "Tools:CTags": {
                     "scriptUrl": "./javascript/ctags.js",
+                    "inputs": {
+                        "text": true
+                    },
                     "internal": true
                 },
 
                 "Tools:Beautify": {
-                    "scriptUrl": "./javascript/beautify.js"
+                    "scriptUrl": "./javascript/beautify.js",
+                    "inputs": {
+                        "text": true,
+                        "preferences": true
+                    }
                 },
 
                 "Tools:Complete:Snippet": {

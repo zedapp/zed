@@ -1,27 +1,28 @@
 var beautifier = require("./beautify-css.js");
 var beautify = require("zed/lib/beautify");
-var config = require("zed/config");
 
-function enhancedBeautifier(text, callback) {
-    config.getPreference("tabSize", function(err, tabSize) {
-        config.getPreference("useSoftTabs", function(err, useSoftTabs) {
-            var indentChar = ' ';
-            if (!useSoftTabs) {
-                indentChar = '\t';
-                tabSize = 1;
-            }
-            var options = {
-                "indent_size": tabSize,
-                "indent_char": indentChar
-            };
-            
-            // Some tweaks for generator functions
-            var beautified = beautifier(text, options);
-            callback(null, beautified);
-        });  
-    });
-}
 
+/**
+ * inputs: preferences
+ */
 module.exports = function(data, callback) {
+    var preferences = data.inputs.preferences;
+
     beautify(data.path, enhancedBeautifier, callback);
+
+    function enhancedBeautifier(text, callback) {
+        var indentChar = ' ';
+        if (!preferences.useSoftTabs) {
+            indentChar = '\t';
+            preferences.tabSize = 1;
+        }
+        var options = {
+            "indent_size": preferences.tabSize,
+            "indent_char": indentChar
+        };
+
+        // Some tweaks for generator functions
+        var beautified = beautifier(text, options);
+        callback(null, beautified);
+    }
 };

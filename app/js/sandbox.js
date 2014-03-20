@@ -11,17 +11,16 @@
  */
 /*global define, $, _ */
 define(function(require, exports, module) {
-    var editor = require("./editor");
+    // var editor = require("./editor");
     var command = require("./command");
-    var config = require("./config");
+    // var config = require("./config");
     var bgPage = require("./lib/background_page");
     var options = require("./lib/options");
 
     var sandboxEl;
     var id;
     var waitingForReply;
-
-    function nop() {}
+    var inputables = {};
 
     /**
      * If we would like to reset our sandbox (e.d. to reload code), we can
@@ -51,6 +50,10 @@ define(function(require, exports, module) {
 
     exports.hook = function() {
         resetSandbox();
+    };
+
+    exports.defineInputable = function(name, fn) {
+        inputables[name] = fn;
     };
 
     /**
@@ -133,47 +136,8 @@ define(function(require, exports, module) {
                 scriptUrl = "configfs!" + scriptUrl;
             }
             // This data can be requested as input in commands.json
-            var inputables = {
-                cursor: function() {
-                    return session.selection.getCursor();
-                },
-                cursorIndex: function () {
-                    var cursor = session.selection.getCursor();
-                    var lines = session.getDocument().getAllLines();
-                    var index = cursor.column;
-                    lines.splice(cursor.row);
-                    while (lines.length > 0) {
-                        index += lines.pop().length + 1;
-                    }
-                    return index;
-                },
-                isInsertingSnippet: function() {
-                    return editor.isInsertingSnippet();
-                },
-                lines: function() {
-                    return session.getDocument().getAllLines();
-                },
-                preferences: function() {
-                    return config.getPreferences();
-                },
-                scrollPostion: function() {
-                    return {
-                        scrollTop: session.getScrollTop(),
-                        scrollLeft: session.getScrollLeft()
-                    }
-                },
-                selectionRange: function() {
-                    return session.selection.getRange();
-                },
-                selectionText: function () {
-                    return session.getTextRange(session.selection.getRange());
-                },
-                text: function() {
-                    return session.getValue();
-                },
-            };
             for (var input in (spec.inputs || {})) {
-                spec.inputs[input] = (inputables[input] || nop)();
+                spec.inputs[input] = inputables[input] && inputables[input](session);
             }
             sandboxEl[0].contentWindow.postMessage({
                 url: scriptUrl,

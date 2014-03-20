@@ -1,0 +1,9 @@
+{
+    "modes": {
+        "rust": {
+            "name": "Rust",
+            "highlighter": "ace/mode/rust",
+            "extensions": ["rs"]
+        }
+    }
+}

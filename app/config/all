@@ -14,6 +14,7 @@
 /api/zed/util.js
 /default.json
 /default/command/builtin_completer.js
+/default/command/config_int.js
 /default/command/ctags_completer.js
 /default/command/search.js
 /default/command/snippet_completer.js
@@ -83,6 +84,7 @@
 /default/mode/python.json
 /default/mode/rhtml.json
 /default/mode/ruby.json
+/default/mode/rust.json
 /default/mode/sass.json
 /default/mode/search-results.json
 /default/mode/search-results/open.js

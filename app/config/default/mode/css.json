@@ -7,14 +7,23 @@
 
             "commands": {
                 "Tools:Beautify": {
-                    "scriptUrl": "/default/mode/css/beautify.js"
+                    "scriptUrl": "/default/mode/css/beautify.js",
+                    "inputs": {
+                        "preferences": true
+                    }
                 },
                 "Tools:Check": {
                     "scriptUrl": "/default/mode/css/check.js",
+                    "inputs": {
+                        "text": true
+                    },
                     "internal": true
                 },
                 "Tools:CTags": {
                     "scriptUrl": "/default/mode/css/ctags.js",
+                    "inputs": {
+                        "text": true
+                    },
                     "internal": true
                 }
             },

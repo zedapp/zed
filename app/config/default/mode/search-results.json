@@ -11,7 +11,11 @@
 
             "commands": {
                 "Search Results:Open File": {
-                    "scriptUrl": "/default/mode/search-results/open.js"
+                    "scriptUrl": "/default/mode/search-results/open.js",
+                    "inputs": {
+                        "lines": true,
+                        "cursor": true
+                    }
                 }
             },
 

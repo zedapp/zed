@@ -346,7 +346,7 @@ body.dark .dynatree-focused a:link {
     position: absolute;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
-    top: 0;
+    top: 25px;
     left: 0;
     right: 0;
     bottom: 0;

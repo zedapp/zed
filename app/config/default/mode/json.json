@@ -7,11 +7,18 @@
 
             "commands": {
                 "Tools:Beautify": {
-                    "scriptUrl": "/default/mode/javascript/beautify.js"
+                    "scriptUrl": "/default/mode/javascript/beautify.js",
+                    "inputs": {
+                        "text": true,
+                        "preferences": true
+                    }
                 },
 
                 "Tools:Check": {
                     "scriptUrl": "/default/mode/json/check.js",
+                    "inputs": {
+                        "text": true
+                    },
                     "internal": true
                 }
             },

@@ -97,6 +97,9 @@ define(function(require, exports, module) {
         if (!completionRegex.exec(change.text)) {
             return;
         }
+        if(edit.session.multiSelect.inMultiSelectMode) {
+            return;
+        }
         continuousCompletionTimerId = setTimeout(function() {
             if (!edit.completer || !edit.completer.activated) {
                 complete(edit, true);

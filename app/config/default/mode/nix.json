@@ -6,13 +6,18 @@
             "extensions": ["nix"],
             "commands": {
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/nix/ctags.js"
+                    "scriptUrl": "/default/mode/nix/ctags.js",
+                    "inputs": {
+                        "text": true
+                    },
+                    "internal": true
                 },
                 "Tools:Complete:Snippet": {
                     "scriptUrl": "/default/command/snippet_completer.js",
                     "snippets": {
                         "mkDerivation": "mkDerivation {\n\tname = \"${1}\";\n\tsrc = ${2};\n}"
-                    }
+                    },
+                    "internal": true
                 },
                 "Tools:Complete:Builtin": {
                     "scriptUrl": "/default/command/builtin_completer.js",
@@ -172,7 +177,8 @@
                         "trace",
                         "tryEval",
                         "typeOf",
-                        "unsafeDiscardOutputDependency"]
+                        "unsafeDiscardOutputDependency"],
+                    "internal": true
                 }
             },
             "handlers": {

@@ -7,7 +7,10 @@
 
             "commands": {
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/go/ctags.js"
+                    "scriptUrl": "/default/mode/go/ctags.js",
+                    "inputs": {
+                        "text": true
+                    }
                 }
             },
 

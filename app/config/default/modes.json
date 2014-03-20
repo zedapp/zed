@@ -35,6 +35,7 @@
         "./mode/xsl.json",
         "./mode/yaml.json",
         "./mode/makefile.json",
+        "./mode/rust.json",
         "./mode/search-results.json"
     ]
 }
