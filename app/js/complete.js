@@ -8,18 +8,38 @@ define(function(require, exports, module) {
     var editor = require("./editor");
     var Autocomplete = require("ace/autocomplete").Autocomplete;
     var async = require("async");
+    var handlers = require("./handlers");
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
     var completionRegex = /^[a-zA-Z_\$]$/;
+
+    // Continuous completion related variables
+    var continuousCompletionTimerId;
+    var continuousCompletionSession;
+    var continuousCompletionCursor;
 
     exports.hook = function() {
         eventbus.on("sessionchanged", function(session, delta) {
             if (config.getPreference("continuousCompletion")) {
                 var edit = editorForSession(session);
-                if(!edit) {
+                if (!edit) {
                     return;
                 }
                 completionListener(edit, delta);
+            }
+        });
+        // If the selection (cursor) changed and the session changed, cursor line changed
+        // cancel completion from showing up, or hide it if it's visible
+        eventbus.on("selectionchanged", function(edit) {
+            if (!continuousCompletionTimerId) {
+                return;
+            }
+            if (continuousCompletionSession !== edit.session || continuousCompletionCursor.row !== edit.getCursorPosition().row) {
+                clearTimeout(continuousCompletionTimerId);
+                continuousCompletionTimerId = null;
+                if (edit.completer) {
+                    edit.completer.detach();
+                }
             }
         });
     };
@@ -36,6 +56,7 @@ define(function(require, exports, module) {
             if (globalCompleteCommands) {
                 completeCommands = completeCommands.concat(globalCompleteCommands);
             }
+            var startDate = Date.now();
             async.each(completeCommands, function(cmdName, next) {
                 command.exec(cmdName, edit, session, function(err, results_) {
                     if (err) {
@@ -46,6 +67,7 @@ define(function(require, exports, module) {
                     next();
                 });
             }, function() {
+                handlers.updateHandlerTimeout("complete", session.filename, startDate, config.getPreference("continuousCompletionDelay"));
                 callback(null, results);
             });
         }
@@ -86,22 +108,38 @@ define(function(require, exports, module) {
         }
     }
 
-    var continuousCompletionTimerId;
+    /**
+     * Listens to change events and decides whether or not so show
+     * the completion UI
+     */
 
     function completionListener(edit, event) {
         var change = event.data;
-        clearTimeout(continuousCompletionTimerId);
+        continuousCompletionSession = edit.session;
+        continuousCompletionCursor = edit.getCursorPosition();
+
         if (change.action !== "insertText") {
-            return;
+            return cancel();
         }
         if (!completionRegex.exec(change.text)) {
-            return;
+            return cancel();
         }
-        continuousCompletionTimerId = setTimeout(function() {
-            if (!edit.completer || !edit.completer.activated) {
-                complete(edit, true);
-            }
-        }, config.getPreference("continuousCompletionDelay"));
+        if (edit.session.multiSelect.inMultiSelectMode) {
+            return cancel();
+        }
+        if (!continuousCompletionTimerId) {
+            continuousCompletionTimerId = setTimeout(function() {
+                continuousCompletionTimerId = null;
+                if (!edit.completer || !edit.completer.activated) {
+                    complete(edit, true);
+                }
+            }, handlers.getHandlerTimeout("check", edit.session.filename, config.getPreference("continuousCompletionDelay")));
+        }
+
+        function cancel() {
+            clearTimeout(continuousCompletionTimerId);
+            continuousCompletionTimerId = null;
+        }
     }
 
     function complete(edit, continuousCompletion) {

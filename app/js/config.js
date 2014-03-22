@@ -325,7 +325,7 @@ define(function(require, exports, module) {
         return configfs;
     };
 
-    require(["./command", "./session_manager", "./lib/ui"], function(command, session_manager, ui) {
+    require(["./command", "./session_manager", "./lib/ui", "./sandbox"], function(command, session_manager, ui, sandbox) {
         command.define("Configuration:Reload", {
             exec: function() {
                 loadConfiguration();
@@ -399,6 +399,10 @@ define(function(require, exports, module) {
                 });
             },
             readOnly: true
+        });
+
+        sandbox.defineInputable("preferences", function() {
+            return expandedConfiguration.preferences;
         });
     });
 });

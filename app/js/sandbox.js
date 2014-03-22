@@ -18,6 +18,7 @@ define(function(require, exports, module) {
     var sandboxEl;
     var id;
     var waitingForReply;
+    var inputables = {};
 
     /**
      * If we would like to reset our sandbox (e.d. to reload code), we can
@@ -48,6 +49,14 @@ define(function(require, exports, module) {
     exports.hook = function() {
         resetSandbox();
     };
+
+    exports.defineInputable = function(name, fn) {
+        inputables[name] = fn;
+    };
+
+    exports.getInputable = function(session, name) {
+        return inputables[name] && inputables[name](session);
+    }
 
     /**
      * Handle a request coming from within the sandbox, and send back a response
@@ -127,6 +136,10 @@ define(function(require, exports, module) {
             var scriptUrl = spec.scriptUrl;
             if (scriptUrl[0] === "/") {
                 scriptUrl = "configfs!" + scriptUrl;
+            }
+            // This data can be requested as input in commands.json
+            for (var input in (spec.inputs || {})) {
+                spec.inputs[input] = this.getInputable(session, input);
             }
             sandboxEl[0].contentWindow.postMessage({
                 url: scriptUrl,

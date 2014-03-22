@@ -145,18 +145,34 @@
             "readOnly": true
         },
         "Edit:Trim Whitespace": {
-            "scriptUrl": "./command/stripper.js"
+            "scriptUrl": "./command/stripper.js",
+            "inputs": {
+                "cursor": true,
+                "isInsertingSnippet": true,
+                "lines": true,
+                "preferences": true
+            }
         },
         "Edit:Auto Trim Whitespace": {
             "scriptUrl": "./command/stripper.js",
-            "internal": true
+            "internal": true,
+            "inputs": {
+                "cursor": true,
+                "isInsertingSnippet": true,
+                "lines": true,
+                "preferences": true
+            }
         },
         "Find:Find In Project": {
             "scriptUrl": "./command/search.js",
             "readOnly": true
         },
         "Select:Sort Lines": {
-            "scriptUrl": "./command/sort_selection.js"
+            "scriptUrl": "./command/sort_selection.js",
+            "inputs": {
+                "selectionRange": true,
+                "selectionText": true
+            }
         },
         "Tools:Complete:CTags": {
             "scriptUrl": "./command/ctags_completer.js"

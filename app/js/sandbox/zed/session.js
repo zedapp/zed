@@ -2,6 +2,7 @@ define(function(require, exports, module) {
     var session_manager = require("../../session_manager");
     var Range = require("ace/range").Range;
     var editor = require("../../editor");
+    var sandbox = require("../../sandbox");
     var InlineAnnotation = require("../../lib/inline_annotation");
     var eventbus = require("../../lib/eventbus");
 
@@ -13,9 +14,32 @@ define(function(require, exports, module) {
         return path ? session_manager.getSessions()[path] : editor.getActiveSession();
     }
 
+    // This function can take any defined inputable, a path, a callback,
+    // and will call the callback with the result of the inputable for
+    // the given path.
+    function genericInputable(inputable, path, callback) {
+        callback(null, sandbox.getInputable(
+            getSession(path), inputable));
+    }
+
+    // This returns the above function bound to a given inputable, eg a function
+    // that will take only path and callback arguments (as expected below), and
+    // then call the callback with the result for the pre-determined inputable.
+    function useInputable(inputable) {
+        return genericInputable.bind(genericInputable, inputable);
+    }
+
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
 
     return {
+        getAllLines: useInputable("lines"),
+        getCursorIndex: useInputable("cursorIndex"),
+        getCursorPosition: useInputable("cursor"),
+        getScrollPosition: useInputable("scrollPosition"),
+        getSelectionRange: useInputable("selectionRange"),
+        getSelectionText: useInputable("selectionText"),
+        getText: useInputable("text"),
+        isInsertingSnippet: useInputable("isInsertingSnippet"),
         goto: function(path, callback) {
             var edit = editor.getActiveEditor();
             session_manager.go(path, edit, edit.getSession(), function(err) {
@@ -29,22 +53,15 @@ define(function(require, exports, module) {
                 anno.remove();
             });
             session.annotations = [];
-            for(var i = 0; i < annos.length; i++) {
+            for (var i = 0; i < annos.length; i++) {
                 var anno = annos[i];
                 // If no endColum, no inline marker is required
-                if(anno.endColumn) {
+                if (anno.endColumn) {
                     session.annotations.push(new InlineAnnotation(session, anno));
                 }
             }
             session.setAnnotations(annos);
             callback();
-        },
-        getText: function(path, callback) {
-            var session = getSession(path);
-            if(!session) {
-                return callback("No session for: " + path);
-            }
-            callback(null, session.getValue());
         },
         // Don't use setText unless you are really changing the entire contents
         // of the document, because it interacts poorly with the selection,
@@ -102,9 +119,6 @@ define(function(require, exports, module) {
             }
             callback(null, identBuf.reverse().join(""));
         },
-        getAllLines: function(path, callback) {
-            callback(null, getSession(path).getDocument().getAllLines());
-        },
         removeInLine: function(path, row, start, end, callback) {
             getSession(path).getDocument().removeInLine(row, start, end);
             callback();
@@ -113,31 +127,11 @@ define(function(require, exports, module) {
             getSession(path).getDocument().removeLines(start, end);
             callback();
         },
-        getSelectionRange: function(path, callback) {
-            var range = getSession(path).selection.getRange();
-            callback(null, {
-                start: range.start,
-                end: range.end
-            });
-        },
-        getSelectionText: function(path, callback) {
-            var session = getSession(path);
-            var range = session.selection.getRange();
-            callback(null, session.getTextRange(range));
-        },
         getTextRange: function(path, start, end, callback) {
-            callback(null, getSession(path).getTextRange(rangify({start: start, end: end})));
-        },
-        getCursorIndex: function(path, callback) {
-            var session = getSession(path);
-            var cursor = session.selection.getCursor();
-            var lines = session.getDocument().getAllLines();
-            var index = cursor.column;
-            lines.splice(cursor.row);
-            while (lines.length > 0) {
-                index += lines.pop().length + 1;
-            }
-            callback(null, index);
+            callback(null, getSession(path).getTextRange(rangify({
+                start: start,
+                end: end
+            })));
         },
         setCursorIndex: function(path, index, callback) {
             var session = getSession(path);
@@ -151,21 +145,11 @@ define(function(require, exports, module) {
             session.selection.moveCursorToPosition(pos);
             callback();
         },
-        getCursorPosition: function(path, callback) {
-            callback(null, getSession(path).selection.getCursor());
-        },
         setCursorPosition: function(path, pos, callback) {
             var session = getSession(path);
             session.selection.clearSelection();
             session.selection.moveCursorToPosition(pos);
             callback();
-        },
-        getScrollPosition: function(path, callback) {
-            var session = getSession(path);
-            callback(null, {
-                scrollTop: session.getScrollTop(),
-                scrollLeft: session.getScrollLeft()
-            });
         },
         setScrollPosition: function(path, pos, callback) {
             var session = getSession(path);
@@ -182,10 +166,6 @@ define(function(require, exports, module) {
             session.selection.clearSelection();
             session.selection.moveCursorToPosition(cursorPos);
             callback();
-        },
-        isInsertingSnippet: function(path, callback) {
-            var edit = editor.getActiveEditor();
-            callback(null, !!edit.tabstopManager);
         },
         flashMessage: function(path, message, length, callback) {
             var session = getSession(path);

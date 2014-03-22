@@ -7,11 +7,13 @@ define(function(require, exports, module) {
     var modes = require("./modes");
     var font = require("./lib/font");
     var whitespace = require("ace/ext/whitespace");
+    var sandbox = require("./sandbox");
 
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
     var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-:]/;
 
     eventbus.declare("editorloaded");
+    eventbus.declare("selectionchanged");
 
     var editors = [];
     var activeEditor = null;
@@ -105,6 +107,9 @@ define(function(require, exports, module) {
                         session_manager.saveSession(editor.getSession());
                     });
                 });
+                editor.on("changeSelection", function() {
+                    eventbus.emit("selectionchanged", editor);
+                });
             });
 
             editor.setActiveEditor(editors[0]);
@@ -129,6 +134,9 @@ define(function(require, exports, module) {
             edit.setSession(session);
             edit.setReadOnly( !! session.readOnly);
             eventbus.emit("switchsession", edit, session);
+        },
+        isInsertingSnippet: function() {
+            return !!activeEditor.tabstopManager;
         },
         getActiveEditor: function() {
             return activeEditor;
@@ -835,5 +843,47 @@ define(function(require, exports, module) {
             });
         },
         readOnly: true
+    });
+
+    sandbox.defineInputable("cursor", function(session) {
+        return session.selection.getCursor();
+    });
+
+    sandbox.defineInputable("cursorIndex", function(session) {
+        var cursor = session.selection.getCursor();
+        var lines = session.getDocument().getAllLines();
+        var index = cursor.column;
+        lines.splice(cursor.row);
+        while (lines.length > 0) {
+            index += lines.pop().length + 1;
+        }
+        return index;
+    });
+
+    sandbox.defineInputable("isInsertingSnippet", function() {
+        return editor.isInsertingSnippet();
+    });
+
+    sandbox.defineInputable("lines", function(session) {
+        return session.getDocument().getAllLines();
+    });
+
+    sandbox.defineInputable("scrollPosition", function(session) {
+        return {
+            scrollTop: session.getScrollTop(),
+            scrollLeft: session.getScrollLeft()
+        };
+    });
+
+    sandbox.defineInputable("selectionRange", function(session) {
+        return session.selection.getRange();
+    });
+
+    sandbox.defineInputable("selectionText", function(session) {
+        return session.getTextRange(session.selection.getRange());
+    });
+
+    sandbox.defineInputable("text", function(session) {
+        return session.getValue();
     });
 });

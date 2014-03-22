@@ -15,6 +15,18 @@ define(function(require, exports, module) {
     var editor = require("./editor");
     var command = require("./command");
 
+    var keyTool = require("ace/lib/keys");
+
+    // Monkey patching the keyCodeToString method of ACE.
+    var keyCodeToStringOld = keyTool.keyCodeToString;
+    keyTool.keyCodeToString = function(keyCode) {
+        switch(keyCode) {
+            case 187: return "=";
+            case 189: return "-";
+        }
+        return keyCodeToStringOld(keyCode);
+    };
+
     var keys = JSON.parse(require("text!../config/default/keys.json"));
 
     function updateAllEditors() {

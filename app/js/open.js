@@ -15,16 +15,16 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
     var remoteEditInput = $("#gotoinput");
     var filterInput = $("#projectfilter");
     var defaultHint = $("#hint").html();
-    
+
     var selectIdx = 0;
     // Keeps references to open project's Chrome windows
     var openProjects = {};
     // We're storing recent projects in local storage
     var projectCache = null;
     var validProjectCache = null;
-    
+
     var backgroundPage = null;
-    
+
     chrome.runtime.getBackgroundPage(function(bg) {
         backgroundPage = bg;
         openProjects = backgroundPage.projects;
@@ -91,7 +91,7 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         var win = chrome.app.window.current();
         win.resizeTo(400, $("body").height() + 23);
     }
-    
+
     function getAllVisibleProjects() {
         var projects = validProjectCache.slice();
         var filterPhrase = filterInput.val().toLowerCase();
@@ -122,7 +122,7 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         var projects = getAllVisibleProjects();
         var recentEl = $("#recent");
         recentEl.empty();
-        
+
         projects.forEach(function(project, idx) {
             var el = $("<a href='#'>");
             if(project.id) {
@@ -179,9 +179,9 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
     remoteEditInput.blur(function() {
         filterInput.focus();
     });
-    
+
     var lastFilterPhrase = null;
-    
+
     filterInput.keyup(function() {
         if (lastFilterPhrase != filterInput.val()) {
             selectIdx = 0;
@@ -237,7 +237,7 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         }
         updateProjectSelection();
     });
-    
+
     function updateProjectSelection() {
         var projectEls = $(".projects a");
         projectEls.removeClass("active");
@@ -258,7 +258,7 @@ require(["lib/history", "lib/icons", "lib/async", "lib/key_code"], function(hist
         }
         filterInput.focus();
     });
-    
+
     $("#projects").on("mouseover", ".projects a", function(event) {
         var idx = $(event.target).data("idx");
         selectIdx = idx;
