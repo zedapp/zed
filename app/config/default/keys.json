@@ -94,6 +94,14 @@
             "win": "Ctrl-Delete",
             "mac": "Alt-D"
         },
+        "Configuration:Preferences:Decrease Font Size": {
+            "win": "Ctrl--",
+            "mac": "Command--"
+        },
+        "Configuration:Preferences:Increase Font Size": {
+            "win": "Ctrl-=|Ctrl-+",
+            "mac": "Command-=|Command-+"
+        },
         "Cursor:File Start": {
             "mac": "Command-Up",
             "win": "Ctrl-Home"
@@ -139,7 +147,6 @@
         "Cursor:Center": {
             "mac": "Ctrl-L"
         },
-
         "Cursor:Multiple:Add Above": "Ctrl-Alt-Up",
         "Cursor:Multiple:Add Below": "Ctrl-Alt-Down",
         "Cursor:Multiple:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
