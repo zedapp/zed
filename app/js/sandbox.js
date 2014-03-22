@@ -11,9 +11,7 @@
  */
 /*global define, $, _ */
 define(function(require, exports, module) {
-    // var editor = require("./editor");
     var command = require("./command");
-    // var config = require("./config");
     var bgPage = require("./lib/background_page");
     var options = require("./lib/options");
 
@@ -55,6 +53,10 @@ define(function(require, exports, module) {
     exports.defineInputable = function(name, fn) {
         inputables[name] = fn;
     };
+
+    exports.getInputable = function(session, name) {
+        return inputables[name] && inputables[name](session);
+    }
 
     /**
      * Handle a request coming from within the sandbox, and send back a response
@@ -137,7 +139,7 @@ define(function(require, exports, module) {
             }
             // This data can be requested as input in commands.json
             for (var input in (spec.inputs || {})) {
-                spec.inputs[input] = inputables[input] && inputables[input](session);
+                spec.inputs[input] = this.getInputable(session, input);
             }
             sandboxEl[0].contentWindow.postMessage({
                 url: scriptUrl,
