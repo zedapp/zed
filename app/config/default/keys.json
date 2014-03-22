@@ -287,6 +287,14 @@
             "mac": "Command-W",
             "win": "Alt-F4|Ctrl-W"
         },
-        "Window:Fullscreen": "F11"
+        "Window:Fullscreen": "F11",
+        "Configuration:Preferences:Increase Font Size": {
+            "mac": "Command-=",
+            "win": "Ctrl-+"
+        },
+        "Configuration:Preferences:Decrease Font Size": {
+            "mac": "Command--",
+            "win": "Ctrl--"
+        }
     }
 }
