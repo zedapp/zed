@@ -2,6 +2,7 @@ define(function(require, exports, module) {
     var session_manager = require("../../session_manager");
     var Range = require("ace/range").Range;
     var editor = require("../../editor");
+    var sandbox = require("../../sandbox");
     var InlineAnnotation = require("../../lib/inline_annotation");
     var eventbus = require("../../lib/eventbus");
 
@@ -29,10 +30,10 @@ define(function(require, exports, module) {
                 anno.remove();
             });
             session.annotations = [];
-            for(var i = 0; i < annos.length; i++) {
+            for (var i = 0; i < annos.length; i++) {
                 var anno = annos[i];
                 // If no endColum, no inline marker is required
-                if(anno.endColumn) {
+                if (anno.endColumn) {
                     session.annotations.push(new InlineAnnotation(session, anno));
                 }
             }
@@ -41,7 +42,7 @@ define(function(require, exports, module) {
         },
         getText: function(path, callback) {
             var session = getSession(path);
-            if(!session) {
+            if (!session) {
                 return callback("No session for: " + path);
             }
             callback(null, session.getValue());
@@ -126,18 +127,16 @@ define(function(require, exports, module) {
             callback(null, session.getTextRange(range));
         },
         getTextRange: function(path, start, end, callback) {
-            callback(null, getSession(path).getTextRange(rangify({start: start, end: end})));
+            callback(null, getSession(path).getTextRange(rangify({
+                start: start,
+                end: end
+            })));
         },
+        // getCursorIndex: partial(asyncInputable, "cursorIndex"),
         getCursorIndex: function(path, callback) {
-            var session = getSession(path);
-            var cursor = session.selection.getCursor();
-            var lines = session.getDocument().getAllLines();
-            var index = cursor.column;
-            lines.splice(cursor.row);
-            while (lines.length > 0) {
-                index += lines.pop().length + 1;
-            }
-            callback(null, index);
+            var inputable = "cursorIndex";
+            callback(null, sandbox.getInputable(
+                getSession(path), inputable));
         },
         setCursorIndex: function(path, index, callback) {
             var session = getSession(path);
