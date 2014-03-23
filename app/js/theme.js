@@ -5,6 +5,7 @@ define(function(require, exports, module) {
     var command = require("./command");
     var eventbus = require("./lib/eventbus");
     var async = require("./lib/async");
+    var path = require("./lib/path");
     var defaultTheme = 'zed_dark';
 
      // Setting file watchers (reload theme when any of them change)
@@ -62,13 +63,7 @@ define(function(require, exports, module) {
     }
 
     function loadCss(cssFiles, watch, callback) {
-        var allFiles = cssFiles;
-        if (_.isArray(cssFiles)) {
-            allFiles = cssFiles[0];
-            for (var i = 1; i < cssFiles.length; i++) {
-                allFiles += cssFiles[i];
-            }
-        } else {
+        if (!_.isArray(cssFiles)) {
             cssFiles = [cssFiles];
         }
         
