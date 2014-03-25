@@ -318,6 +318,20 @@ define(function(require, exports, module) {
                 resolveRelativePaths(mode, jsonPath);
             });
         }
+        if (configJson.themes) {
+            _.each(configJson.themes, function(theme) {
+                if (!_.isArray(theme.css)) {
+                    theme.css = [theme.css];
+                }
+                theme.css = _.map(theme.css, function(file) {
+                    if (file[0] === '.' && file[1] === '/') {
+                        return dir + file.substring(1);
+                    } else {
+                        return file;
+                    }
+                });
+            });
+        }
         return configJson;
     }
 
