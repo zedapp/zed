@@ -5,6 +5,7 @@ define(function(require, exports, module) {
     var command = require("./command");
     var InlineAnnotation = require("./lib/inline_annotation");
     var editor = require("./editor");
+    var async = require("./lib/async");
 
     /**
      * This parts handles mode handlers, e.g. "change", "preview" etc.
@@ -166,11 +167,13 @@ define(function(require, exports, module) {
     }
 
     exports.hook = function() {
-        eventbus.once("inited", function() {
-            runHandler("init");
-        });
         eventbus.on("configchanged", function() {
-            runHandler("configchanged");
+            // This looks bad, the reason we need to do this is to allow
+            // The command handler to update its sandbox commands, which happens
+            // within a tick
+            setTimeout(function() {
+                runHandler("configchanged");
+            });
         });
         eventbus.on("sessionbeforesave", function(session) {
             runSessionHandler(session, "save");

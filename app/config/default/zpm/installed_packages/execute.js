@@ -50,7 +50,7 @@ return function(info, callback) {
                 }
             } else if (line === "Commands: [Uninstall]      [Update]") {
                 var idLine = lines[pos.row - 3];
-                var id = idLine.substr(4);
+                var id = idLine.substr(5);
                 if (pos.column >= 10 && pos.column <= 21) {
                     zpm.uninstall(id, function(err) {
                         if (!err) {

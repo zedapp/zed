@@ -35,11 +35,7 @@ define(function(require, exports, module) {
                 return;
             }
             if (continuousCompletionSession !== edit.session || continuousCompletionCursor.row !== edit.getCursorPosition().row) {
-                clearTimeout(continuousCompletionTimerId);
-                continuousCompletionTimerId = null;
-                if (edit.completer) {
-                    edit.completer.detach();
-                }
+                cancelCompletion(edit);
             }
         });
     };
@@ -108,6 +104,14 @@ define(function(require, exports, module) {
         }
     }
 
+    function cancelCompletion(edit) {
+        clearTimeout(continuousCompletionTimerId);
+        continuousCompletionTimerId = null;
+        if (edit.completer) {
+            edit.completer.detach();
+        }
+    }
+
     /**
      * Listens to change events and decides whether or not so show
      * the completion UI
@@ -119,13 +123,13 @@ define(function(require, exports, module) {
         continuousCompletionCursor = edit.getCursorPosition();
 
         if (change.action !== "insertText") {
-            return cancel();
+            return cancelCompletion(edit);
         }
         if (!completionRegex.exec(change.text)) {
-            return cancel();
+            return cancelCompletion(edit);
         }
         if (edit.session.multiSelect.inMultiSelectMode) {
-            return cancel();
+            return cancelCompletion(edit);
         }
         if (!continuousCompletionTimerId) {
             continuousCompletionTimerId = setTimeout(function() {
@@ -134,11 +138,6 @@ define(function(require, exports, module) {
                     complete(edit, true);
                 }
             }, handlers.getHandlerTimeout("check", edit.session.filename, config.getPreference("continuousCompletionDelay")));
-        }
-
-        function cancel() {
-            clearTimeout(continuousCompletionTimerId);
-            continuousCompletionTimerId = null;
         }
     }
 
@@ -158,8 +157,16 @@ define(function(require, exports, module) {
     Autocomplete.prototype.commands.Tab = function(editor) {
         editor.completer.goTo("down");
     };
-    Autocomplete.prototype.commands["Shift-Tab"] = function(editor) {
-        editor.completer.goTo("up");
+    Autocomplete.prototype.commands["Shift-Tab"] = function(edit) {
+        edit.completer.goTo("up");
+    };
+    Autocomplete.prototype.commands["Up"] = function(edit) {
+        if (edit.completer.popup.getRow() <= 0) {
+            cancelCompletion(edit);
+            edit.navigateUp();
+        } else {
+            edit.completer.goTo("up");
+        }
     };
 
     command.define("Edit:Complete", {

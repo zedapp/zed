@@ -28,8 +28,10 @@ package:
 	rm -f zed.zip
 	cd app; zip ../zed.zip -x '*.git*' -r *
 
-index-%:
-	find app/$* -name '*.*' -not -path "*/.git/*" -not -path "*/.git" | sort | sed "s:^app/$*::" > app/$*/all
+index-manual:
+	find app/manual -name '*.*' -not -path "*/.git/*" -not -path "*/.git" | sort | sed "s:^app/manual::" > app/manual/all
+index-config:
+	find app/config -name '*.*' -not -path "*/.git/*" -not -path "*/.git" -not -path "*/packages/*" | sort | sed "s:^app/config::" > app/config/all
 
 indexes: index-manual index-config
 	@true

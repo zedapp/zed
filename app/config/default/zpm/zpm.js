@@ -20,12 +20,15 @@ var packageFilenameRegex = /^\/packages\/(.+)\/package\.json$/;
  */
 function uriToUrl(uri) {
     var parts = uri.split(':');
-    var repo = parts[1];
+    var repoParts = parts[1].split('/');
+    var repoUsername = repoParts[0];
+    var repoName = repoParts[1];
+    var repoPath = repoParts.slice(2).join('/');
     var branch = parts[2] || 'master';
     if (parts[0] === 'gh') {
-        return "https://raw.github.com/" + repo + "/" + branch + "/";
+        return "https://raw.github.com/" + repoUsername + "/" + repoName + "/" + branch + "/" + repoPath + "/";
     } else if (parts[0] === 'bb') {
-        return "https://bitbucket.org/" + repo + "/raw/" + branch + "/";
+        return "https://bitbucket.org/" + repoUsername + "/" + repoName + "/raw/" + branch + "/" + repoPath + "/";
     }
     return uri;
 }
@@ -45,6 +48,10 @@ exports.getInstalledPackages = function(callback) {
         var allPackages = {};
         async.each(packageFiles, function(packageFile, next) {
             configfs.readFile(packageFile, function(err, text) {
+                if (err) {
+                    console.error("Could not read package.json:", err);
+                    return next();
+                }
                 var packageJson;
                 try {
                     packageJson = JSON.parse(text);
@@ -52,14 +59,13 @@ exports.getInstalledPackages = function(callback) {
                     console.error("Could not parse package.json", text);
                     return next();
                 }
-                var id = packageFilenameRegex.exec(packageFile)[1].replace("/", ":");
                 var pkgData = {
                     name: packageJson.name,
                     version: packageJson.version,
                     description: packageJson.description,
                     files: packageJson.files
                 };
-                allPackages[id] = pkgData;
+                allPackages[packageJson.uri] = pkgData;
                 next();
             });
         }, function() {
@@ -70,10 +76,11 @@ exports.getInstalledPackages = function(callback) {
 
 exports.install = function(uri, callback) {
     var url = uriToUrl(uri);
-    http.get(url + "package.json", "json", function(err, data) {
+    http.get(url + "package.json", "json", function(err, packageData) {
         if (err) {
             return callback("Could not download " + url + "package.json");
         }
+        packageData.uri = uri;
         exports.getInstalledPackages(function(err, installed) {
             if (err) {
                 return callback(err);
@@ -81,19 +88,24 @@ exports.install = function(uri, callback) {
             if (installed[uri]) {
                 return callback("Package already installed");
             }
-            if (!data.files) {
-                data.files = [];
+            if (!packageData.files) {
+                packageData.files = [];
             }
 
-            var files = data.files.slice(0);
+            var files = packageData.files.slice(0);
             files.push("config.json");
-            files.push("package.json");
-            downloadPackageFiles(url, uri, files, function(err) {
+            var folder = uriToPath(uri) + "/";
+            configfs.writeFile(folder + "package.json", JSON.stringify(packageData, null, 4), function(err) {
                 if (err) {
-                    deletePackageFiles(uri, files);
                     return callback(err);
                 }
-                callback();
+                downloadPackageFiles(url, uri, files, function(err) {
+                    if (err) {
+                        deletePackageFiles(uri, files);
+                        return callback(err);
+                    }
+                    callback();
+                });
             });
         });
     });
@@ -235,24 +247,25 @@ function copyFiles(folder, newFolder, files, callback) {
 }
 
 function update(uri, pkg, callback) {
-    http.get(uriToUrl(uri) + "package.json", "json", function(err, data) {
+    http.get(uriToUrl(uri) + "package.json", "json", function(err, packageData) {
         if (err) {
             return callback("Could not download package.json");
         }
-        console.log(uri, "current version", pkg.version, "new", data.version);
-        if (versionCompare(data.version, pkg.version, {
+        console.log(uri, "current version", pkg.version, "new", packageData.version);
+        if (versionCompare(packageData.version, pkg.version, {
             zeroExtend: true
         }) > 0) {
             console.log("Updating", uri);
-            if (!data.files) {
-                data.files = [];
+            packageData.uri = uri;
+            if (!packageData.files) {
+                packageData.files = [];
             }
             var folder = uriToPath(uri);
             var oldFiles = pkg.files.slice(0);
             oldFiles.push("config.json");
             oldFiles.push("package.json");
 
-            var files = data.files.slice(0);
+            var files = packageData.files.slice(0);
             files.push("config.json");
             files.push("package.json");
 
@@ -289,7 +302,14 @@ function update(uri, pkg, callback) {
                         deletePackageFiles(uri + ".update", files);
                         deletePackageFiles(uri + ".old", oldFiles);
                         deletePackageFiles(uri, filesToDelete);
-                        callback(null, true);
+
+                        configfs.writeFile(folder + "/package.json", JSON.stringify(packageData, null, 4), function(err) {
+                            if (err) {
+                                console.error("Error writing package.json", err);
+                                return callback(err);
+                            }
+                            callback(null, true);
+                        });
                     });
                 });
             });

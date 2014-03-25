@@ -18,10 +18,10 @@ module.exports = function() {
                 for (var id in packages) {
                     pkg = packages[id];
                     append("\n" + pkg.name + "\n");
-                    append("ID: " + id + "\n");
+                    append("URI: " + id + "\n");
                     append("Version: " + pkg.version + "\n");
                     append("Description: " + pkg.description + "\n");
-                    append("Commands: [Uninstall]      [Update]");
+                    append("Commands: [Uninstall]      [Update]\n");
                 }
             }
             session.setCursorPosition("zed::zpm::installed", {
