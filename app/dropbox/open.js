@@ -24,7 +24,7 @@ require(["lib/dropbox"], function(dropbox) {
         function open(path) {
             var url = "dropbox:" + path;
             chrome.app.window.create('editor.html?url=' + url + "&title=" + path + '&chromeapp=true', {
-                frame: 'chrome',
+                frame: 'none',
                 width: 720,
                 height: 400,
             });

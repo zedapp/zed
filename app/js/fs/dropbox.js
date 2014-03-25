@@ -95,7 +95,7 @@ define(function(require, exports, module) {
             }
 
             function writeFile(path, content, callback) {
-                
+
                 watcher.lockFile(path);
                 var fullPath = addRoot(path);
 
@@ -105,7 +105,7 @@ define(function(require, exports, module) {
                             watcher.unlockFile(path);
                             return callback(err);
                         }
-                        watcher.setCacheTag(stat.versionTag);
+                        watcher.setCacheTag(path, stat.versionTag);
                         watcher.unlockFile(path);
                         callback();
                     });
@@ -159,9 +159,9 @@ define(function(require, exports, module) {
                 },
                 getCacheTag: getCacheTag
             };
-            
+
             var watcher = poll_watcher(fs, 10000);
-            
+
             callback(null, fs);
         });
     };
