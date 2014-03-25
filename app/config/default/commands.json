@@ -89,6 +89,11 @@
             "preference": "globalAutoRevert",
             "readOnly": true
         },
+        "Configuration:Preferences:Toggle Auto Indent On Paste": {
+            "scriptUrl": "./command/toggle.js",
+            "preference": "autoIndentOnPaste",
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Display Indent Guides": {
             "scriptUrl": "./command/toggle.js",
             "preference": "displayIndentGuides",

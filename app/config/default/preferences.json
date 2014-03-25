@@ -1,6 +1,7 @@
 {
     "preferences": {
         "animatedScroll": true,
+        "autoIndentOnPaste": false,
         "behaviorsEnabled": true,
         "defaultMode": "ace/mode/text",
         "detectIndentation": true,
