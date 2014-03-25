@@ -13,5 +13,6 @@ module.exports = function(info, callback) {
             });
             config.reload();
         }
+        callback();
     });
 };

@@ -56,7 +56,7 @@ define(function(require, exports, module) {
 
     exports.getInputable = function(session, name) {
         return inputables[name] && inputables[name](session);
-    }
+    };
 
     /**
      * Handle a request coming from within the sandbox, and send back a response
@@ -138,14 +138,16 @@ define(function(require, exports, module) {
                 scriptUrl = "configfs!" + scriptUrl;
             }
             // This data can be requested as input in commands.json
+            var inputs = {};
             for (var input in (spec.inputs || {})) {
-                spec.inputs[input] = this.getInputable(session, input);
+                inputs[input] = this.getInputable(session, input);
             }
             sandboxEl[0].contentWindow.postMessage({
                 url: scriptUrl,
-                data: _.extend({
-                    path: session.filename
-                }, spec),
+                data: _.extend({}, spec, {
+                    path: session.filename,
+                    inputs: inputs
+                }),
                 id: id
             }, '*');
         }

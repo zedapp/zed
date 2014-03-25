@@ -1,5 +1,8 @@
 /* global sandboxRequest*/
 module.exports = {
+    listFiles: function(callback) {
+        sandboxRequest("zed/configfs", "listFiles", [], callback);
+    },
     readFile: function(path, callback) {
         sandboxRequest("zed/configfs", "readFile", [path], callback);
     },

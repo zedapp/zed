@@ -22,6 +22,7 @@
 /default/command/stripper.js
 /default/command/text_completer.js
 /default/command/toggle.js
+/default/command/update_package.js
 /default/commands.json
 /default/handlers.json
 /default/keys.json
@@ -54,15 +55,6 @@
 /default/mode/ini.json
 /default/mode/jack.json
 /default/mode/java.json
-/default/mode/javascript.json
-/default/mode/javascript/beautify-js.js
-/default/mode/javascript/beautify.js
-/default/mode/javascript/check.js
-/default/mode/javascript/ctags.js
-/default/mode/javascript/jshint.js
-/default/mode/json.json
-/default/mode/json/check.js
-/default/mode/json/json_parse.js
 /default/mode/less.json
 /default/mode/logiql.json
 /default/mode/logiql/ctags.js
@@ -95,14 +87,6 @@
 /default/mode/yaml.json
 /default/modes.json
 /default/preferences.json
-/default/spellcheck/change.js
-/default/spellcheck/check.js
-/default/spellcheck/dict.js
-/default/spellcheck/en_US/README.md
-/default/spellcheck/en_US/en_US.aff
-/default/spellcheck/en_US/en_US.dic
-/default/spellcheck/fix.js
-/default/spellcheck/typo.js
 /default/theme/ambiance.css
 /default/theme/chaos.css
 /default/theme/chrome.css
@@ -144,6 +128,6 @@
 /default/zpm/installed_packages/execute.js
 /default/zpm/zpm.js
 /default/zpm/zpm.json
-/packages/installed.json
 /user.css
 /user.json
+/zedconfig.json

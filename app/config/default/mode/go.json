@@ -19,8 +19,7 @@
             },
 
             "preferences": {
-                "tabSize": 8,
-                "useSoftTabs": false
+                "tabSize": 8
             }
         }
     }

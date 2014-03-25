@@ -7,5 +7,6 @@
         "/default/handlers.json",
         "/default/themes.json",
         "/default/zpm/zpm.json"
-    ]
+    ],
+    "packages": ["gh:zedapp/javascript-mode", "gh:zedapp/json-mode"]
 }

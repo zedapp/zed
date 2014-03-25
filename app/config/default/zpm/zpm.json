@@ -43,7 +43,6 @@
         }
     },
     "handlers": {
-        "init": ["Tools:Zpm:Auto Update"],
-        "configchanged": ["Tools:Zpm:Install From Config"]
+        "configchanged": ["Tools:Zpm:Install From Config", "Tools:Zpm:Auto Update"]
     }
 }

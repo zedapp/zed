@@ -14,8 +14,6 @@
         "./mode/ini.json",
         "./mode/jack.json",
         "./mode/java.json",
-        "./mode/javascript.json",
-        "./mode/json.json",
         "./mode/less.json",
         "./mode/logiql.json",
         "./mode/lua.json",

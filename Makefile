@@ -1,8 +1,6 @@
 #!/usr/bin/make -f
 
 SHELL = /bin/bash
-OS := $(shell uname -s)
-PROC := $(shell uname -m)
 
 install-dep:
 	curl -L https://github.com/zefhemel/ace-builds/archive/master.tar.gz | tar xzf -
@@ -28,16 +26,12 @@ release: golang-crosscompile
 
 package:
 	rm -f zed.zip
-	cd app; zip ../zed.zip -r *
+	cd app; zip ../zed.zip -x '*.git*' -r *
 
-index-%:
-	find app/$* -name '*.*' | sort | sed "s:^app/$*::" > app/$*/all
+index-manual:
+	find app/manual -name '*.*' -not -path "*/.git/*" -not -path "*/.git" | sort | sed "s:^app/manual::" > app/manual/all
+index-config:
+	find app/config -name '*.*' -not -path "*/.git/*" -not -path "*/.git" -not -path "*/packages/*" | sort | sed "s:^app/config::" > app/config/all
 
 indexes: index-manual index-config
 	@true
-
-download:
-	curl http://get.zedapp.org/zed-$(OS)-$(PROC) > zed
-	chmod +x zed
-	@echo "Zed downloaded into current directory, to start: ./zed"
-	@echo "For help: ./zed --help"

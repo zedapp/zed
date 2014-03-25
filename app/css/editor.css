@@ -368,6 +368,7 @@ body.dark .dynatree-focused a:link {
     top: 50%;
     background-color: white;
     z-index: 100;
+    overflow: scroll;
 }
 #dialog input {
     font-size: 14px;

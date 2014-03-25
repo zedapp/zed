@@ -5,9 +5,10 @@ var config = require("zed/config");
 var async = require("zed/lib/async");
 var http = require("zed/http");
 
-var packagesFile = "/packages/installed.json";
+// var packagesFile = "/packages/installed.json";
 var packagesFolder = "/packages/";
 
+var packageFilenameRegex = /^\/packages\/(.+)\/package\.json$/;
 
 /**
  * Supports "nice" URIs for packages:
@@ -19,12 +20,15 @@ var packagesFolder = "/packages/";
  */
 function uriToUrl(uri) {
     var parts = uri.split(':');
-    var repo = parts[1];
+    var repoParts = parts[1].split('/');
+    var repoUsername = repoParts[0];
+    var repoName = repoParts[1];
+    var repoPath = repoParts.slice(2).join('/');
     var branch = parts[2] || 'master';
     if (parts[0] === 'gh') {
-        return "https://raw.github.com/" + repo + "/" + branch + "/";
+        return "https://raw.github.com/" + repoUsername + "/" + repoName + "/" + branch + "/" + repoPath + "/";
     } else if (parts[0] === 'bb') {
-        return "https://bitbucket.org/" + repo + "/raw/" + branch + "/";
+        return "https://bitbucket.org/" + repoUsername + "/" + repoName + "/raw/" + branch + "/" + repoPath + "/";
     }
     return uri;
 }
@@ -34,26 +38,49 @@ function uriToPath(uri) {
 }
 
 exports.getInstalledPackages = function(callback) {
-    configfs.readFile(packagesFile, function(err, installed) {
+    configfs.listFiles(function(err, allFiles) {
         if (err) {
-            // File doesn't exist yet, that's ok
-            installed = '{}';
+            return console.error("Could not list files in configuration project");
         }
-        try {
-            var json = JSON.parse(installed);
-            callback(null, json);
-        } catch (e) {
-            callback(e);
-        }
+        var packageFiles = _.filter(allFiles, function(path) {
+            return !!packageFilenameRegex.exec(path);
+        });
+        var allPackages = {};
+        async.each(packageFiles, function(packageFile, next) {
+            configfs.readFile(packageFile, function(err, text) {
+                if (err) {
+                    console.error("Could not read package.json:", err);
+                    return next();
+                }
+                var packageJson;
+                try {
+                    packageJson = JSON.parse(text);
+                } catch (e) {
+                    console.error("Could not parse package.json", text);
+                    return next();
+                }
+                var pkgData = {
+                    name: packageJson.name,
+                    version: packageJson.version,
+                    description: packageJson.description,
+                    files: packageJson.files
+                };
+                allPackages[packageJson.uri] = pkgData;
+                next();
+            });
+        }, function() {
+            callback(null, allPackages);
+        });
     });
 };
 
 exports.install = function(uri, callback) {
     var url = uriToUrl(uri);
-    http.get(url + "package.json", "json", function(err, data) {
+    http.get(url + "package.json", "json", function(err, packageData) {
         if (err) {
             return callback("Could not download " + url + "package.json");
         }
+        packageData.uri = uri;
         exports.getInstalledPackages(function(err, installed) {
             if (err) {
                 return callback(err);
@@ -61,25 +88,18 @@ exports.install = function(uri, callback) {
             if (installed[uri]) {
                 return callback("Package already installed");
             }
-            if (!data.files) {
-                data.files = [];
+            if (!packageData.files) {
+                packageData.files = [];
             }
-            installed[uri] = {
-                "name": data.name,
-                "version": data.version,
-                "description": data.description,
-                "files": data.files,
-                "autoUpdate": true
-            };
 
-            var files = data.files.slice(0);
+            var files = packageData.files.slice(0);
             files.push("config.json");
-            downloadPackageFiles(url, uri, files, function(err) {
+            var folder = uriToPath(uri) + "/";
+            configfs.writeFile(folder + "package.json", JSON.stringify(packageData, null, 4), function(err) {
                 if (err) {
-                    deletePackageFiles(uri, files);
                     return callback(err);
                 }
-                configfs.writeFile(packagesFile, JSON.stringify(installed, null, 4), function(err) {
+                downloadPackageFiles(url, uri, files, function(err) {
                     if (err) {
                         deletePackageFiles(uri, files);
                         return callback(err);
@@ -97,42 +117,18 @@ exports.uninstall = function(uri, callback) {
             return callback(err);
         }
         var pkg = installed[uri];
-        if (typeof(pkg) === 'undefined') {
+        if (!pkg) {
             return callback(uri + " is not the URI of an installed package.");
         }
         delete installed[uri];
-        configfs.writeFile(packagesFile, JSON.stringify(installed, null, 4), function(err) {
+        var files = pkg.files;
+        files.push("config.json");
+        files.push("package.json");
+        deletePackageFiles(uri, files, function(err) {
             if (err) {
                 return callback(err);
             }
-            var files = pkg.files;
-            files.push("config.json");
-            deletePackageFiles(uri, files, function(err) {
-                if (err) {
-                    return callback(err);
-                }
-                callback(null);
-            });
-        });
-    });
-};
-
-exports.toggleAutoUpdate = function(uri, callback) {
-    exports.getInstalledPackages(function(err, packages) {
-        if (err) {
-            return callback(err);
-        }
-
-        if (!packages[uri]) {
-            callback(uri + " is not the URI of an installed package.");
-        }
-
-        packages[uri].autoUpdate = !packages[uri].autoUpdate;
-        configfs.writeFile(packagesFile, JSON.stringify(packages, null, 4), function(err) {
-            if (err) {
-                return callback(err);
-            }
-            callback();
+            callback(null);
         });
     });
 };
@@ -147,7 +143,7 @@ exports.update = function(uri, callback) {
             callback(uri + " is not the URI of an installed package.");
         }
 
-        update(uri, packages[uri], packages, callback);
+        update(uri, packages[uri], callback);
     });
 };
 
@@ -162,17 +158,15 @@ exports.updateAll = function(autoUpdate, callback) {
         }
         var anyUpdates = false;
         async.each(uriPackagePairs, function(uriPackagePair, next) {
-            if (!autoUpdate || uriPackagePair[1].autoUpdate) {
-                update(uriPackagePair[0], uriPackagePair[1], packages, function(err, updated) {
-                    if (err) {
-                        return callback && callback(err);
-                    }
-                    if (updated) {
-                        anyUpdates = true;
-                    }
-                    next();
-                });
-            }
+            update(uriPackagePair[0], uriPackagePair[1], function(err, updated) {
+                if (err) {
+                    return callback && callback(err);
+                }
+                if (updated) {
+                    anyUpdates = true;
+                }
+                next();
+            });
         }, function() {
             callback && callback(null, anyUpdates);
         });
@@ -252,30 +246,28 @@ function copyFiles(folder, newFolder, files, callback) {
     }, callback);
 }
 
-function update(uri, pkg, packages, callback) {
-    http.get(uriToUrl(uri) + "package.json", "json", function(err, data) {
+function update(uri, pkg, callback) {
+    http.get(uriToUrl(uri) + "package.json", "json", function(err, packageData) {
         if (err) {
             return callback("Could not download package.json");
         }
-        console.log("Current version", pkg.version, "new", data.version);
-        if (versionCompare(data.version, pkg.version, {
+        console.log(uri, "current version", pkg.version, "new", packageData.version);
+        if (versionCompare(packageData.version, pkg.version, {
             zeroExtend: true
         }) > 0) {
             console.log("Updating", uri);
-            if (!data.files) {
-                data.files = [];
+            packageData.uri = uri;
+            if (!packageData.files) {
+                packageData.files = [];
             }
             var folder = uriToPath(uri);
             var oldFiles = pkg.files.slice(0);
             oldFiles.push("config.json");
+            oldFiles.push("package.json");
 
-            packages[uri].version = data.version;
-            packages[uri].name = data.name;
-            packages[uri].description = data.description;
-            packages[uri].files = data.files;
-
-            var files = data.files.slice(0);
+            var files = packageData.files.slice(0);
             files.push("config.json");
+            files.push("package.json");
 
             downloadPackageFiles(uriToUrl(uri), uri + ".update", files, function(err) {
                 if (err) {
@@ -307,13 +299,15 @@ function update(uri, pkg, packages, callback) {
                         var filesToDelete = oldFiles.filter(function(file) {
                             return files.indexOf(file) < 0;
                         });
-                        configfs.writeFile(packagesFile, JSON.stringify(packages, null, 4), function(err) {
+                        deletePackageFiles(uri + ".update", files);
+                        deletePackageFiles(uri + ".old", oldFiles);
+                        deletePackageFiles(uri, filesToDelete);
+
+                        configfs.writeFile(folder + "/package.json", JSON.stringify(packageData, null, 4), function(err) {
                             if (err) {
-                                return rollback(err);
+                                console.error("Error writing package.json", err);
+                                return callback(err);
                             }
-                            deletePackageFiles(uri + ".update", files);
-                            deletePackageFiles(uri + ".old", oldFiles);
-                            deletePackageFiles(uri, filesToDelete);
                             callback(null, true);
                         });
                     });
@@ -330,7 +324,7 @@ exports.addToConfig = function(uri, callback) {
     configfs.readFile("/user.json", function(err, config_) {
         try {
             var json = JSON.parse(config_);
-            if(!json.packages) {
+            if (!json.packages) {
                 json.packages = [];
             }
             json.packages.push(uri);
@@ -341,7 +335,7 @@ exports.addToConfig = function(uri, callback) {
     });
 };
 
-exports.removeFromConfig = function (uri, callback) {
+exports.removeFromConfig = function(uri, callback) {
     configfs.readFile("/user.json", function(err, config_) {
         try {
             var json = JSON.parse(config_);
