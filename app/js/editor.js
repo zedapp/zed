@@ -41,6 +41,14 @@ define(function(require, exports, module) {
             } else {
                 eventbus.emit("sessionactivityfailed", session, "Invalid font: " + fontFamily);
             }
+            
+            if (config.getPreference("autoIndentOnPaste", session)) {
+                edit.on("paste", function(e) {
+                    autoIndentOnPaste(edit, session, e);
+                });
+            } else {
+                edit.removeAllListeners("paste");
+            }
         },
         setSessionConfiguration: function(session) {
             session.setTabSize(config.getPreference("tabSize", session));
@@ -111,7 +119,6 @@ define(function(require, exports, module) {
                     eventbus.emit("selectionchanged", editor);
                 });
             });
-
             editor.setActiveEditor(editors[0]);
             eventbus.emit("editorloaded", exports);
         },
@@ -230,6 +237,56 @@ define(function(require, exports, module) {
             return editor.getIdentifierUnderCursor(edit, PATH_REGEX);
         }
     };
+    
+    function autoIndentOnPaste(editor, session, e) {
+        var pos = editor.getCursorPosition();
+        var line = editor.getSession().getLine(pos.row);
+        var tabSize = config.getPreference("tabSize", session);
+        var col = pos.column;
+        for (var i = 0; i < pos.column; i++) {
+            if (line[i] === "\t") {
+                col += (tabSize - 1);
+            }
+        }
+        var tabAsSpaces = "";
+        for (i = 0; i < tabSize; i++) {
+            tabAsSpaces += " ";
+        }
+        var text = e.text.replace(/\t/gm, tabAsSpaces);
+        var lines = text.split("\n");
+        var regexp = /\S/;
+        var min = -1;
+        var index;
+        for (i = 1; i < lines.length; i++) {
+            index = lines[i].search(regexp);
+            if (index !== -1 && (index < min || min === -1)) {
+                min = index;
+            }
+        }
+        
+        var adjust = col - min;
+        if (min > -1 && adjust !== 0) {
+            if (adjust < 0) {
+                for (i = 1; i < lines.length; i++) {
+                    lines[i] = lines[i].substring(-adjust);
+                }
+            } else if (adjust > 0) {
+                var add = "";
+                for (i = 0; i < adjust; i++) {
+                    add += " ";
+                }
+                
+                for (i = 1; i < lines.length; i++) {
+                    lines[i] = add + lines[i];
+                }
+            }
+            e.text = lines.join("\n");
+            if (!config.getPreference("useSoftTabs", session)) {
+                regexp = new RegExp(tabAsSpaces, "gm");
+                e.text = e.text.replace(regexp, "\t");
+            }
+        }
+    }
 
     function find(session, needle, dir) {
         var Search = require("ace/search").Search;
