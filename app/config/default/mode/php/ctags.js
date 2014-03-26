@@ -3,7 +3,7 @@ var indexToLine = require("zed/util").indexToLine;
 
 var FN_REGEX = /(class|function)\s+([a-zA-Z0-9_\$]+)\s*[\(\{]/mg;
 
-module.exports = function(info, callback) {
+module.exports = function(info) {
     var match;
     var tags = [];
     var path = info.path;
@@ -17,5 +17,5 @@ module.exports = function(info, callback) {
             path: path
         });
     }
-    ctags.updateCTags(path, tags, callback);
+    return ctags.updateCTags(path, tags);
 };

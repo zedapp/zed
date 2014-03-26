@@ -1,15 +1,15 @@
 /* global sandboxRequest*/
 module.exports = {
-    listFiles: function(callback) {
-        sandboxRequest("zed/configfs", "listFiles", [], callback);
+    listFiles: function() {
+        return sandboxRequest("zed/configfs", "listFiles", []);
     },
-    readFile: function(path, callback) {
-        sandboxRequest("zed/configfs", "readFile", [path], callback);
+    readFile: function(path) {
+        return sandboxRequest("zed/configfs", "readFile", [path]);
     },
-    writeFile: function(path, content, callback) {
-        sandboxRequest("zed/configfs", "writeFile", [path, content], callback);
+    writeFile: function(path, content) {
+        return sandboxRequest("zed/configfs", "writeFile", [path, content]);
     },
-    deleteFile: function(path, callback) {
-        sandboxRequest("zed/configfs", "deleteFile", [path], callback);
+    deleteFile: function(path) {
+        return sandboxRequest("zed/configfs", "deleteFile", [path]);
     }
 };

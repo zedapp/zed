@@ -1,10 +1,10 @@
 /* global _ */
 var session = require("zed/session");
 
-module.exports = function(info, callback) {
+module.exports = function(info) {
     var path = info.path;
     var builtins = info.builtins;
-    session.getPreceedingIdentifier(path, function(err, prefix) {
+    return session.getPreceedingIdentifier(path).then(function(prefix) {
         var matches = [];
         _.each(builtins, function(builtin) {
             if (builtin.indexOf(prefix) === 0) {
@@ -16,6 +16,6 @@ module.exports = function(info, callback) {
                 });
             }
         });
-        callback(null, matches);
+        return matches;
     });
 };

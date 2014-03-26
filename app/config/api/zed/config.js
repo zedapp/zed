@@ -1,18 +1,18 @@
 /* global sandboxRequest*/
 module.exports = {
-    getPreference: function(preference, callback) {
-        sandboxRequest("zed/config", "getPreference", [preference], callback);
+    getPreference: function(preference) {
+        return sandboxRequest("zed/config", "getPreference", [preference]);
     },
-    togglePreference: function(preference, callback) {
-        sandboxRequest("zed/config", "togglePreference", [preference], callback);
+    togglePreference: function(preference) {
+        return sandboxRequest("zed/config", "togglePreference", [preference]);
     },
-    incrementInteger: function(preference, integer, callback) {
-        sandboxRequest("zed/config", "incrementInteger", [preference, integer], callback);
+    incrementInteger: function(preference, integer) {
+        return sandboxRequest("zed/config", "incrementInteger", [preference, integer]);
     },
-    get: function(name, callback) {
-        sandboxRequest("zed/config", "get", [name], callback);
+    get: function(name) {
+        return sandboxRequest("zed/config", "get", [name]);
     },
-    reload: function(callback) {
-        sandboxRequest("zed/config", "reload", [], callback);
+    reload: function() {
+        return sandboxRequest("zed/config", "reload", []);
     }
 };

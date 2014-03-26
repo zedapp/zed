@@ -1,72 +1,72 @@
 /* global sandboxRequest*/
 module.exports = {
-    goto: function(path, callback) {
-        sandboxRequest("zed/session", "goto", [path], callback);
+    goto: function(path) {
+        return sandboxRequest("zed/session", "goto", [path]);
     },
-    setAnnotations: function(path, annos, callback) {
-        sandboxRequest("zed/session", "setAnnotations", [path, annos], callback);
+    setAnnotations: function(path, annos) {
+        return sandboxRequest("zed/session", "setAnnotations", [path, annos]);
     },
-    getText: function(path, callback) {
-        sandboxRequest("zed/session", "getText", [path, ], callback);
+    getText: function(path) {
+        return sandboxRequest("zed/session", "getText", [path, ]);
     },
-    setText: function(path, text, callback) {
-        sandboxRequest("zed/session", "setText", [path, text], callback);
+    setText: function(path, text) {
+        return sandboxRequest("zed/session", "setText", [path, text]);
     },
-    insertAtCursor: function(path, text, callback) {
-        sandboxRequest("zed/session", "insertAtCursor", [path, text], callback);
+    insertAtCursor: function(path, text) {
+        return sandboxRequest("zed/session", "insertAtCursor", [path, text]);
     },
-    insert: function(path, pos, text, callback) {
-        sandboxRequest("zed/session", "insert", [path, pos, text], callback);
+    insert: function(path, pos, text) {
+        return sandboxRequest("zed/session", "insert", [path, pos, text]);
     },
-    append: function(path, text, callback) {
-        sandboxRequest("zed/session", "append", [path, text], callback);
+    append: function(path, text) {
+        return sandboxRequest("zed/session", "append", [path, text]);
     },
-    getPreceedingIdentifier: function(path, callback) {
-        sandboxRequest("zed/session", "getPreceedingIdentifier", [path], callback);
+    getPreceedingIdentifier: function(path) {
+        return sandboxRequest("zed/session", "getPreceedingIdentifier", [path]);
     },
-    getAllLines: function(path, callback) {
-        sandboxRequest("zed/session", "getAllLines", [path], callback);
+    getAllLines: function(path) {
+        return sandboxRequest("zed/session", "getAllLines", [path]);
     },
-    removeInLine: function(path, row, start, end, callback) {
-        sandboxRequest("zed/session", "removeInLine", [path, row, start, end], callback);
+    removeInLine: function(path, row, start, end) {
+        return sandboxRequest("zed/session", "removeInLine", [path, row, start, end]);
     },
-    removeLines: function(path, start, end, callback) {
-        sandboxRequest("zed/session", "removeLines", [path, start, end], callback);
+    removeLines: function(path, start, end) {
+        return sandboxRequest("zed/session", "removeLines", [path, start, end]);
     },
-    getSelectionRange: function(path, callback) {
-        sandboxRequest("zed/session", "getSelectionRange", [path], callback);
+    getSelectionRange: function(path) {
+        return sandboxRequest("zed/session", "getSelectionRange", [path]);
     },
-    getSelectionText: function(path, callback) {
-        sandboxRequest("zed/session", "getSelectionText", [path], callback);
+    getSelectionText: function(path) {
+        return sandboxRequest("zed/session", "getSelectionText", [path]);
     },
-    getTextRange: function(path, start, end, callback) {
-        sandboxRequest("zed/session", "getTextRange", [path, start, end], callback);
+    getTextRange: function(path, start, end) {
+        return sandboxRequest("zed/session", "getTextRange", [path, start, end]);
     },
-    getCursorIndex: function(path, callback) {
-        sandboxRequest("zed/session", "getCursorIndex", [path], callback);
+    getCursorIndex: function(path) {
+        return sandboxRequest("zed/session", "getCursorIndex", [path]);
     },
-    setCursorIndex: function(path, index, callback) {
-        sandboxRequest("zed/session", "setCursorIndex", [path, index], callback);
+    setCursorIndex: function(path, index) {
+        return sandboxRequest("zed/session", "setCursorIndex", [path, index]);
     },
-    getCursorPosition: function(path, callback) {
-        sandboxRequest("zed/session", "getCursorPosition", [path], callback);
+    getCursorPosition: function(path) {
+        return sandboxRequest("zed/session", "getCursorPosition", [path]);
     },
-    setCursorPosition: function(path, pos, callback) {
-        sandboxRequest("zed/session", "setCursorPosition", [path, pos], callback);
+    setCursorPosition: function(path, pos) {
+        return sandboxRequest("zed/session", "setCursorPosition", [path, pos]);
     },
-    getScrollPosition: function(path, callback) {
-        sandboxRequest("zed/session", "getScrollPosition", [path], callback);
+    getScrollPosition: function(path) {
+        return sandboxRequest("zed/session", "getScrollPosition", [path]);
     },
-    setScrollPosition: function(path, pos, callback) {
-        sandboxRequest("zed/session", "setScrollPosition", [path, pos], callback);
+    setScrollPosition: function(path, pos) {
+        return sandboxRequest("zed/session", "setScrollPosition", [path, pos]);
     },
-    replaceRange: function(path, range, text, callback) {
-        sandboxRequest("zed/session", "replaceRange", [path, range, text], callback);
+    replaceRange: function(path, range, text) {
+        return sandboxRequest("zed/session", "replaceRange", [path, range, text]);
     },
-    isInsertingSnippet: function(path, callback) {
-        sandboxRequest("zed/session", "isInsertingSnippet", [path], callback);
+    isInsertingSnippet: function(path) {
+        return sandboxRequest("zed/session", "isInsertingSnippet", [path]);
     },
-    flashMessage: function(path, message, length, callback) {
-        sandboxRequest("zed/session", "flashMessage", [path, message, length], callback);
+    flashMessage: function(path, message, length) {
+        return sandboxRequest("zed/session", "flashMessage", [path, message, length]);
     }
 };

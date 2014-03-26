@@ -1,9 +1,9 @@
 var session = require("zed/session");
 
-module.exports = function(info, callback) {
+module.exports = function(info) {
     // Don't strip while inserting snippets, or auto-strip when pref not set.
     if (info.inputs.isInsertingSnippet || (!info.inputs.preferences.trimWhitespaceOnSave && info.internal)) {
-        return callback();
+        return;
     }
 
     var min = info.inputs.preferences.trimEmptyLines ? -1 : 0;
@@ -24,13 +24,12 @@ module.exports = function(info, callback) {
 
     if (lines[lines.length - 1] !== "") {
         // Enforce newline at end of file.
-        return session.append(info.path, "\n", callback);
+        return session.append(info.path, "\n");
     } else {
         // Strip blank lines, but not above the cursor position.
         var row = Math.max(currentLine, lastNonBlank) + 1;
         if (row < lines.length - 1) {
-            return session.removeLines(info.path, row, lines.length, callback);
+            return session.removeLines(info.path, row, lines.length);
         }
     }
-    callback();
 };

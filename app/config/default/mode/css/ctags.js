@@ -3,7 +3,7 @@ var ctags = require("zed/ctags");
 var util = require("zed/util");
 var SEL_REGEX = /[\.#]([a-zA-Z0-9_\-\$]+)[\s\{\.]/g;
 
-return function(info, callback) {
+return function(info) {
     var match;
     var tags = [];
     var path = info.path;
@@ -16,5 +16,5 @@ return function(info, callback) {
             path: path
         });
     }
-    ctags.updateCTags(path, tags, callback);
+    return ctags.updateCTags(path, tags);
 };

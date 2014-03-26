@@ -1,6 +1,6 @@
 /* global sandboxRequest*/
 module.exports = {
-    showPreview: function(html, callback) {
-        sandboxRequest("zed/preview", "showPreview", [html], callback);
+    showPreview: function(html) {
+        return sandboxRequest("zed/preview", "showPreview", [html]);
     }
 };

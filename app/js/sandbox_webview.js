@@ -1,13 +1,12 @@
-/*global define, sandboxRequest*/
+/*global define, sandboxRequest, _*/
 var debug = false;
 
 define("configfs", [], {
     load: function(name, req, onload, config) {
-        sandboxRequest("zed/configfs", "readFile", [name], function(err, text) {
-            if (err) {
-                return console.error("Error while loading file", name, err);
-            }
+        sandboxRequest("zed/configfs", "readFile", [name]).then(function(text) {
             onload.fromText(amdTransformer(text));
+        }, function(err) {
+            return console.error("Error while loading file", name, err);
         });
     }
 });
@@ -34,7 +33,7 @@ function amdTransformer(source) {
     }
     // If no AMD wrapper is there yet, add it
     if (source.indexOf("define(function(") === -1) {
-        source = "define(function(require, exports, module) {" + source + "\n});"
+        source = "define(function(require, exports, module) {" + source + "\n});";
     }
     return source;
 }
@@ -44,21 +43,31 @@ var origin;
 var id = 0;
 var waitingForReply = {};
 
-window.sandboxRequest = function(module, call, args, callback) {
-    id++;
-    waitingForReply[id] = callback || function() {};
-    source.postMessage({
-        type: "request",
-        id: id,
-        module: module,
-        call: call,
-        args: args
-    }, origin);
-}
+window.sandboxRequest = function(module, call, args) {
+    return new Promise(function(resolve, reject) {
+        id++;
+        waitingForReply[id] = {
+            resolve: resolve,
+            reject: reject
+        };
+        source.postMessage({
+            type: "request",
+            id: id,
+            module: module,
+            call: call,
+            args: args
+        }, origin);
+    });
+};
 
 function handleApiResponse(event) {
     var data = event.data;
-    waitingForReply[data.replyTo](data.err, data.result);
+    var p = waitingForReply[data.replyTo];
+    if (data.err) {
+        p.reject(data.err);
+    } else {
+        p.resolve(data.result);
+    }
     delete waitingForReply[data.replyTo];
 }
 
@@ -77,15 +86,20 @@ window.addEventListener('message', function(event) {
     }
 
     require([url], function(fn) {
-        fn(data.data, function(err, result) {
+        Promise.resolve(data.data).then(fn).then(function(result) {
             var message = {
                 replyTo: id,
-                err: err,
                 result: result
             };
             if (debug) {
                 console.log(message);
             }
+            event.source.postMessage(message, origin);
+        }, function(err) {
+            var message = {
+                replyTo: id,
+                err: err
+            };
             event.source.postMessage(message, origin);
         });
     });

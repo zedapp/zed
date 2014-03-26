@@ -11,9 +11,13 @@
 
             "commands": {
                 "Installed Packages:Execute Command": {
-                    "scriptUrl": "/default/zpm/installed_packages/execute.js"
-                },
-                "internal": true
+                    "scriptUrl": "/default/zpm/installed_packages/execute.js",
+                    "inputs": {
+                        "lines": true,
+                        "cursor": true
+                    },
+                    "internal": true
+                }
             },
 
             "preferences": {
