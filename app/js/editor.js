@@ -280,6 +280,7 @@ define(function(require, exports, module) {
                     lines[i] = add + lines[i];
                 }
             }
+            lines[0] = lines[0].substring(lines[0].search(regexp));
             e.text = lines.join("\n");
             if (!config.getPreference("useSoftTabs", session)) {
                 regexp = new RegExp(tabAsSpaces, "gm");
