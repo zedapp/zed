@@ -841,6 +841,13 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
+    
+    command.define("Find:Find Case Insensitive", {
+        exec: function(edit, session) {
+            command.exec("Navigate:Goto", edit, session, ":|");
+        },
+        readOnly: true
+    });
 
     command.define("Find:Next", {
         exec: function(editor) {
