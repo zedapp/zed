@@ -64,7 +64,7 @@ module.exports = function(info, callback) {
                 return;
             }
 
-            if (path === "/tags") {
+            if (path === "/tags" || path.indexOf("zed::") === 0) {
                 return;
             }
 
@@ -81,7 +81,9 @@ module.exports = function(info, callback) {
                         break;
                     }
                 }
-                return;
+            }, function(err) {
+                console.error("Could not read file: " + path);
+                // If one file fails that's ok, just report
             });
         });
         return Promise.all(filePromises);
@@ -91,5 +93,8 @@ module.exports = function(info, callback) {
         } else {
             append("\nFound " + results + " results.");
         }
+    }).catch(function(err) {
+        console.error("Got error", err);
+        throw err;
     });
 };
