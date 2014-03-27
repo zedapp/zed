@@ -5,8 +5,8 @@ var coffee = require("./coffee-script.js");
 /**
  * inputs: text
  */
-module.exports = function(info, callback) {
+module.exports = function(info) {
     var text = info.inputs.text;
     var javascript = coffee.compile(text);
-    preview.showPreview("<pre>" + javascript.replace(/</g, "&lt;") + "</pre>", callback);
+    return preview.showPreview("<pre>" + javascript.replace(/</g, "&lt;") + "</pre>");
 };

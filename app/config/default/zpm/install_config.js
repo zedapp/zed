@@ -2,17 +2,16 @@ var zpm = require("./zpm.js");
 var project = require("zed/project");
 var config = require("zed/config");
 
-module.exports = function(info, callback) {
+module.exports = function(info) {
     console.log("Installing packages");
-    zpm.installAll(function(err, anyUpdates) {
+    return zpm.installAll().then(function(anyUpdates) {
         if (anyUpdates) {
-            project.isConfig(function(err, isConfig) {
+            project.isConfig().then(function(isConfig) {
                 if (isConfig) {
-                    project.reloadFileList();
+                    return project.reloadFileList();
                 }
             });
             config.reload();
         }
-        callback();
     });
 };

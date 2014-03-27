@@ -1,9 +1,9 @@
 /* global sandboxRequest*/
 module.exports = {
-    updateCTags: function(path, tags, callback) {
-        sandboxRequest("zed/ctags", "updateCTags", [path, tags], callback);
+    updateCTags: function(path, tags) {
+        return sandboxRequest("zed/ctags", "updateCTags", [path, tags]);
     },
-    getCTags: function(callback) {
-        sandboxRequest("zed/ctags", "getCTags", [], callback);
+    getCTags: function() {
+        return sandboxRequest("zed/ctags", "getCTags", []);
     }
 };

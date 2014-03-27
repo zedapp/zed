@@ -1,18 +1,18 @@
 /* global sandboxRequest*/
 module.exports = {
-    readFile: function(path, callback) {
-        sandboxRequest("zed/project", "readFile", [path], callback);
+    readFile: function(path) {
+        return sandboxRequest("zed/project", "readFile", [path]);
     },
-    writeFile: function(path, text, callback) {
-        sandboxRequest("zed/project", "writeFile", [path, text], callback);
+    writeFile: function(path, text) {
+        return sandboxRequest("zed/project", "writeFile", [path, text]);
     },
-    listFiles: function(callback) {
-        sandboxRequest("zed/project", "listFiles", [], callback);
+    listFiles: function() {
+        return sandboxRequest("zed/project", "listFiles", []);
     },
-    reloadFileList: function(callback) {
-        sandboxRequest("zed/project", "reloadFileList", [], callback);
+    reloadFileList: function() {
+        return sandboxRequest("zed/project", "reloadFileList", []);
     },
-    isConfig: function(callback) {
-        sandboxRequest("zed/project", "isConfig", [], callback);
+    isConfig: function() {
+        return sandboxRequest("zed/project", "isConfig", []);
     }
 };

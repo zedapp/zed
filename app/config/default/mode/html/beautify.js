@@ -4,11 +4,11 @@ var beautify = require("zed/lib/beautify");
 /**
  * Inputs: preferences
  */
-module.exports = function(info, callback) {
+module.exports = function(info) {
     var preferences = info.inputs.preferences;
-    beautify(info.path, enhancedBeautifier, callback);
+    return beautify(info.path, enhancedBeautifier);
 
-    function enhancedBeautifier(text, callback) {
+    function enhancedBeautifier(text) {
         var indentChar = ' ';
         if (!preferences.useSoftTabs) {
             indentChar = '\t';
@@ -20,7 +20,6 @@ module.exports = function(info, callback) {
         };
 
         // Some tweaks for generator functions
-        var beautified = beautifier(text, options);
-        callback(null, beautified);
+        return beautifier(text, options);
     }
 };

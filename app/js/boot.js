@@ -10,9 +10,9 @@ require.config({
 /* global ace, $, _ */
 require(["text!../manual/intro.md"], function(introText) {
     "use strict";
-    
-    
-    
+
+
+
     var modules = [
         "./command",
         "./window",
@@ -35,7 +35,8 @@ require(["text!../manual/intro.md"], function(introText) {
         "./handlers",
         "./action",
         "./theme",
-        "./log"];
+        "./log"
+        ];
     require(modules, function() {
 
         setupBuiltinDoc("zed::start", introText);
@@ -50,24 +51,24 @@ require(["text!../manual/intro.md"], function(introText) {
         _.each(arguments, function(module) {
             if (module.init) module.init();
         });
-        
+
                 console.log("Zed booted.");
 
         function setupBuiltinDoc(path, text) {
             var session_manager = require("./session_manager");
             var editor = require("./editor");
             var eventbus = require("./lib/eventbus");
-            
+
             var session = editor.createSession(path, text);
             session.readOnly = true;
-            
+
             eventbus.on("modesloaded", function modesLoaded(modes) {
                 if(modes.get("markdown")) {
                     modes.setSessionMode(session, "markdown");
                     eventbus.removeListener("modesloaded", modesLoaded);
                 }
             });
-            
+
             session_manager.specialDocs[path] = session;
         }
     });

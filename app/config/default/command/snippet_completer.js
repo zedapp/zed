@@ -1,7 +1,7 @@
 /* global _ */
-module.exports = function(info, callback) {
+module.exports = function(info) {
     var snippets = info.snippets;
-    callback(null, _.map(snippets, function(snippet, name) {
+    return _.map(snippets, function(snippet, name) {
         return {
             name: name,
             value: name,
@@ -9,5 +9,5 @@ module.exports = function(info, callback) {
             meta: "snippet",
             score: 999
         };
-    }));
+    });
 };

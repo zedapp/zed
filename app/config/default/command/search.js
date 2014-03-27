@@ -1,7 +1,6 @@
 var ui = require("zed/ui");
 var project = require("zed/project");
 var session = require("zed/session");
-var async = require("zed/lib/async");
 
 var filterExtensions = ["pdf", "gz", "tgz", "bz2", "zip",
     "exe", "jpg", "jpeg", "gif", "png"];
@@ -38,62 +37,64 @@ function stringIsText(text) {
 }
 
 module.exports = function(info, callback) {
-    ui.prompt("Phrase to search for:", "", 300, 150, function(err, phrase) {
+    function append(text) {
+        session.append("zed::search", text, function() {});
+    }
+    var results = 0;
+    var phrase, fileList;
+    return ui.prompt("Phrase to search for:", "", 300, 150).then(function(phrase_) {
+        phrase = phrase_;
         if (!phrase) {
-            return callback();
+            return;
         }
-        session.goto("zed::search", function() {
-            function append(text) {
-                session.append("zed::search", text, function() {});
+        return session.goto("zed::search");
+    }).then(function() {
+        return project.listFiles();
+    }).then(function(fileList_) {
+        fileList = fileList_;
+        fileList = fileList.filter(function(filename) {
+            var parts = filename.split('.');
+            var ext = parts[parts.length - 1];
+            return filterExtensions.indexOf(ext) === -1;
+        });
+
+        session.setText("zed::search", "Searching " + fileList.length + " files for '" + phrase + "'...\nPut your cursor on the result press Enter to jump.\n");
+        var filePromises = fileList.map(function(path) {
+            if (results >= MAX_RESULTS) {
+                return;
             }
 
-            var results = 0;
+            if (path === "/tags" || path.indexOf("zed::") === 0) {
+                return;
+            }
 
-            project.listFiles(function(err, fileList) {
-                fileList = fileList.filter(function(filename) {
-                    var parts = filename.split('.');
-                    var ext = parts[parts.length - 1];
-                    return filterExtensions.indexOf(ext) === -1;
-                });
-
-                session.setText("zed::search", "Searching " + fileList.length + " files for '" + phrase + "'...\nPut your cursor on the result press Enter to jump.\n", function() {});
-                async.eachLimit(fileList, 10, function(path, next) {
+            return project.readFile(path).then(function(text) {
+                if (!stringIsText(text)) {
+                    return;
+                }
+                var matchIdx = 0;
+                while ((matchIdx = text.indexOf(phrase, matchIdx)) !== -1) {
+                    append("\n" + path + ":" + indexToLine(text, matchIdx) + "\n\t" + getLine(text, matchIdx) + "\n");
+                    matchIdx++;
+                    results++;
                     if (results >= MAX_RESULTS) {
-                        return next();
+                        break;
                     }
-
-                    if (path === "/tags") {
-                        return next();
-                    }
-
-                    project.readFile(path, function(err, text) {
-                        if (err) {
-                            console.error(path, err);
-                            return next();
-                        }
-                        if (!stringIsText(text)) {
-                            return next();
-                        }
-                        var matchIdx = 0;
-                        while ((matchIdx = text.indexOf(phrase, matchIdx)) !== -1) {
-                            append("\n" + path + ":" + indexToLine(text, matchIdx) + "\n\t" + getLine(text, matchIdx) + "\n");
-                            matchIdx++;
-                            results++;
-                            if (results >= MAX_RESULTS) {
-                                break;
-                            }
-                        }
-                        next();
-                    });
-                }, function() {
-                    if (results === 0) {
-                        append("\nNo results found.");
-                    } else {
-                        append("\nFound " + results + " results.");
-                    }
-                    callback();
-                });
+                }
+            }, function(err) {
+                console.error("Could not read file: " + path);
+                // If one file fails that's ok, just report
             });
         });
+        return Promise.all(filePromises);
+    }).then(function() {
+        if (results === 0) {
+            append("\nNo results found.");
+        } else {
+            append("\nFound " + results + " results.");
+        }
+    }).catch(function(err) {
+        console.error("Got error", err);
+        throw err;
     });
 };

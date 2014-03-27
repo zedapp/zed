@@ -6,7 +6,7 @@ var indexToLine = require("zed/util").indexToLine;
 /**
  * inputs: text
  */
-module.exports = function(info, callback) {
+module.exports = function(info) {
     var match;
     var tags = [];
     var path = info.path;
@@ -20,5 +20,5 @@ module.exports = function(info, callback) {
         });
     }
 
-    ctags.updateCTags(path, tags, callback);
+    return ctags.updateCTags(path, tags);
 };

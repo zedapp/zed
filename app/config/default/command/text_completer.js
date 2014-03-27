@@ -4,15 +4,15 @@ var Map = require("zed/lib/collection").Map;
 
 var splitRegex = /[^a-zA-Z_0-9\$\-]+/;
 
-module.exports = function(info, callback) {
+module.exports = function(info) {
     var path = info.path;
 
-    function getWordIndex(pos, callback) {
-        session.getTextRange(path, {
+    function getWordIndex(pos) {
+        return session.getTextRange(path, {
             row: 0,
             column: 0
-        }, pos, function(err, textBefore) {
-            callback(null, textBefore.split(splitRegex).length - 1);
+        }, pos).then(function(textBefore) {
+            return textBefore.split(splitRegex).length - 1;
         });
     }
 
@@ -20,8 +20,8 @@ module.exports = function(info, callback) {
      * Does a distance analysis of the word `prefix` at position `pos` in `doc`.
      * @return Map
      */
-    function wordDistance(text, pos, callback) {
-        getWordIndex(pos, function(err, prefixPos) {
+    function wordDistance(text, pos) {
+        return getWordIndex(pos).then(function(prefixPos) {
             var words = text.split(splitRegex);
             var wordScores = new Map();
 
@@ -41,24 +41,25 @@ module.exports = function(info, callback) {
                 }
             });
 
-            callback(null, wordScores);
+            return wordScores;
         });
     }
 
-    session.getText(path, function(err, text) {
-        session.getCursorPosition(path, function(err, pos) {
-            wordDistance(text, pos, function(err, wordScores) {
-                var wordList = wordScores.keys();
-                callback(null, wordList.map(function(word) {
-                    return {
-                        name: word,
-                        value: word,
-                        score: wordScores.get(word),
-                        meta: "local"
-                    };
-                }));
-            });
+    var text;
+    return session.getText(path).then(function(text_) {
+        text = text_;
+        return session.getCursorPosition(path);
+    }).then(function(pos) {
+        return wordDistance(text, pos);
+    }).then(function(wordScores) {
+        var wordList = wordScores.keys();
+        return wordList.map(function(word) {
+            return {
+                name: word,
+                value: word,
+                score: wordScores.get(word),
+                meta: "local"
+            };
         });
-
     });
 };

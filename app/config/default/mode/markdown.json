@@ -7,12 +7,6 @@
             "filenames": ["zed::start"],
 
             "commands": {
-                "Tools:Beautify": {
-                    "scriptUrl": "/default/mode/markdown/beautify.js",
-                    "inputs": {
-                        "text": true
-                    }
-                },
                 "Tools:Preview": {
                     "scriptUrl": "/default/mode/markdown/preview.js",
                     "inputs": {
