@@ -34,7 +34,6 @@
 /default/mode/coffee/compile.js
 /default/mode/coffee/ctags.js
 /default/mode/coffee/preview.js
-/default/mode/coffee/rainbow-custom.min.js
 /default/mode/csharp.json
 /default/mode/css.json
 /default/mode/css/beautify-css.js
@@ -127,17 +126,6 @@
 /default/zpm/installed_packages/execute.js
 /default/zpm/zpm.js
 /default/zpm/zpm.json
-/packages/gh/zedapp/javascript-mode/beautify-js.js
-/packages/gh/zedapp/javascript-mode/beautify.js
-/packages/gh/zedapp/javascript-mode/check.js
-/packages/gh/zedapp/javascript-mode/config.json
-/packages/gh/zedapp/javascript-mode/ctags.js
-/packages/gh/zedapp/javascript-mode/jshint.js
-/packages/gh/zedapp/javascript-mode/package.json
-/packages/gh/zedapp/json-mode/check.js
-/packages/gh/zedapp/json-mode/config.json
-/packages/gh/zedapp/json-mode/json_parse.js
-/packages/gh/zedapp/json-mode/package.json
 /user.css
 /user.json
 /zedconfig.json
