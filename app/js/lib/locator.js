@@ -16,11 +16,12 @@ define(function(require, exports, module) {
 
     exports.jump = function(locator, selectionRange, selectedItem) {
         var edit = editor.getActiveEditor();
-        if (locator[0] === "/") {
+        if (locator[0] === "/" || locator[0] === "|") {
+            var caseSensitive = locator[0] === "/";
             edit.find(locator.substring(1), {
                 start: selectionRange || edit.getSelectionRange(),
                 wrap: true,
-                caseSensitive: true,
+                caseSensitive: caseSensitive,
                 wholeWord: false
             });
         } else if (locator[0] === '@' && selectedItem) {
