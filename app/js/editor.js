@@ -239,7 +239,7 @@ define(function(require, exports, module) {
     };
     
     function autoIndentOnPaste(editor, session, e) {
-        var pos = editor.getCursorPosition();
+        var pos = editor.getSelectionRange().start;
         var line = editor.getSession().getLine(pos.row);
         var tabSize = config.getPreference("tabSize", session);
         var col = pos.column;
