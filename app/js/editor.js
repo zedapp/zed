@@ -8,6 +8,9 @@ define(function(require, exports, module) {
     var font = require("./lib/font");
     var whitespace = require("ace/ext/whitespace");
     var sandbox = require("./sandbox");
+    var keyCodeToString = require("ace/lib/keys").keyCodeToString;
+
+    var Rx = require("rx");
 
     var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
     var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-:]/;
@@ -18,7 +21,35 @@ define(function(require, exports, module) {
     var editors = [];
     var activeEditor = null;
 
+    var mouseMoveObserver = Rx.Observer.create();
+
     var editor = module.exports = {
+        mouseMoveText: Rx.Observable.create(function(observer) {
+            mouseMoveObserver = observer;
+        }).map(function(e) {
+            return {
+                editor: e.editor,
+                pos: e.editor.renderer.screenToTextCoordinates(e.event.x, e.event.y)
+            };
+        }).distinctUntilChanged(function(e) {
+            return JSON.stringify(e.pos);
+        }),
+        keyUp: Rx.Observable.fromEvent(window, "keyup").map(function(e) {
+            return {
+                editor: require("editor").getEditors().filter(function(edit) {
+                    return edit.isFocused();
+                })[0],
+                event: e
+            };
+        }).where(function(e) {
+            return !!e.editor;
+        }).map(function(e) {
+            return {
+                editor: e.editor,
+                key: keyCodeToString(e.event.keyCode),
+                event: e.event
+            };
+        }),
         setEditorConfiguration: function(edit) {
             var session = edit.getSession();
             edit.setHighlightActiveLine(config.getPreference("highlightActiveLine", session));
@@ -41,7 +72,7 @@ define(function(require, exports, module) {
             } else {
                 eventbus.emit("sessionactivityfailed", session, "Invalid font: " + fontFamily);
             }
-            
+
             if (config.getPreference("autoIndentOnPaste", session)) {
                 edit.on("paste", function(e) {
                     autoIndentOnPaste(edit, session, e);
@@ -117,6 +148,12 @@ define(function(require, exports, module) {
                 });
                 editor.on("changeSelection", function() {
                     eventbus.emit("selectionchanged", editor);
+                });
+                editor.on("mousemove", function(e) {
+                    mouseMoveObserver.onNext({
+                        editor: editor,
+                        event: e
+                    });
                 });
             });
             editor.setActiveEditor(editors[0]);
@@ -237,7 +274,7 @@ define(function(require, exports, module) {
             return editor.getIdentifierUnderCursor(edit, PATH_REGEX);
         }
     };
-    
+
     function autoIndentOnPaste(editor, session, e) {
         var pos = editor.getCursorPosition();
         var line = editor.getSession().getLine(pos.row);
@@ -263,7 +300,7 @@ define(function(require, exports, module) {
                 min = index;
             }
         }
-        
+
         var adjust = col - min;
         if (min > -1 && adjust !== 0) {
             if (adjust < 0) {
@@ -275,7 +312,7 @@ define(function(require, exports, module) {
                 for (i = 0; i < adjust; i++) {
                     add += " ";
                 }
-                
+
                 for (i = 1; i < lines.length; i++) {
                     lines[i] = add + lines[i];
                 }

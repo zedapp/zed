@@ -12,7 +12,7 @@ define(function(require, exports, module) {
     window.console.warn = log("warn", oldWarn);
     window.console.error = log("error", oldError);
     window.console.info = log("info", oldInfo);
-    
+
     window.addEventListener("error", function(err) {
         log("exception", noop)(err.message, err.stack);
     });
@@ -38,7 +38,11 @@ define(function(require, exports, module) {
             if (_.isString(arg)) {
                 s += arg;
             } else {
-                s += JSON.stringify(arg, null, 2);
+                try {
+                    s += JSON.stringify(arg, null, 2);
+                } catch(e) {
+                    s += "<<Couldn't stringify value>>";
+                }
             }
         });
         return s + "\n";

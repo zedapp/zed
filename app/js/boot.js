@@ -3,7 +3,8 @@ require.config({
     baseUrl: "js",
     paths: {
         "text": "../dep/text",
-        "async": "../config/api/zed/lib/async"
+        "async": "../config/api/zed/lib/async",
+        "rx": "../dep/rx.lite",
     },
 });
 
