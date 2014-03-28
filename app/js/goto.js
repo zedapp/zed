@@ -22,6 +22,8 @@ define(function(require, exports, module) {
                 return "Type line number and press <tt>Enter</tt> to jump.";
             } else if (phrase == ":/") {
                 return "Type search phrase and press <tt>Enter</tt> to jump to first match.";
+            } else if (phrase == ":|") {
+                return "Type search phrase(case insensitive) and press <tt>Enter</tt> to jump to first match.";
             } else if (phrase[1] === '/') {
                 return "<tt>Enter</tt> jumps to first match for '" + _.escape(phrase.substring(2)) + "'";
             } else if (phrase == ":@") {
