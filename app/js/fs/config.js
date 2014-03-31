@@ -1,49 +1,79 @@
 /*global define, chrome */
 define(function(require, exports, module) {
+    var unionfs = require("./union");
+    var architect = require("../../dep/architect");
+    plugin.provides = ["fs"];
+    return plugin;
 
-    return function(isConfigurationProject, callback) {
-        require(["./union", "./static", "./local", "./sync"], function(unionfs, staticfs, localfs, syncfs) {
-
-            chrome.storage.local.get("configDir", function(results) {
-                if (results.configDir) {
-                    console.log("Using local configuration dir");
-                    staticFs(function(err, configStatic) {
-                        chrome.fileSystem.restoreEntry(results.configDir, function(dir) {
-                            if (!dir) {
-                                console.error("Could not open configuration dir, please reset it. Falling back to syncFS.");
-                                return syncConfig(callback);
-                            }
-                            localfs(dir, function(err, configLocal) {
-                                unionfs([configLocal, configStatic], {
-                                    watchSelf: !isConfigurationProject
-                                }, function(err, io) {
-                                    callback(null, io);
+    function plugin(options, imports, register) {
+        chrome.storage.local.get("configDir", function(results) {
+            if (results.configDir) {
+                console.log("Using local configuration dir");
+                staticFs(function(err, configStatic) {
+                    chrome.fileSystem.restoreEntry(results.configDir, function(dir) {
+                        if (!dir) {
+                            console.error("Could not open configuration dir, please reset it. Falling back to syncFS.");
+                            return syncConfig();
+                        }
+                        getFs({
+                            packagePath: "fs/local",
+                            dir: dir
+                        }, function(err, configLocal) {
+                            unionfs([configLocal, configStatic], {
+                                watchSelf: options.watchSelf
+                            }, function(err, io) {
+                                register(null, {
+                                    fs: io
                                 });
                             });
                         });
                     });
-                } else {
-                    syncConfig(callback);
-                }
-            });
-
-            function staticFs(callback) {
-                staticfs("config", {
-                    readOnlyFn: function(path) {
-                        return path !== "/.zedstate" && path !== "/user.json" && path !== "/user.css";
-                    }
-                }, callback);
-            }
-
-            function syncConfig(callback) {
-                staticFs(function(err, configStatic) {
-                    syncfs("config", function(err, configSync) {
-                        unionfs([configSync, configStatic], {
-                            watchSelf: !isConfigurationProject
-                        }, callback);
-                    });
                 });
+            } else {
+                syncConfig();
             }
         });
-    };
+
+        function staticFs(callback) {
+            getFs({
+                packagePath: "fs/static",
+                url: "config",
+                readOnlyFn: function(path) {
+                    return path !== "/.zedstate" && path !== "/user.json" && path !== "/user.css";
+                }
+            }, callback);
+        }
+
+        function syncConfig() {
+            staticFs(function(err, configStatic) {
+                getFs({
+                    packagePath: "./fs/sync",
+                    namespace: "config"
+                }, function(err, configSync) {
+                    unionfs([configSync, configStatic], {
+                        watchSelf: options.watchSelf
+                    }, function(err, io) {
+                        register(err, {
+                            fs: io
+                        });
+                    });
+                });
+            });
+        }
+    }
+
+    // Creates local architect application with just the file system module
+    function getFs(config, callback) {
+        architect.resolveConfig([config], function(err, config) {
+            if (err) {
+                return callback(err);
+            }
+            architect.createApp(config, function(err, app) {
+                if (err) {
+                    return callback(err);
+                }
+                callback(null, app.getService("fs"));
+            });
+        });
+    }
 });

@@ -1,7 +1,6 @@
-/*global define*/
+/*global define, zed*/
 define(function(require, exports, module) {
     "use strict";
-    var editor = require("../editor");
 
     exports.parse = function(path) {
         var parts = path.split(':');
@@ -15,7 +14,7 @@ define(function(require, exports, module) {
     };
 
     exports.jump = function(locator, selectionRange, selectedItem) {
-        var edit = editor.getActiveEditor();
+        var edit = zed.getService("editor").getActiveEditor();
         if (locator[0] === "/" || locator[0] === "|") {
             var caseSensitive = locator[0] === "/";
             edit.find(locator.substring(1), {

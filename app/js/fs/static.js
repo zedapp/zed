@@ -4,14 +4,15 @@
  */
 /*global define */
 define(function(require, exports, module) {
-    var http_cache = require("../lib/http_cache");
+    plugin.provides = ["fs"];
+    return plugin;
 
-    /**
-     * @param options
-     *     - readOnlyFn: function that takes a path and returns whether the file should be read-only
-     */
-    return function(root, options, callback) {
-        callback(null, {
+    function plugin(options, imports, register) {
+        var http_cache = require("../lib/http_cache");
+        var root = options.url;
+        var readOnlyFn = options.readOnlyFn;
+
+        var api = {
             listFiles: function(callback) {
                 http_cache.fetchUrl(root + "/all", {}, function(err, res) {
                     var items = res.split("\n");
@@ -30,7 +31,7 @@ define(function(require, exports, module) {
                         return callback(err);
                     }
                     callback(null, text, {
-                        readOnly: options.readOnlyFn && options.readOnlyFn(path)
+                        readOnly: readOnlyFn && readOnlyFn(path)
                     });
                 });
             },
@@ -48,12 +49,16 @@ define(function(require, exports, module) {
             },
             getCacheTag: function(path, callback) {
                 http_cache.fetchUrl(root + path, {}, function(err) {
-                    if(err) {
+                    if (err) {
                         return callback(404);
                     }
                     callback(null, "unchanged");
                 });
             }
+        };
+
+        register(null, {
+            fs: api
         });
-    };
+    }
 });

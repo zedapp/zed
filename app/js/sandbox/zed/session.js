@@ -1,24 +1,21 @@
+/*global define, zed*/
 define(function(require, exports, module) {
-    var session_manager = require("../../session_manager");
     var Range = require("ace/range").Range;
-    var editor = require("../../editor");
-    var sandbox = require("../../sandbox");
     var InlineAnnotation = require("../../lib/inline_annotation");
-    var eventbus = require("../../lib/eventbus");
 
     function rangify(range) {
         return Range.fromPoints(range.start, range.end);
     }
 
     function getSession(path) {
-        return path ? session_manager.getSessions()[path] : editor.getActiveSession();
+        return path ? zed.getService("session_manager").getSessions()[path] : zed.getService("editor").getActiveSession();
     }
 
     // This function can take any defined inputable, a path, a callback,
     // and will call the callback with the result of the inputable for
     // the given path.
     function genericInputable(inputable, path, callback) {
-        callback(null, sandbox.getInputable(
+        callback(null, zed.getService("sandbox").getInputable(
             getSession(path), inputable));
     }
 
@@ -41,8 +38,8 @@ define(function(require, exports, module) {
         getText: useInputable("text"),
         isInsertingSnippet: useInputable("isInsertingSnippet"),
         goto: function(path, callback) {
-            var edit = editor.getActiveEditor();
-            session_manager.go(path, edit, edit.getSession(), function(err) {
+            var edit = zed.getService("editor").getActiveEditor();
+            zed.getService("session_manager").go(path, edit, edit.getSession(), function(err) {
                 callback(err);
             });
         },
@@ -169,9 +166,9 @@ define(function(require, exports, module) {
         },
         flashMessage: function(path, message, length, callback) {
             var session = getSession(path);
-            eventbus.emit("sessionactivitystarted", session, message);
+            zed.getService("eventbus").emit("sessionactivitystarted", session, message);
             setTimeout(function() {
-                eventbus.emit("sessionactivitycompleted", session);
+                zed.getService("eventbus").emit("sessionactivitycompleted", session);
             }, length);
             callback();
         }

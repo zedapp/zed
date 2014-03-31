@@ -1,7 +1,7 @@
 /**
  * This module implements a union fs, it will do fall-through for various operations
  * such as reads and writes, attempting them one by one until one succeeds.
- * 
+ *
  * Note: currently unionfs overrides file watching behavior and does manual
  *       watching based on content.
  */
@@ -94,7 +94,7 @@ define(function(require, exports, module) {
                 attempt("getCacheTag", [path], callback);
             }
         };
-        
+
         var watcher = poll_watcher(fs, 2000);
 
         callback(null, fs);

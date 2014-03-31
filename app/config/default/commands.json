@@ -183,7 +183,7 @@
             "scriptUrl": "./command/ctags_completer.js"
         },
         "Tools:Complete:Text": {
-            "scriptUrl": "./command/text_completer.js"
+            "scriptUrl": "./command/text_completer_length.js"
         }
     }
 }

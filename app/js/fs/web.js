@@ -1,8 +1,12 @@
 /*global define, $ */
 define(function(require, exports, module) {
-    var poll_watcher = require("./poll_watcher");
+    plugin.provides = ["fs"];
+    return plugin;
 
-    return function(url, callback) {
+    function plugin(options, imports, register) {
+        var poll_watcher = require("./poll_watcher");
+        var url = options.url;
+
         var mode = "directory"; // or: file
         var fileModeFilename; // if mode === "file"
         var watcher;
@@ -134,7 +138,7 @@ define(function(require, exports, module) {
                 }
 
                 console.log("WebFS mode:", mode);
-                var fs = {
+                var api = {
                     listFiles: listFiles,
                     readFile: readFile,
                     writeFile: writeFile,
@@ -144,13 +148,15 @@ define(function(require, exports, module) {
                     getCacheTag: getCacheTag
                 };
 
-                watcher = poll_watcher(fs, 5000);
+                watcher = poll_watcher(api, 5000);
 
-                callback(null, fs);
+                register(null, {
+                    api: api
+                });
             },
             error: function(xhr) {
-                callback(xhr);
+                register(xhr);
             }
         });
-    };
+    }
 });

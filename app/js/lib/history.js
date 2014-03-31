@@ -1,11 +1,10 @@
-/*global chrome, define, _*/
+/*global chrome, define, _, zed*/
 define(function(require, exports, module) {
-
-    var config = require("../config");
 
     return {
         pushProject: function(name, url) {
             chrome.storage.local.get("recentProjects", function(results) {
+                var config = zed.getConfig("config");
                 var projects = results.recentProjects || [];
                 // sanity check projects array
                 if (projects.length > 0 && !projects[0].url) {
