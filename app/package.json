@@ -1,6 +1,6 @@
 {
     "name": "zed",
-    "main": "editor.nw.html?url=node:/Users/zef/git/ace",
+    "main": "app://./editor.nw.html?url=node:/Users/zef/git/ace",
     "icon": "Icon.png",
     "window": {
         "title": "Zed",

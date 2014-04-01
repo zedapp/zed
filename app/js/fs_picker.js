@@ -7,6 +7,8 @@ define(function(require, exports, module) {
         // TODO: Generalize this
         if (url.indexOf("config:") === 0) {
             return callback(null, "./fs/config");
+        } else if (url.indexOf("nwconfig:") === 0) {
+            return callback(null, "./fs/config.nw");
         } else if (url.indexOf("manual:") === 0) {
             return callback(null, {
                 packagePath: "./fs/static",

@@ -23,7 +23,6 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./ctags",
         "./config",
         "./goto",
-        "./sandbox",
         "./tree",
         "./state",
         "./project",
@@ -42,9 +41,9 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         ];
 
     if (window.isNodeWebkit) {
-        modules.push("./copy_paste.nw", "./configfs.nw", "./window.nw", "./history.nw");
+        modules.push("./copy_paste.nw", "./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw");
     } else {
-        modules.push("./configfs", "./window", "./history");
+        modules.push("./configfs", "./window", "./history", "./sandbox");
     }
 
     fsPicker(function(err, fsConfig) {
@@ -57,11 +56,13 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
             if (err) {
                 return console.error("Architect resolve error", err);
             }
+            console.log("Architect resolved");
             architect.createApp(config, function(err, app) {
                 if (err) {
                     window.err = err;
                     return console.error("Architect createApp error", err, err.stack);
                 }
+                console.log("App started");
                 window.zed = app;
 
                 // Run hook on each service (if exposed)
