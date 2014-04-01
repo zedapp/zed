@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 
 SHELL = /bin/bash
+ZED_DIR = /Users/zef/Dropbox/zed
+INDEX_COMMAND = find app/config -name '*.*' -not -path '*/.git/*' -not -path '*/.git' | sort | sed 's:^app/config::' > app/config/all
 
 install-dep:
 	curl -L https://github.com/zefhemel/ace-builds/archive/master.tar.gz | tar xzf -
@@ -24,14 +26,23 @@ release: golang-crosscompile
 	go-freebsd-amd64 build -o release/zed-FreeBSD-amd64; \
 	go-windows-386 build -o release/zed.exe
 
-package:
+copy-packages:
+	rm -rf app/config/packages/*
+	cp -r $(ZED_DIR)/packages/gh app/config/packages/
+
+build-package: copy-packages indexes
 	rm -f zed.zip
 	cd app; zip ../zed.zip -x '*.git*' -r *
 
+package: build-package
+	rm -rf app/config/packages/*
+	$(INDEX_COMMAND)
+
 index-manual:
 	find app/manual -name '*.*' -not -path "*/.git/*" -not -path "*/.git" | sort | sed "s:^app/manual::" > app/manual/all
+
 index-config:
-	find app/config -name '*.*' -not -path "*/.git/*" -not -path "*/.git" | sort | sed "s:^app/config::" > app/config/all
+	$(INDEX_COMMAND)
 
 indexes: index-manual index-config
 	@true

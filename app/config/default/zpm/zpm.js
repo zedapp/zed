@@ -128,7 +128,6 @@ exports.updateAll = function() {
         }
         var anyUpdates = false;
         var packagePromises = uriPackagePairs.map(function(uriPackagePair) {
-            console.log("Pair", uriPackagePair);
             return update(uriPackagePair[0], uriPackagePair[1]).then(function(updated) {
                 if (updated) {
                     anyUpdates = true;
