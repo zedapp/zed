@@ -22,6 +22,9 @@ define(function(require, exports, module) {
         // Mappings from particular file names to mode name, e.g. "Makefile" -> "makefile"
         var filenameMapping = {};
 
+        // Mappings from shebang lines to mode name, e.g. "python3" -> "python"
+        var shebangMapping = {};
+
         // Mode to use if all else fails
         var fallbackMode = {
             language: "text",
@@ -47,22 +50,32 @@ define(function(require, exports, module) {
             get: function(language) {
                 return modes[language];
             },
-            getModeForPath: function(path_) {
+            getModeForSession: function(session) {
+                var path_ = session.filename;
                 var filename = path.filename(path_);
                 if (filenameMapping[filename]) {
                     return api.get(filenameMapping[filename]);
                 }
                 var mode;
                 _.each(extensionMapping, function(lang, ext) {
-                    if(path_.indexOf("." + ext) === path_.length - ext.length - 1) {
+                    var idx = path_.indexOf("." + ext);
+                    if (idx > -1 && idx === path_.length - ext.length - 1) {
                         mode = api.get(lang);
                     }
                 });
+                console.log("GOt mode", mode, filename);
                 if (mode) {
                     return mode;
-                } else {
-                    return fallbackMode;
                 }
+                var shebang_line = session.getLine(0);
+                for (var shebang in shebangMapping) {
+                    console.log(shebang, shebang_line);
+                    if (shebang_line.indexOf(shebang) > 0) {
+                        return api.get(shebangMapping[shebang]);
+                    }
+                }
+
+                return fallbackMode;
             },
             setSessionMode: function(session, mode) {
                 if (typeof mode === "string") {
@@ -111,6 +124,7 @@ define(function(require, exports, module) {
         function updateMappings() {
             extensionMapping = {};
             filenameMapping = {};
+            shebangMapping = {};
             _.each(modes, function(mode) {
                 if (mode.extensions) {
                     mode.extensions.forEach(function(ext) {
@@ -120,6 +134,12 @@ define(function(require, exports, module) {
                 if (mode.filenames) {
                     mode.filenames.forEach(function(filename) {
                         filenameMapping[filename] = mode.language;
+                    });
+                }
+                shebangMapping[mode.language] = mode.language;
+                if (mode.shebangs) {
+                    mode.shebangs.forEach(function(shebang) {
+                        shebangMapping[shebang] = mode.language;
                     });
                 }
             });

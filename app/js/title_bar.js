@@ -146,7 +146,7 @@ define(function(require, exports, module) {
                 window.maximize();
             });
             barEl.find(".fullscreen").click(function() {
-                window.fullscreen();
+                window.fullScreen();
             });
 
             editor.getEditors(true).forEach(function(edit) {
