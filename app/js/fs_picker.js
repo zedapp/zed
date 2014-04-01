@@ -76,6 +76,12 @@ define(function(require, exports, module) {
                     });
                 });
             }
+        } else if (url.indexOf("node:") === 0) {
+            var path = url.substring("node:".length);
+            return callback(null, {
+                packagePath: "./fs/node",
+                dir: path
+            });
         } else {
             return callback(null, {
                 packagePath: "./fs/web",

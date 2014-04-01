@@ -63,13 +63,11 @@ define(function(require, exports, module) {
                         mode = api.get(lang);
                     }
                 });
-                console.log("GOt mode", mode, filename);
                 if (mode) {
                     return mode;
                 }
                 var shebang_line = session.getLine(0);
                 for (var shebang in shebangMapping) {
-                    console.log(shebang, shebang_line);
                     if (shebang_line.indexOf(shebang) > 0) {
                         return api.get(shebangMapping[shebang]);
                     }

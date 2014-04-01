@@ -28,17 +28,17 @@ define(function(require, exports, module) {
         var api = {
             hook: function() {
                 eventbus.once("stateloaded", function() {
-                    var win = chrome.app.window.current();
-                    var bounds = api.get('window');
-                    if (bounds) {
-                        win.setBounds(bounds);
-                    }
-                    win.onBoundsChanged.addListener(function() {
-                        api.set("window", win.getBounds());
-                        zed.getService("editor").getEditors().forEach(function(edit) {
-                            edit.resize();
-                        });
-                    });
+                    // var win = chrome.app.window.current();
+                    // var bounds = api.get('window');
+                    // if (bounds) {
+                    //     win.setBounds(bounds);
+                    // }
+                    // win.onBoundsChanged.addListener(function() {
+                    //     api.set("window", win.getBounds());
+                    //     zed.getService("editor").getEditors().forEach(function(edit) {
+                    //         edit.resize();
+                    //     });
+                    // });
                 });
             },
             init: function() {

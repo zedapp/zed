@@ -8,15 +8,16 @@ require.config({
     },
 });
 
+window.isNodeWebkit = typeof window.chrome === "undefined";
+
 /* global ace, $, _ */
 require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/intro.md"], function(architect, options, fsPicker, introText) {
     "use strict";
+
     var modules = [
         "./eventbus",
         "./ui",
         "./command",
-        "./window",
-        "./history",
         "./editor",
         "./title_bar",
         "./ctags",
@@ -38,8 +39,13 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./action",
         "./theme",
         "./log",
-        "./configfs"];
+        ];
 
+    if (window.isNodeWebkit) {
+        modules.push("./copy_paste.nw", "./configfs.nw", "./window.nw", "./history.nw");
+    } else {
+        modules.push("./configfs", "./window", "./history");
+    }
 
     fsPicker(function(err, fsConfig) {
         if (err) {

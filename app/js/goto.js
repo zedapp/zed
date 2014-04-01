@@ -64,6 +64,9 @@ define(function(require, exports, module) {
         function fetchFileList() {
             console.log("Fetching file list...");
             fs.listFiles(function(err, files) {
+                if(err) {
+                    return console.error("Error listing files", err);
+                }
                 fileCache = files;
                 Object.keys(session_manager.specialDocs).forEach(function(path) {
                     fileCache.push(path);
