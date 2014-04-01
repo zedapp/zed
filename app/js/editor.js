@@ -123,14 +123,13 @@ define(function(require, exports, module) {
             eventbus.emit("editorloaded", exports);
         },
         createSession: function(path, content) {
-            var mode = modes.getModeForPath(path);
             var session = ace.createEditSession(content);
             session.filename = path;
             session.setUseWrapMode(config.getPreference("wordWrap"));
             session.setTabSize(config.getPreference("tabSize"));
             session.setUseSoftTabs(config.getPreference("useSoftTabs"));
             session.setUseWorker(false);
-            modes.setSessionMode(session, mode);
+            modes.setSessionMode(session);
             if (config.getPreference("detectIndentation")) {
                 whitespace.detectIndentation(session);
             }
