@@ -144,7 +144,8 @@ define(function(require, exports, module) {
         return modes[language];
     };
 
-    exports.getModeForPath = function(path_) {
+    exports.getModeForSession = function(session) {
+        var path_ = session.filename;
         var filename = path.filename(path_);
         if (filenameMapping[filename]) {
             return exports.get(filenameMapping[filename]);
@@ -157,7 +158,8 @@ define(function(require, exports, module) {
         }
     };
 
-    exports.setSessionMode = function(session, mode) {
+    exports.setSessionMode = function(session) {
+        var mode = exports.getModeForSession(session);
         if (typeof mode === "string") {
             mode = exports.get(mode);
         }

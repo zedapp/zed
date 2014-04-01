@@ -41,7 +41,7 @@ define(function(require, exports, module) {
             } else {
                 eventbus.emit("sessionactivityfailed", session, "Invalid font: " + fontFamily);
             }
-            
+
             if (config.getPreference("autoIndentOnPaste", session)) {
                 edit.on("paste", function(e) {
                     autoIndentOnPaste(edit, session, e);
@@ -123,14 +123,13 @@ define(function(require, exports, module) {
             eventbus.emit("editorloaded", exports);
         },
         createSession: function(path, content) {
-            var mode = modes.getModeForPath(path);
             var session = ace.createEditSession(content);
             session.filename = path;
             session.setUseWrapMode(config.getPreference("wordWrap"));
             session.setTabSize(config.getPreference("tabSize"));
             session.setUseSoftTabs(config.getPreference("useSoftTabs"));
             session.setUseWorker(false);
-            modes.setSessionMode(session, mode);
+            modes.setSessionMode(session);
             if (config.getPreference("detectIndentation")) {
                 whitespace.detectIndentation(session);
             }
@@ -237,7 +236,7 @@ define(function(require, exports, module) {
             return editor.getIdentifierUnderCursor(edit, PATH_REGEX);
         }
     };
-    
+
     function autoIndentOnPaste(editor, session, e) {
         var pos = editor.getSelectionRange().start;
         var line = editor.getSession().getLine(pos.row);
@@ -263,7 +262,7 @@ define(function(require, exports, module) {
                 min = index;
             }
         }
-        
+
         var adjust = col - min;
         if (min > -1 && adjust !== 0) {
             if (adjust < 0) {
@@ -275,7 +274,7 @@ define(function(require, exports, module) {
                 for (i = 0; i < adjust; i++) {
                     add += " ";
                 }
-                
+
                 for (i = 1; i < lines.length; i++) {
                     lines[i] = add + lines[i];
                 }
@@ -841,7 +840,7 @@ define(function(require, exports, module) {
         },
         readOnly: true
     });
-    
+
     command.define("Find:Find Case Insensitive", {
         exec: function(edit, session) {
             command.exec("Navigate:Goto", edit, session, ":|");

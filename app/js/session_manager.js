@@ -335,7 +335,7 @@ define(function(require, exports, module) {
         // Modes have been loaded, let's iterate over all to setup the right one
         eventbus.on("modesloaded", function(modes) {
             _.each(sessions, function(session) {
-                modes.setSessionMode(session, modes.getModeForPath(session.filename));
+                modes.setSessionMode(session);
             });
         });
     };
