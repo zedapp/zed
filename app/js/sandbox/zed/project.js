@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     var options = require("../../lib/options");
     return {
         readFile: function(path, callback) {
-            zed.getService("project").readFile(path, function(err, text) {
+            zed.getService("fs").readFile(path, function(err, text) {
                 if(err) {
                     if(err.message) {
                         return callback(err.message);
@@ -15,7 +15,7 @@ define(function(require, exports, module) {
             });
         },
         writeFile: function(path, text, callback) {
-            zed.getService("project").writeFile(path, text, function(err) {
+            zed.getService("fs").writeFile(path, text, function(err) {
                 if(err) {
                     if(err.message) {
                         return callback(err.message);

@@ -16,6 +16,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./ui",
         "./command",
         "./window",
+        "./history",
         "./editor",
         "./title_bar",
         "./ctags",

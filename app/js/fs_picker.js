@@ -1,7 +1,6 @@
 /*global define, chrome */
 define(function(require, exports, module) {
     var options = require("./lib/options");
-    var history = require("./lib/history");
     return function(callback) {
         var url = options.get("url");
 
@@ -43,7 +42,6 @@ define(function(require, exports, module) {
             // });
         } else if (url.indexOf("dropbox:") === 0) {
             var path = url.substring("dropbox:".length);
-            history.pushProject(path.slice(1), url);
             return callback(null, {
                 packagePath: "./fs/dropbox",
                 rootPath: path
@@ -53,11 +51,10 @@ define(function(require, exports, module) {
             // We're opening a specific previously opened directory here
             if (id) {
                 chrome.fileSystem.restoreEntry(id, function(dir) {
-                    var title = dir.fullPath.slice(1);
-                    history.pushProject(title, "local:" + id);
                     callback(null, {
                         packagePath: "./fs/local",
-                        dir: dir
+                        dir: dir,
+                        id: id
                     });
                 });
             } else {
@@ -70,12 +67,12 @@ define(function(require, exports, module) {
                     }
                     var id = chrome.fileSystem.retainEntry(dir);
                     var title = dir.fullPath.slice(1);
-                    history.pushProject(title, "local:" + id);
                     options.set("title", title);
                     options.set("url", "local:" + id);
                     callback(null, {
                         packagePath: "./fs/local",
-                        dir: dir
+                        dir: dir,
+                        id: id
                     });
                 });
             }

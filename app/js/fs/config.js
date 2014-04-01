@@ -5,6 +5,8 @@ define(function(require, exports, module) {
     return plugin;
 
     function plugin(options, imports, register) {
+        var watchSelf = options.watchSelf;
+
         chrome.storage.local.get("configDir", function(results) {
             if (results.configDir) {
                 console.log("Using local configuration dir");
@@ -20,7 +22,8 @@ define(function(require, exports, module) {
                         }, function(err, configLocal) {
                             getFs({
                                 packagePath: "fs/union",
-                                fileSystems: [configLocal, configStatic]
+                                fileSystems: [configLocal, configStatic],
+                                watchSelf: watchSelf
                             }, function(err, fs) {
                                 register(null, {
                                     fs: fs
@@ -53,7 +56,7 @@ define(function(require, exports, module) {
                     getFs({
                         packagePath: "fs/union",
                         fileSystems: [configSync, configStatic],
-                        watchSelf: options.watchSelf
+                        watchSelf: watchSelf
                     }, function(err, fs) {
                         register(err, {
                             fs: fs
@@ -66,7 +69,7 @@ define(function(require, exports, module) {
 
     // Creates local architect application with just the file system module
     function getFs(config, callback) {
-        architect.resolveConfig([config], function(err, config) {
+        architect.resolveConfig([config, "./history"], function(err, config) {
             if (err) {
                 return callback(err);
             }

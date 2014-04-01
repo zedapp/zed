@@ -23,19 +23,17 @@ define(function(require, exports, module) {
 
         command.define("Project:Rename", {
             exec: function() {
-                require(["./lib/history", "./lib/options"], function(history, options) {
-                    zed.getService("ui").prompt({
-                        message: "Rename project to:",
-                        input: options.get('title')
-                    }, function(err, name) {
-                        if (!name) {
-                            // canceled
-                            return;
-                        }
-                        options.set("title", name);
-                        history.renameProject(options.get("url"), name);
-                        eventbus.emit("projecttitlechanged");
-                    });
+                zed.getService("ui").prompt({
+                    message: "Rename project to:",
+                    input: opts.get('title')
+                }, function(err, name) {
+                    if (!name) {
+                        // canceled
+                        return;
+                    }
+                    opts.set("title", name);
+                    zed.getService("history").renameProject(opts.get("url"), name);
+                    eventbus.emit("projecttitlechanged");
                 });
             },
             readOnly: true

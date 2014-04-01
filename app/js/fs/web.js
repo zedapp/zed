@@ -151,7 +151,7 @@ define(function(require, exports, module) {
                 watcher = poll_watcher(api, 5000);
 
                 register(null, {
-                    api: api
+                    fs: api
                 });
             },
             error: function(xhr) {

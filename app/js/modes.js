@@ -52,9 +52,14 @@ define(function(require, exports, module) {
                 if (filenameMapping[filename]) {
                     return api.get(filenameMapping[filename]);
                 }
-                var ext = path.ext(path_);
-                if (extensionMapping[ext]) {
-                    return api.get(extensionMapping[ext]);
+                var mode;
+                _.each(extensionMapping, function(lang, ext) {
+                    if(path_.indexOf("." + ext) === path_.length - ext.length - 1) {
+                        mode = api.get(lang);
+                    }
+                });
+                if (mode) {
+                    return mode;
                 } else {
                     return fallbackMode;
                 }

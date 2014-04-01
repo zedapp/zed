@@ -59,21 +59,20 @@ define(function(require, exports, module) {
         }
 
         function bindCommand(commands, cmd, bindKey) {
-            try {
-                var command = zed.getService("command");
-                var c = command.lookup(cmd);
-                commands.push({
-                    name: cmd,
-                    bindKey: bindKey,
-                    exec: function(edit, args) {
-                        return command.exec(cmd, edit, edit.getSession(), args);
-                    },
-                    multiSelectAction: c.multiSelectAction,
-                    readOnly: c.readOnly
-                });
-            } catch (e) {
-                console.warn("Failed to bind keys to command", cmd, ", maybe not yet defined?", e);
+            var command = zed.getService("command");
+            var c = command.lookup(cmd);
+            if (!c) {
+                return console.warn("Failed to bind keys to command", cmd, ", maybe not yet defined?");
             }
+            commands.push({
+                name: cmd,
+                bindKey: bindKey,
+                exec: function(edit, args) {
+                    return command.exec(cmd, edit, edit.getSession(), args);
+                },
+                multiSelectAction: c.multiSelectAction,
+                readOnly: c.readOnly
+            });
         }
 
         function loadCommands(mode) {

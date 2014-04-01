@@ -5,6 +5,7 @@
  */
 /*global define, chrome, _ */
 define(function(require, exports, module) {
+    plugin.consumes = ["history"];
     plugin.provides = ["fs"];
     return plugin;
 
@@ -12,6 +13,9 @@ define(function(require, exports, module) {
         var async = require("../lib/async");
         var poll_watcher = require("./poll_watcher");
 
+        var history = imports.history;
+
+        var id = options.id;
         var root = options.dir;
 
         function dirname(path) {
@@ -159,6 +163,9 @@ define(function(require, exports, module) {
         };
 
         var watcher = poll_watcher(api, 3000);
+
+        var title = root.fullPath.slice(1);
+        history.pushProject(title, "local:" + id);
 
         register(null, {
             fs: api

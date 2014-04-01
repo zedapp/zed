@@ -1,5 +1,6 @@
 /*global define, Dropbox, chrome */
 define(function(require, exports, module) {
+    plugin.consumes = ["history"];
     plugin.provides = ["fs"];
     return plugin;
 
@@ -8,6 +9,8 @@ define(function(require, exports, module) {
         var poll_watcher = require("./poll_watcher");
         var async = require("../lib/async");
         var rootPath = options.rootPath;
+        
+        var history = imports.history;
 
         rootPath = rootPath || "/";
         if (rootPath[0] !== "/") {
@@ -164,6 +167,8 @@ define(function(require, exports, module) {
             };
 
             var watcher = poll_watcher(fs, 10000);
+
+            history.pushProject(rootPath.slice(1), "dropbox:" + rootPath);
 
             register(null, {
                 fs: fs

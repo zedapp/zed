@@ -36,21 +36,21 @@
                 visibility: hidden;
                 height: 0;
             }
-            
+
             .hint {
                 border-top: 1px dotted gray;
                 font-size: 12px;
                 padding: 5px;
             }
-            
+
             .hint .error {
                 color: red;
             }
-            
+
             .projects {
                 border-top: 1px solid #aaa;
             }
-            
+
             .projects a {
                 display: block;
                 position: relative;
@@ -65,7 +65,7 @@
                 white-space: nowrap;
                 padding-left: 35px;
             }
-            
+
             .projects a img {
                 position: absolute;
                 left: 8px;
@@ -73,15 +73,25 @@
                 width: 18px;
                 height: 18px;
             }
-            
+
             #projects h1 {
                 font-size: 14px;
                 font-weight: bold;
                 margin: 8px;
             }
-            
+
             #projects a.active {
                 background-color: #33CCFF;
+            }
+
+            #sandbox {
+                z-index: 500;
+                position: absolute;
+                left: 50px;
+                right: 0;
+                top: 50px;
+                width: 500px;
+                height: 200px;
             }
         </style>
     </head>
@@ -97,6 +107,6 @@
             <input id="gotoinput" type="text" placeholder="URL to edit remotely" value="" tabindex="1" />
         </div>
         <div id="hint" class="hint"><a href="http://zedapp.org/features/edit-remote-files/" target="_blank">To edit remote files, run <tt>zed</tt> on the server</a>. Paste the URL <tt>zed</tt> returns into this box and press <tt>Enter</tt>.</div>
-        <script src="js/open.js"></script>
+        <script src="js/open.boot.js"></script>
     </body>
 </html>
