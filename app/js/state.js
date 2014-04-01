@@ -4,83 +4,91 @@
  * which split, the split config itself, cursor positions, selections, part of the
  * undo stack etc.
  */
-/*global define, chrome*/
+/*global define, chrome, zed*/
 define(function(require, exports, module) {
     "use strict";
-    var eventbus = require("./lib/eventbus");
-    var options = require("./lib/options");
-    var project = require("./project");
-    var config = require("./config");
-    var state = {};
+    plugin.consumes = ["eventbus", "fs", "config"];
+    plugin.provides = ["state"];
+    return plugin;
 
-    eventbus.declare("stateloaded");
+    function plugin(options, imports, register) {
+        var opts = require("./lib/options");
 
-    function isHygienic() {
-        return config.getPreference("hygienicMode") || (config.getPreference("hygienicModeRemote") && options.get("url").indexOf("http") === 0);
-    }
+        var eventbus = imports.eventbus;
+        var fs = imports.fs;
+        var config = imports.config;
+        var state = {};
 
-    module.exports = {
-        hook: function() {
-            var state = module.exports;
-            eventbus.on("ioavailable", function() {
-                console.log("IO available!");
-                module.exports.load();
-            });
-            eventbus.once("stateloaded", function() {
-                var win = chrome.app.window.current();
-                var bounds = state.get('window');
-                if (bounds) {
-                    win.setBounds(bounds);
-                }
-                win.onBoundsChanged.addListener(function() {
-                    state.set("window", win.getBounds());
-                    require(["./editor"], function(editor) {
-                        editor.getEditors().forEach(function(edit) {
+        eventbus.declare("stateloaded");
+
+        function isHygienic() {
+            return config.getPreference("hygienicMode") || (config.getPreference("hygienicModeRemote") && opts.get("url").indexOf("http") === 0);
+        }
+
+        var api = {
+            hook: function() {
+                eventbus.once("stateloaded", function() {
+                    var win = chrome.app.window.current();
+                    var bounds = api.get('window');
+                    if (bounds) {
+                        win.setBounds(bounds);
+                    }
+                    win.onBoundsChanged.addListener(function() {
+                        api.set("window", win.getBounds());
+                        zed.getService("editor").getEditors().forEach(function(edit) {
                             edit.resize();
                         });
                     });
                 });
-            });
-        },
-        set: function(key, value) {
-            state[key] = value;
-        },
-        get: function(key) {
-            return state[key];
-        },
-        load: function(callback) {
-            if (isHygienic()) {
-                state = {};
-                eventbus.emit("stateloaded", module.exports);
-                return callback && callback({});
-            }
-            project.readFile("/.zedstate", function(err, json) {
-                if (err) {
-                    // No worries, empty state!
-                    json = "{}";
-                }
-                try {
-                    state = JSON.parse(json);
-                } catch (e) {
-                    console.error("Could not parse state: ", e, json);
+            },
+            init: function() {
+                api.load();
+            },
+            set: function(key, value) {
+                state[key] = value;
+            },
+            get: function(key) {
+                return state[key];
+            },
+            load: function(callback) {
+                if (isHygienic()) {
                     state = {};
+                    eventbus.emit("stateloaded", api);
+                    return callback && callback({});
                 }
-                eventbus.emit("stateloaded", module.exports);
-                callback && callback(state);
-            });
-        },
-        save: function(callback) {
-            if (!isHygienic()) {
-                project.writeFile("/.zedstate", this.toJSON(), callback || function() {});
+                fs.readFile("/.zedstate", function(err, json) {
+                    if (err) {
+                        // No worries, empty state!
+                        json = "{}";
+                    }
+                    try {
+                        state = JSON.parse(json);
+                    } catch (e) {
+                        console.error("Could not parse state: ", e, json);
+                        state = {};
+                    }
+                    eventbus.emit("stateloaded", api);
+                    callback && callback(state);
+                });
+            },
+            save: function(callback) {
+                if (!isHygienic()) {
+                    fs.writeFile("/.zedstate", this.toJSON(), callback || function() {});
+                }
+            },
+            toJSON: function() {
+                return JSON.stringify(state);
+            },
+            reset: function() {
+                state = {};
+                api.save();
             }
-        },
-        toJSON: function() {
-            return JSON.stringify(state);
-        },
-        reset: function() {
-            state = {};
-            module.exports.save();
-        }
-    };
+        };
+
+        register(null, {
+            state: api
+        });
+    }
+
 
 });

@@ -1,8 +1,8 @@
+/*global zed, define*/
 define(function(require, exports, module) {
-    var ui = require("../../lib/ui");
     return {
         prompt: function(message, inputText, width, height, callback) {
-            ui.prompt({
+            zed.getService("ui").prompt({
                 width: width,
                 height: height,
                 message: message,
@@ -10,11 +10,11 @@ define(function(require, exports, module) {
             }, callback);
         },
         blockUI: function(message, withSpinner, callback) {
-            ui.blockUI(message, !withSpinner);
+            zed.getService("ui").blockUI(message, !withSpinner);
             callback();
         },
         unblockUI: function(callback) {
-            ui.unblockUI();
+            zed.getService("ui").unblockUI();
             callback();
         },
     };

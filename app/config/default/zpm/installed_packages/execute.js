@@ -44,6 +44,7 @@ return function(info) {
         var idLine = lines[pos.row - 3];
         var id = idLine.substr(5);
         if (pos.column >= 10 && pos.column <= 21) {
+            console.log("Unstalling stuff", id);
             return zpm.uninstall(id).then(function() {
                 reloadConfig();
                 return zpm.removeFromConfig(id).then(function() {

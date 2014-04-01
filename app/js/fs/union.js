@@ -1,20 +1,25 @@
 /**
  * This module implements a union fs, it will do fall-through for various operations
  * such as reads and writes, attempting them one by one until one succeeds.
- * 
+ *
  * Note: currently unionfs overrides file watching behavior and does manual
  *       watching based on content.
  */
 /* global _ */
 define(function(require, exports, module) {
-    var async = require("../lib/async");
-    var poll_watcher = require("./poll_watcher");
+    plugin.provides = ["fs"];
+    return plugin;
 
-    /**
-     * @param options:
-     *    - watchSelf: emit change events on things written by this fs
-     */
-    return function(fileSystems, options, callback) {
+    function plugin(options, imports, register) {
+        var async = require("../lib/async");
+        var poll_watcher = require("./poll_watcher");
+        var fileSystems = options.fileSystems;
+        var watchSelf = options.watchSelf;
+
+        /**
+         * @param options:
+         *    - watchSelf: emit change events on things written by this fs
+         */
         function attempt(fnName, args, callback) {
             var index = 0;
 
@@ -35,7 +40,7 @@ define(function(require, exports, module) {
         }
 
 
-        var fs = {
+        var api = {
             listFiles: function(callback) {
                 var files = [];
                 async.parForEach(fileSystems, function(fs, next) {
@@ -45,7 +50,7 @@ define(function(require, exports, module) {
                             return next();
                         }
                         files_.forEach(function(filename) {
-                            if(files.indexOf(filename) === -1) {
+                            if (files.indexOf(filename) === -1) {
                                 files.push(filename);
                             }
                         });
@@ -58,8 +63,8 @@ define(function(require, exports, module) {
             readFile: function(path, callback) {
                 attempt("readFile", [path], function(err) {
                     if (!err) {
-                        fs.getCacheTag(path, function(err, tag) {
-                            if(err) {
+                        api.getCacheTag(path, function(err, tag) {
+                            if (err) {
                                 return console.error("Could not get tag for", path, "this shouldn't happen.");
                             }
                             watcher.setCacheTag(path, tag);
@@ -70,9 +75,9 @@ define(function(require, exports, module) {
             },
             writeFile: function(path, content, callback) {
                 attempt("writeFile", [path, content], function(err) {
-                    if(!err && !options.watchSelf) {
-                        fs.getCacheTag(path, function(err, tag) {
-                            if(err) {
+                    if (!err && !watchSelf) {
+                        api.getCacheTag(path, function(err, tag) {
+                            if (err) {
                                 return console.error("Could not get tag for", path, "this shouldn't happen.");
                             }
                             watcher.setCacheTag(path, tag);
@@ -94,9 +99,11 @@ define(function(require, exports, module) {
                 attempt("getCacheTag", [path], callback);
             }
         };
-        
-        var watcher = poll_watcher(fs, 2000);
 
-        callback(null, fs);
-    };
+        var watcher = poll_watcher(api, 2000);
+
+        register(null, {
+            fs: api
+        });
+    }
 });

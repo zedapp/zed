@@ -1,11 +1,17 @@
 /*global define, Dropbox, chrome */
 define(function(require, exports, module) {
-    var dropbox = require("lib/dropbox");
-    var poll_watcher = require("./poll_watcher");
-    var async = require("../lib/async");
+    plugin.consumes = ["history"];
+    plugin.provides = ["fs"];
+    return plugin;
 
-    return function(rootPath, callback) {
-        // Normalize
+    function plugin(options, imports, register) {
+        var dropbox = require("lib/dropbox");
+        var poll_watcher = require("./poll_watcher");
+        var async = require("../lib/async");
+        var rootPath = options.rootPath;
+        
+        var history = imports.history;
+
         rootPath = rootPath || "/";
         if (rootPath[0] !== "/") {
             rootPath = "/" + rootPath;
@@ -13,7 +19,7 @@ define(function(require, exports, module) {
 
         dropbox.authenticate(function(err, dropbox) {
             if (err) {
-                return callback(err);
+                return register(err);
             }
 
             // Copy and paste from project.js, but cannot important that due to
@@ -162,7 +168,11 @@ define(function(require, exports, module) {
 
             var watcher = poll_watcher(fs, 10000);
 
-            callback(null, fs);
+            history.pushProject(rootPath.slice(1), "dropbox:" + rootPath);
+
+            register(null, {
+                fs: fs
+            });
         });
-    };
+    }
 });

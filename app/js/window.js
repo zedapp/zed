@@ -1,41 +1,67 @@
 /*global chrome, define*/
 define(function(require, exports, module) {
-    var command = require("./command");
-    var win = chrome.app.window.current();
+    plugin.consumes = ["command"];
+    plugin.provides = ["window"];
+    return plugin;
 
-    command.define("Window:Close", {
-        exec: function() {
-            win.close();
-        },
-        readOnly: true
-    });
+    function plugin(options, imports, register) {
+        var command = imports.command;
 
-    command.define("Window:Fullscreen", {
-        exec: function() {
-            if (win.isFullscreen()) {
-                win.restore();
-            } else {
-                win.fullscreen();
+        var win = chrome.app.window.current();
+
+        var api = {
+            close: function() {
+                win.close();
+            },
+            fullScreen: function() {
+                if (win.isFullscreen()) {
+                    win.restore();
+                } else {
+                    win.fullscreen();
+                }
+            },
+            maximize: function() {
+                if (win.isMaximized()) {
+                    win.restore();
+                } else {
+                    win.maximize();
+                }
+            },
+            minimize: function() {
+                win.minimize();
             }
-        },
-        readOnly: true
-    });
+        };
 
-    command.define("Window:Maximize", {
-        exec: function() {
-            if (win.isMaximized()) {
-                win.restore();
-            } else {
-                win.maximize();
-            }
-        },
-        readOnly: true
-    });
+        command.define("Window:Close", {
+            exec: function() {
+                api.close();
+            },
+            readOnly: true
+        });
 
-    command.define("Window:Minimize", {
-        exec: function() {
-            win.minimize();
-        },
-        readOnly: true
-    });
+        command.define("Window:Fullscreen", {
+            exec: function() {
+                api.fullScreen();
+            },
+            readOnly: true
+        });
+
+        command.define("Window:Maximize", {
+            exec: function() {
+                api.maximize();
+            },
+            readOnly: true
+        });
+
+        command.define("Window:Minimize", {
+            exec: function() {
+                api.minimize();
+            },
+            readOnly: true
+        });
+
+        register(null, {
+            window: api
+        });
+    }
 });

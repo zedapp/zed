@@ -3,14 +3,21 @@
  * http://developer.chrome.com/apps/fileSystem.html#method-chooseEntry
  * Only supported in Chrome 31+ (currently in Canary)
  */
-/*global define chrome _ */
+/*global define, chrome, _ */
 define(function(require, exports, module) {
-    var async = require("../lib/async");
-    var poll_watcher = require("./poll_watcher");
+    plugin.consumes = ["history"];
+    plugin.provides = ["fs"];
+    return plugin;
 
-    return function(root, callback) {
-        // Copy and paste from project.js, but cannot important that due to
-        // recursive imports.
+    function plugin(options, imports, register) {
+        var async = require("../lib/async");
+        var poll_watcher = require("./poll_watcher");
+
+        var history = imports.history;
+
+        var id = options.id;
+        var root = options.dir;
+
         function dirname(path) {
             if (path[path.length - 1] === '/') {
                 path = path.substring(0, path.length - 1);
@@ -45,7 +52,7 @@ define(function(require, exports, module) {
             }
         }
 
-        var fs = {
+        var api = {
             listFiles: function(callback) {
                 var files = [];
 
@@ -155,7 +162,13 @@ define(function(require, exports, module) {
             }
         };
 
-        var watcher = poll_watcher(fs, 3000);
-        callback(null, fs);
-    };
+        var watcher = poll_watcher(api, 3000);
+
+        var title = root.fullPath.slice(1);
+        history.pushProject(title, "local:" + id);
+
+        register(null, {
+            fs: api
+        });
+    }
 });

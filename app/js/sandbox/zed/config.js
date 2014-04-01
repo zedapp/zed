@@ -1,26 +1,24 @@
-/*global define, _*/
+/*global define, zed*/
 define(function(require, exports, module) {
-    var editor = require("../../editor");
-    var config = require("../../config");
 
     return {
         getPreference: function(preference, callback) {
-            callback(null, config.getPreference(
-                preference, editor.getActiveSession()));
+            callback(null, zed.getService("config").getPreference(
+                preference, zed.getService("editor").getActiveSession()));
         },
         togglePreference: function(preference, callback) {
-            callback(null, config.togglePreference(
-                preference, editor.getActiveSession()));
+            callback(null, zed.getService("config").togglePreference(
+                preference, zed.getService("editor").getActiveSession()));
         },
         incrementInteger: function(preference, amount, callback) {
-            callback(null, config.incrementInteger(
-                preference, amount, editor.getActiveSession()));
+            callback(null, zed.getService("config").incrementInteger(
+                preference, amount, zed.getService("editor").getActiveSession()));
         },
         get: function(name, callback) {
-            callback(null, config.getConfiguration()[name]);
+            callback(null, zed.getService("config").getConfiguration()[name]);
         },
         reload: function(callback) {
-            callback(null, config.loadConfiguration());
+            callback(null, zed.getService("config").loadConfiguration());
         }
     };
 });

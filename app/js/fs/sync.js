@@ -1,9 +1,12 @@
-/*global define, chrome, _ */
+/*global define, chrome, _, zed */
 define(function(require, exports, module) {
+    plugin.provides = ["fs"];
+    return plugin;
 
-    var poll_watcher = require("./poll_watcher");
+    function plugin(options, imports, register) {
+        var poll_watcher = require("./poll_watcher");
+        var namespace = options.namespace;
 
-    return function(namespace, callback) {
         namespace = namespace + "|";
 
         // As syncfs does not yet support creating directories, we'll use it as a flat namespace
@@ -35,7 +38,7 @@ define(function(require, exports, module) {
         }
 
         function wrapFilesystem(root) {
-            var operations = {
+            var api = {
                 listFiles: function(callback) {
                     var reader = root.createReader();
                     reader.readEntries(function(entries) {
@@ -129,9 +132,11 @@ define(function(require, exports, module) {
                 }
             };
 
-            var watcher = poll_watcher(operations, 3000);
+            var watcher = poll_watcher(api, 3000);
 
-            callback(null, operations);
+            register(null, {
+                fs: api
+            });
         }
 
         chrome.syncFileSystem.requestFileSystem(function(fs) {
@@ -143,16 +148,15 @@ define(function(require, exports, module) {
                     wrapFilesystem(fs.root);
                 }, function(err) {
                     console.error("Failed to request local filesystem", err);
-                    require(["../lib/ui"], function(ui) {
-                        ui.unblockUI();
-                        ui.prompt({
-                            message: "Your Chrome does not seem to support local file systems, nor sync file systems, we need this to operate."
-                        });
+                    var ui = zed.getService("ui");
+                    ui.unblockUI();
+                    ui.prompt({
+                        message: "Your Chrome does not seem to support local file systems, nor sync file systems, we need this to operate."
                     });
                 });
             } else {
                 wrapFilesystem(fs.root);
             }
         });
-    };
+    }
 });

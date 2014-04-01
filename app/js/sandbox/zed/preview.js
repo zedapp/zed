@@ -1,10 +1,8 @@
-/* global define */
+/* global define, zed */
 define(function(require, exports, module) {
-    var preview = require("../../preview");
-
     return {
         showPreview: function(html, callback) {
-            preview.showPreview(html);
+            zed.getService("preview").showPreview(html);
             callback();
         }
     };
