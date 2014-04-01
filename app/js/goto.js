@@ -22,6 +22,9 @@ define(function(require, exports, module) {
         eventbus.declare("loadedfilelist");
 
         var api = {
+            init: function() {
+                fetchFileList();
+            },
             fetchFileList: fetchFileList,
             getFileCache: function() {
                 return filteredFileCache;
@@ -91,8 +94,6 @@ define(function(require, exports, module) {
                 return !regex.exec(path);
             });
         }
-
-        fetchFileList();
 
         command.define("Navigate:Goto", {
             hook: function() {

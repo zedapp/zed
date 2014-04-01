@@ -331,7 +331,7 @@ define(function(require, exports, module) {
 
         command.define("Configuration:Show Full", {
             exec: function(edit, session) {
-                zed.getSession("session_manager").go("zed::config", edit, session, function(err, session) {
+                zed.getService("session_manager").go("zed::config", edit, session, function(err, session) {
                     session.setMode("ace/mode/json");
                     session.setValue(JSON.stringify(expandedConfiguration, null, 4));
                 });
@@ -365,7 +365,7 @@ define(function(require, exports, module) {
         command.define("Configuration:Store in Google Drive", {
             exec: function() {
                 chrome.storage.local.remove("configDir", function() {
-                    zed.getService("zed").prompt({
+                    zed.getService("ui").prompt({
                         message: "Configuration location set to Google Drive, will now restart Zed for changes to take effect."
                     }, function() {
                         chrome.runtime.reload();

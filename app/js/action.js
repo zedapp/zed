@@ -37,7 +37,7 @@ define(function(require, exports, module) {
                 if (err) {
                     return console.error("Error running action", err);
                 }
-                if (results.length > 0) {
+                if (results && results.length > 0) {
                     popup.setData(results.map(handlerResultToFixResult));
                 } else {
                     popup.setData([{caption: "No actions available."}]);

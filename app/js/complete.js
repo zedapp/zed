@@ -1,7 +1,7 @@
 /*global define, ace, $, _ */
 define(function(require, exports, module) {
     "use strict";
-
+    plugin.provides = ["complete"];
     plugin.consumes = ["command", "eventbus", "config", "editor", "handlers"];
     return plugin;
 
@@ -23,7 +23,7 @@ define(function(require, exports, module) {
         var continuousCompletionSession;
         var continuousCompletionCursor;
 
-        var completer = {
+        var api = {
             hook: function() {
                 eventbus.on("sessionchanged", function(session, delta) {
                     if (config.getPreference("continuousCompletion")) {
@@ -45,6 +45,9 @@ define(function(require, exports, module) {
                     }
                 });
             },
+        };
+
+        var completer = {
             getCompletions: function(edit, session, pos, prefix, callback) {
                 var modeCompleteCommands = session.mode.handlers.complete;
                 var globalCompleteCommands = config.getHandlers().complete;
@@ -191,7 +194,9 @@ define(function(require, exports, module) {
             }
         });
 
-        register();
+        register(null, {
+            complete: api
+        });
     }
 
 });
