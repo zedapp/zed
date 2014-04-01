@@ -22,7 +22,7 @@ module.exports = function(info) {
                     name: ctag.symbol,
                     value: ctag.symbol,
                     meta: pathParts[pathParts.length - 1],
-                    score: Math.max(0, 100 - ctag.symbol.length)
+                    score: 0
                 });
             }
         });

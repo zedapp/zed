@@ -1,7 +1,7 @@
 /*global define, _, chrome, zed */
 define(function(require, exports, module) {
     "use strict";
-    plugin.consumes = ["eventbus", "command", "ui", "sandbox", "configfs"];
+    plugin.consumes = ["eventbus", "command", "sandbox", "configfs"];
     plugin.provides = ["config"];
     return plugin;
 
@@ -11,7 +11,6 @@ define(function(require, exports, module) {
 
         var eventbus = imports.eventbus;
         var command = imports.command;
-        var ui = imports.ui;
         var sandbox = imports.sandbox;
         var configfs = imports.configfs;
 
@@ -352,7 +351,7 @@ define(function(require, exports, module) {
                     chrome.storage.local.set({
                         configDir: id
                     }, function() {
-                        ui.prompt({
+                        zed.getService("ui").prompt({
                             message: "Configuration location set, will now restart Zed for changes to take effect."
                         }, function() {
                             chrome.runtime.reload();
@@ -366,7 +365,7 @@ define(function(require, exports, module) {
         command.define("Configuration:Store in Google Drive", {
             exec: function() {
                 chrome.storage.local.remove("configDir", function() {
-                    ui.prompt({
+                    zed.getService("zed").prompt({
                         message: "Configuration location set to Google Drive, will now restart Zed for changes to take effect."
                     }, function() {
                         chrome.runtime.reload();

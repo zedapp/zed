@@ -1,6 +1,5 @@
 /*global define, chrome */
 define(function(require, exports, module) {
-    var unionfs = require("./union");
     var architect = require("../../dep/architect");
     plugin.provides = ["fs"];
     return plugin;
@@ -19,11 +18,12 @@ define(function(require, exports, module) {
                             packagePath: "fs/local",
                             dir: dir
                         }, function(err, configLocal) {
-                            unionfs([configLocal, configStatic], {
-                                watchSelf: options.watchSelf
-                            }, function(err, io) {
+                            getFs({
+                                packagePath: "fs/union",
+                                fileSystems: [configLocal, configStatic]
+                            }, function(err, fs) {
                                 register(null, {
-                                    fs: io
+                                    fs: fs
                                 });
                             });
                         });
@@ -50,11 +50,13 @@ define(function(require, exports, module) {
                     packagePath: "./fs/sync",
                     namespace: "config"
                 }, function(err, configSync) {
-                    unionfs([configSync, configStatic], {
+                    getFs({
+                        packagePath: "fs/union",
+                        fileSystems: [configSync, configStatic],
                         watchSelf: options.watchSelf
-                    }, function(err, io) {
+                    }, function(err, fs) {
                         register(err, {
-                            fs: io
+                            fs: fs
                         });
                     });
                 });

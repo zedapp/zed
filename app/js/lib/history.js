@@ -1,6 +1,5 @@
 /*global chrome, define, _, zed*/
 define(function(require, exports, module) {
-
     return {
         pushProject: function(name, url) {
             chrome.storage.local.get("recentProjects", function(results) {
