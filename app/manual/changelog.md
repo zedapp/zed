@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.10.1
+------
+* Important: all sandbox APIs (and packages) have now been refactored to use JavaScript-native promises
+* Sandbox commands can now request inputs like "text", "cursor" which will inject values directly into the first argument argument to the command. (by robru)
+* The JSON and JavaScript modes have been extracted into Zed packages and will be kept up-to-date automatically outside the Zed release cycle
+* Zed theme CSS will now automatically be updated as you edit it (by TheKiteEatingTree)
+* Automatically indent on paste (by TheKiteEatingTree)
+* Case insensitive find (by TheKiteEatingTree)
+
 0.10
 ----
 * New skinnable window chrome! Slightly more compact and generally more awesome. The edit bar is gone and has been incorporated with the title bar now.

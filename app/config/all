@@ -127,6 +127,7 @@
 /default/zpm/installed_packages/execute.js
 /default/zpm/zpm.js
 /default/zpm/zpm.json
+/packages/.DS_Store
 /user.css
 /user.json
 /zedconfig.json
