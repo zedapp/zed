@@ -163,9 +163,15 @@ define(function(require, exports, module) {
         var ext = path.ext(path_);
         if (extensionMapping[ext]) {
             return exports.get(extensionMapping[ext]);
-        } else {
-            return fallbackMode;
         }
+        var shebang_line = session.getLine(0);
+        for (var shebang in shebangMapping) {
+            if (shebang_line.indexOf(shebang) > 0) {
+                return exports.get(shebangMapping[shebang]);
+            }
+        }
+
+        return fallbackMode;
     };
 
     exports.setSessionMode = function(session) {
