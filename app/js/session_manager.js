@@ -37,9 +37,6 @@ define(function(require, exports, module) {
         // Used to detect changes in editor state
         var oldstateJSON = null;
 
-        // Currently only used for zed::start
-
-
         var api = {
             specialDocs: {}, // {content: ..., mode: ..., readonly: true}
             hook: function() {
