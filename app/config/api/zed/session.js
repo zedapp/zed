@@ -7,7 +7,7 @@ module.exports = {
         return sandboxRequest("zed/session", "setAnnotations", [path, annos]);
     },
     getText: function(path) {
-        return sandboxRequest("zed/session", "getText", [path, ]);
+        return sandboxRequest("zed/session", "getText", [path]);
     },
     setText: function(path, text) {
         return sandboxRequest("zed/session", "setText", [path, text]);
