@@ -56,22 +56,18 @@ define(function(require, exports, module) {
                 if (filenameMapping[filename]) {
                     return api.get(filenameMapping[filename]);
                 }
-                var mode;
-                _.each(extensionMapping, function(lang, ext) {
-                    var idx = path_.indexOf("." + ext);
-                    if (idx > -1 && idx === path_.length - ext.length - 1) {
-                        mode = api.get(lang);
+                var fileExt = path_.split(".").pop();
+                for (var ext in extensionMapping) {
+                    if (fileExt == ext) {
+                        return api.get(extensionMapping[ext]);
                     }
-                });
-                console.log("GOt mode", mode, filename);
-                if (mode) {
-                    return mode;
                 }
                 var shebang_line = session.getLine(0);
-                for (var shebang in shebangMapping) {
-                    console.log(shebang, shebang_line);
-                    if (shebang_line.indexOf(shebang) > 0) {
-                        return api.get(shebangMapping[shebang]);
+                if (shebang_line.slice(0, 2) == "#!") {
+                    for (var shebang in shebangMapping) {
+                        if (shebang_line.indexOf(shebang) > 0) {
+                            return api.get(shebangMapping[shebang]);
+                        }
                     }
                 }
 
