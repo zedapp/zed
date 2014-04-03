@@ -37,6 +37,13 @@ define(function(require, exports, module) {
         getSelectionText: useInputable("selectionText"),
         getText: useInputable("text"),
         isInsertingSnippet: useInputable("isInsertingSnippet"),
+        callCommand: function(path, command, callback) {
+            zed.getService("command").exec(
+                command,
+                zed.getService("editor").getActiveEditor(),
+                getSession(path),
+                callback);
+        },
         goto: function(path, callback) {
             var edit = zed.getService("editor").getActiveEditor();
             zed.getService("session_manager").go(path, edit, edit.getSession(), function(err) {
