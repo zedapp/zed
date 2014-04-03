@@ -67,7 +67,7 @@ define(function(require, exports, module) {
             }
             // Only check http(s) links
             if (url.indexOf("http") !== 0) {
-                $("#hint").html("<span class='error'>ERROR</span>: URL does seem to run a (recent) Zed server.");
+                $("#hint").html("<span class='error'>ERROR</span>: URL does not seem to run a (recent) Zed server.");
                 return;
             }
             $.ajax({
@@ -81,7 +81,7 @@ define(function(require, exports, module) {
                     remoteEditInput.val("");
                 },
                 error: function() {
-                    $("#hint").html("<span class='error'>ERROR</span>: URL does seem to run a (recent) Zed server.");
+                    $("#hint").html("<span class='error'>ERROR</span>: URL does not seem to run a (recent) Zed server.");
                     setTimeout(function() {
                         $("#hint").html(defaultHint);
                     }, 5000);
