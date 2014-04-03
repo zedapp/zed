@@ -80,10 +80,24 @@ define(function(require, exports, module) {
             }
         } else if (url.indexOf("node:") === 0) {
             var path = url.substring("node:".length);
-            return callback(null, {
-                packagePath: "./fs/node",
-                dir: path
-            });
+            if (path) {
+                return callback(null, {
+                    packagePath: "./fs/node",
+                    dir: path
+                });
+            } else {
+                var picker = $('<input type="file" nwdirectory/>');
+                picker.change(function() {
+                    path = this.value;
+                    options.set("title", path);
+                    options.set("url", "local:" + path);
+                    return callback(null, {
+                        packagePath: "./fs/node",
+                        dir: path
+                    });
+                });
+                picker.click();
+            }
         } else {
             return callback(null, {
                 packagePath: "./fs/web",

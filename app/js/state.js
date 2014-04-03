@@ -35,9 +35,6 @@ define(function(require, exports, module) {
                     }
                     win.addResizeListener(function() {
                         api.set("window", win.getBounds());
-                        zed.getService("editor").getEditors().forEach(function(edit) {
-                            edit.resize();
-                        });
                     });
                 });
             },

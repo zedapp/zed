@@ -93,9 +93,6 @@ define(function(require, exports, module) {
                     });
                 });
             },
-            /**
-             * Triggered
-             */
             addProjectChangeListener: function(listener) {
                 chrome.storage.onChanged.addListener(listener);
             }

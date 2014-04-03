@@ -16,12 +16,17 @@ define(function(require, exports, module) {
             }
             getFs({
                 packagePath: "fs/node",
-                dir: configHome
+                dir: configHome,
+                dontRegister: true
             }, function(err, configLocal) {
+                if(err) {
+                    return console.error("Error instantiating nodefs", err);
+                }
+                console.log("File systems for config", configLocal, configStatic);
                 getFs({
                     packagePath: "fs/union",
                     fileSystems: [configLocal, configStatic],
-                    watchSelf: watchSelf
+                    watchSelf: watchSelf,
                 }, function(err, fs) {
                     register(null, {
                         fs: fs

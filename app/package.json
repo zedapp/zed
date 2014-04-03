@@ -1,10 +1,10 @@
 {
     "name": "zed",
-    "main": "app://./editor.nw.html?url=node:/Users/zef/git/ace",
+    "main": "app://./open.nw.html",
     "icon": "Icon.png",
     "window": {
         "title": "Zed",
-        "toolbar": true,
+        "toolbar": false,
         "width": 1000,
         "height": 700,
         "show": true,

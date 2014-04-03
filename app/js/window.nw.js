@@ -1,10 +1,13 @@
 /*global chrome, define, nodeRequire*/
 define(function(require, exports, module) {
+    plugin.consumes = ["command"];
     plugin.provides = ["window"];
     return plugin;
 
     function plugin(options, imports, register) {
         var gui = nodeRequire("nw.gui");
+
+        var command = imports.command;
 
         var win = gui.Window.get();
 
@@ -13,19 +16,32 @@ define(function(require, exports, module) {
                 win.close();
             },
             create: function(url, frameStyle, width, height, callback) {
-                // chrome.app.window.create(url, {
-                //     frame: frameStyle,
-                //     width: width,
-                //     height: height,
-                // }, function(win) {
-                //     callback && callback(null, {
-                //         addCloseListener: function(listener) {
-                //             win.onClosed.addListener(listener);
-                //         },
-                //         window: win.contentWindow,
-                //         focus: function() { }
-                //     });
-                // });
+                var frame = true;
+                if (frameStyle == "none") {
+                    frame = false;
+                }
+                var w = gui.Window.open(url, {
+                    position: 'center',
+                    width: width,
+                    height: height,
+                    frame: frame
+                });
+                w.once("loaded", function() {
+                    w.window.opener = window;
+                    w.focus();
+                    callback && callback(null, {
+                        addCloseListener: function(listener) {
+                            w.on("close", function() {
+                                listener();
+                                w.close(true);
+                            });
+                        },
+                        window: w.window,
+                        focus: function() {
+                            w.focus();
+                        }
+                    });
+                });
             },
             fullScreen: function() {
                 if (win.isFullscreen) {
@@ -58,9 +74,16 @@ define(function(require, exports, module) {
                 });
             },
             focus: function() {
-
+                win.focus();
             }
         };
+
+        command.define("Development:Show DevTools", {
+            exec: function() {
+                win.showDevTools();
+            },
+            readOnly: true
+        });
 
         register(null, {
             window: api
