@@ -112,26 +112,28 @@ Let's start with a simple new "zed" mode:
 
     {
         "modes": {
-            "name": "Zed",
-            "highlighter": "ace/mode/markdown",
-            "extensions": ["zed"],
-
-            "commands": {
-                "Tools:Check": {
-                    "scriptUrl": "/user/mode/zed/check.js"
+            "zed" : {
+                "name": "Zed",
+                "highlighter": "ace/mode/markdown",
+                "extensions": ["zed"],
+                
+                "commands": {
+                    "Tools:Check": {
+                        "scriptUrl": "/user/mode/zed/check.js"
+                    }
+                },
+                
+                "handlers": {
+                    "check": ["Tools:Check"]
+                },
+                
+                "keys": {
+                    "Tools:Check": "Ctrl-C"
+                },
+                
+                "preferences": {
+                    "fontSize": 20
                 }
-            },
-
-            "handlers": {
-                "check": ["Tools:Check"]
-            },
-
-            "keys": {
-                "Tools:Check": "Ctrl-C"
-            },
-
-            "preferences": {
-                "fontSize": 20
             }
         }
     }
