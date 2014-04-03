@@ -3,8 +3,23 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Zed Project Picker</title>
-        <script src="dep/require.js"></script>
+        <script>
+            window.nodeRequire = require;
+            require = null;
+        </script>
         <script src="dep/underscore-min.js"></script>
+        <script src="dep/require.js"></script>
+        <script>
+            require.nodeRequire = window.nodeRequire;
+            define("nw.gui", [], function() {
+                var oldRequire = require;
+                require = nodeRequire;
+                var lib = nodeRequire("nw.gui");
+                require = oldRequire;
+                return lib;
+            });
+            require(["nw.gui"]);
+        </script>
         <script src="dep/jquery.js"></script>
         <script src="dep/jquery-ui.js"></script>
         <script src="ace/ace.js"></script>

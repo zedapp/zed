@@ -8,21 +8,21 @@ require.config({
     },
 });
 
+window.isNodeWebkit = typeof window.chrome === "undefined";
+
 /* global ace, $, _ */
 require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/intro.md"], function(architect, options, fsPicker, introText) {
     "use strict";
+
     var modules = [
         "./eventbus",
         "./ui",
         "./command",
-        "./window",
-        "./history",
         "./editor",
         "./title_bar",
         "./ctags",
         "./config",
         "./goto",
-        "./sandbox",
         "./tree",
         "./state",
         "./project",
@@ -38,8 +38,13 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./action",
         "./theme",
         "./log",
-        "./configfs"];
+        "./window_commands"];
 
+    if (window.isNodeWebkit) {
+        modules.push("./copy_paste.nw", "./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw");
+    } else {
+        modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome");
+    }
 
     fsPicker(function(err, fsConfig) {
         if (err) {
@@ -47,16 +52,20 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         }
         modules.push(fsConfig);
         console.log("Fs config", fsConfig);
-        architect.resolveConfig(modules, function(err, config) {
+        var app = architect.resolveConfig(modules, function(err, config) {
             if (err) {
                 return console.error("Architect resolve error", err);
             }
-            architect.createApp(config, function(err, app) {
+            console.log("Architect resolved");
+            var app = architect.createApp(config, function(err, app) {
                 if (err) {
                     window.err = err;
                     return console.error("Architect createApp error", err, err.stack);
                 }
+                console.log("App started");
                 window.zed = app;
+
+
 
                 // Run hook on each service (if exposed)
                 _.each(app.services, function(service) {
@@ -91,6 +100,10 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
 
                     session_manager.specialDocs[path] = session;
                 }
+            });
+
+            app.on("service", function(name) {
+                console.log("Loaded " + name);
             });
         });
     });

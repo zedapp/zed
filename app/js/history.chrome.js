@@ -4,6 +4,8 @@ define(function(require, exports, module) {
     return plugin;
 
     function plugin(options, imports, register) {
+        var async = require("./lib/async");
+
         var api = {
             pushProject: function(name, url) {
                 console.log("Pushing project", name, url);
@@ -73,8 +75,29 @@ define(function(require, exports, module) {
                     if (projects.length > 0 && !projects[0].url) {
                         projects = [];
                     }
-                    callback(null, projects);
+                    var validProjects = [];
+                    async.forEach(projects, function(project, next) {
+                        if (project.url.indexOf("local:") === 0) {
+                            chrome.fileSystem.isRestorable(project.url.substring("local:".length), function(yes) {
+                                if (yes) {
+                                    validProjects.push(project);
+                                }
+                                next();
+                            });
+                        } else {
+                            validProjects.push(project);
+                            next();
+                        }
+                    }, function() {
+                        callback(null, projects);
+                    });
                 });
+            },
+            /**
+             * Triggered
+             */
+            addProjectChangeListener: function(listener) {
+                chrome.storage.onChanged.addListener(listener);
             }
         };
         register(null, {

@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Zed</title>
+        <link href="css/ui.dynatree.css" rel="stylesheet" type="text/css">
+        <link href="css/editor.css" rel="stylesheet" type="text/css">
+        <style id="theme-css" type="text/css"></style>
+        <style id="user-css" type="text/css"></style>
+    </head>
+    <body class="dark mac">
+        <script>
+            window.nodeRequire = require;
+            require = null;
+        </script>
+        <script src="dep/underscore-min.js"></script>
+        <script src="dep/require.js"></script>
+        <script>
+            require.nodeRequire = window.nodeRequire;
+            define("nw.gui", [], function() {
+                var oldRequire = require;
+                require = nodeRequire;
+                var lib = nodeRequire("nw.gui");
+                require = oldRequire;
+                return lib;
+            });
+            require(["nw.gui"]);
+            // require(["nw.gui"], function() {
+            //     var gui = require('nw.gui');
+
+            //     var rootMenu = new gui.Menu({ type: 'menubar' });
+            //     var fileMenu = new gui.Menu();
+            //     var fileMenuItem = new gui.MenuItem({label: 'File', submenu: fileMenu});
+            //     fileMenu.append(new gui.MenuItem({label: "Open yo"}));
+            //     rootMenu.append(fileMenuItem);
+            //     gui.Window.get().menu = rootMenu;
+            // });
+        </script>
+        <script src="dep/jquery.js"></script>
+        <script src="dep/jquery.caret.js"></script>
+        <script src="dep/jquery-ui.js"></script>
+        <script src='dep/jquery.dynatree.min.js'></script>
+        <script src="ace/ace.js"></script>
+        <script src="ace/ext-language_tools.js"></script>
+        <script src="ace/ext-whitespace.js"></script>
+
+        <script src="js/boot.js"></script>
+
+        <script>
+        function pick(callback) {
+            var picker = $('<input type="file" nwdirectory/>');
+            picker.change(function() {
+                callback(this.value);
+            });
+            picker.click();
+        }
+        // pick(function(dir) {
+        //     console.log("Picked: ", dir);
+        // });
+        </script>
+    </body>
+</html>

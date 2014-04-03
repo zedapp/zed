@@ -6,7 +6,9 @@ define(function(require, exports, module) {
 
         // TODO: Generalize this
         if (url.indexOf("config:") === 0) {
-            return callback(null, "./fs/config");
+            return callback(null, "./fs/config.chrome");
+        } else if (url.indexOf("nwconfig:") === 0) {
+            return callback(null, "./fs/config.nw");
         } else if (url.indexOf("manual:") === 0) {
             return callback(null, {
                 packagePath: "./fs/static",
@@ -76,6 +78,12 @@ define(function(require, exports, module) {
                     });
                 });
             }
+        } else if (url.indexOf("node:") === 0) {
+            var path = url.substring("node:".length);
+            return callback(null, {
+                packagePath: "./fs/node",
+                dir: path
+            });
         } else {
             return callback(null, {
                 packagePath: "./fs/web",

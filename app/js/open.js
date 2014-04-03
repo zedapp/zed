@@ -1,6 +1,6 @@
 /*global define, $, chrome, _*/
 define(function(require, exports, module) {
-    plugin.consumes = ["history"];
+    plugin.consumes = ["history", "window"];
     return plugin;
 
     /**
@@ -10,10 +10,10 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var icons = require("lib/icons");
-        var async = require("lib/async");
         var keyCode = require("lib/key_code");
 
         var history = imports.history;
+        var win = imports.window;
 
         var remoteEditInput = $("#gotoinput");
         var filterInput = $("#projectfilter");
@@ -26,31 +26,26 @@ define(function(require, exports, module) {
         var projectCache = null;
         var validProjectCache = null;
 
-        var backgroundPage = null;
+        // var backgroundPage = null;
 
-        chrome.runtime.getBackgroundPage(function(bg) {
-            backgroundPage = bg;
-            openProjects = backgroundPage.projects;
-        });
+        // chrome.runtime.getBackgroundPage(function(bg) {
+        //     backgroundPage = bg;
+        //     openProjects = backgroundPage.projects;
+        // });
 
         function open(url, title) {
             var openProject = openProjects[url];
-            if (openProject && !openProject.contentWindow.window) {
+            if (openProject && !openProject.window) {
                 // Window was close and we weren't notified
                 delete openProjects[url];
             }
             if (openProject) {
                 openProject.focus();
             } else {
-                chrome.app.window.create('editor.html?url=' + url + "&title=" + title + '&chromeapp=true', {
-                    // frame: 'chrome',
-                    frame: 'none',
-                    width: 720,
-                    height: 400,
-                }, function(win) {
+                win.create('editor.html?url=' + url + "&title=" + title + '&chromeapp=true', 'none', 720, 400, function(err, win) {
                     if (url !== "dropbox:" && url !== "local:") {
                         openProjects[url] = win;
-                        win.onClosed.addListener(function() {
+                        win.addCloseListener(function() {
                             delete openProjects[url];
                         });
                     }
@@ -67,7 +62,7 @@ define(function(require, exports, module) {
             }
             // Only check http(s) links
             if (url.indexOf("http") !== 0) {
-                $("#hint").html("<span class='error'>ERROR</span>: URL does seem to run a (recent) Zed server.");
+                $("#hint").html("<span class='error'>ERROR</span>: URL does not seem to run a (recent) Zed server.");
                 return;
             }
             $.ajax({
@@ -81,7 +76,7 @@ define(function(require, exports, module) {
                     remoteEditInput.val("");
                 },
                 error: function() {
-                    $("#hint").html("<span class='error'>ERROR</span>: URL does seem to run a (recent) Zed server.");
+                    $("#hint").html("<span class='error'>ERROR</span>: URL does not seem to run a (recent) Zed server.");
                     setTimeout(function() {
                         $("#hint").html(defaultHint);
                     }, 5000);
@@ -91,8 +86,10 @@ define(function(require, exports, module) {
         }
 
         function updateWindowSize() {
-            var win = chrome.app.window.current();
-            win.resizeTo(400, $("body").height() + 23);
+            win.setBounds({
+                width: 400,
+                height: $("body").height() + 23
+            });
         }
 
         function getAllVisibleProjects() {
@@ -150,29 +147,14 @@ define(function(require, exports, module) {
                     return;
                 }
 
-                var validProjects = [];
-                async.forEach(projects, function(project, next) {
-                    if (project.url.indexOf("local:") === 0) {
-                        chrome.fileSystem.isRestorable(project.url.substring("local:".length), function(yes) {
-                            if (yes) {
-                                validProjects.push(project);
-                            }
-                            next();
-                        });
-                    } else {
-                        validProjects.push(project);
-                        next();
-                    }
-                }, function() {
-                    validProjectCache = validProjects;
-                    updateProjectList();
-                    _.isFunction(callback) && callback();
-                });
+                validProjectCache = projects;
+                updateProjectList();
+                _.isFunction(callback) && callback();
             });
         }
 
         updateRecentProjects();
-        chrome.storage.onChanged.addListener(updateRecentProjects);
+        history.addProjectChangeListener(updateRecentProjects);
 
         remoteEditInput.keyup(function(event) {
             if (event.keyCode === 13) {
@@ -251,11 +233,7 @@ define(function(require, exports, module) {
             var url = $(event.target).data("url");
             var title = $(event.target).data("title");
             if (url === "dropbox:") {
-                chrome.app.window.create('dropbox/open.html', {
-                    frame: 'chrome',
-                    width: 600,
-                    height: 400,
-                });
+                win.create('dropbox/open.html', 'chrome', 600, 400);
             } else if (url) {
                 open(url, title);
             }
@@ -271,12 +249,12 @@ define(function(require, exports, module) {
         filterInput.focus();
         updateWindowSize();
 
+        window.focusMe = function() {
+            // chrome.app.window.current().drawAttention();
+            win.focus();
+        };
+
         register();
     }
 
 });
-
-window.focusMe = function() {
-    // chrome.app.window.current().drawAttention();
-    chrome.app.window.current().focus();
-};

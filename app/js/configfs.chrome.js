@@ -8,7 +8,7 @@ define(function(require, exports, module) {
         // Let's instaiate a new architect app with a configfs and the re-expose
         // that service as configfs
         architect.resolveConfig([{
-            packagePath: "./fs/config",
+            packagePath: "./fs/config.chrome",
             watchSelf: true
         }], function(err, config) {
             if (err) {

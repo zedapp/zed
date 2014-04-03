@@ -18,7 +18,9 @@ define(function(require, exports, module) {
                         }
                         getFs({
                             packagePath: "fs/local",
-                            dir: dir
+                            dir: dir,
+                            id: results.configDir,
+                            dontRegister: true
                         }, function(err, configLocal) {
                             getFs({
                                 packagePath: "fs/union",
@@ -69,7 +71,7 @@ define(function(require, exports, module) {
 
     // Creates local architect application with just the file system module
     function getFs(config, callback) {
-        architect.resolveConfig([config, "./history"], function(err, config) {
+        architect.resolveConfig([config, "./history.chrome"], function(err, config) {
             if (err) {
                 return callback(err);
             }
