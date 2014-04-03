@@ -7,19 +7,23 @@ require.config({
     },
 });
 
+window.isNodeWebkit = typeof window.chrome === "undefined";
+
 /* global ace, $, _ */
 require(["../dep/architect"], function(architect) {
     "use strict";
     var modules = [
-        "./history",
         "./open",
         "./config",
         "./eventbus",
         "./command",
-        "./sandbox",
-        "./keys",
-        "./configfs"];
+        "./keys"];
 
+    if (window.isNodeWebkit) {
+        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw");
+    } else {
+        modules.push("./history.chrome", "./configfs.chrome", "./window.chrome", "./sandbox.chrome");
+    }
 
     architect.resolveConfig(modules, function(err, config) {
         if (err) {

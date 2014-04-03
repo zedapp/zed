@@ -38,12 +38,12 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./action",
         "./theme",
         "./log",
-        ];
+        "./window_commands"];
 
     if (window.isNodeWebkit) {
         modules.push("./copy_paste.nw", "./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw");
     } else {
-        modules.push("./configfs", "./window", "./history", "./sandbox");
+        modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome");
     }
 
     fsPicker(function(err, fsConfig) {
@@ -52,18 +52,20 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         }
         modules.push(fsConfig);
         console.log("Fs config", fsConfig);
-        architect.resolveConfig(modules, function(err, config) {
+        var app = architect.resolveConfig(modules, function(err, config) {
             if (err) {
                 return console.error("Architect resolve error", err);
             }
             console.log("Architect resolved");
-            architect.createApp(config, function(err, app) {
+            var app = architect.createApp(config, function(err, app) {
                 if (err) {
                     window.err = err;
                     return console.error("Architect createApp error", err, err.stack);
                 }
                 console.log("App started");
                 window.zed = app;
+
+
 
                 // Run hook on each service (if exposed)
                 _.each(app.services, function(service) {
@@ -98,6 +100,10 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
 
                     session_manager.specialDocs[path] = session;
                 }
+            });
+
+            app.on("service", function(name) {
+                console.log("Loaded " + name);
             });
         });
     });

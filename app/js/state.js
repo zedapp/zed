@@ -7,7 +7,7 @@
 /*global define, chrome, zed*/
 define(function(require, exports, module) {
     "use strict";
-    plugin.consumes = ["eventbus", "fs", "config"];
+    plugin.consumes = ["eventbus", "fs", "config", "window"];
     plugin.provides = ["state"];
     return plugin;
 
@@ -17,6 +17,7 @@ define(function(require, exports, module) {
         var eventbus = imports.eventbus;
         var fs = imports.fs;
         var config = imports.config;
+        var win = imports.window;
         var state = {};
 
         eventbus.declare("stateloaded");
@@ -28,17 +29,16 @@ define(function(require, exports, module) {
         var api = {
             hook: function() {
                 eventbus.once("stateloaded", function() {
-                    // var win = chrome.app.window.current();
-                    // var bounds = api.get('window');
-                    // if (bounds) {
-                    //     win.setBounds(bounds);
-                    // }
-                    // win.onBoundsChanged.addListener(function() {
-                    //     api.set("window", win.getBounds());
-                    //     zed.getService("editor").getEditors().forEach(function(edit) {
-                    //         edit.resize();
-                    //     });
-                    // });
+                    var bounds = api.get('window');
+                    if (bounds) {
+                        win.setBounds(bounds);
+                    }
+                    win.addResizeListener(function() {
+                        api.set("window", win.getBounds());
+                        zed.getService("editor").getEditors().forEach(function(edit) {
+                            edit.resize();
+                        });
+                    });
                 });
             },
             init: function() {

@@ -69,7 +69,7 @@ define(function(require, exports, module) {
 
     // Creates local architect application with just the file system module
     function getFs(config, callback) {
-        architect.resolveConfig([config, "./history"], function(err, config) {
+        architect.resolveConfig([config, "./history.chrome"], function(err, config) {
             if (err) {
                 return callback(err);
             }

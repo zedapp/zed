@@ -1,12 +1,9 @@
-/*global chrome, define*/
+/*global chrome, define, nodeRequire*/
 define(function(require, exports, module) {
-    plugin.consumes = ["command"];
     plugin.provides = ["window"];
     return plugin;
 
     function plugin(options, imports, register) {
-        var command = imports.command;
-
         var gui = nodeRequire("nw.gui");
 
         var win = gui.Window.get();
@@ -14,6 +11,20 @@ define(function(require, exports, module) {
         var api = {
             close: function() {
                 win.close();
+            },
+            create: function(url, frameStyle, width, height, callback) {
+                // chrome.app.window.create(url, {
+                //     frame: frameStyle,
+                //     width: width,
+                //     height: height,
+                // }, function(win) {
+                //     callback && callback(null, {
+                //         addCloseListener: function(listener) {
+                //             win.onClosed.addListener(listener);
+                //         },
+                //         window: win.contentWindow
+                //     });
+                // });
             },
             fullScreen: function() {
                 if (win.isFullscreen) {
@@ -27,36 +38,28 @@ define(function(require, exports, module) {
             },
             minimize: function() {
                 win.minimize();
+            },
+            getBounds: function() {
+                return {
+                    width: win.width,
+                    height: win.height,
+                    top: win.y,
+                    left: win.x
+                };
+            },
+            setBounds: function(bounds) {
+                win.width = bounds.width;
+                win.height = bounds.height;
+            },
+            addResizeListener: function(listener) {
+                win.on("resize", function() {
+                    listener();
+                });
+            },
+            focus: function() {
+
             }
         };
-
-        command.define("Window:Close", {
-            exec: function() {
-                api.close();
-            },
-            readOnly: true
-        });
-
-        command.define("Window:Fullscreen", {
-            exec: function() {
-                api.fullScreen();
-            },
-            readOnly: true
-        });
-
-        command.define("Window:Maximize", {
-            exec: function() {
-                api.maximize();
-            },
-            readOnly: true
-        });
-
-        command.define("Window:Minimize", {
-            exec: function() {
-                api.minimize();
-            },
-            readOnly: true
-        });
 
         register(null, {
             window: api

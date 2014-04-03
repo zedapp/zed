@@ -1,5 +1,6 @@
 /*global define, chrome, nodeRequire */
 define(function(require, exports, module) {
+    var fs = nodeRequire("fs");
     var architect = require("../../dep/architect");
     plugin.provides = ["fs"];
     return plugin;
@@ -7,7 +8,6 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var watchSelf = options.watchSelf;
 
-        var fs = nodeRequire("fs");
 
         staticFs(function(err, configStatic) {
             var configHome = process.env.HOME + "/.zed";
