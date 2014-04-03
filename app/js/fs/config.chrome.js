@@ -18,7 +18,9 @@ define(function(require, exports, module) {
                         }
                         getFs({
                             packagePath: "fs/local",
-                            dir: dir
+                            dir: dir,
+                            id: results.configDir,
+                            dontRegister: true
                         }, function(err, configLocal) {
                             getFs({
                                 packagePath: "fs/union",

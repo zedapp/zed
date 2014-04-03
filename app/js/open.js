@@ -26,12 +26,12 @@ define(function(require, exports, module) {
         var projectCache = null;
         var validProjectCache = null;
 
-        var backgroundPage = null;
+        // var backgroundPage = null;
 
-        chrome.runtime.getBackgroundPage(function(bg) {
-            backgroundPage = bg;
-            openProjects = backgroundPage.projects;
-        });
+        // chrome.runtime.getBackgroundPage(function(bg) {
+        //     backgroundPage = bg;
+        //     openProjects = backgroundPage.projects;
+        // });
 
         function open(url, title) {
             var openProject = openProjects[url];

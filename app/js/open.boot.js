@@ -1,4 +1,4 @@
-/*global _ $ ace */
+/* global ace, $, _ */
 require.config({
     baseUrl: "js",
     paths: {
@@ -9,7 +9,6 @@ require.config({
 
 window.isNodeWebkit = typeof window.chrome === "undefined";
 
-/* global ace, $, _ */
 require(["../dep/architect"], function(architect) {
     "use strict";
     var modules = [

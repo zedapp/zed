@@ -22,7 +22,8 @@ define(function(require, exports, module) {
                 //         addCloseListener: function(listener) {
                 //             win.onClosed.addListener(listener);
                 //         },
-                //         window: win.contentWindow
+                //         window: win.contentWindow,
+                //         focus: function() { }
                 //     });
                 // });
             },
