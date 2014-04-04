@@ -150,7 +150,11 @@ define(function(require, exports, module) {
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
                     session.setMode("ace/mode/markdown");
-                    session.setValue("Well hello there.");
+                    var command_list = "";
+                    api.allCommands().sort().forEach(function (command) {
+                        command_list += command.replace(/:/g, "  ▶  ") + "\n\n";
+                    });
+                    session.setValue(command_list);
                 });
             },
             readOnly: true
