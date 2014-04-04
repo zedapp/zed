@@ -153,7 +153,10 @@ define(function(require, exports, module) {
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
                     session.setMode("ace/mode/markdown");
-                    var command_list = "";
+                    var command_list = "Zed Online Command Reference.\n\n" +
+                        "What follows is a complete reference of all commands " +
+                        "known to Zed, and their\ncurrent keybindings, even if " +
+                        "you've modified the defaults.\n\n\n\n";
                     var commandKeys = keys.getCommandKeys();
                     api.allCommands().sort().forEach(function(command) {
                         var binding = identifyCurrentKey(commandKeys[command]) || "";
