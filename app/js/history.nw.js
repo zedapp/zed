@@ -57,7 +57,6 @@ define(function(require, exports, module) {
                 } catch (e) {
                     projects = [];
                 }
-                console.log("Projects", projects, url);
                 var project = _.findWhere(projects, {
                     url: url
                 });
@@ -77,6 +76,14 @@ define(function(require, exports, module) {
                 });
                 localStorage.recentProjects = JSON.stringify(projects);
                 callback();
+            },
+            lookupProjectByUrl: function(url, callback) {
+                api.getProjects(function(err, projects) {
+                    var project = _.findWhere(projects, {
+                        url: url
+                    });
+                    callback(null, project);
+                });
             },
             getProjects: function(callback) {
                 var projects;

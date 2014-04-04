@@ -8,7 +8,12 @@ define(function(require, exports, module) {
     }
 
     function getSession(path) {
-        return path ? zed.getService("session_manager").getSessions()[path] : zed.getService("editor").getActiveSession();
+        var session = path ? zed.getService("session_manager").getSessions()[path] : zed.getService("editor").getActiveSession();
+        if(!session) {
+            console.error("Could not get session:", path);
+            // TODO once we switch this to promises
+        }
+        return session;
     }
 
     // This function can take any defined inputable, a path, a callback,

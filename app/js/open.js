@@ -129,7 +129,9 @@ define(function(require, exports, module) {
                 }
                 recentEl.append(el);
             });
-            updateWindowSize();
+            setTimeout(function() {
+                updateWindowSize();
+            });
             return projects;
         }
 

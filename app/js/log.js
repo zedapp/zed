@@ -42,7 +42,11 @@ define(function(require, exports, module) {
                 if (_.isString(arg)) {
                     s += arg;
                 } else {
-                    s += JSON.stringify(arg, null, 2);
+                    try {
+                        s += JSON.stringify(arg, null, 2);
+                    } catch(e) {
+                        s += "<<circular JSON>>";
+                    }
                 }
             });
             return s + "\n";

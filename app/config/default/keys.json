@@ -296,18 +296,6 @@
         "Configuration:Preferences:Decrease Font Size": {
             "mac": "Command--",
             "win": "Ctrl--"
-        },
-        "Edit:Copy": {
-            "mac": "Command-C",
-            "win": "Ctrl-C"
-        },
-        "Edit:Cut": {
-            "mac": "Command-X",
-            "win": "Ctrl-X"
-        },
-        "Edit:Paste": {
-            "mac": "Command-V",
-            "win": "Ctrl-V"
         }
     }
 }

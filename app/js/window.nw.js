@@ -24,7 +24,9 @@ define(function(require, exports, module) {
                     position: 'center',
                     width: width,
                     height: height,
-                    frame: frame
+                    frame: frame,
+                    toolbar: false,
+                    icon: "Icon.png"
                 });
                 w.once("loaded", function() {
                     w.window.opener = window;

@@ -1,16 +1,15 @@
 {
     "name": "zed",
     "main": "app://./open.nw.html",
-    "icon": "Icon.png",
     "window": {
         "title": "Zed",
         "toolbar": false,
         "width": 400,
         "height": 200,
         "show": true,
-        "frame": true
+        "frame": true,
+        "icon": "Icon.png"
     },
-    "no-edit-menu": true,
     "chromium-args": "--disable-web-security -–allow-file-access-from-files",
     "webkit": {
         "page-cache": false

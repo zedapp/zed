@@ -41,7 +41,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./window_commands"];
 
     if (window.isNodeWebkit) {
-        modules.push("./copy_paste.nw", "./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw");
+        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw");
     } else {
         modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome");
     }
