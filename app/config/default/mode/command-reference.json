@@ -6,7 +6,6 @@
             "filenames": ["zed::commands"],
 
             "preferences": {
-                "showGutter": false,
                 "showPrintMargin": false,
                 "wordWrap": true,
                 "wordWrapColumn": 75
