@@ -21,7 +21,7 @@ Adding cursors (keyboard)
 #protip
 -------
 
-Zed does not have a find and replace feature. It doesn't it need it, the Zed way
+Zed does not have a find and replace feature. It doesn't need it, the Zed way
 of doing it is searching for an instance of the string (or selecting it), then
 adding cursors on other instances using `Ctrl-Alt-Right` and `Ctrl-Alt-Left`,
 and then simply typing the replacement.
