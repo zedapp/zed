@@ -161,7 +161,8 @@ define(function(require, exports, module) {
                         "in the gutter in order to open each category and inspect " +
                         "the documentation for each command. Or, if you search for " +
                         "a command, categories containing matches will automatically " +
-                        "expand.\n\n\n";
+                        "expand. You can activate these commands directly by moving " +
+                        "your cursor near them and hitting the enter key.\n\n\n";
                     var commandKeys = keys.getCommandKeys();
                     var prev_tree = [];
                     api.allCommands().sort().forEach(function(command_name) {

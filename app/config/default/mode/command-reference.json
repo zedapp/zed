@@ -5,6 +5,20 @@
             "highlighter": "ace/mode/markdown",
             "filenames": ["zed::commands"],
 
+            "keys": {
+                "Zed:Command Reference:Invoke Command": "Enter"
+            },
+
+            "commands": {
+                "Zed:Command Reference:Invoke Command": {
+                    "scriptUrl": "/default/mode/command-reference/invoke.js",
+                    "inputs": {
+                        "lines": true,
+                        "cursor": true
+                    }
+                }
+            },
+
             "preferences": {
                 "showPrintMargin": false,
                 "wordWrap": true,
