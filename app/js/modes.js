@@ -179,7 +179,6 @@ define(function(require, exports, module) {
                     var modeCommands = {};
                     modeCommands[mode.language] = cmd;
                     var commandSpec = {
-                        doc: "Begin using this mode for the current document.",
                         exec: function(edit, session, callback) {
                             var cmd = commandSpec.modeCommand[session.mode.language];
                             if (cmd) {
