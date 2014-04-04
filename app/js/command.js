@@ -25,6 +25,7 @@ define(function(require, exports, module) {
 
         function defineUserCommand(name, cmd) {
             api.defineConfig(name, {
+                doc: cmd.doc,
                 exec: function(edit, session, callback) {
                     zed.getService("sandbox").execCommand(name, cmd, session, function(err, result) {
                         if (err) {
@@ -164,6 +165,12 @@ define(function(require, exports, module) {
                     var commandKeys = keys.getCommandKeys();
                     var prev_tree = [];
                     api.allCommands().sort().forEach(function(command_name) {
+                        // Ignore internal commands.
+                        var command = api.lookup(command_name) || {};
+                        if (command.internal) {
+                            return false;
+                        }
+
                         // Add headers for different sections.
                         var command_tree = command_name.split(":");
                         var len = command_tree.length - 1;
@@ -176,7 +183,6 @@ define(function(require, exports, module) {
                         prev_tree = command_tree;
 
                         // Get the command documentation.
-                        var command = api.lookup(command_name) || {};
                         var doc = command.doc ? "\n   " +
                             command.doc.replace(/\n/g, "\n\n   ") + "\n" : "";
 
