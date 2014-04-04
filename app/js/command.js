@@ -153,7 +153,7 @@ define(function(require, exports, module) {
         api.define("Help:Commands", {
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
-                    var command_list = "# Zed Online Command Reference.\n" +
+                    var command_list = "> Zed Online Command Reference.\n" +
                         "\n   What follows is a complete reference of all commands " +
                         "known to Zed, and their current keybindings, even if " +
                         "you've modified the defaults.\n\n\n";
@@ -165,7 +165,7 @@ define(function(require, exports, module) {
                         var len = command_tree.length - 1;
                         for (var i = 0; i < len; ++i) {
                             if (prev_tree[i] !== command_tree[i]) {
-                                command_list += "\n"+ new Array(i + 3).join("#") +
+                                command_list += "\n"+ new Array(i + 2).join("#") +
                                     " " + command_tree[i] + "\n\n";
                             }
                         }
