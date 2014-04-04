@@ -157,9 +157,10 @@ define(function(require, exports, module) {
                     var commandKeys = keys.getCommandKeys();
                     api.allCommands().sort().forEach(function(command) {
                         var binding = identifyCurrentKey(commandKeys[command]) || "";
+                        binding = binding ? "`" + binding + "`" : "";
                         command_list +=
-                            command.replace(/:/g, "  ▶  ") +
-                            "\n\n    * Current Key Binding:    " + binding + "\n\n\n";
+                            "> " + command.replace(/:/g, "  ▶  ") +
+                            "\n\n        Current Key Binding:    " + binding + "\n\n\n";
                     });
                     session.setValue(command_list);
                 });
