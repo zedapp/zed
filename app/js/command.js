@@ -96,6 +96,7 @@ define(function(require, exports, module) {
         }
 
         api.define("Command:Enter Command", {
+            doc: "Prompts for a command to invoke, with a convenient searchable interface.",
             exec: function(edit, session) {
                 // Lazy loading these
                 var recentCommands = zed.getService("state").get("recent.commands") || {};
