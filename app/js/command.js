@@ -85,6 +85,16 @@ define(function(require, exports, module) {
         };
 
 
+        function identifyCurrentKey(key) {
+            if (key) {
+                if (_.isString(key)) {
+                    return key;
+                } else {
+                    return useragent.isMac ? key.mac : key.win;
+                }
+            }
+        }
+
         api.define("Command:Enter Command", {
             exec: function(edit, session) {
                 // Lazy loading these
@@ -94,14 +104,7 @@ define(function(require, exports, module) {
                 function filter(phrase) {
                     var results = fuzzyfind(api.allCommands(), phrase);
                     results = results.filter(function(result) {
-                        var k = commandKeys[result.path];
-                        if (k) {
-                            if (_.isString(k)) {
-                                result.meta = k;
-                            } else {
-                                result.meta = useragent.isMac ? k.mac : k.win;
-                            }
-                        }
+                        result.meta = identifyCurrentKey(commandKeys[result.path]);
                         // Let's rename the `cmd` variable using multiple cursors...
                         // There are three instances
                         var command = api.lookup(result.path);
@@ -141,6 +144,28 @@ define(function(require, exports, module) {
                         zed.getService("state").set("recent.commands", recentCommands);
                         api.exec(cmd, edit, edit.getSession());
                     }
+                });
+            },
+            readOnly: true
+        });
+
+        api.define("Help:Commands", {
+            exec: function(edit, session) {
+                zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
+                    session.setMode("ace/mode/markdown");
+                    var command_list = "Zed Online Command Reference.\n\n" +
+                        "What follows is a complete reference of all commands " +
+                        "known to Zed, and their\ncurrent keybindings, even if " +
+                        "you've modified the defaults.\n\n\n\n";
+                    var commandKeys = keys.getCommandKeys();
+                    api.allCommands().sort().forEach(function(command) {
+                        var binding = identifyCurrentKey(commandKeys[command]) || "";
+                        binding = binding ? "`" + binding + "`" : "Not set";
+                        command_list +=
+                            "> " + command.replace(/:/g, "  ▶  ") +
+                            "\n\n        Current Key Binding:    " + binding + "\n\n\n";
+                    });
+                    session.setValue(command_list);
                 });
             },
             readOnly: true

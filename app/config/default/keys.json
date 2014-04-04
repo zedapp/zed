@@ -85,6 +85,7 @@
             "win": "Alt-Shift-0",
             "mac": "Command-Option-Shift-0"
         },
+        "Help:Commands": "F1",
         "Edit:Overwrite Mode": "Insert",
         "Edit:Remove Word Left": {
             "win": "Ctrl-Backspace",
