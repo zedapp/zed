@@ -23,6 +23,17 @@ define(function(require, exports, module) {
         // Triggered when config commands were reset and should be reloaded from config
         eventbus.declare("configcommandsreset");
 
+        function wrap(str) {
+            return str.match(
+                new RegExp(
+                    '.{1,' + 75 + '}(\\s|$)|\\S+?(\\s|$)', 'g')).join('\n');
+        }
+
+        function p(str) {
+            return "   " + wrap(str, true) + "\n\n";
+        }
+
+
         function defineUserCommand(name, cmd) {
             api.defineConfig(name, {
                 exec: function(edit, session, callback) {
@@ -154,16 +165,19 @@ define(function(require, exports, module) {
                 zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
                     session.setMode("ace/mode/markdown");
                     var command_list = "Zed Online Command Reference.\n\n" +
-                        "What follows is a complete reference of all commands " +
-                        "known to Zed, and their\ncurrent keybindings, even if " +
-                        "you've modified the defaults.\n\n\n\n";
+                        p("What follows is a complete reference of all commands " +
+                        "known to Zed, and their current keybindings, even if " +
+                        "you've modified the defaults.") + "\n\n";
                     var commandKeys = keys.getCommandKeys();
                     api.allCommands().sort().forEach(function(command) {
                         var binding = identifyCurrentKey(commandKeys[command]) || "";
+                        var command_obj = api.lookup(command) || {};
+                        var doc = command_obj.doc || "";
                         binding = binding ? "`" + binding + "`" : "Not set";
                         command_list +=
                             "> " + command.replace(/:/g, "  ▶  ") +
-                            "\n\n        Current Key Binding:    " + binding + "\n\n\n";
+                            "\n\n        Current Key Binding:    " + binding +
+                            "\n\n" + (doc ? p(doc) : "") + "\n";
                     });
                     session.setValue(command_list);
                 });
@@ -172,6 +186,7 @@ define(function(require, exports, module) {
         });
 
         api.define("Configuration:Reset Editor State", {
+            doc: "Reset the editor to it's initial state.",
             exec: function() {
                 zed.getService("state").reset();
             },
