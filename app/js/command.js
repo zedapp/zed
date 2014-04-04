@@ -30,7 +30,7 @@ define(function(require, exports, module) {
         }
 
         function p(str) {
-            return "   " + wrap(str, true) + "\n\n";
+            return "   " + wrap(str) + "\n\n";
         }
 
 
