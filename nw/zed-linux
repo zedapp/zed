@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+DIR=$(dirname $0)
+if [ "" != "$1" ]; then
+   PROJECT=$(readlink -f $1)
+fi
+
+$DIR/zed-bin $PROJECT 2> /dev/null
+
+if [ $? == 127 ]; then
+    sed -i 's/\x75\x64\x65\x76\x2E\x73\x6F\x2E\x30/\x75\x64\x65\x76\x2E\x73\x6F\x2E\x31/g' $DIR/zed-bin
+    $DIR/zed-bin $PROJECT 2> /dev/null
+fi
