@@ -176,7 +176,7 @@ define(function(require, exports, module) {
                         binding = binding ? "`" + binding + "`" : "Not set";
                         command_list +=
                             "> " + command.replace(/:/g, "  ▶  ") +
-                            "\n\n        Current Key Binding:    " + binding +
+                            "\n\n   Current Key Binding:    " + binding +
                             "\n\n" + (doc ? p(doc) : "") + "\n";
                     });
                     session.setValue(command_list);
