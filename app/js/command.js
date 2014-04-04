@@ -146,6 +146,16 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
+        api.define("Help:Commands", {
+            exec: function(edit, session) {
+                zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
+                    session.setMode("ace/mode/markdown");
+                    session.setValue("Well hello there.");
+                });
+            },
+            readOnly: true
+        });
+
         api.define("Configuration:Reset Editor State", {
             exec: function() {
                 zed.getService("state").reset();
