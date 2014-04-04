@@ -28,6 +28,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Configuration:Set Configuration Directory", {
+            doc: "Choose which directory Zed should store it's configuration in.",
             exec: function() {
                 folderPicker(function(err, path) {
                     localStorage.configDir = path;

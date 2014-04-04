@@ -27,6 +27,8 @@ define(function(require, exports, module) {
         });
 
         command.define("Configuration:Store in Local Folder", {
+            doc: "Prompt for a local folder in which to store your Zed config. " +
+            "Zed must restart for this to take effect.",
             exec: function() {
                 chrome.fileSystem.chooseEntry({
                     type: "openDirectory"
@@ -50,6 +52,8 @@ define(function(require, exports, module) {
         });
 
         command.define("Configuration:Store in Google Drive", {
+            doc: "Begin syncing your Zed config with Google Drive. " +
+            "Zed must restart for this to take effect.",
             exec: function() {
                 chrome.storage.local.remove("configDir", function() {
                     zed.getService("ui").prompt({

@@ -148,11 +148,15 @@ define(function(require, exports, module) {
         };
 
         command.define("Sandbox:Reset", {
+            doc: "Reload all sandbox code. If you've made changes to a Zed " +
+            "extension in your sandbox, you must run this for those changes " +
+            "to take effect.",
             exec: resetSandbox,
             readOnly: true
         });
 
         command.define("Sandbox:Show", {
+            doc: "Inspect your sandbox contents.",
             exec: function() {
                 sandboxEl.css("left", "50px");
                 setTimeout(function() {

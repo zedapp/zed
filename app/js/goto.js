@@ -99,6 +99,7 @@ define(function(require, exports, module) {
         }
 
         command.define("Navigate:Goto", {
+            doc: "Prompts for the name of a file to edit, opening and creating it if necessary.",
             hook: function() {
                 eventbus.on("newfilecreated", function(path) {
                     if (fileCache.indexOf(path) === -1) {
@@ -273,11 +274,13 @@ define(function(require, exports, module) {
         });
 
         command.define("Navigate:Reload Filelist", {
+            doc: "Scan the project tree for any new files that were created outside of Zed.",
             exec: fetchFileList,
             readOnly: true
         });
 
         command.define("Navigate:Path Under Cursor", {
+            doc: "Open the filename indicated by the cursor.",
             exec: function(edit, session) {
                 var path = editor.getPathUnderCursor();
                 command.exec("Navigate:Goto", edit, session, path);
@@ -286,6 +289,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Navigate:Lookup Symbol", {
+            doc: "Prompts you for a symbol to search for in this project.",
             exec: function(edit, session) {
                 command.exec("Navigate:Goto", edit, session, "@");
             },
@@ -293,6 +297,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Navigate:Lookup Symbol In File", {
+            doc: "Prompts you for a symbol to search for just within the current file.",
             exec: function(edit, session) {
                 command.exec("Navigate:Goto", edit, session, ":@");
             },
@@ -300,6 +305,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Navigate:Lookup Symbol Under Cursor", {
+            doc: "Searches for the word at your cursor within this project.",
             exec: function(edit, session) {
                 var ident = editor.getIdentifierUnderCursor();
                 command.exec("Navigate:Goto", edit, session, "@" + ident);

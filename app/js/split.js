@@ -157,20 +157,27 @@ define(function(require, exports, module) {
         }
 
         command.define("Split:One", {
+            doc: "Show only a single editor pane.",
             exec: splitOne,
             readOnly: true
         });
+
         command.define("Split:Vertical Two", {
+            doc: "Show two editor panes.",
             exec: function() {
                 splitTwo();
             },
             readOnly: true
         });
+
         command.define("Split:Vertical Three", {
+            doc: "Show three editor panes.",
             exec: splitThree,
             readOnly: true
         });
+
         command.define("Split:Switch Focus", {
+            doc: "Move the active cursor to the next editor pane.",
             exec: switchSplit,
             readOnly: true
         });
