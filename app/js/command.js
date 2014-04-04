@@ -182,7 +182,7 @@ define(function(require, exports, module) {
                         // Add the full command details to the document.
                         command_list +=
                             "\n>    " + command_tree.slice(-1) + "\n" +
-                            "\n   Full Command Name:      " + command_name +
+                            "\n   `" + command_name + "`" +
                             "\n   Current Key Binding:    " + binding +
                             "\n" + doc + "\n";
                     });
