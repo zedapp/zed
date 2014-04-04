@@ -24,15 +24,13 @@ define(function(require, exports, module) {
         eventbus.declare("configcommandsreset");
 
         function wrap(str) {
-            return str.match(
-                new RegExp(
-                    '.{1,' + 75 + '}(\\s|$)|\\S+?(\\s|$)', 'g')).join('\n');
+            return str.match(new RegExp(
+                '.{1,' + 75 + '}(\\s|$)|\\S+?(\\s|$)', 'g')).join('\n');
         }
 
         function p(str) {
-            return "   " + wrap(str) + "\n\n";
+            return "\n   " + wrap(str) + "\n";
         }
-
 
         function defineUserCommand(name, cmd) {
             api.defineConfig(name, {
@@ -164,20 +162,38 @@ define(function(require, exports, module) {
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
                     session.setMode("ace/mode/markdown");
-                    var command_list = "Zed Online Command Reference.\n\n" +
+                    var command_list = "# Zed Online Command Reference.\n" +
                         p("What follows is a complete reference of all commands " +
                         "known to Zed, and their current keybindings, even if " +
                         "you've modified the defaults.") + "\n\n";
                     var commandKeys = keys.getCommandKeys();
+                    var prev_tree = [];
                     api.allCommands().sort().forEach(function(command_name) {
-                        var binding = identifyCurrentKey(commandKeys[command_name]) || "";
+                        // Add headers for different sections.
+                        var command_tree = command_name.split(":");
+                        var len = command_tree.length - 1;
+                        for (var i = 0; i < len; ++i) {
+                            if (prev_tree[i] !== command_tree[i]) {
+                                command_list += "\n"+ new Array(i + 3).join("#") +
+                                    " " + command_tree[i] + "\n\n";
+                            }
+                        }
+                        prev_tree = command_tree;
+
+                        // Get the command documentation.
                         var command = api.lookup(command_name) || {};
                         var doc = command.doc || "";
+
+                        // Get the current keybinding.
+                        var binding = identifyCurrentKey(commandKeys[command_name]) || "";
                         binding = binding ? "`" + binding + "`" : "Not set";
+
+                        // Add the full command details to the document.
                         command_list +=
-                            "> " + command_name.replace(/:/g, "  ▶  ") +
-                            "\n\n   Current Key Binding:    " + binding +
-                            "\n\n" + (doc ? p(doc) : "") + "\n";
+                            "\n>    " + command_tree.slice(-1) + "\n" +
+                            "\n   Full Command Name:      " + command_name +
+                            "\n   Current Key Binding:    " + binding +
+                            "\n" + (doc ? p(doc) : "") + "\n";
                     });
                     session.setValue(command_list);
                 });
