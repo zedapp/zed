@@ -8,7 +8,12 @@ define(function(require, exports, module) {
     }
 
     function getSession(path) {
-        return path ? zed.getService("session_manager").getSessions()[path] : zed.getService("editor").getActiveSession();
+        var session = path ? zed.getService("session_manager").getSessions()[path] : zed.getService("editor").getActiveSession();
+        if(!session) {
+            console.error("Could not get session:", path);
+            // TODO once we switch this to promises
+        }
+        return session;
     }
 
     // This function can take any defined inputable, a path, a callback,
@@ -37,6 +42,13 @@ define(function(require, exports, module) {
         getSelectionText: useInputable("selectionText"),
         getText: useInputable("text"),
         isInsertingSnippet: useInputable("isInsertingSnippet"),
+        callCommand: function(path, command, callback) {
+            zed.getService("command").exec(
+                command,
+                zed.getService("editor").getActiveEditor(),
+                getSession(path),
+                callback);
+        },
         goto: function(path, callback) {
             var edit = zed.getService("editor").getActiveEditor();
             zed.getService("session_manager").go(path, edit, edit.getSession(), function(err) {

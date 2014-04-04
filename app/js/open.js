@@ -1,6 +1,7 @@
 /*global define, $, chrome, _*/
 define(function(require, exports, module) {
     plugin.consumes = ["history", "window"];
+    plugin.provides = ["open"];
     return plugin;
 
     /**
@@ -14,6 +15,9 @@ define(function(require, exports, module) {
 
         var history = imports.history;
         var win = imports.window;
+
+        var builtinProjects = options.builtinProjects;
+        var editorHtml = options.editorHtml;
 
         var remoteEditInput = $("#gotoinput");
         var filterInput = $("#projectfilter");
@@ -33,6 +37,10 @@ define(function(require, exports, module) {
         //     openProjects = backgroundPage.projects;
         // });
 
+        var api = {
+            open: open
+        };
+
         function open(url, title) {
             var openProject = openProjects[url];
             if (openProject && !openProject.window) {
@@ -42,7 +50,7 @@ define(function(require, exports, module) {
             if (openProject) {
                 openProject.focus();
             } else {
-                win.create('editor.html?url=' + url + "&title=" + title + '&chromeapp=true', 'none', 720, 400, function(err, win) {
+                win.create(editorHtml + '?url=' + url + "&title=" + title, 'none', 720, 400, function(err, win) {
                     if (url !== "dropbox:" && url !== "local:") {
                         openProjects[url] = win;
                         win.addCloseListener(function() {
@@ -95,23 +103,7 @@ define(function(require, exports, module) {
         function getAllVisibleProjects() {
             var projects = validProjectCache.slice();
             var filterPhrase = filterInput.val().toLowerCase();
-            projects.splice(0, 0, {
-                name: "Open Local Folder",
-                url: "local:"
-            }, {
-                id: "dropbox-open",
-                name: "Open Dropbox Folder",
-                url: "dropbox:"
-            }, {
-                name: "Notes",
-                url: "syncfs:",
-            }, {
-                name: "Configuration",
-                url: "config:"
-            }, {
-                name: "Manual",
-                url: "manual:"
-            });
+            projects.splice.apply(projects, [0, 0].concat(builtinProjects));
             projects = projects.filter(function(p) {
                 return p.name.toLowerCase().indexOf(filterPhrase) !== -1;
             });
@@ -137,7 +129,9 @@ define(function(require, exports, module) {
                 }
                 recentEl.append(el);
             });
-            updateWindowSize();
+            setTimeout(function() {
+                updateWindowSize();
+            });
             return projects;
         }
 
@@ -250,11 +244,12 @@ define(function(require, exports, module) {
         updateWindowSize();
 
         window.focusMe = function() {
-            // chrome.app.window.current().drawAttention();
             win.focus();
         };
 
-        register();
+        register(null, {
+            open: api
+        });
     }
 
 });

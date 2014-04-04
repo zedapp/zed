@@ -11,18 +11,55 @@ window.isNodeWebkit = typeof window.chrome === "undefined";
 
 require(["../dep/architect"], function(architect) {
     "use strict";
-    var modules = [
-        "./open",
-        "./config",
+
+    var builtinProjects;
+
+    var modules = ["./config",
         "./eventbus",
         "./command",
         "./keys"];
 
     if (window.isNodeWebkit) {
-        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw");
+        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw", "./cli.nw");
+        modules.push({
+            packagePath: "./open",
+            editorHtml: "editor.nw.html",
+            builtinProjects: [{
+                name: "Open Local Folder",
+                url: "node:"
+            }, {
+                name: "Configuration",
+                url: "nwconfig:"
+            }, {
+                name: "Manual",
+                url: "manual:"
+            }]
+        });
     } else {
         modules.push("./history.chrome", "./configfs.chrome", "./window.chrome", "./sandbox.chrome");
+        modules.push({
+            packagePath: "./open",
+            editorHtml: "editor.html",
+            builtinProjects: [{
+                name: "Open Local Folder",
+                url: "local:"
+            }, {
+                id: "dropbox-open",
+                name: "Open Dropbox Folder",
+                url: "dropbox:"
+            }, {
+                name: "Notes",
+                url: "syncfs:",
+            }, {
+                name: "Configuration",
+                url: "config:"
+            }, {
+                name: "Manual",
+                url: "manual:"
+            }]
+        });
     }
+
 
     architect.resolveConfig(modules, function(err, config) {
         if (err) {

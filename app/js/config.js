@@ -339,42 +339,6 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
-        command.define("Configuration:Store in Local Folder", {
-            exec: function() {
-                chrome.fileSystem.chooseEntry({
-                    type: "openDirectory"
-                }, function(dir) {
-                    if (!dir) {
-                        return;
-                    }
-                    var id = chrome.fileSystem.retainEntry(dir);
-                    chrome.storage.local.set({
-                        configDir: id
-                    }, function() {
-                        zed.getService("ui").prompt({
-                            message: "Configuration location set, will now restart Zed for changes to take effect."
-                        }, function() {
-                            chrome.runtime.reload();
-                        });
-                    });
-                });
-            },
-            readOnly: true
-        });
-
-        command.define("Configuration:Store in Google Drive", {
-            exec: function() {
-                chrome.storage.local.remove("configDir", function() {
-                    zed.getService("ui").prompt({
-                        message: "Configuration location set to Google Drive, will now restart Zed for changes to take effect."
-                    }, function() {
-                        chrome.runtime.reload();
-                    });
-                });
-            },
-            readOnly: true
-        });
-
         sandbox.defineInputable("preferences", function() {
             return expandedConfiguration.preferences;
         });

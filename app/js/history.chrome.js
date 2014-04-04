@@ -68,6 +68,14 @@ define(function(require, exports, module) {
                     }, callback);
                 });
             },
+            lookupProjectByUrl: function(url, callback) {
+                api.getProjects(function(err, projects) {
+                    var project = _.findWhere(projects, {
+                        url: url
+                    });
+                    callback(null, project);
+                });
+            },
             getProjects: function(callback) {
                 chrome.storage.local.get("recentProjects", function(results) {
                     var projects = results.recentProjects || [];
@@ -93,9 +101,6 @@ define(function(require, exports, module) {
                     });
                 });
             },
-            /**
-             * Triggered
-             */
             addProjectChangeListener: function(listener) {
                 chrome.storage.onChanged.addListener(listener);
             }

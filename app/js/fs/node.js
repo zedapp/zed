@@ -10,8 +10,9 @@ define(function(require, exports, module) {
         var nodeFs = nodeRequire("fs");
 
         var history = imports.history;
-        
+
         var rootPath = options.dir;
+        var dontRegister = options.dontRegister;
 
         // Copy and paste from project.js, but cannot important that due to
         // recursive imports.
@@ -142,7 +143,9 @@ define(function(require, exports, module) {
         };
 
         var watcher = poll_watcher(api, 3000);
-        history.pushProject(rootPath, "node:" + rootPath);
+        if(!dontRegister) {
+            history.pushProject(rootPath, "node:" + rootPath);
+        }
         register(null, {
             fs: api
         });

@@ -1,16 +1,15 @@
 {
     "name": "zed",
-    "main": "app://./editor.nw.html?url=node:/Users/zef/git/ace",
-    "icon": "Icon.png",
+    "main": "app://./open.nw.html",
     "window": {
         "title": "Zed",
-        "toolbar": true,
-        "width": 1000,
-        "height": 700,
+        "toolbar": false,
+        "width": 400,
+        "height": 200,
         "show": true,
-        "frame": true
+        "frame": true,
+        "icon": "Icon.png"
     },
-    "no-edit-menu": true,
     "chromium-args": "--disable-web-security -–allow-file-access-from-files",
     "webkit": {
         "page-cache": false

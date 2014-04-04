@@ -24,7 +24,9 @@ module.exports = function(info) {
 
     if (lines[lines.length - 1] !== "") {
         // Enforce newline at end of file.
-        return session.append(info.path, "\n");
+        return session.append(info.path, "\n").then(function() {
+            session.callCommand(info.path, "Cursor:Left");
+        });
     } else {
         // Strip blank lines, but not above the cursor position.
         var row = Math.max(currentLine, lastNonBlank) + 1;

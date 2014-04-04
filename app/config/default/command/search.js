@@ -45,8 +45,10 @@ module.exports = function(info, callback) {
     return ui.prompt("Phrase to search for:", "", 300, 150).then(function(phrase_) {
         phrase = phrase_;
         if (!phrase) {
-            return;
+            // Need to throw to jump out here
+            throw new Error("no-search");
         }
+        console.log("Phrase", phrase)
         return session.goto("zed::search");
     }).then(function() {
         return project.listFiles();
@@ -94,7 +96,9 @@ module.exports = function(info, callback) {
             append("\nFound " + results + " results.");
         }
     }).catch(function(err) {
-        console.error("Got error", err);
-        throw err;
+        if(err.message !== "no-search") {
+            console.error("Got error", err);
+            throw err;
+        }
     });
 };

@@ -1,0 +1,9 @@
+{
+    "modes": {
+        "scala": {
+            "name": "Scala",
+            "highlighter": "ace/mode/scala",
+            "extensions": ["scala"]
+        }
+    }
+}

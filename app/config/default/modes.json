@@ -27,6 +27,7 @@
         "./mode/rhtml.json",
         "./mode/ruby.json",
         "./mode/sass.json",
+        "./mode/scala.json",
         "./mode/sh.json",
         "./mode/text.json",
         "./mode/xml.json",

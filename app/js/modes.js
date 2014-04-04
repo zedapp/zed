@@ -5,6 +5,14 @@ define(function(require, exports, module) {
     plugin.provides = ["modes"];
     return plugin;
 
+    function longestFirst(a, b) {
+        return b.length - a.length;
+    }
+
+    function endsWith(str, suffix) {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    }
+
     function plugin(options, imports, register) {
         var path = require("./lib/path");
 
@@ -18,6 +26,7 @@ define(function(require, exports, module) {
 
         // Mappings from file extension to mode name, e.g. "js" -> "javascript"
         var extensionMapping = {};
+        var extensionsByLength = [];
 
         // Mappings from particular file names to mode name, e.g. "Makefile" -> "makefile"
         var filenameMapping = {};
@@ -51,25 +60,26 @@ define(function(require, exports, module) {
                 return modes[language];
             },
             getModeForSession: function(session) {
-                var path_ = session.filename;
-                var filename = path.filename(path_);
+                var filename = path.filename(session.filename);
                 if (filenameMapping[filename]) {
                     return api.get(filenameMapping[filename]);
                 }
-                var mode;
-                _.each(extensionMapping, function(lang, ext) {
-                    var idx = path_.indexOf("." + ext);
-                    if (idx > -1 && idx === path_.length - ext.length - 1) {
-                        mode = api.get(lang);
+
+                if (filename.indexOf(".") > -1) {
+                    for (var i = 0; i < extensionsByLength.length; ++i) {
+                        var ext = extensionsByLength[i];
+                        if (endsWith(filename, "." + ext)) {
+                            return api.get(extensionMapping[ext]);
+                        }
                     }
-                });
-                if (mode) {
-                    return mode;
                 }
+
                 var shebang_line = session.getLine(0);
-                for (var shebang in shebangMapping) {
-                    if (shebang_line.indexOf(shebang) > 0) {
-                        return api.get(shebangMapping[shebang]);
+                if (shebang_line.slice(0, 2) == "#!") {
+                    for (var shebang in shebangMapping) {
+                        if (shebang_line.indexOf(shebang) > 0) {
+                            return api.get(shebangMapping[shebang]);
+                        }
                     }
                 }
 
@@ -141,6 +151,7 @@ define(function(require, exports, module) {
                     });
                 }
             });
+            extensionsByLength = Object.keys(extensionMapping).sort(longestFirst);
         }
 
         function declareAllModeCommands() {

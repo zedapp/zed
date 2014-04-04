@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    
+
     function protocolIcon(url) {
         var protocol = url.split(":")[0];
         switch (protocol) {
@@ -11,6 +11,8 @@ define(function(require, exports, module) {
                 return "img/manual.png";
             case "config":
                 return "img/config.png";
+            case "nwconfig":
+                return "img/config.png";
             case "http":
                 return "img/remote.png";
             case "https":
@@ -19,7 +21,7 @@ define(function(require, exports, module) {
                 return "img/project.png";
         }
     }
-    
+
     return {
         protocolIcon: protocolIcon
     };

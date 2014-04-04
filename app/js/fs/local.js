@@ -17,6 +17,7 @@ define(function(require, exports, module) {
 
         var id = options.id;
         var root = options.dir;
+        var dontRegister = options.dontRegister;
 
         function dirname(path) {
             if (path[path.length - 1] === '/') {
@@ -164,8 +165,10 @@ define(function(require, exports, module) {
 
         var watcher = poll_watcher(api, 3000);
 
-        var title = root.fullPath.slice(1);
-        history.pushProject(title, "local:" + id);
+        if (!dontRegister) {
+            var title = root.fullPath.slice(1);
+            history.pushProject(title, "local:" + id);
+        }
 
         register(null, {
             fs: api

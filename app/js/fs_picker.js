@@ -80,10 +80,23 @@ define(function(require, exports, module) {
             }
         } else if (url.indexOf("node:") === 0) {
             var path = url.substring("node:".length);
-            return callback(null, {
-                packagePath: "./fs/node",
-                dir: path
-            });
+            if (path) {
+                return callback(null, {
+                    packagePath: "./fs/node",
+                    dir: path
+                });
+            } else {
+                require(["./lib/folderpicker.nw"], function(folderPicker) {
+                    folderPicker(function(err, path) {
+                        options.set("title", path);
+                        options.set("url", "node:" + path);
+                        return callback(null, {
+                            packagePath: "./fs/node",
+                            dir: path
+                        });
+                    });
+                });
+            }
         } else {
             return callback(null, {
                 packagePath: "./fs/web",

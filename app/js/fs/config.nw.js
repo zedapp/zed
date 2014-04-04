@@ -8,20 +8,27 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var watchSelf = options.watchSelf;
 
+        var gui = nodeRequire('nw.gui');
 
         staticFs(function(err, configStatic) {
-            var configHome = process.env.HOME + "/.zed";
+            var configHome = localStorage.configDir || (gui.App.dataPath + "/config");
+            console.log("Config home", configHome);
             if (!fs.existsSync(configHome)) {
                 fs.mkdirSync(configHome);
             }
             getFs({
                 packagePath: "fs/node",
-                dir: configHome
+                dir: configHome,
+                dontRegister: true
             }, function(err, configLocal) {
+                if(err) {
+                    return console.error("Error instantiating nodefs", err);
+                }
+                console.log("File systems for config", configLocal, configStatic);
                 getFs({
                     packagePath: "fs/union",
                     fileSystems: [configLocal, configStatic],
-                    watchSelf: watchSelf
+                    watchSelf: watchSelf,
                 }, function(err, fs) {
                     register(null, {
                         fs: fs
