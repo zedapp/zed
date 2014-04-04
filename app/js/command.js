@@ -196,6 +196,9 @@ define(function(require, exports, module) {
                             "\n" + (doc ? p(doc) : "") + "\n";
                     });
                     session.setValue(command_list);
+                    session.foldAll();
+                    session.callCommand("zed::commands", "Cursor:Line End");
+                    session.toggleFold(true);
                 });
             },
             readOnly: true
