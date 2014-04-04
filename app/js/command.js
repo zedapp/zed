@@ -169,13 +169,13 @@ define(function(require, exports, module) {
                         "known to Zed, and their current keybindings, even if " +
                         "you've modified the defaults.") + "\n\n";
                     var commandKeys = keys.getCommandKeys();
-                    api.allCommands().sort().forEach(function(command) {
-                        var binding = identifyCurrentKey(commandKeys[command]) || "";
-                        var command_obj = api.lookup(command) || {};
-                        var doc = command_obj.doc || "";
+                    api.allCommands().sort().forEach(function(command_name) {
+                        var binding = identifyCurrentKey(commandKeys[command_name]) || "";
+                        var command = api.lookup(command_name) || {};
+                        var doc = command.doc || "";
                         binding = binding ? "`" + binding + "`" : "Not set";
                         command_list +=
-                            "> " + command.replace(/:/g, "  ▶  ") +
+                            "> " + command_name.replace(/:/g, "  ▶  ") +
                             "\n\n   Current Key Binding:    " + binding +
                             "\n\n" + (doc ? p(doc) : "") + "\n";
                     });
