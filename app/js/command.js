@@ -156,7 +156,11 @@ define(function(require, exports, module) {
                     var command_list = "> Zed Online Command Reference.\n" +
                         "\n   What follows is a complete reference of all commands " +
                         "known to Zed, and their current keybindings, even if " +
-                        "you've modified the defaults.\n\n\n";
+                        "you've modified the defaults. You can click the triangle " +
+                        "in the gutter in order to open each category and inspect " +
+                        "the documentation for each command. Or, if you search for " +
+                        "a command, categories containing matches will automatically " +
+                        "expand.\n\n\n";
                     var commandKeys = keys.getCommandKeys();
                     var prev_tree = [];
                     api.allCommands().sort().forEach(function(command_name) {
