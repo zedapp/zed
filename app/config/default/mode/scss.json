@@ -1,0 +1,9 @@
+{
+    "modes": {
+        "sass": {
+            "name": "SCSS",
+            "highlighter": "ace/mode/scss",
+            "extensions": ["scss"]
+        }
+    }
+}
