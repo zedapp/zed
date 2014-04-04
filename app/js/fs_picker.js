@@ -86,17 +86,16 @@ define(function(require, exports, module) {
                     dir: path
                 });
             } else {
-                var picker = $('<input type="file" nwdirectory/>');
-                picker.change(function() {
-                    path = this.value;
-                    options.set("title", path);
-                    options.set("url", "local:" + path);
-                    return callback(null, {
-                        packagePath: "./fs/node",
-                        dir: path
+                require(["./lib/folderpicker.nw"], function(folderPicker) {
+                    folderPicker(function(err, path) {
+                        options.set("title", path);
+                        options.set("url", "node:" + path);
+                        return callback(null, {
+                            packagePath: "./fs/node",
+                            dir: path
+                        });
                     });
                 });
-                picker.click();
             }
         } else {
             return callback(null, {

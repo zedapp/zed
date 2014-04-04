@@ -8,9 +8,11 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var watchSelf = options.watchSelf;
 
+        var gui = nodeRequire('nw.gui');
 
         staticFs(function(err, configStatic) {
-            var configHome = process.env.HOME + "/.zed";
+            var configHome = localStorage.configDir || (gui.App.dataPath + "/config");
+            console.log("Config home", configHome);
             if (!fs.existsSync(configHome)) {
                 fs.mkdirSync(configHome);
             }

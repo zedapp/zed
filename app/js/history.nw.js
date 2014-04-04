@@ -6,7 +6,13 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var api = {
             pushProject: function(name, url) {
-                setTimeout(function() {
+                // Using setTimeout to wait for the whole architect app to the initialized
+                // kind of hacky, but ok
+                setTimeout(function pushIt() {
+                    if(!window.zed) {
+                        console.log("not Yet");
+                        return setTimeout(pushIt, 500);
+                    }
                     console.log("Pushing project", name, url);
                     var projects;
                     try {
@@ -42,7 +48,7 @@ define(function(require, exports, module) {
                         });
                         localStorage.recentProjects = JSON.stringify(projects);
                     }
-                }, 250);
+                }, 500);
             },
             renameProject: function(url, name, callback) {
                 var projects;

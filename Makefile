@@ -44,5 +44,14 @@ index-manual:
 index-config:
 	$(INDEX_COMMAND)
 
+apps:
+	mkdir -p release
+	rm -rf release/Zed.app/
+	cp -r nw/node-webkit.app release/Zed.app
+	cp nw/nw.icns release/Zed.app/Contents/Resources/nw.icns
+	cp nw/Info.plist release/Zed.app/Contents/Info.plist
+	cp -r app release/Zed.app/Contents/Resources/app.nw
+	cd release; zip -r zed-mac.zip Zed.app
+
 indexes: index-manual index-config
 	@true

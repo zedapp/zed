@@ -1,10 +1,12 @@
-/*global define, chrome */
+/*global define, chrome, zed */
 define(function(require, exports, module) {
     var architect = require("../dep/architect");
+    plugin.consumes = ["command"];
     plugin.provides = ["configfs"];
     return plugin;
 
     function plugin(options, imports, register) {
+        var command = imports.command;
         // Let's instaiate a new architect app with a configfs and the re-expose
         // that service as configfs
         architect.resolveConfig([{
@@ -22,6 +24,42 @@ define(function(require, exports, module) {
                     configfs: app.getService("fs")
                 });
             });
+        });
+
+        command.define("Configuration:Store in Local Folder", {
+            exec: function() {
+                chrome.fileSystem.chooseEntry({
+                    type: "openDirectory"
+                }, function(dir) {
+                    if (!dir) {
+                        return;
+                    }
+                    var id = chrome.fileSystem.retainEntry(dir);
+                    chrome.storage.local.set({
+                        configDir: id
+                    }, function() {
+                        zed.getService("ui").prompt({
+                            message: "Configuration location set, will now restart Zed for changes to take effect."
+                        }, function() {
+                            chrome.runtime.reload();
+                        });
+                    });
+                });
+            },
+            readOnly: true
+        });
+
+        command.define("Configuration:Store in Google Drive", {
+            exec: function() {
+                chrome.storage.local.remove("configDir", function() {
+                    zed.getService("ui").prompt({
+                        message: "Configuration location set to Google Drive, will now restart Zed for changes to take effect."
+                    }, function() {
+                        chrome.runtime.reload();
+                    });
+                });
+            },
+            readOnly: true
         });
     }
 });

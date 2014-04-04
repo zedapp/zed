@@ -1,6 +1,7 @@
 /*global define, $, chrome, _*/
 define(function(require, exports, module) {
     plugin.consumes = ["history", "window"];
+    plugin.provides = ["open"];
     return plugin;
 
     /**
@@ -35,6 +36,10 @@ define(function(require, exports, module) {
         //     backgroundPage = bg;
         //     openProjects = backgroundPage.projects;
         // });
+
+        var api = {
+            open: open
+        };
 
         function open(url, title) {
             var openProject = openProjects[url];
@@ -240,7 +245,9 @@ define(function(require, exports, module) {
             win.focus();
         };
 
-        register();
+        register(null, {
+            open: api
+        });
     }
 
 });

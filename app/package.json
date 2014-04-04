@@ -5,8 +5,8 @@
     "window": {
         "title": "Zed",
         "toolbar": false,
-        "width": 1000,
-        "height": 700,
+        "width": 400,
+        "height": 200,
         "show": true,
         "frame": true
     },

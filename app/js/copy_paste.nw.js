@@ -30,8 +30,9 @@ define(function(require, exports, module) {
 
         command.define("Edit:Paste", {
             exec: function(edit, session) {
-                var pos = edit.getCursorPosition();
-                session.insert(pos, clipboard.get());
+                edit.onPaste(clipboard.get());
+                // var range = edit.getSelectionRange();
+                // session.replace(range, clipboard.get());
             },
             readOnly: true
         });
