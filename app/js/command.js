@@ -85,6 +85,16 @@ define(function(require, exports, module) {
         };
 
 
+        function identifyCurrentKey(key) {
+            if (key) {
+                if (_.isString(key)) {
+                    return key;
+                } else {
+                    return useragent.isMac ? key.mac : key.win;
+                }
+            }
+        }
+
         api.define("Command:Enter Command", {
             exec: function(edit, session) {
                 // Lazy loading these
@@ -94,14 +104,7 @@ define(function(require, exports, module) {
                 function filter(phrase) {
                     var results = fuzzyfind(api.allCommands(), phrase);
                     results = results.filter(function(result) {
-                        var k = commandKeys[result.path];
-                        if (k) {
-                            if (_.isString(k)) {
-                                result.meta = k;
-                            } else {
-                                result.meta = useragent.isMac ? k.mac : k.win;
-                            }
-                        }
+                        result.meta = identifyCurrentKey(commandKeys[result.path]);
                         // Let's rename the `cmd` variable using multiple cursors...
                         // There are three instances
                         var command = api.lookup(result.path);
@@ -151,8 +154,12 @@ define(function(require, exports, module) {
                 zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
                     session.setMode("ace/mode/markdown");
                     var command_list = "";
-                    api.allCommands().sort().forEach(function (command) {
-                        command_list += command.replace(/:/g, "  ▶  ") + "\n\n";
+                    var commandKeys = keys.getCommandKeys();
+                    api.allCommands().sort().forEach(function(command) {
+                        var binding = identifyCurrentKey(commandKeys[command]) || "";
+                        command_list +=
+                            command.replace(/:/g, "  ▶  ") +
+                            "\n\n    * Current Key Binding:    " + binding + "\n\n\n";
                     });
                     session.setValue(command_list);
                 });
