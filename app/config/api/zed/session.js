@@ -3,6 +3,9 @@ module.exports = {
     goto: function(path) {
         return sandboxRequest("zed/session", "goto", [path]);
     },
+    callCommand: function(path, command) {
+        return sandboxRequest("zed/session", "callCommand", [path, command]);
+    },
     setAnnotations: function(path, annos) {
         return sandboxRequest("zed/session", "setAnnotations", [path, annos]);
     },
