@@ -3,6 +3,7 @@
         "./mode/c.json",
         "./mode/clojure.json",
         "./mode/coffee.json",
+        "./mode/command-reference.json",
         "./mode/csharp.json",
         "./mode/css.json",
         "./mode/dart.json",
@@ -17,6 +18,7 @@
         "./mode/less.json",
         "./mode/logiql.json",
         "./mode/lua.json",
+        "./mode/makefile.json",
         "./mode/markdown.json",
         "./mode/nix.json",
         "./mode/perl.json",
@@ -26,15 +28,14 @@
         "./mode/python.json",
         "./mode/rhtml.json",
         "./mode/ruby.json",
+        "./mode/rust.json",
         "./mode/sass.json",
         "./mode/scala.json",
+        "./mode/search-results.json",
         "./mode/sh.json",
         "./mode/text.json",
         "./mode/xml.json",
         "./mode/xsl.json",
-        "./mode/yaml.json",
-        "./mode/makefile.json",
-        "./mode/rust.json",
-        "./mode/search-results.json"
+        "./mode/yaml.json"
     ]
 }

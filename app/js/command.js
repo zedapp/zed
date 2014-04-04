@@ -23,15 +23,6 @@ define(function(require, exports, module) {
         // Triggered when config commands were reset and should be reloaded from config
         eventbus.declare("configcommandsreset");
 
-        function wrap(str) {
-            return str.match(new RegExp(
-                '.{1,' + 75 + '}(\\s|$)|\\S+?(\\s|$)', 'g')).join('\n');
-        }
-
-        function p(str) {
-            return "\n   " + wrap(str) + "\n";
-        }
-
         function defineUserCommand(name, cmd) {
             api.defineConfig(name, {
                 exec: function(edit, session, callback) {
@@ -161,11 +152,10 @@ define(function(require, exports, module) {
         api.define("Help:Commands", {
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
-                    session.setMode("ace/mode/markdown");
                     var command_list = "# Zed Online Command Reference.\n" +
-                        p("What follows is a complete reference of all commands " +
+                        "\n   What follows is a complete reference of all commands " +
                         "known to Zed, and their current keybindings, even if " +
-                        "you've modified the defaults.") + "\n\n";
+                        "you've modified the defaults.\n\n\n";
                     var commandKeys = keys.getCommandKeys();
                     var prev_tree = [];
                     api.allCommands().sort().forEach(function(command_name) {
@@ -182,7 +172,8 @@ define(function(require, exports, module) {
 
                         // Get the command documentation.
                         var command = api.lookup(command_name) || {};
-                        var doc = command.doc || "";
+                        var doc = command.doc ? "\n   " +
+                            command.doc.replace(/\n/g, "\n\n   ") + "\n" : "";
 
                         // Get the current keybinding.
                         var binding = identifyCurrentKey(commandKeys[command_name]) || "";
@@ -193,7 +184,7 @@ define(function(require, exports, module) {
                             "\n>    " + command_tree.slice(-1) + "\n" +
                             "\n   Full Command Name:      " + command_name +
                             "\n   Current Key Binding:    " + binding +
-                            "\n" + (doc ? p(doc) : "") + "\n";
+                            "\n" + doc + "\n";
                     });
                     session.setValue(command_list);
                     session.foldAll();

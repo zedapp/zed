@@ -1,0 +1,16 @@
+{
+    "modes": {
+        "command-reference": {
+            "name": "Zed Command Reference",
+            "highlighter": "ace/mode/markdown",
+            "filenames": ["zed::commands"],
+
+            "preferences": {
+                "showGutter": false,
+                "showPrintMargin": false,
+                "wordWrap": true,
+                "wordWrapColumn": 75
+            }
+        }
+    }
+}
