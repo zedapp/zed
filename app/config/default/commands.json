@@ -179,6 +179,14 @@
                 "selectionText": true
             }
         },
+        "Tools:Document Statistics": {
+            "doc": "Counts the characters, words, and lines in the current file.",
+            "scriptUrl": "./command/statistics.js",
+            "inputs": {
+                "lines": true,
+                "text": true
+            }
+        },
         "Tools:Complete:CTags": {
             "scriptUrl": "./command/ctags_completer.js"
         },
