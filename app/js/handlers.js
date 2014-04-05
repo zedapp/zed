@@ -48,6 +48,13 @@ define(function(require, exports, module) {
                         eventbus.emit("sessionactivityfailed", session, "No preview available");
                     }
                 });
+                eventbus.on("sessionclicked", function(edit, session) {
+                    // We setTimeout this to make sure the cursor moved to the clicked
+                    // position already
+                    setTimeout(function() {
+                        runSessionHandler(session, "click");
+                    });
+                });
             },
             runSessionHandler: runSessionHandler,
             /**

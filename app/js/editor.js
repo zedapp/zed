@@ -21,6 +21,7 @@ define(function(require, exports, module) {
 
         eventbus.declare("editorloaded");
         eventbus.declare("selectionchanged");
+        eventbus.declare("sessionclicked"); // edit, session, event
 
         var editors = [];
         var activeEditor = null;
@@ -120,6 +121,9 @@ define(function(require, exports, module) {
                     });
                     editor.on("changeSelection", function() {
                         eventbus.emit("selectionchanged", editor);
+                    });
+                    editor.on("click", function(e) {
+                        eventbus.emit("sessionclicked", editor, editor.session, e);
                     });
                 });
                 api.setActiveEditor(editors[0]);
@@ -266,7 +270,6 @@ define(function(require, exports, module) {
                     min = index;
                 }
             }
-
             var adjust = col - min;
             if (min > -1 && adjust !== 0) {
                 if (adjust < 0) {
@@ -283,12 +286,13 @@ define(function(require, exports, module) {
                         lines[i] = add + lines[i];
                     }
                 }
-                lines[0] = lines[0].substring(lines[0].search(regexp));
-                e.text = lines.join("\n");
-                if (!config.getPreference("useSoftTabs", session)) {
-                    regexp = new RegExp(tabAsSpaces, "gm");
-                    e.text = e.text.replace(regexp, "\t");
-                }
+            }
+
+            lines[0] = lines[0].substring(lines[0].search(regexp));
+            e.text = lines.join("\n");
+            if (!config.getPreference("useSoftTabs", session)) {
+                regexp = new RegExp(tabAsSpaces, "gm");
+                e.text = e.text.replace(regexp, "\t");
             }
         }
 

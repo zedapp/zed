@@ -19,6 +19,9 @@ Zed's configuration consist of a number of aspects:
 * Commands: Zed comes with about a hundred built-in commands, but new commands
             can also be implemented by the user.
 * Keys: for defining mappings between key sequences and commands.
+* Handlers: for responding to certain events and requests from the editor, e.g. session change
+* Themes: defining Zed themes
+* Packages: packages that need to be installed
 
 Configuration is done in Zed's JSON format, which looks as follows:
 
@@ -28,7 +31,9 @@ Configuration is done in Zed's JSON format, which looks as follows:
         "modes": {...},
         "commands": {...},
         "keys": {...},
-        "handlers": {...}
+        "handlers": {...},
+        "themes": {...},
+        "packages": [...]
     }
 
 Each key is optional.
@@ -116,21 +121,21 @@ Let's start with a simple new "zed" mode:
                 "name": "Zed",
                 "highlighter": "ace/mode/markdown",
                 "extensions": ["zed"],
-                
+
                 "commands": {
                     "Tools:Check": {
                         "scriptUrl": "/user/mode/zed/check.js"
                     }
                 },
-                
+
                 "handlers": {
                     "check": ["Tools:Check"]
                 },
-                
+
                 "keys": {
                     "Tools:Check": "Ctrl-C"
                 },
-                
+
                 "preferences": {
                     "fontSize": 20
                 }
@@ -155,6 +160,7 @@ As can be seen, in a mode we can define a few things:
   - "check": triggered when static verification is requested, should return a list of annotations.
   - "complete": triggered when the user requests code completion, should return a list of possible completions.
   - "save": triggered when a file is being saved
+  - "click": triggered when a location in a session is clicked
 * "preferences": preference overrides specific to this mode.
 * "keys": key overrides specific to this mode.
 
@@ -169,32 +175,48 @@ Let's look at an example config:
         "commands": {
             "My Commands:Summarize Document": {
                 "scriptUrl": "/user/command/summarize.js",
-                "length": "long"
+                "length": "long",
+                "inputs": {
+                    "text": true
+                }
             }
         }
     }
 
-The scriptUrl specified can be any CommonJS module, loaded from anywhere (e.g. http, https). If the URL starts with a slash, it is assumed to be located in the Configuration project itself.
+The scriptUrl specified can be any CommonJS module, loaded from anywhere (e.g. http, https). If the URL starts with a slash, it is assumed to be located in the Configuration project itself. If it starts with ./ it is assumed to be located in the same directory as the configuration file.
 
 In our Configuration project we create a JavaScript file /user/command/summarize.js as follows to implement this command:
 
     var session = require("zed/session");
 
-    module.exports = function(options, callback) {
-        var text = "Zed is cool";
+    module.exports = function(info) {
+        var path = info.path;
 
-        if(options.length === "long") {
-            text = "Zed is super duper cool!";
+        // 'zed' does not appear in the document
+        if(info.inputs.text.indexOf("zed") === -1) {
+            return session.setText(path, "Can't summarize, does not contain zed");
+        } else {
+            if(info.length === "long") {
+                return session.setText(path, "Zed is super duper cool!");
+            } else {
+                return session.setText(path, "Zed is cool!");
+            }
         }
-        session.setText(options.path, text, callback);
     };
 
-This defines a simple CommonJS module that imports one of Zed's sandbox APIs (sandbox.md) named "zed/session", which gives you access to open sessions (files). The module exports (returns) a function taking two arguments:
+This defines a simple CommonJS module that imports one of Zed's sandbox APIs (sandbox.md) named "zed/session", which gives you access to open sessions (files). The module exports (returns) a function taking one argument (as all commands do): info: which contains everything specified in the body of the command spec, so in this case: a "scriptUrl" and "length" key, as well as an extra `path` key that specifies the path of the currently active file, as well as an `inputs` key that contains values for each of the requested inputs.
 
-* options: which contains everything specified in the body of the command spec,
-  so in this case: a "scriptUrl" and "length" key, as well as an extra "path"
-  key that specifies the path of the currently active file.
-* callback: which should be called when the command has done its work.
+An input is an easy way to get quick access to common information, such as the full text of the file operating on, the cursor position, etc. Currently, the following "inputables" are available:
+
+* text: the text of the current session as a single string
+* lines: the contents of the current session as an array of strings representing lines
+* preferences: to get all currently active preferences (for this session)
+* cursor: to get the current cursor position ({row: ..., column: ...})
+* cursorIndex: to get the current cursor position as a character index from the start of the document
+* scrollPosition: the current scroll position
+* selectionRange: the current selection range
+* selectionText: the current selected text
+* isInsertingSnippet: whether a snippet is currently being inserted
 
 Commands are run in the Zed Sandbox (sandbox.md), which is running in a separate process for safety and safe code reloading reasons. As a result, you do not have access to all built-in Zed's core APIs. However, there is a growing number of specific APIs exposed to you (like the zed/session API in the example), check sandbox.md for more information.
 
@@ -206,6 +228,7 @@ For inspiration, it's useful to have a look at the commands defined under /defau
 * Code beautification
 * Preview rendering
 * CTag providers
+* Code completion
 
 In fact, concepts like "checking" and "beautification" are not built-in Zed features at all, they're 100% defined using custom mode-specific sandboxed commands.
 
@@ -244,3 +267,18 @@ And the following key names (as well as any upper case letter or number):
 * PageDown
 * Home
 * End
+
+Handlers
+--------
+
+To describe
+
+Themes
+------
+
+To describe
+
+Packages
+--------
+
+To describe

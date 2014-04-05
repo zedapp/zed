@@ -276,6 +276,7 @@
             "mac": "Command-Enter",
             "win": "Ctrl-Enter"
         },
+        "Tools:Document Statistics": "F2",
         "Split:Preview": {
             "mac": "Command-P",
             "win": "Ctrl-P"

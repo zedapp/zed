@@ -23,6 +23,10 @@
             "preferences": {
                 "showGutter": false,
                 "showPrintMargin": false
+            },
+
+            "handlers": {
+                "click": ["Installed Packages:Execute Command"]
             }
         }
     },
