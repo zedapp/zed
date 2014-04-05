@@ -48,7 +48,6 @@ module.exports = function(info, callback) {
             // Need to throw to jump out here
             throw new Error("no-search");
         }
-        console.log("Phrase", phrase)
         return session.goto("zed::search");
     }).then(function() {
         return project.listFiles();

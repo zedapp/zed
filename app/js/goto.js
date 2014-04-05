@@ -22,6 +22,24 @@ define(function(require, exports, module) {
         eventbus.declare("loadedfilelist");
 
         var api = {
+            hook: function() {
+                eventbus.on("newfilecreated", function(path) {
+                    if (fileCache.indexOf(path) === -1) {
+                        fileCache.push(path);
+                        updateFilteredFileCache();
+                    }
+                });
+                eventbus.on("filedeleted", function(path) {
+                    var index = fileCache.indexOf(path);
+                    if (index !== -1) {
+                        fileCache.splice(index, 1);
+                        updateFilteredFileCache();
+                    }
+                });
+                eventbus.on("configchanged", function() {
+                    updateFilteredFileCache();
+                });
+            },
             init: function() {
                 fetchFileList();
             },
@@ -99,24 +117,6 @@ define(function(require, exports, module) {
         }
 
         command.define("Navigate:Goto", {
-            hook: function() {
-                eventbus.on("newfilecreated", function(path) {
-                    if (fileCache.indexOf(path) === -1) {
-                        fileCache.push(path);
-                        updateFilteredFileCache();
-                    }
-                });
-                eventbus.on("filedeleted", function(path) {
-                    var index = fileCache.indexOf(path);
-                    if (index !== -1) {
-                        fileCache.splice(index, 1);
-                        updateFilteredFileCache();
-                    }
-                });
-                eventbus.on("configchanged", function() {
-                    updateFilteredFileCache();
-                });
-            },
             exec: function(edit, session, text) {
                 if (typeof text !== "string") {
                     text = undefined;
