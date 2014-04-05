@@ -1,7 +1,7 @@
 {
     "preferences": {
         "tabSize": 4,
-        "gotoExclude": ["/release/zed-*"]
+        "gotoExclude": ["/release/zed-*", "/nw/build/*", "/nw/download/*"]
     },
     "modes": {
         "json": {
