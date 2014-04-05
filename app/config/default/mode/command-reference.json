@@ -23,6 +23,10 @@
                 "showPrintMargin": false,
                 "wordWrap": true,
                 "wordWrapColumn": 75
+            },
+
+            "handlers": {
+                "click": ["Zed:Command Reference:Invoke Command"]
             }
         }
     }
