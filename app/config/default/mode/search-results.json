@@ -22,6 +22,10 @@
             "preferences": {
                 "showGutter": false,
                 "showPrintMargin": false
+            },
+
+            "handlers": {
+                "click": ["Search Results:Open File"]
             }
         }
     }

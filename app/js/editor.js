@@ -21,6 +21,7 @@ define(function(require, exports, module) {
 
         eventbus.declare("editorloaded");
         eventbus.declare("selectionchanged");
+        eventbus.declare("sessionclicked"); // edit, session, event
 
         var editors = [];
         var activeEditor = null;
@@ -120,6 +121,9 @@ define(function(require, exports, module) {
                     });
                     editor.on("changeSelection", function() {
                         eventbus.emit("selectionchanged", editor);
+                    });
+                    editor.on("click", function(e) {
+                        eventbus.emit("sessionclicked", editor, editor.session, e);
                     });
                 });
                 api.setActiveEditor(editors[0]);
@@ -283,7 +287,7 @@ define(function(require, exports, module) {
                     }
                 }
             }
-            
+
             lines[0] = lines[0].substring(lines[0].search(regexp));
             e.text = lines.join("\n");
             if (!config.getPreference("useSoftTabs", session)) {
