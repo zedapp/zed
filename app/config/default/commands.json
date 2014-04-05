@@ -180,6 +180,7 @@
             }
         },
         "Tools:Document Statistics": {
+            "doc": "Counts the characters, words, and lines in the current file.",
             "scriptUrl": "./command/statistics.js",
             "inputs": {
                 "lines": true,
