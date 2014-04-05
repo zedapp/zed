@@ -829,7 +829,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Edit:Indent", {
-            doc: "Increase the indentation of the current line.",
+            doc: "Insert a tab at the cursor position.",
             exec: function(editor) {
                 editor.indent();
             },
