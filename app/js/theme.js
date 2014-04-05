@@ -30,6 +30,8 @@ define(function(require, exports, module) {
                     var allThemes = config.getThemes();
                     _.each(allThemes, function(theme, name) {
                         command.defineConfig("Configuration:Theme:" + (theme.dark ? "Dark" : "Light") + ":" + theme.name, {
+                            doc: "Activate this theme. Change will take effect " +
+                            "immediately, and also persist in Zed's configuration file.",
                             exec: function() {
                                 config.setPreference("theme", name);
                                 setTheme(name);

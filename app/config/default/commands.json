@@ -1,155 +1,183 @@
 {
     "commands": {
         "Configuration:Preferences:Decrease Continuous Completion Delay": {
+            "doc": "Decrease by 50ms the delay before displaying the completion menu.",
             "scriptUrl": "./command/config_int.js",
             "preference": "continuousCompletionDelay",
             "amount": -50,
             "readOnly": true
         },
         "Configuration:Preferences:Increase Continuous Completion Delay": {
+            "doc": "Increase by 50ms the delay before displaying the completion menu.",
             "scriptUrl": "./command/config_int.js",
             "preference": "continuousCompletionDelay",
             "amount": 50,
             "readOnly": true
         },
         "Configuration:Preferences:Decrease Font Size": {
+            "doc": "Decrease by 1 the font size.",
             "scriptUrl": "./command/config_int.js",
             "preference": "fontSize",
             "amount": -1,
             "readOnly": true
         },
         "Configuration:Preferences:Increase Font Size": {
+            "doc": "Increase by 1 the font size.",
             "scriptUrl": "./command/config_int.js",
             "preference": "fontSize",
             "amount": 1,
             "readOnly": true
         },
         "Configuration:Preferences:Decrease Preview Delay": {
+            "doc": "Decrease by 100ms the delay before updating the preview pane.",
             "scriptUrl": "./command/config_int.js",
             "preference": "previewDelay",
             "amount": -100,
             "readOnly": true
         },
         "Configuration:Preferences:Increase Preview Delay": {
+            "doc": "Increase by 100ms the delay before updating the preview pane.",
             "scriptUrl": "./command/config_int.js",
             "preference": "previewDelay",
             "amount": 100,
             "readOnly": true
         },
         "Configuration:Preferences:Decrease Print Margin Column": {
+            "doc": "Decrease by 1 the print margin column.",
             "scriptUrl": "./command/config_int.js",
             "preference": "printMarginColumn",
             "amount": -1,
             "readOnly": true
         },
         "Configuration:Preferences:Increase Print Margin Column": {
+            "doc": "Increase by 1 the print margin column.",
             "scriptUrl": "./command/config_int.js",
             "preference": "printMarginColumn",
             "amount": 1,
             "readOnly": true
         },
         "Configuration:Preferences:Decrease Recent Folder History": {
+            "doc": "Decrease by 1 the number of recent folders displayed in the project picker.",
             "scriptUrl": "./command/config_int.js",
             "preference": "recentFolderHistory",
             "amount": -1,
             "readOnly": true
         },
         "Configuration:Preferences:Increase Recent Folder History": {
+            "doc": "Increase by 1 the number of recent folders displays in the project picker.",
             "scriptUrl": "./command/config_int.js",
             "preference": "recentFolderHistory",
             "amount": 1,
             "readOnly": true
         },
         "Configuration:Preferences:Decrease Scroll Speed": {
+            "doc": "Decrease by 1 the scrolling speed.",
             "scriptUrl": "./command/config_int.js",
             "preference": "scrollSpeed",
             "amount": -1,
             "readOnly": true
         },
         "Configuration:Preferences:Increase Scroll Speed": {
+            "doc": "Increase by 1 the scrolling speed.",
             "scriptUrl": "./command/config_int.js",
             "preference": "scrollSpeed",
             "amount": 1,
             "readOnly": true
         },
         "Configuration:Preferences:Decrease Tab Size": {
+            "doc": "Decrease by 1 the tab size.",
             "scriptUrl": "./command/config_int.js",
             "preference": "tabSize",
             "amount": -1,
             "readOnly": true
         },
         "Configuration:Preferences:Increase Tab Size": {
+            "doc": "Increase by 1 the tab size.",
             "scriptUrl": "./command/config_int.js",
             "preference": "tabSize",
             "amount": 1,
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Auto Revert": {
+            "doc": "Toggle whether or not Zed prompts you to reload a file that has changed on disk.",
             "scriptUrl": "./command/toggle.js",
             "preference": "globalAutoRevert",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Auto Indent On Paste": {
+            "doc": "Toggle whether or not to automatically adjust the indent of pasted text.",
             "scriptUrl": "./command/toggle.js",
             "preference": "autoIndentOnPaste",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Display Indent Guides": {
+            "doc": "Toggle whether or not to display vertical lines at each tab stop.",
             "scriptUrl": "./command/toggle.js",
             "preference": "displayIndentGuides",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Highlight Active Line": {
+            "doc": "Toggle whether or not to highlight the current line.",
             "scriptUrl": "./command/toggle.js",
             "preference": "highlightActiveLine",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Highlight Gutter Line": {
+            "doc": "Toggle whether or not to highlight the current line number in the gutter.",
             "scriptUrl": "./command/toggle.js",
             "preference": "highlightGutterLine",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Show Gutter": {
+            "doc": "Toggle whether or not to display the left margin with line numbers and fold triangles.",
             "scriptUrl": "./command/toggle.js",
             "preference": "showGutter",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Show Invisibles": {
+            "doc": "Toggle whether or not to display invisible characters like spaces, tabs, and newlines.",
             "scriptUrl": "./command/toggle.js",
             "preference": "showInvisibles",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Show Print Margin": {
+            "doc": "Toggle whether or not to display a vertical line denoting the right margin.",
             "scriptUrl": "./command/toggle.js",
             "preference": "showPrintMargin",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Spell Check": {
+            "doc": "Toggle whether or not to highlight misspelled words.",
             "scriptUrl": "./command/toggle.js",
             "preference": "spellCheck",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Trim Whitespace On Empty Lines": {
+            "doc": "Toggle whether or not the whitespace trimming feature will truncate lines that contain nothing but whtespace.",
             "scriptUrl": "./command/toggle.js",
             "preference": "trimEmptyLines",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Trim Whitespace On Save": {
+            "doc": "Toggle whether or not to automatically remove trailing whitespace every save.",
             "scriptUrl": "./command/toggle.js",
             "preference": "trimWhitespaceOnSave",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Word Wrap": {
+            "doc": "Toggle whether or not to soft-wrap long lines.",
             "scriptUrl": "./command/toggle.js",
             "preference": "wordWrap",
             "readOnly": true
         },
         "Configuration:Preferences:Toggle Continuous Completion": {
+            "doc": "Toggle whether or not you must hit the Tab key before word completions are displayed to you.",
             "scriptUrl": "./command/toggle.js",
             "preference": "continuousCompletion",
             "readOnly": true
         },
         "Edit:Trim Whitespace": {
+            "doc": "This command will strip spaces and tabs from the end of every line (but not the line containing the cursor), and also ensures that the document ends with one and only one newline character.",
             "scriptUrl": "./command/stripper.js",
             "inputs": {
                 "cursor": true,
@@ -159,6 +187,7 @@
             }
         },
         "Edit:Auto Trim Whitespace": {
+            "doc": "This is a special case of the whitespace trimmer used for auto-trimming on save, and is not displayed to the user.",
             "scriptUrl": "./command/stripper.js",
             "internal": true,
             "inputs": {
@@ -169,10 +198,12 @@
             }
         },
         "Find:Find In Project": {
+            "doc": "Recursively search all files within the entire project.",
             "scriptUrl": "./command/search.js",
             "readOnly": true
         },
         "Select:Sort Lines": {
+            "doc": "Take the selected lines and sort them.",
             "scriptUrl": "./command/sort_selection.js",
             "inputs": {
                 "selectionRange": true,
@@ -188,9 +219,11 @@
             }
         },
         "Tools:Complete:CTags": {
+            "doc": "Display auto-complete results based on CTags.",
             "scriptUrl": "./command/ctags_completer.js"
         },
         "Tools:Complete:Text": {
+            "doc": "Display auto-complete results based on simple text matches.",
             "scriptUrl": "./command/text_completer.js"
         }
     }

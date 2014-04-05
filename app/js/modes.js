@@ -163,6 +163,7 @@ define(function(require, exports, module) {
 
         function declareModeCommands(mode) {
             command.define("Configuration:Mode:" + mode.name, {
+                doc: "Begin using this mode for the current document.",
                 exec: function(edit, session) {
                     api.setSessionMode(session, mode);
                 },
@@ -179,7 +180,6 @@ define(function(require, exports, module) {
                     modeCommands[mode.language] = cmd;
                     var commandSpec = {
                         exec: function(edit, session, callback) {
-
                             var cmd = commandSpec.modeCommand[session.mode.language];
                             if (cmd) {
                                 zed.getService("sandbox").execCommand(name, cmd, session, function(err, result) {

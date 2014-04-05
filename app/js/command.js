@@ -25,6 +25,7 @@ define(function(require, exports, module) {
 
         function defineUserCommand(name, cmd) {
             api.defineConfig(name, {
+                doc: cmd.doc,
                 exec: function(edit, session, callback) {
                     zed.getService("sandbox").execCommand(name, cmd, session, function(err, result) {
                         if (err) {
@@ -96,6 +97,7 @@ define(function(require, exports, module) {
         }
 
         api.define("Command:Enter Command", {
+            doc: "Prompts for a command to invoke, with a convenient searchable interface.",
             exec: function(edit, session) {
                 // Lazy loading these
                 var recentCommands = zed.getService("state").get("recent.commands") || {};
@@ -152,18 +154,49 @@ define(function(require, exports, module) {
         api.define("Help:Commands", {
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
-                    session.setMode("ace/mode/markdown");
-                    var command_list = "Zed Online Command Reference.\n\n" +
-                        "What follows is a complete reference of all commands " +
-                        "known to Zed, and their\ncurrent keybindings, even if " +
-                        "you've modified the defaults.\n\n\n\n";
+                    var command_list = "> Zed Online Command Reference.\n" +
+                        "\n   What follows is a complete reference of all commands " +
+                        "known to Zed, and their current keybindings, even if " +
+                        "you've modified the defaults. Click a command to activate it.\n\n\n";
                     var commandKeys = keys.getCommandKeys();
-                    api.allCommands().sort().forEach(function(command) {
-                        var binding = identifyCurrentKey(commandKeys[command]) || "";
+                    var prev_tree = [];
+                    api.allCommands().sort().forEach(function(command_name) {
+                        // Ignore internal and wrong-mode commands.
+                        var command = api.lookup(command_name) || {};
+                        try {
+                            if (command.modeCommand[session.mode.language].internal) {
+                                return;
+                            }
+                        } catch (e) { }
+                        if (command.internal) {
+                            return;
+                        }
+
+                        // Add headers for different sections.
+                        var command_tree = command_name.split(":");
+                        var len = command_tree.length - 1;
+                        for (var i = 0; i < len; ++i) {
+                            if (prev_tree[i] !== command_tree[i]) {
+                                command_list += "\n"+ new Array(i + 2).join("#") +
+                                    " " + command_tree[i] + "\n\n";
+                            }
+                        }
+                        prev_tree = command_tree;
+
+                        // Get the command documentation.
+                        var doc = command.doc ? "\n   " +
+                            command.doc.replace(/\n/g, "\n\n   ") + "\n" : "";
+
+                        // Get the current keybinding.
+                        var binding = identifyCurrentKey(commandKeys[command_name]) || "";
                         binding = binding ? "`" + binding + "`" : "Not set";
+
+                        // Add the full command details to the document.
                         command_list +=
-                            "> " + command.replace(/:/g, "  ▶  ") +
-                            "\n\n        Current Key Binding:    " + binding + "\n\n\n";
+                            "\n>    " + command_tree.slice(-1) + "\n" +
+                            "\n   `" + command_name + "`" +
+                            "\n   Current Key Binding:    " + binding +
+                            "\n" + doc + "\n";
                     });
                     session.setValue(command_list);
                 });
@@ -172,6 +205,7 @@ define(function(require, exports, module) {
         });
 
         api.define("Configuration:Reset Editor State", {
+            doc: "Reset the editor to it's initial state.",
             exec: function() {
                 zed.getService("state").reset();
             },

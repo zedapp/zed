@@ -141,6 +141,7 @@ define(function(require, exports, module) {
         }
 
         command.define("Tools:Action", {
+            doc: "", // I don't actually know what this does -robru
             exec: function(edit, session) {
                 showActions(edit, session);
             }
