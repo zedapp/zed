@@ -179,6 +179,13 @@
                 "selectionText": true
             }
         },
+        "Tools:Document Statistics": {
+            "scriptUrl": "./command/statistics.js",
+            "inputs": {
+                "lines": true,
+                "text": true
+            }
+        },
         "Tools:Complete:CTags": {
             "scriptUrl": "./command/ctags_completer.js"
         },
