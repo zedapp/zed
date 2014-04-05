@@ -161,10 +161,15 @@ define(function(require, exports, module) {
                     var commandKeys = keys.getCommandKeys();
                     var prev_tree = [];
                     api.allCommands().sort().forEach(function(command_name) {
-                        // Ignore internal commands.
+                        // Ignore internal and wrong-mode commands.
                         var command = api.lookup(command_name) || {};
+                        try {
+                            if (command.modeCommand[session.mode.language].internal) {
+                                return;
+                            }
+                        } catch (e) { }
                         if (command.internal) {
-                            return false;
+                            return;
                         }
 
                         // Add headers for different sections.

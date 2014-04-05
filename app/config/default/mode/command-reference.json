@@ -15,7 +15,8 @@
                     "inputs": {
                         "lines": true,
                         "cursor": true
-                    }
+                    },
+                    "internal": true
                 }
             },
 
