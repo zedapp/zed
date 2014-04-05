@@ -21,6 +21,7 @@
 
             "preferences": {
                 "showGutter": false,
+                "showInvisibles": false,
                 "showPrintMargin": false,
                 "wordWrap": true,
                 "wordWrapColumn": 75
