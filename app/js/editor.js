@@ -266,7 +266,6 @@ define(function(require, exports, module) {
                     min = index;
                 }
             }
-
             var adjust = col - min;
             if (min > -1 && adjust !== 0) {
                 if (adjust < 0) {
@@ -283,12 +282,13 @@ define(function(require, exports, module) {
                         lines[i] = add + lines[i];
                     }
                 }
-                lines[0] = lines[0].substring(lines[0].search(regexp));
-                e.text = lines.join("\n");
-                if (!config.getPreference("useSoftTabs", session)) {
-                    regexp = new RegExp(tabAsSpaces, "gm");
-                    e.text = e.text.replace(regexp, "\t");
-                }
+            }
+            
+            lines[0] = lines[0].substring(lines[0].search(regexp));
+            e.text = lines.join("\n");
+            if (!config.getPreference("useSoftTabs", session)) {
+                regexp = new RegExp(tabAsSpaces, "gm");
+                e.text = e.text.replace(regexp, "\t");
             }
         }
 
