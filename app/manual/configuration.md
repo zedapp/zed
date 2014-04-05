@@ -33,7 +33,7 @@ Configuration is done in Zed's JSON format, which looks as follows:
         "keys": {...},
         "handlers": {...},
         "themes": {...},
-        "package": [...]
+        "packages": [...]
     }
 
 Each key is optional.
@@ -208,7 +208,15 @@ This defines a simple CommonJS module that imports one of Zed's sandbox APIs (sa
 
 An input is an easy way to get quick access to common information, such as the full text of the file operating on, the cursor position, etc. Currently, the following "inputables" are available:
 
-* 
+* text: the text of the current session as a single string
+* lines: the contents of the current session as an array of strings representing lines
+* preferences: to get all currently active preferences (for this session)
+* cursor: to get the current cursor position ({row: ..., column: ...})
+* cursorIndex: to get the current cursor position as a character index from the start of the document
+* scrollPosition: the current scroll position
+* selectionRange: the current selection range
+* selectionText: the current selected text
+* isInsertingSnippet: whether a snippet is currently being inserted
 
 Commands are run in the Zed Sandbox (sandbox.md), which is running in a separate process for safety and safe code reloading reasons. As a result, you do not have access to all built-in Zed's core APIs. However, there is a growing number of specific APIs exposed to you (like the zed/session API in the example), check sandbox.md for more information.
 
@@ -220,6 +228,7 @@ For inspiration, it's useful to have a look at the commands defined under /defau
 * Code beautification
 * Preview rendering
 * CTag providers
+* Code completion
 
 In fact, concepts like "checking" and "beautification" are not built-in Zed features at all, they're 100% defined using custom mode-specific sandboxed commands.
 
@@ -258,3 +267,18 @@ And the following key names (as well as any upper case letter or number):
 * PageDown
 * Home
 * End
+
+Handlers
+--------
+
+To describe
+
+Themes
+------
+
+To describe
+
+Packages
+--------
+
+To describe
