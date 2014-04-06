@@ -3,7 +3,7 @@ Configuration
 
 Configuration of Zed happen in two primary locations:
 
-1. The "Configuration" project which you can open from the Zed open screen or using `Command-,`/`Ctrl-,` from any editor.
+1. The "Configuration" project which you can open from the Zed project picker.
 2. A /zedconfig.json file in your project.
 
 Zed implements configuration via an in-editor virtual file system that automatically synchronizes with Google Drive when connected to the Internet. As a result, your configuration is automatically synced between all your Chromes connected to your Google account. If you're interested, you can see the files by searching for them in your Drive:
