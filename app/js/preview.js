@@ -105,6 +105,7 @@ define(function(require, exports, module) {
 
 
         command.define("Split:Preview", {
+            doc: "Open a split pane with a preview of the current document.",
             exec: function() {
                 splitPreview();
             },

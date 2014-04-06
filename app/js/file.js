@@ -63,18 +63,21 @@ define(function(require, exports, module) {
         }
 
         command.define("File:Delete", {
+            doc: "Remove the current file from disk.",
             exec: function(edit) {
                 confirmDelete(edit);
             }
         });
 
         command.define("File:Rename", {
+            doc: "Rename the current file on disk.",
             exec: function(edit) {
                 renameFile(edit);
             }
         });
 
         command.define("File:Delete Tree", {
+            doc: "Recursively delete a directory, and all subdirectories and files contained within.",
             exec: function() {
                 ui.prompt({
                     message: "Prefix of tree to delete:",

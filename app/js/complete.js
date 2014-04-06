@@ -177,6 +177,7 @@ define(function(require, exports, module) {
         };
 
         command.define("Edit:Complete", {
+            doc: "Pop up a menu with a list of possible completions for the current word.",
             exec: function(edit) {
                 if (shouldComplete(edit)) {
                     complete(edit);

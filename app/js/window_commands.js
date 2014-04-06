@@ -8,6 +8,7 @@ define(function(require, exports, module) {
         var win = imports.window;
 
         command.define("Window:Close", {
+            doc: "Closes the current window.",
             exec: function() {
                 win.close();
             },
@@ -15,6 +16,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Window:Fullscreen", {
+            doc: "Toggles between windowed and fullscreen for the current window.",
             exec: function() {
                 win.fullScreen();
             },
@@ -22,6 +24,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Window:Maximize", {
+            doc: "Toggles between windowed and maximized for the current window.",
             exec: function() {
                 win.maximize();
             },
@@ -29,6 +32,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Window:Minimize", {
+            doc: "Minimizes the current window.",
             exec: function() {
                 win.minimize();
             },

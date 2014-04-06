@@ -350,6 +350,7 @@ define(function(require, exports, module) {
         ui.blockUI("Loading project and file list. One moment please...");
 
         command.define("File:Reload", {
+            doc: "Re-read this file from disk, reverting any unsaved changes.",
             exec: function(edit, session) {
                 handleChangedFile(session.filename);
             },

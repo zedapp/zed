@@ -32,19 +32,23 @@
     },
     "commands": {
         "Tools:Zpm:Installed Packages": {
+            "doc": "List packages that are already installed.",
             "scriptUrl": "/default/zpm/installed_packages.js",
             "readOnly": true
         },
         "Tools:Zpm:Install": {
+            "doc": "Prompt to install a package.",
             "scriptUrl": "/default/zpm/install.js",
             "readOnly": true
         },
         "Tools:Zpm:Auto Update": {
+            "doc": "Automatically update packages.",
             "scriptUrl": "/default/zpm/auto_update.js",
             "readOnly": true,
             "internal": true
         },
         "Tools:Zpm:Install From Config": {
+            "doc": "Install packages from user configuration.",
             "scriptUrl": "/default/zpm/install_config.js",
             "readOnly": true,
             "internal": true

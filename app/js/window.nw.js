@@ -81,6 +81,7 @@ define(function(require, exports, module) {
         };
 
         command.define("Development:Show DevTools", {
+            doc: "Show the node-webkit developer tools.",
             exec: function() {
                 win.showDevTools();
             },

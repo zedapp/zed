@@ -15,6 +15,7 @@ define(function(require, exports, module) {
         $("title").text(opts.get("title") + " [ Zed ]");
 
         command.define("Project:Open Project Picker", {
+            doc: "Open the initial Zed window that allows you to switch between projects.",
             exec: function() {
                 window.opener.focusMe();
             },
@@ -22,6 +23,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Project:Rename", {
+            doc: "Rename the current project on disk.",
             exec: function() {
                 zed.getService("ui").prompt({
                     message: "Rename project to:",

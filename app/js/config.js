@@ -304,6 +304,7 @@ define(function(require, exports, module) {
         }
 
         command.define("Configuration:Reload", {
+            doc: "Reload Zed's configuration from disk.",
             exec: function() {
                 loadConfiguration();
             },
@@ -311,6 +312,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Configuration:Reset", {
+            doc: "Discard all Zed configuration and revert to factory settings.",
             exec: function() {
                 zed.getService("ui").prompt({
                     message: "Are you sure you reset all config?"
@@ -331,6 +333,8 @@ define(function(require, exports, module) {
         });
 
         command.define("Configuration:Show Full", {
+            doc: "Dump all configuration data into a temporary buffer called " +
+            "`zed::config` for ready-only inspection.",
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::config", edit, session, function(err, session) {
                     session.setMode("ace/mode/json");
