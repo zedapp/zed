@@ -42,7 +42,11 @@ define(function(require, exports, module) {
             },
             init: function() {
                 var data = "data:text/html," + require("text!../preview.html");
-                previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><webview id='preview'>").hide();
+                if(window.isNodeWebkit) {
+                    previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><iframe id='preview'>").hide();
+                } else {
+                    previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><webview nwdisable nwfaketop id='preview'>").hide();
+                }
                 $("body").append(previewWrapperEl);
                 previewEl = $("#preview");
                 previewEl.attr("src", data);
