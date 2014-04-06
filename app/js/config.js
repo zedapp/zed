@@ -221,7 +221,7 @@ define(function(require, exports, module) {
                     try {
                         base = JSON.parse(text);
                     } catch (e) {
-                        console.error(e);
+                        console.error("Error parsing zedconfig.json", e);
                     }
                     loadUserConfiguration(base, callback);
                 });
@@ -242,18 +242,19 @@ define(function(require, exports, module) {
             clearWatchers();
             watchFile(configfs, rootFile, loadConfiguration);
             configfs.readFile(rootFile, function(err, config_) {
+                var json = {};
                 try {
-                    var json = JSON.parse(config_);
+                    json = JSON.parse(config_);
                     resolveRelativePaths(json, rootFile);
-                    userConfig = json;
-                    config = superExtend(config, json);
-                    expandConfiguration(config, {}, function() {
-                        eventbus.emit("configchanged", api);
-                        _.isFunction(callback) && callback(null, api);
-                    });
-                } catch (e) {
-                    console.error(e);
+                } catch(e) {
+                    console.error("Error parsing /user.json", e);
                 }
+                userConfig = json;
+                config = superExtend(config, json);
+                expandConfiguration(config, {}, function() {
+                    eventbus.emit("configchanged", api);
+                    _.isFunction(callback) && callback(null, api);
+                });
             });
         }
 
