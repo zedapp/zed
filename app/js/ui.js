@@ -36,7 +36,7 @@ define(function(require, exports, module) {
                     });
                 };
                 var onChange = options.onChange;
-                var onCancel = options.onCancel;
+                var onCancel = options.onCancel || function() {};
                 var hint = options.hint;
                 var currentPath = options.currentPath;
 
@@ -210,7 +210,7 @@ define(function(require, exports, module) {
                         if (selectedPath) {
                             onSelect(selectedPath, inputVal);
                         } else {
-                            onCancel && onCancel();
+                            onCancel();
                         }
                     }
                     event && event.preventDefault();
@@ -230,7 +230,7 @@ define(function(require, exports, module) {
                 }
 
                 function cancel() {
-                    onCancel && onCancel();
+                    onCancel();
                     close();
                 }
 

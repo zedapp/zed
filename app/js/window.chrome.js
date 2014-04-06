@@ -51,9 +51,7 @@ define(function(require, exports, module) {
                 win.setBounds(bounds);
             },
             addResizeListener: function(listener) {
-                win.onBoundsChanged.addListener(function() {
-                    listener();
-                });
+                win.onBoundsChanged.addListener(listener);
             },
             focus: function() {
                 chrome.app.window.current().focus();

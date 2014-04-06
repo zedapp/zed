@@ -264,9 +264,9 @@ define(function(require, exports, module) {
                         }
                     },
                     onCancel: function() {
+                        editor.switchSession(session, edit);
                         edit.moveCursorToPosition(currentPos);
                         edit.clearSelection();
-                        editor.switchSession(session, edit);
                     }
                 });
             },
