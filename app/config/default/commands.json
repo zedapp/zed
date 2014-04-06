@@ -210,6 +210,16 @@
                 "selectionText": true
             }
         },
+        "Help:View Log": {
+            "doc": "Shows the zed log, which can contain useful debugging messages in the event of a problem.",
+            "scriptUrl": "./command/goto.js",
+            "destination": "zed::log"
+        },
+        "Help:View Start Page": {
+            "doc": "Shows the zed start page, which contains a quick reference for basic Zed commands.",
+            "scriptUrl": "./command/goto.js",
+            "destination": "zed::start"
+        },
         "Tools:Document Statistics": {
             "doc": "Counts the characters, words, and lines in the current file.",
             "scriptUrl": "./command/statistics.js",
