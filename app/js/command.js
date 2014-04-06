@@ -157,7 +157,8 @@ define(function(require, exports, module) {
                     var command_list = "> Zed Online Command Reference.\n" +
                         "\n   What follows is a complete reference of all commands " +
                         "known to Zed, and their current keybindings, even if " +
-                        "you've modified the defaults. Click a command to activate it.\n\n\n";
+                        "you've modified the defaults. Click a command to activate it.\n\n" +
+                        "   `Fold:Fold All`\n   `Fold:Unfold All`\n\n\n";
                     var commandKeys = keys.getCommandKeys();
                     var prev_tree = [];
                     api.allCommands().sort().forEach(function(command_name) {
