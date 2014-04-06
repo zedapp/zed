@@ -4,22 +4,10 @@ var session = require("zed/session");
 
 var filterExtensions = ["pdf", "gz", "tgz", "bz2", "zip",
     "exe", "jpg", "jpeg", "gif", "png"];
-    
-function count(str, searchchar, start, end) {
-    start = typeof start !== 'undefined' ? start : 0;
-    end = typeof end !== 'undefined' ? end : str.length;
-    var result = 0;
-    while (start != end) {
-        if (str[start] == searchchar) {
-            ++result;
-        }
-        ++start;
-    }
-    return result;
-}    
 
 function indexToLine(text, index) {
-    return count(text, "\n", 0, index) + 1;
+    var s = text.substring(0, index);
+    return s.split("\n").length;
 }
 
 function getLine(text, index) {
