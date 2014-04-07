@@ -44,7 +44,7 @@ apps-mac:
 	cp nw/nw.icns nw/build/Zed.app/Contents/Resources/nw.icns
 	cp nw/Info.plist nw/build/Zed.app/Contents/Info.plist
 	cp -r app nw/build/Zed.app/Contents/Resources/app.nw
-	rm release/zed-mac.zip
+	rm -f release/zed-mac.zip
 	cd nw/build; zip -r ../../release/zed-mac.zip Zed.app
 
 app.nw:
