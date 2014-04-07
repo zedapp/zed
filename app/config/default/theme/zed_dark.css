@@ -106,10 +106,6 @@
  .ace-zeddark .ace_markup.ace_list {
      color:#E1D4B9;
  }
- .ace-zeddark .ace_invisible {
-     color: #999;
- }
- .ace-zeddark .ace_heading {
-     font-weight: bold;
-     font-style: italic;
- }
+.ace-zeddark  .ace_invisible {
+    color: #999;
+}
