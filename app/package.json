@@ -10,6 +10,9 @@
         "frame": true,
         "icon": "Icon.png"
     },
+    "dependencies": {
+        "tar": "~0.1.19"
+    },
     "chromium-args": "--disable-web-security -–allow-file-access-from-files",
     "webkit": {
         "page-cache": false

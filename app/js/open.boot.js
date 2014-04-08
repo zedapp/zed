@@ -20,7 +20,7 @@ require(["../dep/architect"], function(architect) {
         "./keys"];
 
     if (window.isNodeWebkit) {
-        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw", "./cli.nw");
+        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw", "./cli.nw", "./auto_update.nw");
         modules.push({
             packagePath: "./open",
             editorHtml: "editor.nw.html",

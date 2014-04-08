@@ -37,7 +37,10 @@ download-nw:
 	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-win-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-win-ia32 node-webkit-$(NW_VERSION)-win-ia32.zip
 	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-osx-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-osx-ia32 node-webkit-$(NW_VERSION)-osx-ia32.zip
 
-apps-mac:
+apps-npm:
+	cd app; npm install
+
+apps-mac: apps-npm
 	rm -rf nw/build
 	mkdir -p nw/build
 	cp -r nw/download/node-webkit-$(NW_VERSION)-osx-ia32/node-webkit.app nw/build/Zed.app
@@ -45,20 +48,22 @@ apps-mac:
 	cp nw/Info.plist nw/build/Zed.app/Contents/Info.plist
 	cp -r app nw/build/Zed.app/Contents/Resources/app.nw
 	rm -f release/zed-mac.zip
-	cd nw/build; zip -r ../../release/zed-mac.zip Zed.app
+	cd nw/build; tar czf ../../release/zed-mac.tar.gz Zed.app
 
-app.nw:
+app.nw: apps-npm
 	mkdir -p release
 	rm -f nw/app.nw
 	cd app; zip -r ../nw/app.nw *
 
 apps-win: app.nw
 	rm -rf nw/build
-	mkdir -p nw/build
-	cat nw/download/node-webkit-$(NW_VERSION)-win-ia32/nw.exe nw/app.nw > nw/build/zed.exe
-	cp nw/download/node-webkit-$(NW_VERSION)-win-ia32/{nw.pak,icudt.dll} nw/build/
+	mkdir -p nw/build/zed
+	cat nw/download/node-webkit-$(NW_VERSION)-win-ia32/nw.exe nw/app.nw > nw/build/zed/zed.exe
+	cp nw/download/node-webkit-$(NW_VERSION)-win-ia32/{nw.pak,icudt.dll} nw/build/zed/
 	rm -f release/zed-win.zip
+	rm -f release/zed-win.tar.gz
 	cd nw/build; zip -r ../../release/zed-win.zip *
+	cd nw/build; tar cvzf ../../release/zed-win.tar.gz *
 
 apps-linux64: app.nw
 	rm -rf nw/build
