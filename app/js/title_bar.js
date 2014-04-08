@@ -19,16 +19,47 @@ define(function(require, exports, module) {
         eventbus.declare("sessionactivityfailed"); // session, error
 
         var winButtons;
-        if (useragent.isMac) {
-            winButtons = "<div class='close'></div><div class='minimize'></div><div class='maximize'></div>";
-        } else {
-            winButtons = "<div class='minimize'></div><div class='maximize'></div><div class='close'></div>";
-        }
-        var barEl = $("<div id='titlebar'><div class='windowbuttons'>" + winButtons + "</div><div class='title'></div><div class='fullscreen'></div>");
-        $("body").append(barEl);
+        var barEl;
 
         var api = {
             hook: function() {
+                if (useragent.isMac) {
+                    winButtons = "<div class='close'></div><div class='minimize'></div><div class='maximize'></div>";
+                } else {
+                    winButtons = "<div class='minimize'></div><div class='maximize'></div><div class='close'></div>";
+                }
+                barEl = $("<div id='titlebar'><div class='windowbuttons'>" + winButtons + "</div><div class='title'></div><div class='fullscreen'></div>");
+                $("body").append(barEl);
+
+                // TODO: Rework this to toggle CSS styles
+                var buttonsEl = barEl.find(".windowbuttons");
+                if (useragent.isMac) {
+                    buttonsEl.mousemove(function() {
+                        buttonsEl.find("div").css("background-position-y", '-16px');
+                    });
+                    buttonsEl.mouseout(function() {
+                        buttonsEl.find("div").css("background-position-y", '0');
+                    });
+                    $(window).blur(function() {
+                        buttonsEl.find("div").css("background-position-y", '-31px');
+                    });
+                    $(window).focus(function() {
+                        buttonsEl.find("div").css("background-position-y", '0');
+                    });
+                }
+                buttonsEl.find(".close").click(function() {
+                    window.close();
+                });
+                buttonsEl.find(".minimize").click(function() {
+                    window.minimize();
+                });
+                buttonsEl.find(".maximize").click(function() {
+                    window.maximize();
+                });
+                barEl.find(".fullscreen").click(function() {
+                    window.fullScreen();
+                });
+
                 eventbus.on("configchanged", update);
                 eventbus.on("projecttitlechanged", update);
 
@@ -119,35 +150,6 @@ define(function(require, exports, module) {
             var titleEl = barEl.find(".title");
 
             titleEl.html("<img src='img/zed-small.png'/>" + title + " ");
-
-            // TODO: Rework this to toggle CSS styles
-            var buttonsEl = barEl.find(".windowbuttons");
-            if (useragent.isMac) {
-                buttonsEl.mousemove(function() {
-                    buttonsEl.find("div").css("background-position-y", '-16px');
-                });
-                buttonsEl.mouseout(function() {
-                    buttonsEl.find("div").css("background-position-y", '0');
-                });
-                $(window).blur(function() {
-                    buttonsEl.find("div").css("background-position-y", '-31px');
-                });
-                $(window).focus(function() {
-                    buttonsEl.find("div").css("background-position-y", '0');
-                });
-            }
-            buttonsEl.find(".close").click(function() {
-                window.close();
-            });
-            buttonsEl.find(".minimize").click(function() {
-                window.minimize();
-            });
-            buttonsEl.find(".maximize").click(function() {
-                window.maximize();
-            });
-            barEl.find(".fullscreen").click(function() {
-                window.fullScreen();
-            });
 
             editor.getEditors(true).forEach(function(edit) {
                 $(edit.container).css("top", barHeight + "px");
