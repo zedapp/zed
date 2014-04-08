@@ -2,6 +2,8 @@ Welcome to Zed
 ==============
 For the latest Zed news check out http://zedapp.org and check out the Manual project for documentation.
 
+Zed is open source, but not free to develop. If you use Zed, please consider paying to ensure further development: http://zedapp.org/buy
+
 To start editing files in this project, press `Command-E` on Mac, or `Ctrl-E` on Windows/Linux/ChromeOS. If you prefer a tree view of your files, press `Command-T`/`Ctrl-T`. To find all available commands and keyboard shortcut press `Command-.`/`Ctrl-.`
 
 Useful keys

@@ -1,6 +1,24 @@
 Changelog
 =========
 
+0.10.2
+------
+* Refactoring of Zed core codebase to use Architect plug-ins, making it easier to create the Zed standalone (without Chrome dependency) version.
+* New commands:
+    * `Help:Commands` (bound to F1 by default) gives you a context-sensitive list of all available Zed commands in your current mode, documentation (if available) and current keybinding (by robru)
+    * `Tools:Document Statistics` gives some useful stats about your current document (word count, line count, character count etc.) (by robru)
+* Sandbox updates:
+    * Added sandbox commands to call goto and invoke arbitrary other commands (by robru)
+    * Added a "click" handler for the sandbox.
+* Language modes:
+    * Separate SCSS mode (by wpapper)
+    * Scala mode (by netzwerg)
+    * Mode is now set for files without a file extension based on Unix shebang line, e.g. #!/bin/bash uses bash mode (by robru)
+* Made configuration loading more robust, even if user.json contains JSON parse errors.
+* Minor fixes of the whitespace trimmer (by robru)
+* Indent on paste fixes (by TheKiteEatingTree)
+* Some minor updates to the manual (particularly the config.md documentation)
+
 0.10.1
 ------
 * Important: all sandbox APIs (and packages) have now been refactored to use JavaScript-native promises
