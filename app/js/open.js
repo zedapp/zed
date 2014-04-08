@@ -1,6 +1,6 @@
 /*global define, $, chrome, _*/
 define(function(require, exports, module) {
-    plugin.consumes = ["history", "window"];
+    plugin.consumes = ["history", "window", "windows"];
     plugin.provides = ["open"];
     return plugin;
 
@@ -15,6 +15,7 @@ define(function(require, exports, module) {
 
         var history = imports.history;
         var win = imports.window;
+        var windows = imports.windows;
 
         var builtinProjects = options.builtinProjects;
         var editorHtml = options.editorHtml;
@@ -25,21 +26,16 @@ define(function(require, exports, module) {
 
         var selectIdx = 0;
         // Keeps references to open project's Chrome windows
-        var openProjects = {};
+        var openProjects = windows.openProjects;
         // We're storing recent projects in local storage
         var projectCache = null;
         var validProjectCache = null;
 
-        // var backgroundPage = null;
-
-        // chrome.runtime.getBackgroundPage(function(bg) {
-        //     backgroundPage = bg;
-        //     openProjects = backgroundPage.projects;
-        // });
-
         var api = {
             open: open
         };
+
+        windows.setOpenWindow();
 
         function open(url, title) {
             var openProject = openProjects[url];
@@ -136,6 +132,7 @@ define(function(require, exports, module) {
         }
 
         function updateRecentProjects(callback) {
+            console.log("Updating project list");
             history.getProjects(function(err, projects) {
                 if (_.isEqual(projects, projectCache)) {
                     return;

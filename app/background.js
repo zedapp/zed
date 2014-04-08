@@ -1,7 +1,7 @@
 /*global chrome*/
 
 function showProjects() {
-    chrome.app.window.create('open.html', {
+    chrome.app.window.create('open.chrome.html', {
         frame: 'chrome',
         width: 400,
         height: 180

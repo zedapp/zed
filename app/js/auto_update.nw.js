@@ -1,5 +1,6 @@
 /* global $, define, nodeRequire*/
 define(function(require, exports, module) {
+    plugin.consumes = ["windows"];
     return plugin;
 
     function plugin(options, imports, register) {
@@ -10,7 +11,11 @@ define(function(require, exports, module) {
         var fs = nodeRequire("fs");
         var zlib = nodeRequire('zlib');
         var tar = nodeRequire('tar');
+        var os = nodeRequire('os');
         var gui = nodeRequire("nw.gui");
+        var exec = nodeRequire("child_process").exec;
+
+        var windows = imports.windows;
 
         var applicationPath;
 
@@ -98,6 +103,7 @@ define(function(require, exports, module) {
 
         function upgrade(version, callback) {
             downloadVersion(version, function(err, outDir) {
+                var win = gui.Window.get();
                 if (err) {
                     return console.error("Download failed:", err);
                 }
@@ -105,12 +111,30 @@ define(function(require, exports, module) {
                 if (process.platform === "darwin") {
                     dirName = outDir + "/Zed.app";
                 }
-                gui.Window.get().on("close", function() {
-                    fs.renameSync(applicationPath, applicationPath + ".prev");
-                    fs.renameSync(dirName, applicationPath);
-                    deleteFolderRecursive(outDir);
-                    deleteFolderRecursive(applicationPath + ".prev");
-                    this.close(true);
+                console.log("Update available!");
+                $("#update-available").fadeIn();
+                win.on("close", function() {
+                    if(process.platform === "win32") {
+                        var batchScriptPath = os.tmpdir() + "zed-update.bat";
+                        fs.writeFileSync(batchScriptPath,
+                            "echo Will update Zed in 5 seconds...\n\
+                            timeout /t 5 /nobreak\n\
+                            move \"" + applicationPath + "\" \"" + applicationPath+ ".prev\"\n\
+                            move \"" + dirName + "\" \"" + applicationPath+ "\"\n\
+                            rmdir /S /Q \"" + outDir + "\"\n\
+                            rmdir /S /Q \"" + applicationPath + ".prev\"\n\
+                            exit");
+                        exec("start " + batchScriptPath);
+                        setTimeout(function() {
+                            windows.closeAll();
+                        }, 1000);
+                    } else {
+                        fs.renameSync(applicationPath, applicationPath + ".prev");
+                        fs.renameSync(dirName, applicationPath);
+                        deleteFolderRecursive(outDir);
+                        deleteFolderRecursive(applicationPath + ".prev");
+                        this.close(true);
+                    }
                 });
                 callback();
             });

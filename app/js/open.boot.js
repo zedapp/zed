@@ -20,7 +20,7 @@ require(["../dep/architect"], function(architect) {
         "./keys"];
 
     if (window.isNodeWebkit) {
-        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw", "./cli.nw", "./auto_update.nw");
+        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw", "./cli.nw", "./windows.nw", "./auto_update.nw");
         modules.push({
             packagePath: "./open",
             editorHtml: "editor.nw.html",
@@ -36,7 +36,7 @@ require(["../dep/architect"], function(architect) {
             }]
         });
     } else {
-        modules.push("./history.chrome", "./configfs.chrome", "./window.chrome", "./sandbox.chrome");
+        modules.push("./history.chrome", "./configfs.chrome", "./window.chrome", "./sandbox.chrome", "./windows.chrome");
         modules.push({
             packagePath: "./open",
             editorHtml: "editor.html",

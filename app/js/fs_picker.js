@@ -76,6 +76,12 @@ define(function(require, exports, module) {
                         dir: dir,
                         id: id
                     });
+                    setTimeout(function() {
+                        console.log("Now setting open Projects");
+                        var openProjects = zed.getService("windows").openProjects;
+                        delete openProjects["local:"];
+                        openProjects["local:" + id] = chrome.app.window.current();
+                    }, 2000);
                 });
             }
         } else if (url.indexOf("node:") === 0) {
@@ -90,10 +96,15 @@ define(function(require, exports, module) {
                     folderPicker(function(err, path) {
                         options.set("title", path);
                         options.set("url", "node:" + path);
-                        return callback(null, {
+                        callback(null, {
                             packagePath: "./fs/node",
                             dir: path
                         });
+                        setTimeout(function() {
+                            var openProjects = zed.getService("windows").openProjects;
+                            delete openProjects["node:"];
+                            openProjects["node:" + path] = nodeRequire("nw.gui").Window.get();
+                        }, 2000);
                     });
                 });
             }

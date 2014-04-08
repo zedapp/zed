@@ -68,7 +68,7 @@ define(function(require, exports, module) {
          * If we would like to reset our sandbox (e.d. to reload code), we can
          * simply delete and readd the iframe.
          */
-        function resetSandbox() {
+        function resetSandbox(callback) {
             if (sandboxEl) {
                 // sandboxEl[0].clearData({}, {cache: true}, function() {
                 // });
@@ -82,6 +82,7 @@ define(function(require, exports, module) {
                 sandbox.executeScript({
                     code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js")
                 });
+                _.isFunction(callback) && callback();
             });
             sandbox.addEventListener('consolemessage', function(e) {
                 console.log('[Sandbox]: ' + e.message + ' (line: ' + e.line + ')');
@@ -89,8 +90,6 @@ define(function(require, exports, module) {
             waitingForReply = {};
             id = 0;
         }
-
-        resetSandbox();
 
         /**
          * Handle a request coming from within the sandbox, and send back a response
@@ -165,8 +164,11 @@ define(function(require, exports, module) {
             }
         });
 
-        register(null, {
-            sandbox: api
+        resetSandbox(function() {
+            register(null, {
+                sandbox: api
+            });
         });
+
     }
 });

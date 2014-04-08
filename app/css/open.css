@@ -74,3 +74,14 @@ input[type=submit] {
     width: 500px;
     height: 200px;
 }
+#update-available {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #F2E68A;
+    border-bottom: 1px solid #333;
+    z-index: 10;
+    display: none;
+    padding: 8px;
+}
