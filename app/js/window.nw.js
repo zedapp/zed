@@ -68,6 +68,8 @@ define(function(require, exports, module) {
             setBounds: function(bounds) {
                 win.width = bounds.width;
                 win.height = bounds.height;
+                win.y = bounds.top;
+                win.x = bounds.left;
             },
             addResizeListener: function(listener) {
                 win.on("resize", function() {
