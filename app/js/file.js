@@ -62,6 +62,29 @@ define(function(require, exports, module) {
             });
         }
 
+        function copyFile(edit) {
+            var session = edit.getSession();
+            var path = session.filename;
+            console.log("Filename", path);
+            ui.prompt({
+                message: "Copy to path:",
+                input: path
+            }, function(err, newPath) {
+                if (newPath) {
+                    eventbus.emit("sessionactivitystarted", edit.getSession(), "Copying");
+                    fs.writeFile(newPath, session.getValue(), function(err) {
+                        if (err) {
+                            return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not write to file: " + err);
+                        }
+                        // TODO: Copy session state
+                        session_manager.go(newPath, edit);
+                        eventbus.emit("newfilecreated", newPath);
+                        eventbus.emit("sessionactivitycompleted", edit.getSession());
+                    });
+                }
+            });
+        }
+
         command.define("File:Delete", {
             exec: function(edit) {
                 confirmDelete(edit);
@@ -71,6 +94,12 @@ define(function(require, exports, module) {
         command.define("File:Rename", {
             exec: function(edit) {
                 renameFile(edit);
+            }
+        });
+
+        command.define("File:Copy", {
+            exec: function(edit) {
+                copyFile(edit);
             }
         });
 
