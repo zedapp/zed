@@ -29,7 +29,6 @@ define(function(require, exports, module) {
                     icon: "Icon.png"
                 });
                 w.once("loaded", function() {
-                    w.window.opener = window;
                     w.focus();
                     callback && callback(null, {
                         addCloseListener: function(listener) {
