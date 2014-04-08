@@ -1,5 +1,6 @@
 {
     "keys": {
+        "Navigate:Reload Filelist": "F5",
         "Navigate:Goto": {
             "mac": "Command-E",
             "win": "Ctrl-E"
