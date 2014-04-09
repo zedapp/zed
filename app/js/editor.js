@@ -1,4 +1,3 @@
-/*global define, $, _, ace, zed */
 define(function(require, exports, module) {
     "use strict";
 
@@ -25,7 +24,6 @@ define(function(require, exports, module) {
 
         var editors = [];
         var activeEditor = null;
-
 
         var api = {
             hook: function() {

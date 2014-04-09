@@ -45,18 +45,5 @@
         <script src="ace/ext-whitespace.js"></script>
 
         <script src="js/boot.js"></script>
-
-        <script>
-        function pick(callback) {
-            var picker = $('<input type="file" nwdirectory/>');
-            picker.change(function() {
-                callback(this.value);
-            });
-            picker.click();
-        }
-        // pick(function(dir) {
-        //     console.log("Picked: ", dir);
-        // });
-        </script>
     </body>
 </html>

@@ -100,6 +100,7 @@ define(function(require, exports, module) {
         });
 
         command.define("File:Copy", {
+            doc: "Copy the current file to a new path on disk.",
             exec: function(edit) {
                 copyFile(edit);
             }

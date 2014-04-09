@@ -15,9 +15,12 @@ define(function(require, exports, module) {
         var gui = nodeRequire("nw.gui");
         var exec = nodeRequire("child_process").exec;
 
+        // gui.Window.get().showDevTools();
+
         var windows = imports.windows;
 
         var applicationPath;
+        var updated = false;
 
         if (process.platform === "darwin") {
             // Get to the path to the .app directory
@@ -25,26 +28,52 @@ define(function(require, exports, module) {
         } else {
             applicationPath = path.dirname(process.execPath);
         }
-        getCurrentVersion(function(err, currentVersion) {
-            getNewVersion(function(err, newVersion) {
-                if (err) {
-                    return console.error("Couldn't check for updated version.");
-                }
-                console.log("Current version", currentVersion, "new version", newVersion);
-                if (versionCompare(newVersion, currentVersion) > 0) {
-                    upgrade(newVersion, function(err) {
-                        console.log("Error", err);
-                    });
-                } else {
-                    console.log("No upgrade required");
-                }
+
+        checkForUpdate();
+
+        // Check very 3h
+        setInterval(checkForUpdate, 1000 * 60 * 60 * 3);
+
+        function checkForUpdate() {
+            if(updated) {
+                // Already updated, no need to check again
+                return;
+            }
+            getCurrentVersion(function(err, currentVersion) {
+                getNewVersion(function(err, newVersion) {
+                    if (err) {
+                        return showUpdateError("Couldn't check for updated version. No internet connection?");
+                    }
+                    console.log("Current version", currentVersion, "new version", newVersion);
+                    if (versionCompare(newVersion, currentVersion) > 0) {
+                        upgrade(newVersion, function(err) {
+                            if(err) {
+                                return showUpdateError(typeof err === "string" ? err : err.message);
+                            }
+                            updated = true;
+                            $("#update-available").fadeIn();
+                        });
+                    } else {
+                        console.log("No upgrade required");
+                    }
+                });
             });
-        });
+        }
+
+        function showUpdateError(message) {
+            var el = $("#update-error");
+            el.text("Auto update error: " + message).fadeIn();
+            setTimeout(function() {
+                el.fadeOut();
+            }, 10 * 1000);
+        }
 
         function getCurrentVersion(callback) {
             $.get("app://./manifest.json", function(text) {
                 var json = JSON.parse(text);
                 callback(null, json.version);
+            }).error(function(err) {
+                callback(err);
             });
         }
 
@@ -72,6 +101,8 @@ define(function(require, exports, module) {
                 case "win32":
                     downloadFilename += "win.tar.gz";
                     break;
+                default:
+                    return callback("Platform not supported for auto updates");
             }
             var newAppDir = path.normalize(applicationPath + "/../zed.update");
             try {
@@ -80,10 +111,9 @@ define(function(require, exports, module) {
                 if (e.errno === -17) {
                     console.log("Directory already exists, that's ok.");
                 } else {
-                    throw e;
+                    return callback(e);
                 }
             }
-            console.log("New app dir", newAppDir);
             http.get(downloadUrl + downloadFilename, function(res) {
                 res.pipe(zlib.createGunzip()).pipe(tar.Extract({
                     path: newAppDir
@@ -105,15 +135,18 @@ define(function(require, exports, module) {
             downloadVersion(version, function(err, outDir) {
                 var win = gui.Window.get();
                 if (err) {
-                    return console.error("Download failed:", err);
+                    return callback("Download of update failed:" + err);
                 }
                 var dirName = outDir + "/zed";
                 if (process.platform === "darwin") {
                     dirName = outDir + "/Zed.app";
                 }
-                console.log("Update available!");
-                $("#update-available").fadeIn();
+                // Attaching to close handler, when the project picker is
+                // closed, the upgrade will take place
                 win.on("close", function() {
+                    // For windows we generate a batch file that is launched
+                    // asynchronously, and does the switcharoo while Zed is not
+                    // running to avoid locking errors.
                     if(process.platform === "win32") {
                         var batchScriptPath = os.tmpdir() + "zed-update.bat";
                         fs.writeFileSync(batchScriptPath,
@@ -129,11 +162,17 @@ define(function(require, exports, module) {
                             windows.closeAll();
                         }, 1000);
                     } else {
-                        fs.renameSync(applicationPath, applicationPath + ".prev");
-                        fs.renameSync(dirName, applicationPath);
-                        deleteFolderRecursive(outDir);
-                        deleteFolderRecursive(applicationPath + ".prev");
-                        this.close(true);
+                        // Linux and Mac are more lenient, we can switch out files
+                        // without many problems.
+                        try {
+                            fs.renameSync(applicationPath, applicationPath + ".prev");
+                            fs.renameSync(dirName, applicationPath);
+                            deleteFolderRecursive(outDir);
+                            deleteFolderRecursive(applicationPath + ".prev");
+                            this.close(true);
+                        } catch(e) {
+                            callback(e);
+                        }
                     }
                 });
                 callback();

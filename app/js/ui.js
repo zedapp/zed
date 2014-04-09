@@ -312,12 +312,12 @@ define(function(require, exports, module) {
 
                 function ok() {
                     close();
-                    callback(null, input ? input.val() : true);
+                    callback && callback(null, input ? input.val() : true);
                 }
 
                 function cancel() {
                     close();
-                    callback();
+                    callback && callback();
                 }
 
                 function close() {

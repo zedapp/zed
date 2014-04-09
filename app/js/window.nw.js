@@ -75,6 +75,9 @@ define(function(require, exports, module) {
                 win.on("resize", function() {
                     listener();
                 });
+                win.on("move", function() {
+                    listener();
+                });
             },
             focus: function() {
                 win.focus();

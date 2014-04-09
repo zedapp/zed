@@ -8,11 +8,20 @@ define(function(require, exports, module) {
         var async = require("../lib/async");
         var poll_watcher = require("./poll_watcher");
         var nodeFs = nodeRequire("fs");
+        var path = nodeRequire("path");
 
         var history = imports.history;
 
         var rootPath = options.dir;
         var dontRegister = options.dontRegister;
+
+        // Support opening a single file
+        var stats = nodeFs.statSync(rootPath);
+        var filename;
+        if(stats.isFile()) {
+            filename = path.basename(rootPath);
+            rootPath = path.dirname(rootPath);
+        }
 
         // Copy and paste from project.js, but cannot important that due to
         // recursive imports.
@@ -88,6 +97,11 @@ define(function(require, exports, module) {
                 });
             },
             readFile: function(path, callback) {
+                if (path === "/.zedstate" && filename) {
+                    return callback(null, JSON.stringify({
+                        "session.current": ["/" + filename]
+                    }));
+                }
                 var fullPath = addRoot(path);
                 nodeFs.readFile(fullPath, {
                     encoding: 'utf8'
@@ -105,6 +119,9 @@ define(function(require, exports, module) {
                 });
             },
             writeFile: function(path, content, callback) {
+                if (path === "/.zedstate" && filename) {
+                    return callback();
+                }
                 var fullPath = addRoot(path);
                 // First ensure parent dir exists
                 mkdirs(dirname(fullPath), function(err) {
@@ -143,8 +160,8 @@ define(function(require, exports, module) {
         };
 
         var watcher = poll_watcher(api, 3000);
-        if(!dontRegister) {
-            history.pushProject(rootPath, "node:" + rootPath);
+        if (!dontRegister) {
+            history.pushProject(options.dir, "node:" + options.dir);
         }
         register(null, {
             fs: api

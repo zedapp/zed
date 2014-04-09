@@ -80,7 +80,19 @@ input[type=submit] {
     left: 0;
     right: 0;
     background-color: #F2E68A;
-    border-bottom: 1px solid #333;
+    border-top: 1px solid #333;
+    z-index: 10;
+    display: none;
+    padding: 8px;
+}
+#update-error {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #FF9900;
+    border-top: 1px solid #333;
+    font-size: 12px;
     z-index: 10;
     display: none;
     padding: 8px;

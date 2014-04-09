@@ -41,7 +41,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./window_commands"];
 
     if (window.isNodeWebkit) {
-        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw");
+        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw");
     } else {
         modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "windows.chrome");
     }
@@ -64,8 +64,6 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                 }
                 console.log("App started");
                 window.zed = app;
-
-
 
                 // Run hook on each service (if exposed)
                 _.each(app.services, function(service) {

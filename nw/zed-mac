@@ -1,0 +1,14 @@
+#!/bin/bash
+
+realpath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
+APPDIR=$(dirname $(dirname $0))
+
+DIR=$(dirname $0)
+if [ "" != "$1" ]; then
+   PROJECT=$(realpath $1)
+fi
+
+open -a $(realpath $APPDIR) $PROJECT
