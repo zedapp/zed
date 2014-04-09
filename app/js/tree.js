@@ -89,9 +89,6 @@ define(function(require, exports, module) {
                     var tree = treeEl.dynatree("getTree");
                     ignoreActivate = true;
                     tree.activateKey(editor.getActiveSession().filename);
-                    if (!tree.getActiveNode()) {
-                        $(lastFocusEl ? lastFocusEl.li : "#" + treeId + " li:first").focus().click();
-                    }
                     setTimeout(function() {
                         ignoreActivate = false;
                     });
