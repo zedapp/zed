@@ -28,7 +28,11 @@ define(function(require, exports, module) {
         register();
 
         function openPath(path) {
+            console.log("Opening", path);
             var url = "node:" + path;
+            if(path.indexOf("http://") === 0 || path.indexOf("https://") === 0) {
+                url = path;
+            }
             history.lookupProjectByUrl(url, function(err, project) {
                 if (project) {
                     open.open(url, project.name);
