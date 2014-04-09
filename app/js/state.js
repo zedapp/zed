@@ -39,7 +39,10 @@ define(function(require, exports, module) {
                 });
             },
             init: function() {
-                api.load();
+                // Delaying loading a bit for other plug-ins to run their inits
+                setTimeout(function() {
+                    api.load();
+                });
             },
             set: function(key, value) {
                 state[key] = value;

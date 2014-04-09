@@ -65,8 +65,6 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                 console.log("App started");
                 window.zed = app;
 
-
-
                 // Run hook on each service (if exposed)
                 _.each(app.services, function(service) {
                     if (service.hook) {

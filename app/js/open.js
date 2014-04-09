@@ -37,7 +37,7 @@ define(function(require, exports, module) {
 
         windows.setOpenWindow();
 
-        function open(url, title) {
+        function open(url, title, filename) {
             var openProject = openProjects[url];
             if (openProject && !openProject.window) {
                 // Window was close and we weren't notified
@@ -46,7 +46,7 @@ define(function(require, exports, module) {
             if (openProject) {
                 openProject.focus();
             } else {
-                win.create(editorHtml + '?url=' + url + "&title=" + title, 'none', 720, 400, function(err, win) {
+                win.create(editorHtml + '?url=' + url + "&title=" + title + (filename ? "&filename=" + filename : ""), 'none', 720, 400, function(err, win) {
                     if (url !== "dropbox:" && url !== "local:") {
                         openProjects[url] = win;
                         win.addCloseListener(function() {

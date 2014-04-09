@@ -33,7 +33,7 @@ define(function(require, exports, module) {
     };
 
     EventEmitter.prototype.emit = function(type) {
-        //console.log("Emitting", type);
+        // console.log("Emitting", type);
         var handler = this._events[type];
 
         if (!handler && this._checked) throw Error("Event not declared: " + type);
