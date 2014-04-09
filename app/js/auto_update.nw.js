@@ -15,6 +15,8 @@ define(function(require, exports, module) {
         var gui = nodeRequire("nw.gui");
         var exec = nodeRequire("child_process").exec;
 
+        // gui.Window.get().showDevTools();
+
         var windows = imports.windows;
 
         var applicationPath;

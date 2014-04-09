@@ -10,6 +10,22 @@
                     "scriptUrl": "/default/command/update_package.js"
                 }
             }
+        },
+        "javascript": {
+            "commands": {
+                "Tools:Check": {
+                    "options": {
+                        "globals": {
+                            "define": true,
+                            "zed": true,
+                            "nodeRequire": true,
+                            "_": true,
+                            "$": true,
+                            "ace": true
+                        }
+                    }
+                }
+            }
         }
     }
 }
