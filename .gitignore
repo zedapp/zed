@@ -13,3 +13,5 @@ npm-debug.log
 deps/
 release/
 app/config/packages
+nw/build
+nw/download
