@@ -14,6 +14,7 @@
                 },
                 "Tools:Check": {
                     "scriptUrl": "/default/mode/css/check.js",
+                    "options": {},
                     "inputs": {
                         "text": true
                     },
