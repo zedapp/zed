@@ -1,7 +1,7 @@
 var ctags = require("zed/ctags");
 var indexToLine = require("zed/util").indexToLine;
 
-var FN_REGEX = /(class|def)\s+([a-zA-Z0-9_\$]+)\s*[\(\{]/mg;
+var FN_REGEX = /(class|def)\s+([a-zA-Z0-9_\$]+)\s*[\(\:]/mg;
 
 module.exports = function(info) {
     var match;
