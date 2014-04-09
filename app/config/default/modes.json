@@ -31,6 +31,7 @@
         "./mode/rust.json",
         "./mode/sass.json",
         "./mode/scala.json",
+        "./mode/scss.json",
         "./mode/search-results.json",
         "./mode/sh.json",
         "./mode/text.json",
