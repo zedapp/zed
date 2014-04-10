@@ -71,7 +71,35 @@ define(function(require, exports, module) {
             eventbus.emit("preview", session);
         }
 
-        var delayedUpdate = _.debounce(update, 500);
+        /* throttles calls to f so that each call will happen no sooner than   /
+        /  factor times the time the last call took to execute. Only one call  /
+        /  may be queued, old unexecuted calls are discarded.                 */
+        function adaptiveThrottle(f, factor){
+            var next_t, toFire, timedFunction;
+            if (factor === undefined) factor = 2;
+            next_t = 0;
+            
+            timedFunction = function(){
+                var t_, a_;
+                t_  = this; a_ = arguments;
+
+                return function(){
+                   var t, dt;
+                   t = Date.now();
+                   f.apply(t_, a_);
+                   dt = Date.now() - t;
+                   next_t = Date.now() + factor * dt;      
+                }
+            }
+            return function(){
+               clearTimeout(toFire);
+               toFire  = setTimeout(timedFunction.apply(this, arguments), (next_t - Date.now()))
+            } 
+        }
+
+        var delayedUpdate = adaptiveThrottle(update, 4);
+
+        setInterval(delayedUpdate,2000);
 
         function splitPreview(style) {
             if (style === undefined) {
