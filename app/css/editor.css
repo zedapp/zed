@@ -283,6 +283,10 @@ body.dark .ace_autocomplete {
 body.dark .ace_rightAlignedText {
     color: #bbb;
 }
+body.dark .insert-mode .ace_cursor {
+    opacity: 1;
+    border-left: 2px solid #eee;
+}
 .ace_autocomplete .ace_completion-highlight {
     text-decoration: underline;
     text-shadow: none !important;

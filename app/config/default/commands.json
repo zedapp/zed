@@ -176,6 +176,27 @@
             "preference": "continuousCompletion",
             "readOnly": true
         },
+        "Configuration:Preferences:KeyBinding:Zed": {
+            "doc": "Set keybinding to Zed keybindings.",
+            "scriptUrl": "./command/set_preference.js",
+            "preference": "keybinding",
+            "value": "zed",
+            "readOnly": true
+        },
+        "Configuration:Preferences:KeyBinding:Emacs": {
+            "doc": "Set keybinding to Emacs keybindings.",
+            "scriptUrl": "./command/set_preference.js",
+            "preference": "keybinding",
+            "value": "emacs",
+            "readOnly": true
+        },
+        "Configuration:Preferences:KeyBinding:Vim": {
+            "doc": "Set keybinding to Vim keybindings.",
+            "scriptUrl": "./command/set_preference.js",
+            "preference": "keybinding",
+            "value": "vim",
+            "readOnly": true
+        },
         "Edit:Trim Whitespace": {
             "doc": "This command will strip spaces and tabs from the end of every line (but not the line containing the cursor), and also ensures that the document ends with one and only one newline character.",
             "scriptUrl": "./command/stripper.js",

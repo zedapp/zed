@@ -3,6 +3,9 @@ module.exports = {
     getPreference: function(preference) {
         return sandboxRequest("zed/config", "getPreference", [preference]);
     },
+    setPreference: function(preference, value) {
+        return sandboxRequest("zed/config", "setPreference", [preference, value]);
+    },
     togglePreference: function(preference) {
         return sandboxRequest("zed/config", "togglePreference", [preference]);
     },

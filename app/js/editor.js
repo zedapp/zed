@@ -77,7 +77,7 @@ define(function(require, exports, module) {
                 edit.setKeyboardHandler({
                     vim: "ace/keyboard/vim",
                     emacs: "ace/keyboard/vim",
-                    ace: null
+                    zed: null
                 }[config.getPreference("keybinding", session)]);
             },
             setSessionConfiguration: function(session) {

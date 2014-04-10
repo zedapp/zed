@@ -6,6 +6,9 @@ define(function(require, exports, module) {
             callback(null, zed.getService("config").getPreference(
                 preference, zed.getService("editor").getActiveSession()));
         },
+        setPreference: function(preference, value, callback) {
+            callback(null, zed.getService("config").setPreference(preference, value));
+        },
         togglePreference: function(preference, callback) {
             callback(null, zed.getService("config").togglePreference(
                 preference, zed.getService("editor").getActiveSession()));

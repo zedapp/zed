@@ -36,6 +36,6 @@
         "wrapBehaviorsEnabled": false,
         "continuousCompletion": false,
         "continuousCompletionDelay": 250,
-        "keybinding": "ace"
+        "keybinding": "zed"
     }
 }
