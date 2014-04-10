@@ -3,7 +3,7 @@
     "main": "app://./open.nw.html",
     "window": {
         "title": "Zed",
-        "toolbar": true,
+        "toolbar": false,
         "width": 400,
         "height": 200,
         "show": true,
