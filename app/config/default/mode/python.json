@@ -5,6 +5,12 @@
             "highlighter": "ace/mode/python",
             "extensions": ["py"],
             "commands": {
+                "Tools:CTags": {
+                    "scriptUrl": "/default/mode/python/ctags.js",
+                    "inputs": {
+                        "text": true
+                    }
+                },
                 "Tools:Complete:Snippet": {
                     "scriptUrl": "/default/command/snippet_completer.js",
                     "snippets": {
@@ -24,6 +30,7 @@
                 }
             },
             "handlers": {
+                "change": ["Tools:CTags"],
                 "complete": ["Tools:Complete:Snippet"]
             }
         }
