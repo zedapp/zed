@@ -4,7 +4,7 @@ Changelog
 0.11
 ----
 * Standalone:
-  * First release of Zed standalone! I'm sure there will still be bugs, please report them on github when you find them.
+    * First release of Zed standalone! I'm sure there will still be bugs, please report them on github when you find them.
     * Open individual files or directories from the command line by calling "zed <dir>" or "zed <file>". On Mac, please install the CLI tools via the `Tools:Install Mac CLI` or the native Tools menu in the Mac app to use this.
 * Multiple keybindings support. That's right, we now have Vim and Emacs keybindings. Use the `Configuration:Preferences:KeyBinding:*` commands to switch between them. (by nightwing)
 * New commands:
