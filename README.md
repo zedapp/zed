@@ -49,3 +49,8 @@ Technology
 * The excellent [ACE](http://github.com/ajaxorg/ace) editor
 * [jQuery](http://jquery.com)
 * [Require.js](http://requirejs.org)
+
+Support
+-------
+
+[![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png)](https://www.gittip.com/zefhemel/)
