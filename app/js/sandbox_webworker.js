@@ -110,10 +110,10 @@ var oldWarn = console.warn;
 var oldError = console.info;
 var oldInfo = console.info;
 var noop = function() {};
-self.console.log = log("log", oldLog);
-self.console.warn = log("warn", oldWarn);
-self.console.error = log("error", oldError);
-self.console.info = log("info", oldInfo);
+console.log = log("log", oldLog);
+console.warn = log("warn", oldWarn);
+console.error = log("error", oldError);
+console.info = log("info", oldInfo);
 
 onerror = function(err) {
     log("error", noop)(err.message, err.filename, err.lineno, err.stack);
@@ -133,7 +133,6 @@ function log(level, oldFn) {
         return s;
     }
     return function() {
-        oldFn.call(console, toLogEntry(arguments));
-        // sandboxRequest("zed/log", "log", [level, Array.prototype.slice.call(arguments, 0)], function() {});
+        sandboxRequest("zed/log", "log", [level, toLogEntry(arguments)]).then(function() {});
     };
 }

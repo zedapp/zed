@@ -72,6 +72,7 @@ define(function(require, exports, module) {
             if (sandboxWorker) {
                 sandboxWorker.terminate();
             }
+            console.log("Starting web worker");
             sandboxWorker = new Worker("js/sandbox_webworker.js");
             sandboxWorker.onmessage = function(event) {
                 var data = event.data;

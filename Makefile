@@ -15,6 +15,7 @@ install-dep:
 copy-packages:
 	rm -rf app/config/packages/*
 	cp -r $(ZED_DIR)/packages/gh app/config/packages/
+	find app/config/packages -name .git -exec rm -rf {} \; || echo
 
 build-package: copy-packages indexes
 	rm -f zed.zip
@@ -88,8 +89,10 @@ apps-linux32: app.nw
 	rm -f release/zed-linux32.tar.gz
 	cd nw/build; tar cvzf ../../release/zed-linux32-v$(ZED_VERSION).tar.gz *
 
-apps: apps-mac apps-win apps-linux32 apps-linux64
+apps: copy-packages indexes apps-mac apps-win apps-linux32 apps-linux64
 	echo $(ZED_VERSION) > release/current-version.txt
+	rm -rf app/config/packages/*
+	$(INDEX_COMMAND)
 
 indexes: index-manual index-config
 	@true
