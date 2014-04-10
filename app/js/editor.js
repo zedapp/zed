@@ -74,6 +74,11 @@ define(function(require, exports, module) {
                 } else {
                     edit.removeAllListeners("paste");
                 }
+                edit.setKeyboardHandler({
+                    vim: "ace/keyboard/vim",
+                    emacs: "ace/keyboard/vim",
+                    ace: null
+                }[config.getPreference("keybinding", session)]);
             },
             setSessionConfiguration: function(session) {
                 session.setTabSize(config.getPreference("tabSize", session));
