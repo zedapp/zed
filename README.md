@@ -21,17 +21,42 @@ What you get instead is a bare bones, simple yet powerful editor that focuses on
   coffeescript).
 * Editing of local files (via Chrome-specific APIs) and remote files (check the manual on how to do this)
 
-Installation
-------------
+Installation (Chrome App)
+--------------------------
 You can install Zed [via the Chrome Web Store](https://chrome.google.com/webstore/detail/zed/pfmjnmeipppmcebplngmhfkleiinphhp), or by cloning the github repo:
 
     $ git clone https://github.com/zedapp/zed.git
     $ cd zed
-    $ make
+    $ make install-dep
 
 Then, in (a recent version of) Chrome, go to the "three-lined" menu > Tools >
 Extensions and click the "Load unpacked extension..." button, navigate to the
 `app` directory inside the Zed repository checkout. Zed should now run!
+
+Installation (Standalone)
+-------------------------
+
+To build locally:
+
+    $ git clone https://github.com/zedapp/zed.git
+    $ cd zed
+    $ make install-dep download-nw
+
+After this you can either build all versions (Linux, Windows, Mac):
+
+    $ make apps
+
+Or a particular one:
+
+    $ make apps-mac
+    $ make apps-win
+    $ make apps-linux32
+
+or
+
+    $ make apps-linux64
+
+The builds end up in `nw/build` and the gzipped versions in `release`.
 
 Inspiration
 -----------
