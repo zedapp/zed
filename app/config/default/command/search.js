@@ -7,7 +7,7 @@ var filterExtensions = ["pdf", "gz", "tgz", "bz2", "zip",
 
 function indexToLine(text, index) {
     var s = text.substring(0, index);
-    return s.split("\n").length;
+    return (s.match(/\n/g) || []).length + 1;
 }
 
 function getLine(text, index) {
