@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     return plugin;
 
     function plugin(options, imports, register) {
-        var downloadUrl = "http://dl.dropboxusercontent.com/u/103476/";
+        var downloadUrl = "http://download.zedapp.org/";
 
         var path = nodeRequire("path");
         var http = nodeRequire("http");
@@ -89,21 +89,22 @@ define(function(require, exports, module) {
             var downloadFilename = "zed-";
             switch (process.platform) {
                 case "darwin":
-                    downloadFilename += "mac.tar.gz";
+                    downloadFilename += "mac";
                     break;
                 case "linux":
                     if(process.arch === "ia32") {
-                        downloadFilename += "linux32.tar.gz";
+                        downloadFilename += "linux32";
                     } else {
-                        downloadFilename += "linux64.tar.gz";
+                        downloadFilename += "linux64";
                     }
                     break;
                 case "win32":
-                    downloadFilename += "win.tar.gz";
+                    downloadFilename += "win";
                     break;
                 default:
                     return callback("Platform not supported for auto updates");
             }
+            downloadFilename += "-v" + version + ".tar.gz";
             var newAppDir = path.normalize(applicationPath + "/../zed.update");
             try {
                 fs.mkdirSync(newAppDir);

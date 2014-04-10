@@ -7,6 +7,14 @@ elif [ "" != "$1" ]; then
    PROJECT=$(readlink -f $1)
 fi
 
+# Check if permissions are set right for auto update
+if [ ! -w $DIR ] || [ ! -w "$DIR/.." ]; then
+    echo "WARNING: Both the zed directory and its parent should be writable by"
+    echo "the user who runs Zed in order for auto-update to work. In your current"
+    echo "setup this is NOT the case, please move Zed somewhere else or change"
+    echo "permissions."
+fi
+
 $DIR/zed-bin $PROJECT 2> /dev/null
 
 if [ $? == 127 ]; then
