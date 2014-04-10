@@ -35,6 +35,7 @@
         "wordWrapColumn": null,
         "wrapBehaviorsEnabled": false,
         "continuousCompletion": false,
-        "continuousCompletionDelay": 250
+        "continuousCompletionDelay": 250,
+        "keybinding": "ace"
     }
 }
