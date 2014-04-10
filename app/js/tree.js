@@ -48,6 +48,9 @@ define(function(require, exports, module) {
             var elements = [];
             _.each(obj, function(entry, filename) {
                 var fullPath = path + sep + filename;
+                if(fullPath == "/zed::log" || fullPath == "/zed::start") {
+                    fullPath = fullPath.substring(1);
+                }
                 if (entry === true) {
                     elements.push({
                         title: filename,
@@ -89,6 +92,9 @@ define(function(require, exports, module) {
                     var tree = treeEl.dynatree("getTree");
                     ignoreActivate = true;
                     tree.activateKey(editor.getActiveSession().filename);
+                    if (!tree.getActiveNode()) {
+                        tree.getRoot().childList[0].focus();
+                    }
                     setTimeout(function() {
                         ignoreActivate = false;
                     });
