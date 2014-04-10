@@ -8,6 +8,5 @@ module.exports = function(info) {
     var text = info.inputs.text;
     var converter = new Markdown.Converter();
     var html = converter.makeHtml(text);
-    console.log(html);
     return preview.showPreview(html);
 };
