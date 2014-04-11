@@ -116,6 +116,12 @@
             "preference": "displayIndentGuides",
             "readOnly": true
         },
+        "Configuration:Preferences:Toggle Display Fold Widgets": {
+            "doc": "Toggle whether or not to display fold triangles in the left margin.",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showFoldWidgets",
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Highlight Active Line": {
             "doc": "Toggle whether or not to highlight the current line.",
             "scriptUrl": "./command/toggle.js",
