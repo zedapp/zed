@@ -36,7 +36,15 @@ define(function(require, exports, module) {
         };
 
         windows.setOpenWindow();
-
+        
+        if (window.isNodeWebkit) {
+            var gui = nodeRequire("nw.gui");
+            var args = gui.App.argv;
+            if (args[0]) {
+                window.close();
+            }
+        }
+        
         function open(url, title, filename) {
             var openProject = openProjects[url];
             if (openProject && !openProject.window) {
@@ -57,6 +65,54 @@ define(function(require, exports, module) {
             }
         }
 
+        function openNW(url, title, filename) {
+            if (url.indexOf('http') === 0) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        action: 'version'
+                    },
+                    success: function() {
+                        open(url, url);
+                        remoteEditInput.val("");
+                    },
+                    error: function() {
+                        $("#hint").html("<span class='error'>ERROR</span>: URL does not seem to run a (recent) Zed server.");
+                        setTimeout(function() {
+                            $("#hint").html(defaultHint);
+                        }, 5000);
+                    },
+                    dataType: "text"
+                });
+            } else {
+                if (url !== 'nwconfig:' && url !== 'manual:' && url !== 'node:') {
+                    url = url.replace('~', process.env.HOME);
+                    if (!url || url === '' || url == ' ' || (url == process.env.HOME && url[url.length - 1] != '/')) {
+                        $("#hint").html("<span class='error'>ERROR</span>: You might want to put something useful in there. ('~/' for $HOME)");
+                        setTimeout(function() {
+                            $("#hint").html(defaultHint);
+                        }, 5000);
+                        return;
+                    }
+                    if (nodeRequire('fs').existsSync(url)) {
+                        url = 'node:' + url;
+                    } else {
+                        $("#hint").html("<span class='error'>ERROR</span>: File path does not exist. ('~' == $HOME)");
+                        setTimeout(function() {
+                            $("#hint").html(defaultHint);
+                        }, 5000);
+                        return;
+                    }
+                }
+                win.create(editorHtml + '?url=' + url + "&title=" + title + (filename ? "&filename=" + filename : ""), 'none', 720, 400, function(err, win) {
+                    win.addCloseListener(function() {
+                        // do something uber cool
+                    });
+                });
+            }
+        }
+        window.openNW = openNW;
         /**
          * Same as open, but first checks for a valid WebFS implementation in case of http/https links
          */
@@ -91,8 +147,8 @@ define(function(require, exports, module) {
 
         function updateWindowSize() {
             win.setBounds({
-                width: 400,
-                height: $("body").height() + 23
+                width: 600,
+                height: $("body").height() + 50
             });
         }
 
@@ -158,7 +214,10 @@ define(function(require, exports, module) {
 
         var lastFilterPhrase = null;
 
-        filterInput.keyup(function() {
+        filterInput.keyup(function(event) {
+            if (window.isNodeWebkit && event.keyCode == 13) {
+                openNW(filterInput.val(), filterInput.val(), filterInput.val());
+            }
             if (lastFilterPhrase != filterInput.val()) {
                 selectIdx = 0;
                 lastFilterPhrase = filterInput.val();
