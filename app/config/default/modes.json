@@ -22,7 +22,6 @@
         "./mode/markdown.json",
         "./mode/nix.json",
         "./mode/perl.json",
-        "./mode/php.json",
         "./mode/plist.json",
         "./mode/protobuf.json",
         "./mode/python.json",
