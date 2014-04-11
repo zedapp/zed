@@ -51,6 +51,7 @@ apps-mac: apps-npm
 	cp -r app nw/build/Zed.app/Contents/Resources/app.nw
 	mkdir nw/build/Zed.app/bin
 	cp nw/zed-mac nw/build/Zed.app/bin/zed
+	mkdir -p release
 	rm -f release/zed-mac.zip
 	cd nw/build; tar czf ../../release/zed-mac-v$(ZED_VERSION).tar.gz Zed.app
 
