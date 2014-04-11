@@ -1,9 +1,15 @@
 /*global define, sandboxRequest, _*/
 var debug = false;
 
+require.config({
+    waitSeconds: 30
+});
+
 define("configfs", [], {
     load: function(name, req, onload, config) {
+        // console.log("Request for configfs file", name);
         sandboxRequest("zed/configfs", "readFile", [name]).then(function(text) {
+            // console.log("Sending", name);
             onload.fromText(amdTransformer(text));
         }, function(err) {
             return console.error("Error while loading file", name, err);

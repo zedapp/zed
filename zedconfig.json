@@ -21,7 +21,8 @@
                             "nodeRequire": true,
                             "_": true,
                             "$": true,
-                            "ace": true
+                            "ace": true,
+                            "Promise": true
                         }
                     }
                 }
