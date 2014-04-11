@@ -6,7 +6,7 @@ INDEX_COMMAND = find app/config -name '*.*' -not -path '*/.git/*' -not -path '*/
 NW_VERSION=v0.9.2
 ZED_VERSION=$(shell cat app/manifest.json | grep '"version"' | cut -f 4 -d '"')
 
-install-dep:
+app/ace:
 	curl -L https://github.com/zefhemel/ace-builds/archive/master.tar.gz | tar xzf -
 	rm -rf app/ace
 	mv ace-builds-master/ace app/ace
@@ -31,7 +31,7 @@ index-manual:
 index-config:
 	$(INDEX_COMMAND)
 
-download-nw:
+nw/download:
 	rm -rf nw/download
 	mkdir -p nw/download
 	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-ia32.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-ia32.tar.gz
@@ -42,7 +42,7 @@ download-nw:
 apps-npm:
 	cd app; npm install
 
-apps-mac: apps-npm
+apps-mac: app/ace nw/download apps-npm
 	rm -rf nw/build
 	mkdir -p nw/build
 	cp -r nw/download/node-webkit-$(NW_VERSION)-osx-ia32/node-webkit.app nw/build/Zed.app
@@ -60,7 +60,7 @@ app.nw: apps-npm
 	rm -f nw/app.nw
 	cd app; zip -r ../nw/app.nw *
 
-apps-win: app.nw
+apps-win: app/ace nw/download app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
 	cat nw/download/node-webkit-$(NW_VERSION)-win-ia32/nw.exe nw/app.nw > nw/build/zed/zed.exe
@@ -70,7 +70,7 @@ apps-win: app.nw
 	cd nw/build; zip -r ../../release/zed-win-v$(ZED_VERSION).zip *
 	cd nw/build; tar cvzf ../../release/zed-win-v$(ZED_VERSION).tar.gz *
 
-apps-linux64: app.nw
+apps-linux64: app/ace nw/download app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
 	cat nw/download/node-webkit-$(NW_VERSION)-linux-x64/nw nw/app.nw > nw/build/zed/zed-bin
@@ -80,7 +80,7 @@ apps-linux64: app.nw
 	rm -f release/zed-linux64.tar.gz
 	cd nw/build; tar cvzf ../../release/zed-linux64-v$(ZED_VERSION).tar.gz *
 
-apps-linux32: app.nw
+apps-linux32: app/ace nw/download app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
 	cat nw/download/node-webkit-$(NW_VERSION)-linux-ia32/nw nw/app.nw > nw/build/zed/zed-bin
