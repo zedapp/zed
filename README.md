@@ -40,7 +40,7 @@ To build locally:
 
     $ git clone https://github.com/zedapp/zed.git
     $ cd zed
-    $ make install-dep download-nw
+    $ make install-dep
 
 After this you can either build all versions (Linux, Windows, Mac):
 
