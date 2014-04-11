@@ -202,7 +202,7 @@ define(function(require, exports, module) {
         }
 
         function writeUserPrefs() {
-            configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4), function(err) {
+            configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4) + "\n", function(err) {
                 if (err) {
                     console.error("Error during writing config:", err);
                 }
