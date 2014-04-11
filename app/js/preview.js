@@ -80,7 +80,7 @@ define(function(require, exports, module) {
                     // Increase by one
                     style = (parseInt(currentSplit.substring("preview-".length), 10) + 1) % 3;
                 } else {
-                   style = 0;
+                    style = 0;
                 }
             }
             state.set("split", "preview-" + style);

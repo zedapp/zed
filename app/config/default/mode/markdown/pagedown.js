@@ -244,7 +244,7 @@ var Markdown = exports;
             text = pluginHooks.postConversion(text);
 
             g_html_blocks = g_titles = g_urls = null;
-            
+
             return text;
         };
 
