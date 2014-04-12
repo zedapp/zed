@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Zed Project Picker</title>
+        <title>Zed</title>
         <script>
             window.nodeRequire = require;
             require = null;
@@ -27,19 +27,14 @@
         <link href="css/open.css" rel="stylesheet" type="text/css">
     </head>
     <body>
+        <div id="projects">
+            <h1><img src="img/zed-small.png" style="vertical-align: top;"> Zed &raquo; </h1>
+            <input type="text" id="projectfilter" placeholder="Type a file path..." tabindex="0" />
+            <div class="hint" id="hint">Type a file path or URL, then press <tt>Enter</tt>. ('~' == $HOME)</div>
+            <div id='projects-btns'><button onclick="window.openNW('node:', 'Open', 'node:');">Open Local Folder</button><button onclick="window.openNW('nwconfig:', 'Configuration', 'nwconfig:');">Configuration</button><button onclick="window.openNW('manual:', 'Manual', 'manual:');">Manual</button></div>
+        </div>
         <div id="update-available">An update is available, restart Zed to update.</div>
         <div id="update-error"></div>
-        <div id="projects">
-            <h1><img src="img/zed-small.png" style="vertical-align: top;"> Zed Projects &raquo;</h1>
-            <input type="text" id="projectfilter" placeholder="Type to filter project list" tabindex="0" />
-            <div class="hint">To open the selected project press <tt>Enter</tt>, to delete press <tt>Delete</tt>.</div>
-            <div id="recent" class="projects"></div>
-            <h1>Edit Remote Files &raquo;</h1>
-        </div>
-        <div id="goto">
-            <input id="gotoinput" type="text" placeholder="URL to edit remotely" value="" tabindex="1" />
-        </div>
-        <div id="hint" class="hint"><a href="http://zedapp.org/features/edit-remote-files/" target="_blank">To edit remote files, run <tt>zed</tt> on the server</a>. Paste the URL <tt>zed</tt> returns into this box and press <tt>Enter</tt>.</div>
         <script src="js/open.boot.js"></script>
     </body>
 </html>
