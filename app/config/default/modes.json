@@ -16,6 +16,7 @@
         "./mode/jack.json",
         "./mode/java.json",
         "./mode/less.json",
+        "./mode/livescript.json",
         "./mode/logiql.json",
         "./mode/lua.json",
         "./mode/makefile.json",
