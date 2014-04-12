@@ -64,6 +64,8 @@ define(function(require, exports, module) {
             session.annotations = [];
             for (var i = 0; i < annos.length; i++) {
                 var anno = annos[i];
+                // ACE annotation row numbers are zero-based
+                anno.row -= 1;
                 // If no endColum, no inline marker is required
                 if (anno.endColumn) {
                     session.annotations.push(new InlineAnnotation(session, anno));
