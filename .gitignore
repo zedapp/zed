@@ -15,3 +15,4 @@ release/
 app/config/packages
 nw/build
 nw/download
+nw/app.nw
