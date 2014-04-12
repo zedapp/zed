@@ -1,6 +1,3 @@
-requirejs.config({
-    waitSeconds: 200});
-
 var lsc = require("./livescript.js").LiveScript;
 var preview = require("zed/preview");
 
