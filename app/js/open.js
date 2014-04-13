@@ -237,6 +237,10 @@ define(function(require, exports, module) {
             updateProjectSelection();
         });
 
+        $.getJSON("manifest.json", function(manifest) {
+            $("#zed-version").text("You are running Zed version " + manifest.version);
+        });
+
         filterInput.focus();
         updateWindowSize();
 

@@ -97,3 +97,9 @@ input[type=submit] {
     display: none;
     padding: 8px;
 }
+
+#zed-version {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 10px;
+}
