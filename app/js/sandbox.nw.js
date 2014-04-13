@@ -80,6 +80,9 @@ define(function(require, exports, module) {
                 if (data.type === "request") {
                     return handleApiRequest(event);
                 }
+                if (data.type === "log") {
+                    console[data.level]("[Sandbox]", data.message);
+                }
                 if (!replyTo) {
                     return;
                 }

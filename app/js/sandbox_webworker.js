@@ -133,6 +133,11 @@ function log(level, oldFn) {
         return s;
     }
     return function() {
-        sandboxRequest("zed/log", "log", [level, toLogEntry(arguments)]).then(function() {});
+        postMessage({
+            type: "log",
+            level: level,
+            message: toLogEntry(arguments)
+        });
+        // sandboxRequest("zed/log", "log", [level, toLogEntry(arguments)]).then(function() {});
     };
 }
