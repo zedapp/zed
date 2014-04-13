@@ -48,7 +48,7 @@ define(function(require, exports, module) {
             var elements = [];
             _.each(obj, function(entry, filename) {
                 var fullPath = path + sep + filename;
-                if(fullPath == "/zed::log" || fullPath == "/zed::start") {
+                if(fullPath.indexOf("zed::") === 0) {
                     fullPath = fullPath.substring(1);
                 }
                 if (entry === true) {
