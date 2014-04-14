@@ -60,7 +60,24 @@ define(function(require, exports, module) {
                 return modes[language];
             },
             getModeForSession: function(session) {
-                var filename = path.filename(session.filename);
+                var mode = api.getModeForPath(session.filename);
+                if(mode) {
+                    return mode;
+                }
+
+                var shebang_line = session.getLine(0);
+                if (shebang_line.slice(0, 2) == "#!") {
+                    for (var shebang in shebangMapping) {
+                        if (shebang_line.indexOf(shebang) > 0) {
+                            return api.get(shebangMapping[shebang]);
+                        }
+                    }
+                }
+
+                return fallbackMode;
+            },
+            getModeForPath: function(path_) {
+                var filename = path.filename(path_);
                 if (filenameMapping[filename]) {
                     return api.get(filenameMapping[filename]);
                 }
@@ -74,16 +91,7 @@ define(function(require, exports, module) {
                     }
                 }
 
-                var shebang_line = session.getLine(0);
-                if (shebang_line.slice(0, 2) == "#!") {
-                    for (var shebang in shebangMapping) {
-                        if (shebang_line.indexOf(shebang) > 0) {
-                            return api.get(shebangMapping[shebang]);
-                        }
-                    }
-                }
-
-                return fallbackMode;
+                return null;
             },
             setSessionMode: function(session, mode) {
                 if (typeof mode === "string") {

@@ -25,7 +25,7 @@
                 tabSize: 2
             },
             handlers: {
-                change: [
+                index: [
                     "Tools:CTags"
                 ],
                 complete: [

@@ -38,7 +38,7 @@
                 check: [
                     "Tools:Check"
                 ],
-                change: [
+                index: [
                     "Tools:CTags"
                 ],
                 preview: [

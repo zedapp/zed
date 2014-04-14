@@ -1,19 +1,21 @@
 {
-    "modes": {
-        "python": {
-            "name": "Python",
-            "highlighter": "ace/mode/python",
-            "extensions": ["py"],
-            "commands": {
+    modes: {
+        python: {
+            name: "Python",
+            highlighter: "ace/mode/python",
+            extensions: [
+                "py"
+            ],
+            commands: {
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/python/ctags.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/python/ctags.js",
+                    inputs: {
+                        text: true
                     }
                 },
                 "Tools:Complete:Snippet": {
-                    "scriptUrl": "/default/command/snippet_completer.js",
-                    "snippets": {
+                    scriptUrl: "/default/command/snippet_completer.js",
+                    snippets: {
                         "from": "from ${1} import ${2}",
                         "try": "try:\n\t${1}",
                         "except": "except ${1}:\n\t${2}",
@@ -29,9 +31,13 @@
                     }
                 }
             },
-            "handlers": {
-                "change": ["Tools:CTags"],
-                "complete": ["Tools:Complete:Snippet"]
+            handlers: {
+                index: [
+                    "Tools:CTags"
+                ],
+                complete: [
+                    "Tools:Complete:Snippet"
+                ]
             }
         }
     }

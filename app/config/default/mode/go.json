@@ -15,7 +15,7 @@
                 }
             },
             handlers: {
-                change: [
+                index: [
                     "Tools:CTags"
                 ]
             },

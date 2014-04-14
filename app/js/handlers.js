@@ -6,6 +6,7 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var InlineAnnotation = require("./lib/inline_annotation");
+        var async = require("./lib/async");
 
         var eventbus = imports.eventbus;
         var config = imports.config;
@@ -77,24 +78,8 @@ define(function(require, exports, module) {
             },
         };
 
-        function runSessionHandler(session, handlerName, debounceTimeout, callback) {
-            var path = session.filename;
-            var mode = session.mode;
+        function getHandlerCommandsForMode(handlerName, mode) {
             var commandNames = [];
-
-            var editors = editor.getEditors();
-            var edit = null;
-
-            _.each(editors, function(edit_) {
-                if (edit_.getSession() === session) {
-                    edit = edit_;
-                }
-            });
-
-            if (!edit) {
-                // Session is not currently visible, won't run commands
-                return;
-            }
 
             if (mode && mode.handlers[handlerName]) {
                 commandNames = commandNames.concat(mode.handlers[handlerName]);
@@ -102,6 +87,13 @@ define(function(require, exports, module) {
             if (config.getHandlers()[handlerName]) {
                 commandNames = commandNames.concat(config.getHandlers()[handlerName]);
             }
+            return commandNames;
+        }
+
+        function runSessionHandler(session, handlerName, debounceTimeout, callback) {
+            var path = session.filename;
+            var mode = session.mode;
+            var commandNames = getHandlerCommandsForMode(handlerName, mode);
 
             function runCommands() {
                 var waitingFor = commandNames.length;
@@ -127,7 +119,7 @@ define(function(require, exports, module) {
                 }
 
                 function done() {
-                    api.updateHandlerTimeout("check", session.filename, before, 500);
+                    api.updateHandlerTimeout(handlerName, session.filename, before, debounceTimeout);
                     _.isFunction(callback) && callback(null, results);
                 }
             }
@@ -196,16 +188,65 @@ define(function(require, exports, module) {
 
         // handlerName -> { path -> timeout }
         var timeOuts = {};
+        window.timeOuts = timeOuts;
 
         /**
          * Analyzes session and sets findings as annotations
          */
         function analyze(session, instant) {
             runSessionHandler(session, "change", 1000);
+            runSessionHandler(session, "index", instant ? null : api.getHandlerTimeout("index", session.filename, 1000));
             runSessionHandler(session, "check", instant ? null : api.getHandlerTimeout("check", session.filename, 2000), function(err, annos) {
                 setAnnotations(session, annos);
             });
         }
+
+        command.define("Tools:Index Project", {
+            exec: function(edit, session) {
+                var modes = zed.getService("modes");
+                var fs = zed.getService("fs");
+                var allFiles = zed.getService("goto").getFileCache();
+                var filesToIndex = allFiles.filter(function(path) {
+                    var mode = modes.getModeForPath(path);
+                    return getHandlerCommandsForMode("index", mode).length > 0;
+                });
+
+                var num = 0;
+
+                console.log("Files to index", filesToIndex);
+
+                async.forEach(filesToIndex, function(path, next) {
+                    num++;
+                    eventbus.emit("sessionactivitystarted", session, "Indexing " + num + " of " + filesToIndex.length);
+                    var mode = modes.getModeForPath(path);
+                    console.log("Indexing", path);
+                    fs.readFile(path, function(err, text) {
+                        if (err) {
+                            console.log("Could not load", path, err);
+                            return next();
+                        }
+                        var fakeSession = {
+                            filename: path,
+                            mode: mode,
+                            getTokenAt: true,
+                            getValue: function() {
+                                return text;
+                            },
+                            getLines: function() {
+                                return text.split("\n");
+                            }
+                        };
+                        runSessionHandler(fakeSession, "index", null, next);
+                    });
+                }, function done() {
+                    eventbus.emit("sessionactivitystarted", session, "Indexing complete");
+                    setTimeout(function() {
+                        eventbus.emit("sessionactivitycompleted", session);
+                    }, 2000);
+                });
+            },
+            readOnly: true
+        });
 
         register(null, {
             handlers: api
