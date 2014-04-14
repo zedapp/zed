@@ -2,7 +2,6 @@
 "use strict";
 var configfs = require("zed/config_fs");
 var config = require("zed/config");
-var async = require("zed/lib/async");
 var http = require("zed/http");
 
 // var packagesFile = "/packages/installed.json";
@@ -36,6 +35,8 @@ function uriToUrl(uri) {
 function uriToPath(uri) {
     return packagesFolder + uri.replace(/:/g, '/');
 }
+
+exports.uriToPath = uriToPath;
 
 exports.getInstalledPackages = function() {
     return configfs.listFiles().then(function(allFiles) {

@@ -1,5 +1,5 @@
 var session = require("zed/session");
-var project = require("zed/project");
+var fs = require("zed/fs");
 
 var coffee = require("./coffee-script.js");
 
@@ -11,7 +11,7 @@ return function(data) {
     var text = data.inputs.text;
     var jsPath = path.replace(/\.coffee$/, ".js");
     var javascript = coffee.compile(text);
-    return project.writeFile(jsPath, javascript).then(function() {
+    return fs.writeFile(jsPath, javascript).then(function() {
         return session.flashMessage(path, "Compilation complete", 500);
     });
 };

@@ -1,4 +1,4 @@
-var project = require("zed/project");
+var fs = require("zed/fs");
 var ui = require("zed/ui");
 var config = require("zed/config");
 
@@ -22,9 +22,9 @@ return function(info) {
     }
 
     function reloadConfig() {
-        project.isConfig(function(err, isConfig) {
+        fs.isConfig(function(err, isConfig) {
             if (isConfig) {
-                project.reloadFileList();
+                fs.reloadFileList();
             }
             config.reload();
         });

@@ -1,5 +1,5 @@
 var session = require("zed/session");
-var project = require("zed/project");
+var fs = require("zed/fs");
 
 //var livescript = require("./lib/livescript.js");
 var lsc = require("./livescript.js").LiveScript;
@@ -12,7 +12,7 @@ return function(data) {
     var text = data.inputs.text;
     var jsPath = path.replace(/\.ls$/, ".js");
     var javascript = lsc.compile(text);
-    return project.writeFile(jsPath, javascript).then(function() {
+    return fs.writeFile(jsPath, javascript).then(function() {
         return session.flashMessage(path, "Compilation complete", 500);
     });
 };

@@ -1,5 +1,5 @@
 var zpm = require("./zpm.js");
-var project = require("zed/project");
+var fs = require("zed/fs");
 var config = require("zed/config");
 var configFs = require("zed/config_fs");
 
@@ -16,9 +16,9 @@ module.exports = function(info) {
             console.log("ZPM: Checking for updates...");
             return zpm.updateAll(true).then(function(anyUpdates) {
                 if (anyUpdates) {
-                    project.isConfig().then(function(isConfig) {
+                    fs.isConfig().then(function(isConfig) {
                         if (isConfig) {
-                            return project.reloadFileList();
+                            return fs.reloadFileList();
                         }
                     });
                     config.reload();

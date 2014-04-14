@@ -1,5 +1,5 @@
 var ui = require("zed/ui");
-var project = require("zed/project");
+var fs = require("zed/fs");
 var session = require("zed/session");
 
 var filterExtensions = ["pdf", "gz", "tgz", "bz2", "zip",
@@ -36,7 +36,7 @@ function stringIsText(text) {
     return isText;
 }
 
-module.exports = function(info, callback) {
+module.exports = function() {
     function append(text) {
         session.append("zed::search", text, function() {});
     }
@@ -50,7 +50,7 @@ module.exports = function(info, callback) {
         }
         return session.goto("zed::search");
     }).then(function() {
-        return project.listFiles();
+        return fs.listFiles();
     }).then(function(fileList_) {
         fileList = fileList_;
         fileList = fileList.filter(function(filename) {
@@ -69,7 +69,7 @@ module.exports = function(info, callback) {
                 return;
             }
 
-            return project.readFile(path).then(function(text) {
+            return fs.readFile(path).then(function(text) {
                 if (!stringIsText(text)) {
                     return;
                 }
@@ -84,7 +84,7 @@ module.exports = function(info, callback) {
                 }
             }, function(err) {
                 console.error("Could not read file: " + path);
-                // If one file fails that's ok, just report
+                // If a few files fail that's ok, just report
             });
         });
         return Promise.all(filePromises);
