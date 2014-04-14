@@ -1,4 +1,4 @@
-var project = require("zed/project");
+var fs = require("zed/fs");
 var session = require("zed/session");
 
 module.exports = function(info) {
@@ -10,7 +10,7 @@ module.exports = function(info) {
         } catch (e) {
             return console.error("Could not parse package.json");
         }
-        return project.listFiles();
+        return fs.listFiles();
     }).then(function(files) {
         var packageFiles = [];
         var packageRoot = path.split("/").slice(0, -1).join("/");

@@ -104,7 +104,7 @@ window.addEventListener('message', function(event) {
         }, function(err) {
             var message = {
                 replyTo: id,
-                err: err
+                err: typeof err === "string" ? err : err.message
             };
             event.source.postMessage(message, origin);
         });

@@ -1,13 +1,5 @@
 {
-    "modes": {
-        "json": {
-            "commands": {
-                "Development:Update Package.json File List": {
-                    "scriptUrl": "/default/command/update_package.js"
-                }
-            }
-        }
-    },
+    "imports": ["/default/zpm/zpm-dev.json"],
     "preferences": {
         "globalAutoRevert": true
     }

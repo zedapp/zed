@@ -29,7 +29,7 @@ define(function(require, exports, module) {
                 exec: function(edit, session, callback) {
                     zed.getService("sandbox").execCommand(name, cmd, session, function(err, result) {
                         if (err) {
-                            console.error(err);
+                            console.error("Command", name, "failed:", err);
                         }
                         _.isFunction(callback) && callback(err, result);
                     });

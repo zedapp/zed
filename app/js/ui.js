@@ -289,6 +289,7 @@ define(function(require, exports, module) {
                     input.val(inputText);
                     dialogEl.append(input);
                     input.focus();
+                    input.select();
                 }
 
                 dialogEl.append(buttonWrapEl);

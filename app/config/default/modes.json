@@ -5,7 +5,6 @@
         "./mode/coffee.json",
         "./mode/command-reference.json",
         "./mode/csharp.json",
-        "./mode/css.json",
         "./mode/dart.json",
         "./mode/erlang.json",
         "./mode/go.json",

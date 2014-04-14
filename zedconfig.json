@@ -22,7 +22,8 @@
                             "_": true,
                             "$": true,
                             "ace": true,
-                            "Promise": true
+                            "Promise": true,
+                            "sandboxRequest": true
                         }
                     }
                 }
