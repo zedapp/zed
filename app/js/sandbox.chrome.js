@@ -80,7 +80,7 @@ define(function(require, exports, module) {
             sandboxEl.css("left", "-1000px");
             sandbox.addEventListener("contentload", function() {
                 sandbox.executeScript({
-                    code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js")
+                    code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js") + require("text!../dep/json5.js")
                 });
                 _.isFunction(callback) && callback();
             });

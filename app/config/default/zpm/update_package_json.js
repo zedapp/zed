@@ -6,7 +6,7 @@ module.exports = function(info) {
     var json;
     return session.getText(path).then(function(text) {
         try {
-            json = JSON.parse(text);
+            json = JSON5.parse(text);
         } catch (e) {
             return console.error("Could not parse package.json");
         }
@@ -23,6 +23,6 @@ module.exports = function(info) {
             }
         });
         json.files = packageFiles;
-        return session.setText(path, JSON.stringify(json, null, 4));
+        return session.setText(path, JSON5.stringify(json, null, 4));
     });
 };

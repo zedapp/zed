@@ -1,9 +1,11 @@
 {
-    "modes": {
-        "plist": {
-            "name": "Apple Plist",
-            "highlighter": "ace/mode/xml",
-            "extensions": ["plist"]
+    modes: {
+        plist: {
+            name: "Apple Plist",
+            highlighter: "ace/mode/xml",
+            extensions: [
+                "plist"
+            ]
         }
     }
 }

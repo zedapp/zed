@@ -1,9 +1,12 @@
 {
-    "modes": {
-        "jack": {
-            "name": "Jack",
-            "highlighter": "ace/mode/jack",
-            "extensions": ["jack", "jk"]
+    modes: {
+        jack: {
+            name: "Jack",
+            highlighter: "ace/mode/jack",
+            extensions: [
+                "jack",
+                "jk"
+            ]
         }
     }
 }

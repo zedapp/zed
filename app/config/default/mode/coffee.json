@@ -1,40 +1,49 @@
 {
-    "modes": {
-        "coffee": {
-            "name": "CoffeeScript",
-            "highlighter": "ace/mode/coffee",
-            "extensions": ["cs", "coffee"],
-            "commands": {
+    modes: {
+        coffee: {
+            name: "CoffeeScript",
+            highlighter: "ace/mode/coffee",
+            extensions: [
+                "cs",
+                "coffee"
+            ],
+            commands: {
                 "Tools:Check": {
-                    "scriptUrl": "/default/mode/coffee/check.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/coffee/check.js",
+                    inputs: {
+                        text: true
                     },
-                    "internal": true
+                    internal: true
                 },
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/coffee/ctags.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/coffee/ctags.js",
+                    inputs: {
+                        text: true
                     }
                 },
                 "Tools:Preview": {
-                    "scriptUrl": "/default/mode/coffee/preview.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/coffee/preview.js",
+                    inputs: {
+                        text: true
                     }
                 },
                 "Tools:Compile": {
-                    "scriptUrl": "/default/mode/coffee/compile.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/coffee/compile.js",
+                    inputs: {
+                        text: true
                     }
                 }
             },
-            "handlers": {
-                "check": ["Tools:Check"],
-                "change": ["Tools:CTags"],
-                "preview": ["Tools:Preview"]
+            handlers: {
+                check: [
+                    "Tools:Check"
+                ],
+                change: [
+                    "Tools:CTags"
+                ],
+                preview: [
+                    "Tools:Preview"
+                ]
             }
         }
     }

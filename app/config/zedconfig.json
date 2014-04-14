@@ -1,6 +1,31 @@
 {
-    "imports": ["/default/zpm/zpm-dev.json"],
-    "preferences": {
-        "globalAutoRevert": true
+    imports: [
+        "/default/zpm/zpm-dev.json"
+    ],
+    modes: {
+        javascript: {
+            commands: {
+                "Tools:Check": {
+                    options: {
+                        globals: {
+                            JSON5: true
+                        }
+                    }
+                }
+            }
+        },
+        json: {
+            extensions: [
+                "!json"
+            ]
+        },
+        json5: {
+            extensions: [
+                "json"
+            ]
+        }
+    },
+    preferences: {
+        globalAutoRevert: true
     }
 }

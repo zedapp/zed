@@ -1,29 +1,42 @@
 {
-    "preferences": {
-        "tabSize": 4,
-        "gotoExclude": ["/release/zed-*", "/nw/build/*", "/nw/download/*"]
+    preferences: {
+        tabSize: 4,
+        gotoExclude: [
+            "/release/zed-*",
+            "/nw/build/*",
+            "/nw/download/*"
+        ]
     },
-    "modes": {
-        "json": {
-            "commands": {
+    modes: {
+        json: {
+            commands: {
                 "Development:Update Package.json File List": {
-                    "scriptUrl": "/default/command/update_package.js"
+                    scriptUrl: "/default/command/update_package.js"
                 }
-            }
+            },
+            extensions: [
+                "!json"
+            ]
         },
-        "javascript": {
-            "commands": {
+        json5: {
+            extensions: [
+                "json"
+            ]
+        },
+        javascript: {
+            commands: {
                 "Tools:Check": {
-                    "options": {
-                        "globals": {
-                            "define": true,
-                            "zed": true,
-                            "nodeRequire": true,
-                            "_": true,
-                            "$": true,
-                            "ace": true,
-                            "Promise": true,
-                            "sandboxRequest": true
+                    options: {
+                        globals: {
+                            define: true,
+                            zed: true,
+                            nodeRequire: true,
+                            _: true,
+                            $: true,
+                            ace: true,
+                            Promise: true,
+                            sandboxRequest: true,
+                            JSON5: true
                         }
                     }
                 }

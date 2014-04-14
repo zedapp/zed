@@ -100,6 +100,9 @@ define(function(require, exports, module) {
         /**
          * This is a super-charged version of _.extend, it recursively merges
          * objects and concatenates arrays (but does not add duplicates).
+         * If an array contains a string element starting with "!" that element (without !)
+         * will be removed from the merged array if present.
+         * 
          * This function does not modify either dest or source, it creates a new
          * object
          */
@@ -108,10 +111,26 @@ define(function(require, exports, module) {
                 if (!source) {
                     return dest;
                 }
-                var newArray = dest.slice();
-                for (var i = 0; i < source.length; i++) {
-                    var el = source[i];
-                    if (newArray.indexOf(el) === -1) {
+                var removals = {};
+                var newArray = [];
+                var el, i;
+                for(i = 0; i < dest.length; i++) {
+                    el = dest[i];
+                    if(_.isString(el) && el[0] === "!") {
+                        removals[el.substring(1)] = true;
+                    } else {
+                        newArray.push(el);
+                    }
+                }
+                for (i = 0; i < source.length; i++) {
+                    el = source[i];
+                    if(_.isString(el) && el[0] === "!") {
+                        var idx = newArray.indexOf(el.substring(1));
+                        if(idx !== -1) {
+                            // Remove from newArray
+                            newArray.splice(idx, 1);
+                        }
+                    } else if (newArray.indexOf(el) === -1 && !removals[el]) {
                         newArray.push(el);
                     }
                 }
@@ -182,7 +201,7 @@ define(function(require, exports, module) {
                         }
                         var json;
                         try {
-                            json = JSON.parse(text);
+                            json = JSON5.parse(text);
                         } catch (e) {
                             console.error("In file", imp, e);
                             next();
@@ -202,7 +221,7 @@ define(function(require, exports, module) {
         }
 
         function writeUserPrefs() {
-            configfs.writeFile("/user.json", JSON.stringify(userConfig, null, 4) + "\n", function(err) {
+            configfs.writeFile("/user.json", JSON5.stringify(userConfig, null, 4) + "\n", function(err) {
                 if (err) {
                     console.error("Error during writing config:", err);
                 }
@@ -219,7 +238,7 @@ define(function(require, exports, module) {
                 zed.getService("fs").readFile("/zedconfig.json", function(err, text) {
                     var base = {};
                     try {
-                        base = JSON.parse(text);
+                        base = JSON5.parse(text);
                     } catch (e) {
                         console.error("Error parsing zedconfig.json", e);
                     }
@@ -244,7 +263,7 @@ define(function(require, exports, module) {
             configfs.readFile(rootFile, function(err, config_) {
                 var json = {};
                 try {
-                    json = JSON.parse(config_);
+                    json = JSON5.parse(config_);
                     resolveRelativePaths(json, rootFile);
                 } catch(e) {
                     console.error("Error parsing /user.json", e);
@@ -338,7 +357,7 @@ define(function(require, exports, module) {
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::config", edit, session, function(err, session) {
                     session.setMode("ace/mode/json");
-                    session.setValue(JSON.stringify(expandedConfiguration, null, 4));
+                    session.setValue(JSON5.stringify(expandedConfiguration, null, 4));
                 });
             },
             readOnly: true

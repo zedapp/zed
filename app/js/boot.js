@@ -3,6 +3,7 @@ require.config({
     baseUrl: "js",
     paths: {
         "text": "../dep/text",
+        "json5": "../dep/json5",
         "async": "../config/api/zed/lib/async",
         "events": "./lib/emitter"
     },

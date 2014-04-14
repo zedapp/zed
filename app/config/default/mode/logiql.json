@@ -1,29 +1,36 @@
 {
-    "modes": {
-        "logiql": {
-            "name": "LogiQL",
-            "highlighter": "ace/mode/logiql",
-            "extensions": ["logic", "lql"],
-            "commands": {
+    modes: {
+        logiql: {
+            name: "LogiQL",
+            highlighter: "ace/mode/logiql",
+            extensions: [
+                "logic",
+                "lql"
+            ],
+            commands: {
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/logiql/ctags.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/logiql/ctags.js",
+                    inputs: {
+                        text: true
                     }
                 },
                 "Tools:Complete:Snippet": {
-                    "scriptUrl": "/default/command/snippet_completer.js",
-                    "snippets": {
-                        "module": "block(`${1:mymodule}) {\n\texport(`{\n\t\t\n\t}),\n\tclauses(`{\n\t\t${2}\n\t})\n} <-- ."
+                    scriptUrl: "/default/command/snippet_completer.js",
+                    snippets: {
+                        module: "block(`${1:mymodule}) {\n\texport(`{\n\t\t\n\t}),\n\tclauses(`{\n\t\t${2}\n\t})\n} <-- ."
                     }
                 }
             },
-            "preferences": {
-                "tabSize": 2
+            preferences: {
+                tabSize: 2
             },
-            "handlers": {
-                "change": ["Tools:CTags"],
-                "complete": ["Tools:Complete:Snippet"]
+            handlers: {
+                change: [
+                    "Tools:CTags"
+                ],
+                complete: [
+                    "Tools:Complete:Snippet"
+                ]
             }
         }
     }

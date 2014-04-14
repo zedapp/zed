@@ -134,7 +134,7 @@ function log(level, oldFn) {
             if (_.isString(arg)) {
                 s += arg;
             } else {
-                s += JSON.stringify(arg, null, 2);
+                s += JSON5.stringify(arg, null, 2);
             }
             s += ' ';
         });

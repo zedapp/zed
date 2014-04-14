@@ -18,7 +18,7 @@ define(function(require, exports, module) {
 
         var eventbus = imports.eventbus;
 
-        var keys = JSON.parse(require("text!../config/default/keys.json"));
+        var keys = JSON5.parse(require("text!../config/default/keys.json"));
 
 
         var api = {

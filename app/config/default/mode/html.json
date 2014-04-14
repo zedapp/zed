@@ -1,23 +1,26 @@
 {
-    "modes": {
-        "html": {
-            "name": "HTML",
-            "highlighter": "ace/mode/html",
-            "extensions": ["html"],
-
-            "commands": {
+    modes: {
+        html: {
+            name: "HTML",
+            highlighter: "ace/mode/html",
+            extensions: [
+                "html"
+            ],
+            commands: {
                 "Tools:Beautify": {
-                    "scriptUrl": "/default/mode/html/beautify.js",
-                    "inputs": {
-                        "preferences": true
+                    scriptUrl: "/default/mode/html/beautify.js",
+                    inputs: {
+                        preferences: true
                     }
                 },
                 "Tools:Preview": {
-                    "scriptUrl": "/default/mode/html/preview.js"
+                    scriptUrl: "/default/mode/html/preview.js"
                 }
             },
-            "handlers": {
-                "preview": ["Tools:Preview"]
+            handlers: {
+                preview: [
+                    "Tools:Preview"
+                ]
             }
         }
     }

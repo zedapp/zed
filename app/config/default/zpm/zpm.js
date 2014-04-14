@@ -48,7 +48,7 @@ exports.getInstalledPackages = function() {
             return configfs.readFile(packageFile).then(function(text) {
                 var packageJson;
                 try {
-                    packageJson = JSON.parse(text);
+                    packageJson = JSON5.parse(text);
                 } catch (e) {
                     console.error("Could not parse package.json", text);
                     throw e;
@@ -85,7 +85,7 @@ exports.install = function(uri) {
         files = packageData.files.slice(0);
         files.push("config.json");
         var folder = uriToPath(uri) + "/";
-        return configfs.writeFile(folder + "package.json", JSON.stringify(packageData, null, 4));
+        return configfs.writeFile(folder + "package.json", JSON5.stringify(packageData, null, 4));
     }, function(err) {
         throw new Error("Could not download file " + url + "package.json");
     }).then(function() {
@@ -234,7 +234,7 @@ function update(uri, pkg) {
                         }).then(function() {
                             return deletePackageFiles(uri, filesToDelete);
                         }).then(function() {
-                            return configfs.writeFile(folder + "/package.json", JSON.stringify(packageData, null, 4));
+                            return configfs.writeFile(folder + "/package.json", JSON5.stringify(packageData, null, 4));
                         }).then(function() {
                             return true;
                         });
@@ -261,22 +261,22 @@ function update(uri, pkg) {
 
 exports.addToConfig = function(uri) {
     return configfs.readFile("/user.json").then(function(config_) {
-        var json = JSON.parse(config_);
+        var json = JSON5.parse(config_);
         if (!json.packages) {
             json.packages = [];
         }
         json.packages.push(uri);
-        return configfs.writeFile("/user.json", JSON.stringify(json, null, 4));
+        return configfs.writeFile("/user.json", JSON5.stringify(json, null, 4));
     });
 };
 
 exports.removeFromConfig = function(uri) {
     return configfs.readFile("/user.json").then(function(config_) {
-        var json = JSON.parse(config_);
+        var json = JSON5.parse(config_);
         var index = json.packages.indexOf(uri);
         if (index > -1) {
             json.packages.splice(index, 1);
-            return configfs.writeFile("/user.json", JSON.stringify(json, null, 4));
+            return configfs.writeFile("/user.json", JSON5.stringify(json, null, 4));
         }
     });
 };

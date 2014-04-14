@@ -1,19 +1,19 @@
 {
-    "modes": {
-        "json": {
-            "commands": {
+    modes: {
+        json5: {
+            commands: {
                 "Tools:Zpm:Update Package.json File List": {
-                    "scriptUrl": "./update_package_json.js"
+                    scriptUrl: "./update_package_json.js"
                 }
             }
         }
     },
-    "commands": {
+    commands: {
         "Tools:Zpm:Create Package": {
-            "scriptUrl": "./create_package.js"
+            scriptUrl: "./create_package.js"
         }
     },
-    "preferences": {
-        "globalAutoRevert": true
+    preferences: {
+        globalAutoRevert: true
     }
 }

@@ -1,41 +1,50 @@
 {
-    "modes": {
-        "livescript": {
-            "name": "LiveScript",
-            "highlighter": "ace/mode/livescript",
-            "extensions": ["ls", "livescript", "Slakefile"],
-            "commands": {
+    modes: {
+        livescript: {
+            name: "LiveScript",
+            highlighter: "ace/mode/livescript",
+            extensions: [
+                "ls",
+                "livescript",
+                "Slakefile"
+            ],
+            commands: {
                 "Tools:Check": {
-                    "scriptUrl": "/default/mode/livescript/check.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/livescript/check.js",
+                    inputs: {
+                        text: true
                     },
-                    "internal": true
+                    internal: true
                 },
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/livescript/ctags.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/livescript/ctags.js",
+                    inputs: {
+                        text: true
                     }
                 },
                 "Tools:Preview": {
-                    "scriptUrl": "/default/mode/livescript/preview.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/livescript/preview.js",
+                    inputs: {
+                        text: true
                     }
                 },
                 "Tools:Compile": {
-                    "scriptUrl": "/default/mode/livescript/compile.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/livescript/compile.js",
+                    inputs: {
+                        text: true
                     }
                 }
             },
-            "handlers": {
-                "preview": ["Tools:Preview"],
-                "check": ["Tools:Check"],
-                "change": ["Tools:CTags"],
-                "preview": ["Tools:Preview"]
+            handlers: {
+                preview: [
+                    "Tools:Preview"
+                ],
+                check: [
+                    "Tools:Check"
+                ],
+                change: [
+                    "Tools:CTags"
+                ]
             }
         }
     }

@@ -1,27 +1,29 @@
 {
-    "modes": {
-        "nix": {
-            "name": "Nix",
-            "highlighter": "ace/mode/nix",
-            "extensions": ["nix"],
-            "commands": {
+    modes: {
+        nix: {
+            name: "Nix",
+            highlighter: "ace/mode/nix",
+            extensions: [
+                "nix"
+            ],
+            commands: {
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/nix/ctags.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/nix/ctags.js",
+                    inputs: {
+                        text: true
                     },
-                    "internal": true
+                    internal: true
                 },
                 "Tools:Complete:Snippet": {
-                    "scriptUrl": "/default/command/snippet_completer.js",
-                    "snippets": {
-                        "mkDerivation": "mkDerivation {\n\tname = \"${1}\";\n\tsrc = ${2};\n}"
+                    scriptUrl: "/default/command/snippet_completer.js",
+                    snippets: {
+                        mkDerivation: "mkDerivation {\n\tname = \"${1}\";\n\tsrc = ${2};\n}"
                     },
-                    "internal": true
+                    internal: true
                 },
                 "Tools:Complete:Builtin": {
-                    "scriptUrl": "/default/command/builtin_completer.js",
-                    "builtins": [
+                    scriptUrl: "/default/command/builtin_completer.js",
+                    builtins: [
                         "abort",
                         "add",
                         "addErrorContext",
@@ -177,18 +179,23 @@
                         "trace",
                         "tryEval",
                         "typeOf",
-                        "unsafeDiscardOutputDependency"],
-                    "internal": true
+                        "unsafeDiscardOutputDependency"
+                    ],
+                    internal: true
                 }
             },
-            "handlers": {
-                "change": ["Tools:CTags"],
-                "complete": ["Tools:Complete:Snippet", "Tools:Complete:Builtin"]
+            handlers: {
+                change: [
+                    "Tools:CTags"
+                ],
+                complete: [
+                    "Tools:Complete:Snippet",
+                    "Tools:Complete:Builtin"
+                ]
             },
-
-            "preferences": {
-                "behaviorsEnabled": false,
-                "tabSize": 2
+            preferences: {
+                behaviorsEnabled: false,
+                tabSize: 2
             }
         }
     }

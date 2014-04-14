@@ -1,9 +1,12 @@
 {
-    "modes": {
-        "sass": {
-            "name": "Sass",
-            "highlighter": "ace/mode/sass",
-            "extensions": ["sass", "css.sass"]
+    modes: {
+        sass: {
+            name: "Sass",
+            highlighter: "ace/mode/sass",
+            extensions: [
+                "sass",
+                "css.sass"
+            ]
         }
     }
 }

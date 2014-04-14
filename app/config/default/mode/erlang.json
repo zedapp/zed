@@ -1,9 +1,11 @@
 {
-    "modes": {
-        "erlang": {
-            "name": "Erlang",
-            "highlighter": "ace/mode/erlang",
-            "extensions": ["erl"]
+    modes: {
+        erlang: {
+            name: "Erlang",
+            highlighter: "ace/mode/erlang",
+            extensions: [
+                "erl"
+            ]
         }
     }
 }

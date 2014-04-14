@@ -1,13 +1,14 @@
 {
-    "modes": {
-        "xml": {
-            "name": "XML",
-            "highlighter": "ace/mode/xml",
-            "extensions": ["xml"],
-            
-            "commands": {
+    modes: {
+        xml: {
+            name: "XML",
+            highlighter: "ace/mode/xml",
+            extensions: [
+                "xml"
+            ],
+            commands: {
                 "Tools:Beautify": {
-                    "scriptUrl": "/default/mode/html/beautify.js"
+                    scriptUrl: "/default/mode/html/beautify.js"
                 }
             }
         }

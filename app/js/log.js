@@ -43,7 +43,7 @@ define(function(require, exports, module) {
                     s += arg;
                 } else {
                     try {
-                        s += JSON.stringify(arg, null, 2);
+                        s += JSON5.stringify(arg, null, 2);
                     } catch(e) {
                         s += "<<circular JSON>>";
                     }

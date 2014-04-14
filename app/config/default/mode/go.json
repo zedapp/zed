@@ -1,25 +1,26 @@
 {
-    "modes": {
-        "go": {
-            "name": "Go",
-            "highlighter": "ace/mode/golang",
-            "extensions": ["go"],
-
-            "commands": {
+    modes: {
+        go: {
+            name: "Go",
+            highlighter: "ace/mode/golang",
+            extensions: [
+                "go"
+            ],
+            commands: {
                 "Tools:CTags": {
-                    "scriptUrl": "/default/mode/go/ctags.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/go/ctags.js",
+                    inputs: {
+                        text: true
                     }
                 }
             },
-
-            "handlers": {
-                "change": ["Tools:CTags"]
+            handlers: {
+                change: [
+                    "Tools:CTags"
+                ]
             },
-
-            "preferences": {
-                "tabSize": 8
+            preferences: {
+                tabSize: 8
             }
         }
     }

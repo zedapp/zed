@@ -1,13 +1,15 @@
 {
-    "modes": {
-        "makefile": {
-            "name": "Makefile",
-            "highlighter": "ace/mode/makefile",
-            "filenames": [
-                "GNUmakefile", "makefile", "Makefile"
-                ],
-            "preferences": {
-                "useSoftTabs": false
+    modes: {
+        makefile: {
+            name: "Makefile",
+            highlighter: "ace/mode/makefile",
+            filenames: [
+                "GNUmakefile",
+                "makefile",
+                "Makefile"
+            ],
+            preferences: {
+                useSoftTabs: false
             }
         }
     }

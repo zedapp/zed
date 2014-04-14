@@ -1,9 +1,11 @@
 {
-    "modes": {
-        "csharp": {
-            "name": "C#",
-            "highlighter": "ace/mode/csharp",
-            "extensions": ["cs"]
+    modes: {
+        csharp: {
+            name: "C#",
+            highlighter: "ace/mode/csharp",
+            extensions: [
+                "cs"
+            ]
         }
     }
 }

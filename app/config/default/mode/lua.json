@@ -1,21 +1,23 @@
 {
-    "modes": {
-        "lua": {
-            "name": "Lua",
-            "highlighter": "ace/mode/lua",
-            "extensions": ["lua"],
-
-            "commands": {
+    modes: {
+        lua: {
+            name: "Lua",
+            highlighter: "ace/mode/lua",
+            extensions: [
+                "lua"
+            ],
+            commands: {
                 "Tools:Check": {
-                    "scriptUrl": "/default/mode/lua/check.js",
-                    "inputs": {
-                        "text": true
+                    scriptUrl: "/default/mode/lua/check.js",
+                    inputs: {
+                        text: true
                     }
                 }
             },
-
-            "handlers": {
-                "check": ["Tools:Check"]
+            handlers: {
+                check: [
+                    "Tools:Check"
+                ]
             }
         }
     }
