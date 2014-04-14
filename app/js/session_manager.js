@@ -4,7 +4,7 @@
 /*global define, ace, _ */
 define(function(require, exports, module) {
     "use strict";
-    plugin.consumes = ["config", "eventbus", "editor", "state", "ui", "command", "fs"];
+    plugin.consumes = ["config", "eventbus", "editor", "state", "ui", "command", "fs", "window"];
     plugin.provides = ["session_manager"];
     return plugin;
 
@@ -21,6 +21,7 @@ define(function(require, exports, module) {
         var state = imports.state;
         var ui = imports.ui;
         var command = imports.command;
+        var win = imports.window;
 
         eventbus.declare("switchsession");
         eventbus.declare("newfilecreated");
@@ -51,6 +52,17 @@ define(function(require, exports, module) {
                         modes.setSessionMode(session, modes.getModeForSession(session));
                     });
                 });
+
+                eventbus.on("switchsession", function(edit, newSession, prevSession) {
+                    saveSession(prevSession);
+                });
+
+                win.setCloseHandler(function() {
+                    saveSession(editor.getActiveSession(), function() {
+                        win.close(true);
+                    });
+                });
+
             },
             saveSession: saveSession,
             go: go,
@@ -72,16 +84,17 @@ define(function(require, exports, module) {
                     clearTimeout(saveTimer);
                 }
                 session.dirty = true;
-                saveTimer = setTimeout(function() {
-                    saveSession(session);
-                }, 1000);
+                // saveTimer = setTimeout(function() {
+                //     saveSession(session);
+                // }, 1000);
             });
             sessions[path] = session;
         }
 
-        function saveSession(session) {
+        function saveSession(session, callback) {
             var path = session.filename;
             if (!path || !session.dirty) {
+                callback && callback();
                 return;
             }
             // If this is a new file, this is the moment that it's going to
@@ -101,6 +114,7 @@ define(function(require, exports, module) {
                     eventbus.emit("sessionsaved", session);
                     session.dirty = false;
                 }
+                callback && callback();
             });
         }
 

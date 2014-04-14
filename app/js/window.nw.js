@@ -11,9 +11,18 @@ define(function(require, exports, module) {
 
         var win = gui.Window.get();
 
+        var closeHandler = null;
+
         var api = {
-            close: function() {
-                win.close();
+            close: function(force) {
+                if(force || !closeHandler) {
+                    win.close();
+                } else {
+                    closeHandler();
+                }
+            },
+            setCloseHandler: function(handler) {
+                closeHandler = handler;
             },
             create: function(url, frameStyle, width, height, callback) {
                 var frame = true;

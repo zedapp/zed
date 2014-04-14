@@ -148,9 +148,10 @@ define(function(require, exports, module) {
             },
             switchSession: function(session, edit) {
                 edit = edit || api.getActiveEditor();
+                var prevSession = edit.session;
                 edit.setSession(session);
                 edit.setReadOnly( !! session.readOnly);
-                eventbus.emit("switchsession", edit, session);
+                eventbus.emit("switchsession", edit, session, prevSession);
             },
             isInsertingSnippet: function() {
                 return !!activeEditor.tabstopManager;

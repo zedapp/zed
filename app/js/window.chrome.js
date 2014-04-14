@@ -6,9 +6,18 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var win = chrome.app.window.current();
 
+        var closeHandler = null;
+
         var api = {
-            close: function() {
-                win.close();
+            close: function(force) {
+                if(force || !closeHandler) {
+                    win.close();
+                } else {
+                    closeHandler();
+                }
+            },
+            setCloseHandler: function(handler) {
+                closeHandler = handler;
             },
             create: function(url, frameStyle, width, height, callback) {
                 chrome.app.window.create(url, {
