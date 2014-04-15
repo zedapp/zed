@@ -7,6 +7,7 @@
         "./mode/csharp.json",
         "./mode/dart.json",
         "./mode/erlang.json",
+        "./mode/groovy.json",
         "./mode/go.json",
         "./mode/haml.json",
         "./mode/haskell.json",

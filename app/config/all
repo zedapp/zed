@@ -44,6 +44,7 @@
 /default/mode/erlang.json
 /default/mode/go.json
 /default/mode/go/ctags.js
+/default/mode/groovy.json
 /default/mode/haml.json
 /default/mode/haskell.json
 /default/mode/html.json
