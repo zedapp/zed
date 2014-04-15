@@ -64,6 +64,8 @@ define(function(require, exports, module) {
             if (!url) {
                 return;
             }
+            url = url.trim();
+
             // Only check http(s) links
             if (url.indexOf("http") !== 0) {
                 $("#hint").html("<span class='error'>ERROR</span>: URL does not seem to run a (recent) Zed server.");
