@@ -1,0 +1,11 @@
+{
+    modes: {
+        jsx: {
+            name: "JSX",
+            highlighter: "ace/mode/jsx",
+            extensions: [
+                "jsx"
+            ]
+        }
+    }
+}
