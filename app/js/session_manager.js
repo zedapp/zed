@@ -109,7 +109,6 @@ define(function(require, exports, module) {
             }
             eventbus.emit("sessionactivitystarted", session, "Saving");
             eventbus.emit("sessionbeforesave", session);
-            console.log("Saving", path);
             fs.writeFile(path, session.getValue(), function(err) {
                 if (err) {
                     eventbus.emit("sessionactivityfailed", session, "Failed to save");
