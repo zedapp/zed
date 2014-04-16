@@ -115,12 +115,12 @@ define(function(require, exports, module) {
             var editors = editor.getEditors();
             editors.forEach(function(editor) {
                 editor.resize();
-                if(editor.isFocused()) {
+                if (editor.isFocused()) {
                     foundFocus = true;
                 }
             });
-            if(!foundFocus) {
-                editors[editors.length-1].focus();
+            if (!foundFocus) {
+                editors[editors.length - 1].focus();
             }
         }
 
@@ -185,6 +185,37 @@ define(function(require, exports, module) {
         command.define("Split:Switch Focus", {
             doc: "Move the active cursor to the next editor pane.",
             exec: switchSplit,
+            readOnly: true
+        });
+
+        function swapSession(edit, session, idx) {
+            var editors = editor.getEditors();
+            var activeEditor = editor.getActiveEditor();
+            if(idx >= editors.length) {
+                // Not moving to invisible splits
+                return;
+            }
+            editor.switchSession(editors[idx].session, activeEditor);
+            editor.switchSession(session, editors[idx]);
+            editor.setActiveEditor(editors[idx]);
+        }
+
+        command.define("Split:Move First", {
+            exec: function(edit, session) {
+                swapSession(edit, session, 0);
+            },
+            readOnly: true
+        });
+        command.define("Split:Move Second", {
+            exec: function(edit, session) {
+                swapSession(edit, session, 1);
+            },
+            readOnly: true
+        });
+        command.define("Split:Move Third", {
+            exec: function(edit, session) {
+                swapSession(edit, session, 2);
+            },
             readOnly: true
         });
 
