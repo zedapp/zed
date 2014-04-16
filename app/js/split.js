@@ -78,7 +78,8 @@ define(function(require, exports, module) {
             resetEditorDiv($("#editor0")).addClass("editor-single");
             resetEditorDiv($("#editor1")).addClass("editor-disabled");
             resetEditorDiv($("#editor2")).addClass("editor-disabled");
-            resizeAndFocus();
+            editor.setActiveEditor(editor.getEditors(true)[0]);
+            resizeEditors();
             switchSplit();
             eventbus.emit("splitchange", "1");
         }
@@ -97,7 +98,8 @@ define(function(require, exports, module) {
             resetEditorDiv($("#editor0")).addClass("editor-vsplit2-left-" + style);
             resetEditorDiv($("#editor1")).addClass("editor-vsplit2-right-" + style);
             resetEditorDiv($("#editor2")).addClass("editor-disabled");
-            resizeAndFocus();
+            editor.setActiveEditor(editor.getEditors(true)[1]);
+            resizeEditors();
             eventbus.emit("splitchange", "2-" + style);
         }
 
@@ -106,22 +108,15 @@ define(function(require, exports, module) {
             resetEditorDiv($("#editor0")).addClass("editor-vsplit3-left");
             resetEditorDiv($("#editor1")).addClass("editor-vsplit3-middle");
             resetEditorDiv($("#editor2")).addClass("editor-vsplit3-right");
-            resizeAndFocus();
+            editor.setActiveEditor(editor.getEditors(true)[2]);
+            resizeEditors();
             eventbus.emit("splitchange", "3");
         }
 
-        function resizeAndFocus() {
-            var foundFocus = false;
-            var editors = editor.getEditors();
-            editors.forEach(function(editor) {
+        function resizeEditors() {
+            editor.getEditors().forEach(function(editor) {
                 editor.resize();
-                if (editor.isFocused()) {
-                    foundFocus = true;
-                }
             });
-            if (!foundFocus) {
-                editors[editors.length - 1].focus();
-            }
         }
 
         function switchSplit() {
