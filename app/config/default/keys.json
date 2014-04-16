@@ -265,15 +265,15 @@
             "mac": "Command-0",
             "win": "Ctrl-0"
         },
-        "Split:Move First": {
+        "Split:Move To First": {
             "mac": "Command-Ctrl-1",
             "win": "Ctrl-Shift-1"
         },
-        "Split:Move Second": {
+        "Split:Move To Second": {
             "mac": "Command-Ctrl-2",
             "win": "Ctrl-Shift-2"
         },
-        "Split:Move Third": {
+        "Split:Move To Third": {
             "mac": "Command-Ctrl-3",
             "win": "Ctrl-Shift-3"
         },

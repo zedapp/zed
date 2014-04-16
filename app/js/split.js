@@ -78,10 +78,11 @@ define(function(require, exports, module) {
             resetEditorDiv($("#editor0")).addClass("editor-single");
             resetEditorDiv($("#editor1")).addClass("editor-disabled");
             resetEditorDiv($("#editor2")).addClass("editor-disabled");
-            editor.setActiveEditor(editor.getEditors(true)[0]);
+            var edit = editor.getEditors(true)[0];
+            editor.setActiveEditor(edit);
             resizeEditors();
-            switchSplit();
             eventbus.emit("splitchange", "1");
+            eventbus.emit("splitswitched", edit);
         }
 
         function splitTwo(style) {
@@ -98,9 +99,11 @@ define(function(require, exports, module) {
             resetEditorDiv($("#editor0")).addClass("editor-vsplit2-left-" + style);
             resetEditorDiv($("#editor1")).addClass("editor-vsplit2-right-" + style);
             resetEditorDiv($("#editor2")).addClass("editor-disabled");
-            editor.setActiveEditor(editor.getEditors(true)[1]);
+            var edit = editor.getEditors(true)[1];
+            editor.setActiveEditor(edit);
             resizeEditors();
             eventbus.emit("splitchange", "2-" + style);
+            eventbus.emit("splitswitched", edit);
         }
 
         function splitThree() {
@@ -108,9 +111,11 @@ define(function(require, exports, module) {
             resetEditorDiv($("#editor0")).addClass("editor-vsplit3-left");
             resetEditorDiv($("#editor1")).addClass("editor-vsplit3-middle");
             resetEditorDiv($("#editor2")).addClass("editor-vsplit3-right");
-            editor.setActiveEditor(editor.getEditors(true)[2]);
+            var edit = editor.getEditors(true)[2];
+            editor.setActiveEditor(edit);
             resizeEditors();
             eventbus.emit("splitchange", "3");
+            eventbus.emit("splitswitched", edit);
         }
 
         function resizeEditors() {
@@ -184,30 +189,34 @@ define(function(require, exports, module) {
         });
 
         function swapSession(edit, session, idx) {
-            var editors = editor.getEditors();
+            var allEditors = editor.getEditors(true);
+            var visibleEditors = editor.getEditors();
             var activeEditor = editor.getActiveEditor();
-            if(idx >= editors.length) {
-                // Not moving to invisible splits
-                return;
+            if (idx >= visibleEditors.length) {
+                if (idx === 1) {
+                    splitTwo();
+                } else { // idx == 3
+                    splitThree();
+                }
             }
-            editor.switchSession(editors[idx].session, activeEditor);
-            editor.switchSession(session, editors[idx]);
-            editor.setActiveEditor(editors[idx]);
+            editor.switchSession(allEditors[idx].session, activeEditor);
+            editor.switchSession(session, allEditors[idx]);
+            editor.setActiveEditor(allEditors[idx]);
         }
 
-        command.define("Split:Move First", {
+        command.define("Split:Move To First", {
             exec: function(edit, session) {
                 swapSession(edit, session, 0);
             },
             readOnly: true
         });
-        command.define("Split:Move Second", {
+        command.define("Split:Move To Second", {
             exec: function(edit, session) {
                 swapSession(edit, session, 1);
             },
             readOnly: true
         });
-        command.define("Split:Move Third", {
+        command.define("Split:Move To Third", {
             exec: function(edit, session) {
                 swapSession(edit, session, 2);
             },
