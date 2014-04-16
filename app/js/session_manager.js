@@ -67,6 +67,9 @@ define(function(require, exports, module) {
             saveSession: saveSession,
             go: go,
             handleChangedFile: handleChangedFile,
+            getSession: function(path) {
+                return sessions[path] || api.specialDocs[path];
+            },
             getSessions: function() {
                 return sessions;
             },

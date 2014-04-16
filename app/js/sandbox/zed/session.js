@@ -8,7 +8,7 @@ define(function(require, exports, module) {
     }
 
     function getSession(path) {
-        var session = path ? zed.getService("session_manager").getSessions()[path] : zed.getService("editor").getActiveSession();
+        var session = path ? zed.getService("session_manager").getSession(path) : zed.getService("editor").getActiveSession();
         if(!session) {
             console.error("Could not get session:", path);
             // TODO once we switch this to promises
