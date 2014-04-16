@@ -3,6 +3,8 @@
         "animatedScroll": true,
         "autoIndentOnPaste": true,
         "behaviorsEnabled": true,
+        "continuousCompletion": false,
+        "continuousCompletionDelay": 250,
         "defaultMode": "ace/mode/text",
         "detectIndentation": true,
         "dimInactiveEditors": true,
@@ -16,9 +18,11 @@
         "highlightSelectedWord": true,
         "hygienicMode": false,
         "hygienicModeRemote": true,
+        "keybinding": "zed",
         "previewDelay": 500,
         "printMarginColumn": 80,
         "recentFolderHistory": 10,
+        "saveTimeout": 1000,
         "scrollSpeed": 2,
         "showContextBar": false,
         "showFoldWidgets": true,
@@ -34,8 +38,6 @@
         "wordWrap": false,
         "wordWrapColumn": null,
         "wrapBehaviorsEnabled": false,
-        "continuousCompletion": false,
-        "continuousCompletionDelay": 250,
-        "keybinding": "zed"
+
     }
 }

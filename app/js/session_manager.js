@@ -84,9 +84,12 @@ define(function(require, exports, module) {
                     clearTimeout(saveTimer);
                 }
                 session.dirty = true;
-                // saveTimer = setTimeout(function() {
-                //     saveSession(session);
-                // }, 1000);
+                var saveTimeout = config.getPreference("saveTimeout");
+                if(saveTimeout > 0) {
+                    saveTimer = setTimeout(function() {
+                        saveSession(session);
+                    }, saveTimeout);
+                }
             });
             sessions[path] = session;
         }
@@ -106,6 +109,7 @@ define(function(require, exports, module) {
             }
             eventbus.emit("sessionactivitystarted", session, "Saving");
             eventbus.emit("sessionbeforesave", session);
+            console.log("Saving", path);
             fs.writeFile(path, session.getValue(), function(err) {
                 if (err) {
                     eventbus.emit("sessionactivityfailed", session, "Failed to save");
@@ -367,6 +371,14 @@ define(function(require, exports, module) {
             doc: "Re-read this file from disk, reverting any unsaved changes.",
             exec: function(edit, session) {
                 handleChangedFile(session.filename);
+            },
+            readOnly: true
+        });
+
+        command.define("File:Save", {
+            doc: "Explicitly saves a file, for those who don't trust auto-save",
+            exec: function(edit, session) {
+                saveSession(session);
             },
             readOnly: true
         });
