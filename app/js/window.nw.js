@@ -11,9 +11,19 @@ define(function(require, exports, module) {
 
         var win = gui.Window.get();
 
+        var closeHandler = null;
+
         var api = {
-            close: function() {
-                win.close();
+            close: function(force) {
+                if(force) {
+                    win.close(true);
+                } else {
+                    closeHandler();
+                }
+            },
+            setCloseHandler: function(handler) {
+                closeHandler = handler;
+                win.on("close", handler);
             },
             create: function(url, frameStyle, width, height, callback) {
                 var frame = true;
@@ -32,9 +42,8 @@ define(function(require, exports, module) {
                     w.focus();
                     callback && callback(null, {
                         addCloseListener: function(listener) {
-                            w.on("close", function() {
+                            w.on("closed", function() {
                                 listener();
-                                w.close(true);
                             });
                         },
                         window: w.window,
