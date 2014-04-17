@@ -92,7 +92,11 @@ define(function(require, exports, module) {
                         var el = $("<div class='pathbar'><div class='path'>No file</div><div class='info' 'display: none;'></div>");
                         barEl.append(el);
                         el.find(".path").click(function() {
-                            command.exec("Navigate:Goto", edit, edit.session);
+                            editor.setActiveEditor(edit);
+                            eventbus.emit("splitswitched", edit);
+                            setTimeout(function() {
+                                command.exec("Navigate:Goto", edit, edit.session);
+                            });
                         });
                         edit.pathBarEl = el;
                     });
