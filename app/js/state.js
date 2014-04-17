@@ -31,6 +31,13 @@ define(function(require, exports, module) {
                 eventbus.once("stateloaded", function() {
                     var bounds = api.get('window');
                     if (bounds) {
+                        // In bug #169 it was reported that these values can
+                        // randomly get negative value, to avoid this from
+                        // being a problem we'll do some normalization.
+                        bounds.left = Math.max(0, bounds.left);
+                        bounds.top = Math.max(0, bounds.top);
+                        bounds.width = Math.max(100, bounds.height);
+                        bounds.height = Math.max(100, bounds.height);
                         win.setBounds(bounds);
                     }
                     win.addResizeListener(function() {
