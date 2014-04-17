@@ -1,0 +1,11 @@
+{
+    modes: {
+        vagrant: {
+            name: "Vagrant",
+            highlighter: "ace/mode/ruby",
+            filenames: [
+                "Vagrantfile"
+            ]
+        }
+    }
+}
