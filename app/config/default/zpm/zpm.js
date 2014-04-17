@@ -122,17 +122,17 @@ exports.update = function(uri) {
 };
 
 exports.updateAll = function() {
-    return exports.getInstalledPackages().then(function(packages) {
-        var uriPackagePairs = [];
-        for (var id in packages) {
-            uriPackagePairs.push([id, packages[id]]);
-        }
-        var anyUpdates = false;
-        var packagePromises = uriPackagePairs.map(function(uriPackagePair) {
-            return update(uriPackagePair[0], uriPackagePair[1]).then(function(updated) {
-                if (updated) {
-                    anyUpdates = true;
-                }
+    var anyUpdates = false;
+    return config.get("packages").then(function(packages) {
+        var packagePromises = packages.map(function(uri) {
+            var packageFile = uriToPath(uri) + "/package.json";
+            return configfs.readFile(packageFile).then(function(text) {
+                var packageJson = JSON5.parse(text);
+                return update(uri, packageJson).then(function(updated) {
+                    if (updated) {
+                        anyUpdates = true;
+                    }
+                });
             });
         });
         return Promise.all(packagePromises).then(function() {
@@ -158,7 +158,7 @@ exports.installAll = function() {
         return Promise.all(packagePromises).then(function() {
             return notYetInstalled.length > 0;
         }, function(err) {
-            console.error("Error installing packages", ""+err);
+            console.error("Error installing packages", "" + err);
         });
     });
 };
@@ -239,7 +239,7 @@ function update(uri, pkg) {
                             return true;
                         });
                     }, function(err) {
-                        console.log("Error copying stuff", ""+err);
+                        console.log("Error copying stuff", "" + err);
                         return copyFiles(folder + ".old", folder, oldFiles).then(Promise.reject(err));
                     });
                 }, function(err) {

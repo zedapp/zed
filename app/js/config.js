@@ -102,7 +102,7 @@ define(function(require, exports, module) {
          * objects and concatenates arrays (but does not add duplicates).
          * If an array contains a string element starting with "!" that element (without !)
          * will be removed from the merged array if present.
-         * 
+         *
          * This function does not modify either dest or source, it creates a new
          * object
          */

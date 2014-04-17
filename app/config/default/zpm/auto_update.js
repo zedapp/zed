@@ -23,7 +23,7 @@ module.exports = function(info) {
                     });
                     config.reload();
                 }
-                configFs.writeFile("/packages/last.update", ""+Date.now());
+                return configFs.writeFile("/packages/last.update", ""+Date.now());
             });
         }
     }
