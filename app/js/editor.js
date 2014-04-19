@@ -53,6 +53,7 @@ define(function(require, exports, module) {
                 edit.setPrintMarginColumn(config.getPreference("printMarginColumn", session));
                 edit.setShowInvisibles(config.getPreference("showInvisibles", session));
                 edit.setDisplayIndentGuides(config.getPreference("displayIndentGuides", session));
+                edit.setOption("scrollPastEnd", config.getPreference("scrollPastEnd", session));
                 edit.setAnimatedScroll(config.getPreference("animatedScroll", session));
                 edit.setShowFoldWidgets(config.getPreference("showFoldWidgets", session));
                 edit.setScrollSpeed(config.getPreference("scrollSpeed", session));

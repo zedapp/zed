@@ -23,6 +23,7 @@
         "printMarginColumn": 80,
         "recentFolderHistory": 10,
         "saveTimeout": 2000,
+        "scrollPastEnd": false,
         "scrollSpeed": 2,
         "showContextBar": false,
         "showFoldWidgets": true,

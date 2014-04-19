@@ -182,6 +182,12 @@
             "preference": "continuousCompletion",
             "readOnly": true
         },
+        "Configuration:Preferences:Toggle Scroll Past End": {
+            "doc": "Toggle whether or not you can scroll past the last line in a document.",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "scrollPastEnd",
+            "readOnly": true
+        },
         "Configuration:Preferences:KeyBinding:Zed": {
             "doc": "Set keybinding to Zed keybindings.",
             "scriptUrl": "./command/set_preference.js",
