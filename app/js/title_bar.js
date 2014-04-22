@@ -148,18 +148,10 @@ define(function(require, exports, module) {
         };
 
         function update() {
-            var barHeight = 46;
-
             var title = opts.get('title');
             var titleEl = barEl.find(".title");
 
             titleEl.html("<img src='img/zed-small.png'/>" + title + " ");
-
-            editor.getEditors(true).forEach(function(edit) {
-                $(edit.container).css("top", barHeight + "px");
-                edit.resize();
-            });
-            $("#preview-wrapper").css("top", barHeight + "px");
         }
 
         function switchSession(edit, session) {
