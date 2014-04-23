@@ -339,9 +339,9 @@ define(function(require, exports, module) {
             unblockUI: function() {
                 if (blockedEl) {
                     console.log("Unblocking UI again");
-                    blockedEl.fadeOut(function() {
-                        this.remove();
-                    });
+                    // blockedEl.fadeOut(function() {
+                        blockedEl.remove();
+                    // });
                     blockedEl = null;
                 }
             }

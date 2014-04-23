@@ -64,7 +64,7 @@ define(function(require, exports, module) {
             var el = $("#update-error");
             el.text("Auto update error: " + message).fadeIn();
             setTimeout(function() {
-                el.fadeOut();
+                el.hide();
             }, 10 * 1000);
         }
 

@@ -19,7 +19,7 @@ copy-packages:
 
 build-package: copy-packages indexes
 	rm -f zed.zip
-	cd app; zip ../zed.zip -x '*.git*' -r *
+	cd app; zip ../zed.zip -x '*.git*' -x 'node_modules*' -r *
 
 package: build-package
 	rm -rf app/config/packages/*

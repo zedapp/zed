@@ -54,6 +54,7 @@
 /default/mode/ini.json
 /default/mode/jack.json
 /default/mode/java.json
+/default/mode/jsx.json
 /default/mode/less.json
 /default/mode/livescript.json
 /default/mode/livescript/check.js

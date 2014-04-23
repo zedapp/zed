@@ -1,6 +1,29 @@
 Changelog
 =========
 
+0.11.1
+------
+* New auto save that always saves (which should be friendlier for people using build systems with file watchers):
+    * When switching between splits
+    * When switching between files
+    * When the editor loses focus
+    * And optionally: after a x number of milliseconds of inactivity (set to `saveTimeout` to 0 to disable this)
+* Commands to move splits around: (`Split:Move To *`)
+* New splits now receive focus automatically
+* Version number now appears in project picker
+* Fixes to file tree (by eltuerto)
+* Sandbox messages now appear in zed::log for standalone version
+* Configuration now uses JSON5 format (which supports comments etc.)
+* Fix to trim remote URLs when pasting (by surma)
+* ZPM auto update fixes
+* Scroll past end preference (`scrollPastEnd`) (by TheKiteEatingTree)
+* Modes:
+    * PHP mode now includes a parser and reports parse errors
+    * Livescript mode (by maninalift)
+    * Groovy mode (by calebmpeterson)
+    * JSX mode
+    * Improved Markdown preview styling (by ghotsla)
+
 0.11
 ----
 * Standalone:
@@ -10,7 +33,7 @@ Changelog
 * New commands:
     * `File:Copy` (by iElectric)
 * Language modes:
-    * Python now has CTags indexing (by gholstla)
+    * Python now has CTags indexing (by ghotsla)
     * Ability to switch off certain CSSLint options (by conradz)
 * Bugs fixed:
     * Fixed a bug where when the project history is empty, no new projects are added.

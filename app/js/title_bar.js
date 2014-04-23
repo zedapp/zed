@@ -115,7 +115,7 @@ define(function(require, exports, module) {
                     editor.getEditors().forEach(function(edit) {
                         if (edit.getSession() === session) {
                             var infoEl = edit.pathBarEl.find(".info");
-                            infoEl.fadeOut();
+                            infoEl.hide();
                         }
                     });
                 });
@@ -126,7 +126,7 @@ define(function(require, exports, module) {
                             infoEl.fadeIn();
                             infoEl.html('<span class="error">' + error + '</span>');
                             setTimeout(function() {
-                                infoEl.fadeOut();
+                                infoEl.hide();
                             }, 3000);
                         }
                     });

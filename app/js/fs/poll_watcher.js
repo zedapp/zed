@@ -3,7 +3,7 @@ define(function(require, exports, module) {
         var tagCache = {};
         var fileWatchers = {};
         var fileLocks = {};
-        
+
         var LOCK_TIMEOUT = 30 * 1000; // 30 seconds
 
         function pollFiles() {
@@ -12,12 +12,12 @@ define(function(require, exports, module) {
                 if (fileWatchers[path].length === 0) {
                     return;
                 }
-                
+
                 // If the file is locked (e.g. write going on), let's not poll
                 if(fileLocks[path] && fileLocks[path] > Date.now() - LOCK_TIMEOUT) {
                     return;
                 }
-                
+
                 fs.getCacheTag(path, function(err, tag) {
                     if(err) {
                         delete tagCache[path];
@@ -35,7 +35,7 @@ define(function(require, exports, module) {
                                 fn(path, "error");
                             });
                         }
-                        
+
                     } else {
                         if (tagCache[path] !== tag) {
                             fileWatchers[path].forEach(function(fn) {
@@ -48,8 +48,9 @@ define(function(require, exports, module) {
             });
         }
 
+        console.log("SEtting poll interval");
         setInterval(pollFiles, pollInterval);
-        
+
         return {
             watchFile: function(path, callback) {
                 fileWatchers[path] = fileWatchers[path] || [];
