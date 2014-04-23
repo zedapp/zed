@@ -49,7 +49,7 @@ define(function(require, exports, module) {
                         }
                         // TODO: Copy session state
                         session_manager.go(newPath, edit);
-                        eventbus.emit("newfilecreated", newPath);
+                        eventbus.emit("newfilecreated", newPath, session);
                         fs.deleteFile(path, function(err) {
                             if (err) {
                                 return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not delete file: " + err);
@@ -78,7 +78,7 @@ define(function(require, exports, module) {
                         }
                         // TODO: Copy session state
                         session_manager.go(newPath, edit);
-                        eventbus.emit("newfilecreated", newPath);
+                        eventbus.emit("newfilecreated", newPath, session);
                         eventbus.emit("sessionactivitycompleted", edit.getSession());
                     });
                 }

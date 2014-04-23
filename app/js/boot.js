@@ -39,12 +39,13 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./action",
         "./theme",
         "./log",
-        "./window_commands"];
+        "./window_commands",
+        "./analytics"];
 
     if (window.isNodeWebkit) {
-        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw");
+        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw");
     } else {
-        modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "windows.chrome");
+        modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome");
     }
 
     fsPicker(function(err, fsConfig) {
@@ -78,6 +79,8 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                         service.init();
                     }
                 });
+
+                app.getService("analytics_tracker").trackEvent("Editor", "FsTypeOpened", options.get("url").split(":")[0]);
 
                 setupBuiltinDoc("zed::start", introText);
                 setupBuiltinDoc("zed::log", "Zed Log\n===========\n");

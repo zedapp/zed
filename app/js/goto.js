@@ -20,6 +20,7 @@ define(function(require, exports, module) {
         var filteredFileCache = [];
 
         eventbus.declare("loadedfilelist");
+        eventbus.declare("goto");
 
         var api = {
             hook: function() {
@@ -262,6 +263,7 @@ define(function(require, exports, module) {
                             file = fileOnly + (loc ? ':' + loc : '');
                             session_manager.go(file, edit, session);
                         }
+                        eventbus.emit("goto", phrase);
                     },
                     onCancel: function() {
                         editor.switchSession(session, edit);

@@ -11,7 +11,8 @@
         "icon": "Icon.png"
     },
     "dependencies": {
-        "tar": "~0.1.19"
+        "tar": "~0.1.19",
+        "request": "~2.34.0"
     },
     "chromium-args": "--disable-web-security -–allow-file-access-from-files",
     "webkit": {
