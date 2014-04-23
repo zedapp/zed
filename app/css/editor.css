@@ -563,3 +563,6 @@ body.dark #titlebar .title {
     height: 16px;
     margin-right: 6px;
 }
+#editor0, #editor1, #editor2, #preview-wrapper {
+    top: 46px;
+}
