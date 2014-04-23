@@ -22,6 +22,7 @@ define(function(require, exports, module) {
         eventbus.declare("commandsloaded");
         // Triggered when config commands were reset and should be reloaded from config
         eventbus.declare("configcommandsreset");
+        eventbus.declare("executedcommand");
 
         function defineUserCommand(name, cmd) {
             api.defineConfig(name, {
@@ -145,6 +146,7 @@ define(function(require, exports, module) {
                         recentCommands[cmd] = Date.now();
                         zed.getService("state").set("recent.commands", recentCommands);
                         api.exec(cmd, edit, edit.getSession());
+                        eventbus.emit("executedcommand", cmd);
                     }
                 });
             },
