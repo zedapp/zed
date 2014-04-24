@@ -108,6 +108,13 @@ define(function(require, exports, module) {
                     });
                 });
             }
+        } else if(url.indexOf("textarea:") === 0) {
+            var text = url.substring("textarea:".length);
+            return callback(null, {
+                packagePath: "./fs/textarea",
+                text: text,
+                id: options.get("id")
+            });
         } else {
             return callback(null, {
                 packagePath: "./fs/web",
