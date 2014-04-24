@@ -17,6 +17,9 @@ define(function(require, exports, module) {
             buildDirectoryObject: buildDirectoryObject,
         };
 
+        eventbus.declare("tree");
+        eventbus.declare("commandtree");
+
         function buildDirectoryObject(list, sep) {
             var root = {};
 
@@ -143,6 +146,7 @@ define(function(require, exports, module) {
         command.define("Navigate:File Tree", {
             doc: "Display the files of the current project in a tree heirarchy.",
             exec: function(edit) {
+                eventbus.emit("tree");
                 showTree("file-tree", edit, goto.getFileCache(), "/", session_manager.go);
             },
             readOnly: true
@@ -151,6 +155,7 @@ define(function(require, exports, module) {
         command.define("Command:Command Tree", {
             doc: "Display the available commands in a tree heirarchy.",
             exec: function(edit) {
+                eventbus.emit("commandtree");
                 showTree("command-tree", edit, command.allCommands().sort(), ":", function(cmd) {
                     console.log("Selected somethign!", cmd);
                     cmd = cmd.substring(1); // Strip leading ':'

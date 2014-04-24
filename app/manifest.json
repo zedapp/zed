@@ -22,9 +22,6 @@
         "http://*/",
         "https://*/"
     ],
-    "externally_connectable": {
-        "ids": ["*"]
-    },
     "icons": {
         "128": "Icon.png",
         "16": "Icon16.png",

@@ -23,6 +23,8 @@ define(function(require, exports, module) {
         var continuousCompletionSession;
         var continuousCompletionCursor;
 
+        eventbus.declare("complete");
+
         var api = {
             hook: function() {
                 eventbus.on("sessionchanged", function(session, delta) {
@@ -149,6 +151,7 @@ define(function(require, exports, module) {
         }
 
         function complete(edit, continuousCompletion) {
+            eventbus.emit("complete", edit);
             if (!edit.completer) {
                 edit.completer = new Autocomplete();
                 edit.completers = [completer];

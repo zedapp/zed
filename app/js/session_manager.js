@@ -108,7 +108,7 @@ define(function(require, exports, module) {
             // so let's emit the 'newfilecreated' event.
             if (session.newFile) {
                 session.newFile = false;
-                eventbus.emit("newfilecreated", path);
+                eventbus.emit("newfilecreated", path, session);
             }
             eventbus.emit("sessionactivitystarted", session, "Saving");
             eventbus.emit("sessionbeforesave", session);
@@ -281,7 +281,7 @@ define(function(require, exports, module) {
                 session.dontPersist = true;
                 show(session);
                 sessions[path] = session;
-                eventbus.emit("newfilecreated", path);
+                eventbus.emit("newfilecreated", path, session);
             } else {
                 eventbus.emit("sessionactivitystarted", previousSession, "Loading...");
                 loadFile(path, function(err, session) {
