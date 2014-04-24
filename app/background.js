@@ -21,8 +21,8 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
         if (req.text !== undefined) {
             chrome.app.window.create('editor.html?id=' + id + '&title=Edit%20Text%20Area&url=textarea:' + encodeURIComponent(req.text), {
                 frame: 'none',
-                width: 400,
-                height: 180
+                width: 720,
+                height: 400
             }, function(win) {
                 win.focus();
                 win.onClosed.addListener(function() {
