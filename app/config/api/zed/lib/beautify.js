@@ -16,7 +16,7 @@ module.exports = function(path, beautifier) {
         if (wholeDocument) {
             return session.getText(path).then(beautifyText);
         } else {
-            return session.getTextRange(path, selectionRange).then(beautifyText);
+            return session.getTextRange(path, selectionRange.start, selectionRange.end).then(beautifyText);
         }
     });
 
