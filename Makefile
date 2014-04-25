@@ -7,7 +7,7 @@ NW_VERSION=v0.9.2
 ZED_VERSION=$(shell cat app/manifest.json | grep '"version"' | cut -f 4 -d '"')
 
 /tmp/one_month_ago:
-	touch /tmp/one_month_ago -t $(shell python3 -c 'import datetime, time; print(datetime.date.fromtimestamp(time.time() - 2592000).strftime("%Y%m%d%H%M"))')
+	touch /tmp/one_month_ago -t $(shell perl -MPOSIX -E 'say strftime "%Y%m%d%H%M", localtime (time - 2592000)')
 
 app/ace: /tmp/one_month_ago
 	curl -L https://github.com/zefhemel/ace-builds/archive/master.tar.gz | tar xzf -
