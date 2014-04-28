@@ -173,7 +173,10 @@ define(function(require, exports, module) {
             command.define("Configuration:Mode:" + mode.name, {
                 doc: "Begin using this mode for the current document.",
                 exec: function(edit, session) {
+                    var editor = zed.getService("editor");
                     api.setSessionMode(session, mode);
+                    editor.setEditorConfiguration(edit);
+                    editor.setSessionConfiguration(session);
                 },
                 readOnly: true
             });
