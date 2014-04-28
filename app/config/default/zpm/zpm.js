@@ -25,9 +25,9 @@ function uriToUrl(uri) {
     var repoPath = repoParts.slice(2).join('/');
     var branch = parts[2] || 'master';
     if (parts[0] === 'gh') {
-        return "https://raw.github.com/" + repoUsername + "/" + repoName + "/" + branch + "/" + repoPath + "/";
+        return "https://raw.githubusercontent.com/" + repoUsername + "/" + repoName + "/" + branch + "/" + (repoPath ? (repoPath + "/") : "");
     } else if (parts[0] === 'bb') {
-        return "https://bitbucket.org/" + repoUsername + "/" + repoName + "/raw/" + branch + "/" + repoPath + "/";
+        return "https://bitbucket.org/" + repoUsername + "/" + repoName + "/raw/" + branch + "/" + (repoPath ? (repoPath + "/") : "");
     }
     return uri;
 }
