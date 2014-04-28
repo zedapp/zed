@@ -4,6 +4,7 @@ require.config({
     paths: {
         "text": "../dep/text",
         "json5": "../dep/json5",
+        "zedb": "../dep/zedb",
         "async": "../config/api/zed/lib/async",
         "events": "./lib/emitter"
     },
@@ -40,7 +41,8 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./theme",
         "./log",
         "./window_commands",
-        "./analytics"];
+        "./analytics",
+        "./symboldb"];
 
     if (window.isNodeWebkit) {
         modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw");

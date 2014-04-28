@@ -74,13 +74,16 @@ define(function(require, exports, module) {
                 // });
                 sandboxEl.remove();
             }
-            $("body").append('<webview id="sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
+            $("body").append('<webview id="sandbox" partition="persist:sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
             sandboxEl = $("#sandbox");
             var sandbox = sandboxEl[0];
+            sandbox.addEventListener('permissionrequest', function(e) {
+                console.log("Got permission request", e);
+            });
             sandboxEl.css("left", "-1000px");
             sandbox.addEventListener("contentload", function() {
                 sandbox.executeScript({
-                    code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js") + require("text!../dep/json5.js")
+                    code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js") + require("text!../dep/json5.js") + require("text!../dep/zedb.js")
                 });
                 _.isFunction(callback) && callback();
             });
@@ -147,9 +150,7 @@ define(function(require, exports, module) {
         };
 
         command.define("Sandbox:Reset", {
-            doc: "Reload all sandbox code. If you've made changes to a Zed " +
-            "extension in your sandbox, you must run this for those changes " +
-            "to take effect.",
+            doc: "Reload all sandbox code. If you've made changes to a Zed " + "extension in your sandbox, you must run this for those changes " + "to take effect.",
             exec: resetSandbox,
             readOnly: true
         });
