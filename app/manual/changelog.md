@@ -1,6 +1,18 @@
 Changelog
 =========
 
+0.11.2
+------
+* New "Edit in Zed" Chrome Extension for Zed Chrome version: adds a little on-hover Zed icon to textareas on any website in Chrome, when you click it, you can edit the contents of this text area using Zed. [Download the extension from the Chrome Store](https://chrome.google.com/webstore/detail/edit-in-zed/dpkaficlkfnjemlheobmkabnnoafeepg)
+* Usage data colleciton: upon first launch you will be asked to agree to collect anonymous usage data. This helps us to see what features (e.g. language modes) people are using and what to improve.
+* ZPM fix github package support (by conradz)
+* Fix: code beautification (formatting) for selection works now
+* Scroll past end of editor preference (by TheKiteEatingTree)
+* Modes:
+    * JSX (react.js) mode now has JSHint support
+    * Ruby mode now also works on Vagrantfile
+* Various minor bug fixes (by robru and others)
+
 0.11.1
 ------
 * New auto save that always saves (which should be friendlier for people using build systems with file watchers):
