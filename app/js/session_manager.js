@@ -99,7 +99,7 @@ define(function(require, exports, module) {
 
         function saveSession(session, callback) {
             var path = session.filename;
-            if (!path || !session.dirty) {
+            if (!path || !session.dirty || session.readOnly) {
                 callback && callback();
                 return;
             }

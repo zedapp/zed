@@ -1,6 +1,6 @@
 /*global define, $, chrome, _*/
 define(function(require, exports, module) {
-    plugin.consumes = ["history", "window", "windows", "config"];
+    plugin.consumes = ["history", "window", "windows", "config", "analytics_tracker"];
     plugin.provides = ["open"];
     return plugin;
 
@@ -17,6 +17,7 @@ define(function(require, exports, module) {
         var win = imports.window;
         var windows = imports.windows;
         var config = imports.config;
+        var analytics_tracker = imports.analytics_tracker;
 
         var builtinProjects = options.builtinProjects;
         var editorHtml = options.editorHtml;
@@ -40,6 +41,8 @@ define(function(require, exports, module) {
         };
 
         windows.setOpenWindow();
+
+        analytics_tracker.trackEvent("Application", "Open");
 
         function open(url, title, filename) {
             var openProject = openProjects[url];
