@@ -308,6 +308,10 @@
 
         exports.range = range;
 
+        exports.getDatabases = function() {
+            return promisifyRequest(indexedDB.webkitGetDatabaseNames());
+        };
+
         function promisifyRequest(req) {
             return new Promise(function(resolve, reject) {
                 req.onsuccess = function(e) {

@@ -1,6 +1,6 @@
 /*global define, _, zed*/
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "ctags", "ui", "editor", "session_manager", "fs", "command"];
+    plugin.consumes = ["eventbus", "symboldb", "ui", "editor", "session_manager", "fs", "command"];
     plugin.provides = ["goto"];
     return plugin;
 
@@ -9,7 +9,7 @@ define(function(require, exports, module) {
         var locator = require("./lib/locator");
 
         var eventbus = imports.eventbus;
-        var ctags = imports.ctags;
+        var symboldb = imports.symboldb;
         var ui = imports.ui;
         var editor = imports.editor;
         var session_manager = imports.session_manager;
@@ -83,7 +83,7 @@ define(function(require, exports, module) {
         function fetchFileList() {
             console.log("Fetching file list...");
             fs.listFiles(function(err, files) {
-                if(err) {
+                if (err) {
                     return console.error("Error listing files", err);
                 }
                 fileCache = files;
@@ -127,36 +127,49 @@ define(function(require, exports, module) {
                 var selectionRange = edit.getSelectionRange();
 
                 function filterSymbols(phrase, path) {
-                    var tags = ctags.getCTags(path);
-                    var symbols = tags.map(function(t) {
-                        return t.path + ":" + t.locator + "/" + t.symbol;
+                    // If we do a global symbol search, let's not show anything
+                    // immediately yet, since this takes long on big projects
+                    if(!path && phrase === "@") {
+                        return Promise.resolve([{
+                            name: "Start typing symbol prefix",
+                            // Dummy value
+                            path: session.filename + ":"
+                        }]);
+                    }
+                    return symboldb.getSymbols({
+                        prefix: phrase.slice(1),
+                        path: path
+                    }).then(function(symbols) {
+                        var symbolList = symbols.map(function(t) {
+                            return t.path + ":" + t.locator + "/" + t.symbol;
+                        });
+                        var resultList = fuzzyfind(symbolList, phrase.substring(1));
+                        resultList.forEach(function(result) {
+                            var parts = result.path.split('/');
+                            result.name = parts[parts.length - 1];
+                            result.path = parts.slice(0, -1).join("/");
+                            parts = result.path.split(":")[0].split("/");
+                            result.meta = parts[parts.length - 1];
+                        });
+                        return resultList;
                     });
-                    var resultList = fuzzyfind(symbols, phrase.substring(1));
-                    resultList.forEach(function(result) {
-                        var parts = result.path.split('/');
-                        result.name = parts[parts.length - 1];
-                        result.path = parts.slice(0, -1).join("/");
-                        parts = result.path.split(":")[0].split("/");
-                        result.meta = parts[parts.length - 1];
-                    });
-                    return resultList;
                 }
 
                 function filter(phrase) {
                     var sessions = session_manager.getSessions();
-                    var resultList;
+                    var resultsPromise;
                     var phraseParts = locator.parse(phrase);
                     phrase = phraseParts[0];
                     var loc = phraseParts[1];
 
                     if (!phrase && loc !== undefined) {
                         if (loc[0] === "@") {
-                            resultList = filterSymbols(loc, session.filename);
+                            resultsPromise = filterSymbols(loc, session.filename);
                         } else {
-                            resultList = [];
+                            resultsPromise = Promise.resolve([]);
                         }
                     } else if (phrase[0] === "@") {
-                        resultList = filterSymbols(phrase);
+                        resultsPromise = filterSymbols(phrase);
                     } else if (phrase[0] === '/') {
                         var results = {};
                         phrase = phrase.toLowerCase();
@@ -172,7 +185,7 @@ define(function(require, exports, module) {
                                 results[file] = score;
                             }
                         });
-                        resultList = [];
+                        var resultList = [];
                         if (fileCache.indexOf(phrase) === -1) {
                             resultList.push({
                                 path: phrase,
@@ -188,48 +201,53 @@ define(function(require, exports, module) {
                                 score: results[path]
                             });
                         });
+                        resultsPromise = Promise.resolve(resultList);
                     } else {
-                        resultList = fuzzyfind(filteredFileCache, phrase);
+                        var resultList = fuzzyfind(filteredFileCache, phrase);
                         resultList.forEach(function(result) {
                             result.name = result.path;
                             if (sessions[result.path]) {
                                 result.score = sessions[result.path].lastUse;
                             }
                         });
+                        resultsPromise = Promise.resolve(resultList);
                     }
 
-                    var editors = editor.getEditors();
+                    return resultsPromise.then(function(resultList) {
+                        var editors = editor.getEditors();
 
-                    // Filter out paths currently open in an editor
-                    resultList = resultList.filter(function(result) {
-                        // Filter out files starting with . (TODO: do this properly)
-                        if (result.path[1] === ".") {
-                            return false;
-                        }
-                        for (var i = 0; i < editors.length; i++) {
-                            if (editors[i].getSession().filename === result.path) {
+                        // Filter out paths currently open in an editor
+                        resultList = resultList.filter(function(result) {
+                            // Filter out files starting with . (TODO: do this properly)
+                            if (result.path[1] === ".") {
                                 return false;
                             }
-                        }
-                        return true;
-                    });
+                            for (var i = 0; i < editors.length; i++) {
+                                if (editors[i].getSession().filename === result.path) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        });
 
-                    resultList.sort(function(r1, r2) {
-                        if (r1.score === r2.score) {
-                            return r1.path < r2.path ? -1 : 1;
-                        } else {
-                            return r2.score - r1.score;
-                        }
-                    });
+                        resultList.sort(function(r1, r2) {
+                            if (r1.score === r2.score) {
+                                return r1.path < r2.path ? -1 : 1;
+                            } else {
+                                return r2.score - r1.score;
+                            }
+                        });
 
-                    if (resultList.length === 0 && loc === undefined) {
-                        resultList = [{
-                            path: phrase,
-                            name: "Create file '" + phrase + "'",
-                            meta: "action"
-                        }];
-                    }
-                    return resultList;
+                        if (resultList.length === 0 && loc === undefined) {
+                            resultList = [{
+                                path: phrase,
+                                name: "Create file '" + phrase + "'",
+                                meta: "action"
+                            }];
+                        }
+                        return resultList;
+                    })
+
                 }
 
                 // TODO: Clean this up, has gotten messy over time

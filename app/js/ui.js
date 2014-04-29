@@ -236,26 +236,28 @@ define(function(require, exports, module) {
 
                 function updateResults() {
                     var phrase = input.val();
-                    results = filter(phrase).slice(0, 500);
-                    if (results.length > 0) {
-                        _.each(results, function(result) {
-                            result.caption = result.name;
-                        });
-                        handleSelect = false;
-                        if (!popup.isOpen) {
-                            popup.show({
-                                left: 0,
-                                top: 0
-                            }, 14);
-                            $(popup.container).css("top", 0);
+                    filter(phrase).then(function(results_) {
+                        results = results_.slice(0, 500);
+                        if (results.length > 0) {
+                            _.each(results, function(result) {
+                                result.caption = result.name;
+                            });
+                            handleSelect = false;
+                            if (!popup.isOpen) {
+                                popup.show({
+                                    left: 0,
+                                    top: 0
+                                }, 14);
+                                $(popup.container).css("top", 0);
+                            }
+                            popup.setData(results);
+                            handleSelect = true;
+                        } else {
+                            popup.hide();
                         }
-                        popup.setData(results);
-                        handleSelect = true;
-                    } else {
-                        popup.hide();
-                    }
-                    updateHint();
-                    lastPhrase = phrase;
+                        updateHint();
+                        lastPhrase = phrase;
+                    });
                 }
 
             },

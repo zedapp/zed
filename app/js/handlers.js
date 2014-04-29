@@ -188,6 +188,7 @@ define(function(require, exports, module) {
 
         // handlerName -> { path -> timeout }
         var timeOuts = {};
+        
         window.timeOuts = timeOuts;
 
         /**

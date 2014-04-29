@@ -137,7 +137,7 @@ define(function(require, exports, module) {
                             return b.score - a.score;
                         }
                     });
-                    return results;
+                    return Promise.resolve(results);
                 }
                 zed.getService("ui").filterBox({
                     placeholder: "Enter command",
