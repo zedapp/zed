@@ -9,7 +9,6 @@
         "detectIndentation": true,
         "dimInactiveEditors": true,
         "displayIndentGuides": true,
-        "enableAnalytics": true,
         "fontFamily": "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
         "fontSize": 12,
         "globalAutoRevert": false,

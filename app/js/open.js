@@ -1,6 +1,6 @@
 /*global define, $, chrome, _*/
 define(function(require, exports, module) {
-    plugin.consumes = ["history", "window", "windows"];
+    plugin.consumes = ["history", "window", "windows", "config"];
     plugin.provides = ["open"];
     return plugin;
 
@@ -16,6 +16,7 @@ define(function(require, exports, module) {
         var history = imports.history;
         var win = imports.window;
         var windows = imports.windows;
+        var config = imports.config;
 
         var builtinProjects = options.builtinProjects;
         var editorHtml = options.editorHtml;
@@ -32,7 +33,10 @@ define(function(require, exports, module) {
         var validProjectCache = null;
 
         var api = {
-            open: open
+            open: open,
+            init: function() {
+                checkAnalyticsAllowed();
+            }
         };
 
         windows.setOpenWindow();
@@ -220,6 +224,21 @@ define(function(require, exports, module) {
             var projectEls = $(".projects a");
             projectEls.removeClass("active");
             projectEls.eq(selectIdx).addClass("active");
+        }
+
+        function checkAnalyticsAllowed() {
+            config.loadConfiguration(function() {
+                var enable = config.getPreference("enableAnalytics")
+                if(enable === undefined) {
+                    win.create("analytics.html", 'chrome', 600, 300);
+                    // Initial state of checkbox will be on, so let's set that here
+                    config.setPreference("enableAnalytics", true);
+                }
+            });
+        }
+
+        window.setEnableAnalytics = function(val) {
+            config.setPreference("enableAnalytics", val);
         }
 
         $("#projects").on("click", ".projects a", function(event) {

@@ -234,7 +234,7 @@ define(function(require, exports, module) {
          * - otherwise use the /user.json file in the config project
          */
         function loadConfiguration(callback) {
-            if (zed.getService("goto").getFileCache().indexOf("/zedconfig.json") !== -1) {
+            if (zed.services.goto && zed.getService("goto").getFileCache().indexOf("/zedconfig.json") !== -1) {
                 zed.getService("fs").readFile("/zedconfig.json", function(err, text) {
                     var base = {};
                     try {

@@ -46,7 +46,7 @@ define(function(require, exports, module) {
         };
 
         function updateAllEditors() {
-            zed.getService("editor").getEditors(true).forEach(function(edit) {
+            zed.services.editor && zed.getService("editor").getEditors(true).forEach(function(edit) {
                 updateEditor(edit);
             });
         }

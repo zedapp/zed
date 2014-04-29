@@ -5,7 +5,7 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var events = require("./lib/events");
-        var api = new events.EventEmitter(true);
+        var api = new events.EventEmitter(false);
 
         window.eventbus = api;
         register(null, {

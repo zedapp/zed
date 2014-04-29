@@ -72,18 +72,24 @@ require(["../dep/architect"], function(architect) {
             }
             window.zed = app;
 
-            // Run hook on each service (if exposed)
-            _.each(app.services, function(service) {
-                if (service.hook) {
-                    service.hook();
-                }
-            });
-            // Run init on each service (if exposed)
-            _.each(app.services, function(service) {
-                if (service.init) {
-                    service.init();
-                }
-            });
+            try {
+                // Run hook on each service (if exposed)
+                _.each(app.services, function(service) {
+                    if (service.hook) {
+                        service.hook();
+                    }
+                });
+                // Run init on each service (if exposed)
+                _.each(app.services, function(service) {
+                    if (service.init) {
+                        service.init();
+                    }
+                });
+
+            } catch(e) {
+                console.error("Error hooking or initing:", e);
+            }
+
         });
     });
 });
