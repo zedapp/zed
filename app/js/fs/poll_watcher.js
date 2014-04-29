@@ -48,7 +48,6 @@ define(function(require, exports, module) {
             });
         }
 
-        console.log("SEtting poll interval");
         setInterval(pollFiles, pollInterval);
 
         return {
