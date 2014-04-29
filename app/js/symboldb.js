@@ -14,7 +14,7 @@ define(function(require, exports, module) {
 
         var api = {
             updateSymbols: function(path, symbolInfos) {
-                return db.readStore("symbols").index("path").query("=", path).then(function(currentSymbols) {
+                return db.readStore("symbols").index("path_sym").query(">=", [path, ""], "<=", [path, "~"]).then(function(currentSymbols) {
                     var writeStore = db.writeStore("symbols");
                     var deletePromises = [];
                     for (var i = 0; i < currentSymbols.length; i++) {
@@ -40,7 +40,7 @@ define(function(require, exports, module) {
             getSymbols: function(opts) {
                 opts = opts || {};
                 if (opts.path && !opts.prefix) {
-                    return db.readStore("symbols").index("path").query("=", opts.path);
+                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, ""], "<=", [opts.path, "~"]);
                 } else if (opts.prefix && !opts.path) {
                     return db.readStore("symbols").query(">=", opts.prefix, "<=", opts.prefix + "~");
                 } else if (opts.prefix && opts.path) {
@@ -65,12 +65,6 @@ define(function(require, exports, module) {
                     keyPath: "id"
                 });
 
-                symbolStore.createIndex("predIdn", "predIdn", {
-                    unique: false
-                });
-                symbolStore.createIndex("path", "path", {
-                    unique: false
-                });
                 symbolStore.createIndex("path_sym", ["path", "symbol"], {
                     unique: false
                 });

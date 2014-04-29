@@ -188,7 +188,7 @@ define(function(require, exports, module) {
 
         // handlerName -> { path -> timeout }
         var timeOuts = {};
-        
+
         window.timeOuts = timeOuts;
 
         /**
@@ -213,8 +213,6 @@ define(function(require, exports, module) {
                 });
 
                 var num = 0;
-
-                console.log("Files to index", filesToIndex);
 
                 async.forEach(filesToIndex, function(path, next) {
                     num++;
