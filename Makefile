@@ -93,7 +93,7 @@ apps-linux32: app/ace nw/download app.nw
 	rm -f release/zed-linux32.tar.gz
 	cd nw/build; tar cvzf ../../release/zed-linux32-v$(ZED_VERSION).tar.gz *
 
-apps: copy-packages indexes apps-mac apps-win apps-linux32 apps-linux64
+apps-release: copy-packages indexes apps-mac apps-win apps-linux32 apps-linux64
 	echo $(ZED_VERSION) > release/current-version.txt
 	rm -rf app/config/packages/*
 	$(INDEX_COMMAND)

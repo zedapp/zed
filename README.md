@@ -41,11 +41,7 @@ To build locally:
     $ git clone https://github.com/zedapp/zed.git
     $ cd zed
 
-After this you can either build all versions (Linux, Windows, Mac):
-
-    $ make apps
-
-Or a particular one:
+After this you can either build the version for your platform of choice:
 
     $ make apps-mac
     $ make apps-win
