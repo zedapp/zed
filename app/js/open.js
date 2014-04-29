@@ -46,9 +46,17 @@ define(function(require, exports, module) {
 
         function open(url, title, filename) {
             var openProject = openProjects[url];
-            if (openProject && !openProject.window) {
-                // Window was close and we weren't notified
+            try {
+                if (openProject && !openProject.window) {
+                    // Window was close and we weren't notified
+                    delete openProjects[url];
+                    openProject = null;
+                }
+            } catch(e) {
+                // accessing openProject.window sometimes raises an error,
+                // which means the window was closed
                 delete openProjects[url];
+                openProject = null;
             }
             if (openProject) {
                 openProject.focus();
