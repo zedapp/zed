@@ -1,6 +1,7 @@
-var ctags = require("zed/ctags");
+/*global define*/
+var symbol = require("zed/symbol");
 
-var SEL_REGEX = /(func|type)\s*(\([^\)]+\))?\s*([a-zA-Z0-9_\-\$]+)[\s\(]/g;
+var PRED_REGEX = /([a-zA-Z0-9_\-\$]+)\s*[\(\[]([a-zA-Z0-9_\-\$]+(,\s*)?)*[\)\]].*\->/g;
 var indexToLine = require("zed/util").indexToLine;
 
 /**
@@ -12,13 +13,12 @@ module.exports = function(info) {
     var path = info.path;
     var text = info.inputs.text;
     // Regular old functions
-    while (match = SEL_REGEX.exec(text)) {
+    while (match = PRED_REGEX.exec(text)) {
         tags.push({
             path: path,
-            symbol: match[3],
+            symbol: match[1],
             locator: indexToLine(text, match.index)
         });
     }
-
-    return ctags.updateCTags(path, tags);
+    return symbol.updateSymbols(path, tags);
 };

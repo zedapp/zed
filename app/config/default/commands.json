@@ -261,9 +261,9 @@
                 "text": true
             }
         },
-        "Tools:Complete:CTags": {
-            "doc": "Display auto-complete results based on CTags.",
-            "scriptUrl": "./command/ctags_completer.js"
+        "Tools:Complete:Symbol": {
+            "doc": "Display auto-complete results based on symbol indexing.",
+            "scriptUrl": "./command/symbol_completer.js"
         },
         "Tools:Complete:Text": {
             "doc": "Display auto-complete results based on simple text matches.",

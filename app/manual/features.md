@@ -29,7 +29,7 @@ Zed Features
        code)
      * Code completion (`Tab`):
          * Words that appear in the current file (any file type)
-         * Based on ctags (Zed has its own ctags indexers for various languages)
+         * Based on symbols (Zed has its own indexers for various languages)
          * Snippets
 8. **Efficient project navigation** at various levels of granularity (howto/navigation.md):
      * Files, quickly jump to the file you want (`Command-E`)

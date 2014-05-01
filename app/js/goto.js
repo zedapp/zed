@@ -1,6 +1,6 @@
 /*global define, _, zed*/
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "ctags", "ui", "editor", "session_manager", "fs", "command"];
+    plugin.consumes = ["eventbus", "symbol", "ui", "editor", "session_manager", "fs", "command"];
     plugin.provides = ["goto"];
     return plugin;
 
@@ -9,7 +9,7 @@ define(function(require, exports, module) {
         var locator = require("./lib/locator");
 
         var eventbus = imports.eventbus;
-        var ctags = imports.ctags;
+        var symbol = imports.symbol;
         var ui = imports.ui;
         var editor = imports.editor;
         var session_manager = imports.session_manager;
@@ -127,17 +127,7 @@ define(function(require, exports, module) {
                 var selectionRange = edit.getSelectionRange();
 
                 function filterSymbols(phrase, path) {
-                    // If we do a global symbol search, let's not show anything
-                    // immediately yet, since this takes long on big projects
-                    if(!path && phrase === "@") {
-                        return Promise.resolve([{
-                            name: "Start typing symbol prefix",
-                            // Dummy value
-                            path: session.filename + ":",
-                            icon: "action"
-                        }]);
-                    }
-                    return ctags.getSymbols({
+                    return symbol.getSymbols({
                         prefix: phrase.substring(1),
                         path: path
                     }).then(function(symbols) {
@@ -247,8 +237,7 @@ define(function(require, exports, module) {
                             }];
                         }
                         return resultList;
-                    })
-
+                    });
                 }
 
                 // TODO: Clean this up, has gotten messy over time

@@ -1,6 +1,13 @@
-var ctags = require("zed/ctags");
+var symbol = require("zed/symbol");
 
-var FN_REGEX = /([a-zA-Z0-9_\-\$]+)\s*[=:]\s*\([a-zA-Z0-9_\-\$]+/g;
+/*
+  These symbols are rough at best
+  use livescript lexer/tokenizer output insead?
+
+  If the livescript AST output had line numbers that
+  would be perfect.
+*/
+var FN_REGEX = /((?![\d\s])[$\w\xAA-\uFFDC](?:(?!\s)[$\w\xAA-\uFFDC]|-[A-Za-z])*)\s*(=|:|!=|\?=)/g;
 var indexToLine = require("zed/util").indexToLine;
 
 /**
@@ -19,5 +26,5 @@ module.exports = function(info) {
             locator: indexToLine(text, match.index)
         });
     }
-    return ctags.updateCTags(path, tags);
+    return symbol.updateSymbols(path, tags);
 };

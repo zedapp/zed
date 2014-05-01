@@ -2,7 +2,7 @@
 define(function(require, exports, module) {
     "use strict";
     plugin.consumes = ["db", "eventbus"];
-    plugin.provides = ["ctags"];
+    plugin.provides = ["symbol"];
     return plugin;
 
     function plugin(options, imports, register) {
@@ -49,7 +49,7 @@ define(function(require, exports, module) {
         };
 
         register(null, {
-            ctags: api
+            symbol: api
         });
     }
 });

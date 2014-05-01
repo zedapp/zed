@@ -16,8 +16,8 @@
                     },
                     internal: true
                 },
-                "Tools:CTags": {
-                    scriptUrl: "/default/mode/livescript/ctags.js",
+                "Tools:Index": {
+                    scriptUrl: "/default/mode/livescript/index.js",
                     inputs: {
                         text: true
                     }
@@ -43,7 +43,7 @@
                     "Tools:Check"
                 ],
                 index: [
-                    "Tools:CTags"
+                    "Tools:Index"
                 ]
             }
         }

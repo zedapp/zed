@@ -161,7 +161,7 @@ As can be seen, in a mode we can define a few things:
   - "complete": triggered when the user requests code completion, should return a list of possible completions.
   - "save": triggered when a file is being saved
   - "click": triggered when a location in a session is clicked
-  - "index": triggered when a file is to be indexed (e.g. for ctags)
+  - "index": triggered when a file is to be indexed (e.g. for symbols)
 * "preferences": preference overrides specific to this mode.
 * "keys": key overrides specific to this mode.
 

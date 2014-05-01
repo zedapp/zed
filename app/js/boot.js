@@ -22,7 +22,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./command",
         "./editor",
         "./title_bar",
-        "./ctags",
+        "./symbol",
         "./config",
         "./goto",
         "./tree",

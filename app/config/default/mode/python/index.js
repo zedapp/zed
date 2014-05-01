@@ -1,4 +1,4 @@
-var ctags = require("zed/ctags");
+var symbol = require("zed/symbol");
 var indexToLine = require("zed/util").indexToLine;
 
 var FN_REGEX = /(class|def)\s+([^\d\W]\w*)\s*[\(\:]/mg;
@@ -17,5 +17,5 @@ module.exports = function(info) {
             path: path
         });
     }
-    return ctags.updateCTags(path, tags);
+    return symbol.updateSymbols(path, tags);
 };

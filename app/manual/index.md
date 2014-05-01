@@ -31,7 +31,7 @@ Specific features
 
 * Split-view editing: split.md
 * Multiple cursors: cursors.md
-* CTags: ctags.md
+* Symbol indexing: symbols.md
 
 Development
 -----------

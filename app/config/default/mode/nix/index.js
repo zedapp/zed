@@ -1,4 +1,4 @@
-var ctags = require("zed/ctags");
+var symbol = require("zed/symbol");
 
 var PRED_REGEX = /([a-zA-Z0-9_\-\$]+)\s*=/g;
 var indexToLine = require("zed/util").indexToLine;
@@ -16,5 +16,5 @@ module.exports = function(info) {
             locator: indexToLine(text, match.index)
         });
     }
-    return ctags.updateCTags(path, tags);
+    return symbol.updateSymbols(path, tags);
 };

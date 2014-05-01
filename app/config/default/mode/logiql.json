@@ -8,8 +8,8 @@
                 "lql"
             ],
             commands: {
-                "Tools:CTags": {
-                    scriptUrl: "/default/mode/logiql/ctags.js",
+                "Tools:Index": {
+                    scriptUrl: "/default/mode/logiql/index.js",
                     inputs: {
                         text: true
                     }
@@ -26,7 +26,7 @@
             },
             handlers: {
                 index: [
-                    "Tools:CTags"
+                    "Tools:Index"
                 ],
                 complete: [
                     "Tools:Complete:Snippet"

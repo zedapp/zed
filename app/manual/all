@@ -1,7 +1,6 @@
 /.zedstate
 /changelog.md
 /configuration.md
-/ctags.md
 /cursors.md
 /dev/editor.md
 /dev/index.md
@@ -16,5 +15,6 @@
 /protips.md
 /sandbox.md
 /split.md
+/symbols.md
 /vision.md
 /zedconfig.json

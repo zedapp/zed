@@ -15,8 +15,8 @@
                     },
                     internal: true
                 },
-                "Tools:CTags": {
-                    scriptUrl: "/default/mode/coffee/ctags.js",
+                "Tools:Index": {
+                    scriptUrl: "/default/mode/coffee/index.js",
                     inputs: {
                         text: true
                     }
@@ -39,7 +39,7 @@
                     "Tools:Check"
                 ],
                 index: [
-                    "Tools:CTags"
+                    "Tools:Index"
                 ],
                 preview: [
                     "Tools:Preview"
