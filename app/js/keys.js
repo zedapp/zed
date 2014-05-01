@@ -14,7 +14,6 @@ define(function(require, exports, module) {
         var lang = require("ace/lib/lang");
         var CommandManager = require("ace/commands/command_manager").CommandManager;
         var useragent = require("ace/lib/useragent");
-        var KeyBinding = require("ace/keyboard/keybinding").KeyBinding;
 
         var eventbus = imports.eventbus;
 
@@ -54,7 +53,7 @@ define(function(require, exports, module) {
         function updateEditor(edit) {
             var commands = loadCommands(edit.getSession().mode);
             edit.commands = new CommandManager(useragent.isMac ? "mac" : "win", commands);
-            edit.keyBinding = new KeyBinding(edit);
+            edit.keyBinding.setDefaultHandler(edit.commands);
             edit.getKeyboardHandler();
         }
 
