@@ -19,6 +19,7 @@
         "./mode/logiql.json",
         "./mode/lua.json",
         "./mode/makefile.json",
+        "./mode/matlab.json",
         "./mode/markdown.json",
         "./mode/nix.json",
         "./mode/perl.json",
