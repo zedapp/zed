@@ -110,7 +110,7 @@ define(function(require, exports, module) {
                             if (event.shiftKey) {
                                 go('up');
                             } else {
-                                go('down');
+                                doTab();
                             }
                             event.preventDefault();
                             event.stopPropagation();
@@ -260,6 +260,33 @@ define(function(require, exports, module) {
                     });
                 }
 
+                function doTab() {
+                    var phrase = input.val();
+                    if (phrase[0] === "/") {
+                        // We're going to attempt to complete the next path component
+                        // here.
+                        var phraseParts = phrase.split("/");
+                        for (var i = 0; i < results.length; i++) {
+                            var result = results[i];
+                            // If the prefix doesn't match: not interested
+                            if (result.path.indexOf(phrase) !== 0) {
+                                continue;
+                            }
+                            var parts = results[i].path.split("/");
+                            // If the path has 1+ more path components
+                            if (phraseParts.length < parts.length) {
+                                input.val(phraseParts.slice(0, -1).join("/") + "/" + parts[phraseParts.length - 1] + "/");
+                                updateResults();
+                                return;
+                            }
+                        }
+                        // No match? Just go down one, as usual
+                        go("down");
+                    } else {
+                        go("down");
+                    }
+                }
+
             },
             /**
              * Options
@@ -342,7 +369,7 @@ define(function(require, exports, module) {
                 if (blockedEl) {
                     console.log("Unblocking UI again");
                     // blockedEl.fadeOut(function() {
-                        blockedEl.remove();
+                    blockedEl.remove();
                     // });
                     blockedEl = null;
                 }
