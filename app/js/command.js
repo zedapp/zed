@@ -108,6 +108,7 @@ define(function(require, exports, module) {
                     var results = fuzzyfind(api.allCommands(), phrase);
                     results = results.filter(function(result) {
                         result.meta = identifyCurrentKey(commandKeys[result.path]);
+                        result.icon = "action";
                         // Let's rename the `cmd` variable using multiple cursors...
                         // There are three instances
                         var command = api.lookup(result.path);

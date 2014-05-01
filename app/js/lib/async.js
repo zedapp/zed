@@ -51,11 +51,11 @@ define(function(require, exports, module) {
                 });
             }
         },
-        
+
         waitForEvents: function(emitter, events, callback) {
             var eventsLeft = events.length;
             var eventArgs = {};
-            
+
             events.forEach(function(event) {
                 emitter.once(event, function() {
                     var args = Array.prototype.slice.call(arguments);
@@ -65,12 +65,30 @@ define(function(require, exports, module) {
                 });
             });
             checkDone();
-            
+
             function checkDone() {
-                if(eventsLeft === 0) {
+                if (eventsLeft === 0) {
                     callback(eventArgs);
                 }
             }
+        },
+
+        queueUntilEvent: function(emitter, eventName, fn) {
+            emitter.once(eventName, function() {
+                fn.alreadyEmitted = true;
+            });
+            return function() {
+                var args = Array.prototype.slice.call(arguments);
+                if (fn.alreadyEmitted) {
+                    return fn.apply(null, args);
+                } else {
+                    return new Promise(function(resolve) {
+                        emitter.once(eventName, function() {
+                            resolve(fn.apply(null, args));
+                        });
+                    });
+                }
+            };
         }
     };
 });

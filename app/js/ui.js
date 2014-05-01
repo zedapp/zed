@@ -6,7 +6,7 @@ define(function(require, exports, module) {
     return plugin;
 
     function plugin(options, imports, register) {
-        var AcePopup = require("ace/autocomplete/popup").AcePopup;
+        var AcePopup = require("./lib/ace_popup").AcePopup;
         var path = require("./lib/path");
         var keyCode = require("./lib/key_code");
 

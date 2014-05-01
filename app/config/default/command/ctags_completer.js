@@ -18,12 +18,28 @@ module.exports = function(info) {
             }
             matchedSymbols.set(ctag.symbol, true);
             var pathParts = ctag.path.split('/');
-            matches.push({
-                name: ctag.symbol,
-                value: ctag.symbol,
-                meta: pathParts[pathParts.length - 1],
-                score: 0
-            });
+            var parenPos = ctag.symbol.indexOf('(');
+            // If we have a symbol with parentheses, empty the argument list
+            // when inserting, and complete it as a snippet, putting the cursor
+            // in between the parentheses.
+            if (parenPos !== -1) {
+                matches.push({
+                    name: ctag.symbol,
+                    value: ctag.symbol,
+                    snippet: ctag.symbol.substring(0, parenPos).replace("$", "\\$") + "(${1})",
+                    meta: pathParts[pathParts.length - 1],
+                    score: 0,
+                    icon: "function"
+                });
+            } else {
+                matches.push({
+                    name: ctag.symbol,
+                    value: ctag.symbol,
+                    meta: pathParts[pathParts.length - 1],
+                    score: 1,
+                    icon: "function"
+                });
+            }
         });
         return matches;
     });

@@ -58,7 +58,7 @@ module.exports = function(info) {
                 name: word,
                 value: word,
                 score: wordScores.get(word),
-                meta: "local"
+                icon: "local"
             };
         });
     });

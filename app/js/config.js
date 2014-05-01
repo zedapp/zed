@@ -20,6 +20,7 @@ define(function(require, exports, module) {
         var minimumConfiguration = {
             imports: [
                 "/default.json"],
+            databases: {},
             preferences: {},
             modes: {},
             keys: {},
@@ -70,6 +71,9 @@ define(function(require, exports, module) {
                 var newvalue = api.getPreference(key, session) + amount;
                 api.setPreference(key, newvalue);
                 return newvalue;
+            },
+            getDatabases: function() {
+                return expandedConfiguration.databases;
             },
             getModes: function() {
                 return expandedConfiguration.modes;

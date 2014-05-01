@@ -138,7 +138,6 @@ define(function(require, exports, module) {
                 fs: api
             });
         }
-
         chrome.syncFileSystem.requestFileSystem(function(fs) {
             if (!fs) {
                 // Fallback to non-sync filesystem

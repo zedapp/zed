@@ -3,16 +3,15 @@ require.config({
     baseUrl: "js",
     paths: {
         "text": "../dep/text",
-        "events": "./lib/emitter"
+        "events": "./lib/emitter",
+        "zedb": "../dep/zedb"
     },
 });
 
 window.isNodeWebkit = typeof window.chrome === "undefined";
 
-require(["../dep/architect"], function(architect) {
+require(["../dep/architect", "zedb"], function(architect, zedb) {
     "use strict";
-
-    var builtinProjects;
 
     var modules = ["./config",
         "./eventbus",
@@ -59,6 +58,8 @@ require(["../dep/architect"], function(architect) {
             }]
         });
     }
+
+    zedb.garbageCollect(1);
 
 
     architect.resolveConfig(modules, function(err, config) {

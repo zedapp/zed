@@ -42,7 +42,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./log",
         "./window_commands",
         "./analytics",
-        "./symboldb"];
+        "./db"];
 
     if (window.isNodeWebkit) {
         modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw");

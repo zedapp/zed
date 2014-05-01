@@ -6,8 +6,9 @@ module.exports = function(info) {
             name: name,
             value: name,
             snippet: snippet,
-            meta: "snippet",
-            score: 999
+            score: Infinity,
+            icon: "snippet"
         };
+
     });
 };

@@ -12,7 +12,7 @@ module.exports = function(info) {
                     name: builtin,
                     value: builtin,
                     meta: "builtin",
-                    score: 99
+                    score: 0
                 });
             }
         });

@@ -266,10 +266,8 @@ body.dark .pathbar .path {
 .hidden {
     display: none;
 }
-.ace_autocomplete {
-    width: 300px;
-    background-color: #aaa;
-    color: #000;
+.ace_editor.ace_autocomplete {
+    width: 400px !important;
 }
 body.dark .ace_autocomplete {
     background-color: #888;
@@ -307,6 +305,9 @@ body.dark .ace_line-hover {
 }
 body.dark .ace_autocomplete .ace_active-line {
     background-color: #555 !important;
+}
+body .ace_autocomplete .ace_line {
+    margin-left: 16px;
 }
 .actionbox.ace_autocomplete {
     background: #eee !important;

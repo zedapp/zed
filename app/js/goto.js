@@ -1,6 +1,6 @@
 /*global define, _, zed*/
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "symboldb", "ui", "editor", "session_manager", "fs", "command"];
+    plugin.consumes = ["eventbus", "ctags", "ui", "editor", "session_manager", "fs", "command"];
     plugin.provides = ["goto"];
     return plugin;
 
@@ -9,7 +9,7 @@ define(function(require, exports, module) {
         var locator = require("./lib/locator");
 
         var eventbus = imports.eventbus;
-        var symboldb = imports.symboldb;
+        var ctags = imports.ctags;
         var ui = imports.ui;
         var editor = imports.editor;
         var session_manager = imports.session_manager;
@@ -133,25 +133,24 @@ define(function(require, exports, module) {
                         return Promise.resolve([{
                             name: "Start typing symbol prefix",
                             // Dummy value
-                            path: session.filename + ":"
+                            path: session.filename + ":",
+                            icon: "action"
                         }]);
                     }
-                    return symboldb.getSymbols({
-                        prefix: phrase.slice(1),
+                    return ctags.getSymbols({
+                        prefix: phrase.substring(1),
                         path: path
                     }).then(function(symbols) {
                         var symbolList = symbols.map(function(t) {
-                            return t.path + ":" + t.locator + "/" + t.symbol;
+                            var parts = t.path.split("/");
+                            return {
+                                name: t.symbol,
+                                path: t.path + ":" + t.locator,
+                                meta: parts[parts.length - 1],
+                                icon: t.type
+                            };
                         });
-                        var resultList = fuzzyfind(symbolList, phrase.substring(1));
-                        resultList.forEach(function(result) {
-                            var parts = result.path.split('/');
-                            result.name = parts[parts.length - 1];
-                            result.path = parts.slice(0, -1).join("/");
-                            parts = result.path.split(":")[0].split("/");
-                            result.meta = parts[parts.length - 1];
-                        });
-                        return resultList;
+                        return symbolList;
                     });
                 }
 
@@ -190,15 +189,16 @@ define(function(require, exports, module) {
                             resultList.push({
                                 path: phrase,
                                 name: "Create file '" + phrase + "'",
-                                meta: "action",
-                                score: Infinity
+                                score: Infinity,
+                                icon: "action"
                             });
                         }
                         Object.keys(results).forEach(function(path) {
                             resultList.push({
                                 path: path,
                                 name: path,
-                                score: results[path]
+                                score: results[path],
+                                icon: "file"
                             });
                         });
                         resultsPromise = Promise.resolve(resultList);
@@ -209,6 +209,7 @@ define(function(require, exports, module) {
                             if (sessions[result.path]) {
                                 result.score = sessions[result.path].lastUse;
                             }
+                            result.icon = "file";
                         });
                         resultsPromise = Promise.resolve(resultList);
                     }
@@ -242,7 +243,7 @@ define(function(require, exports, module) {
                             resultList = [{
                                 path: phrase,
                                 name: "Create file '" + phrase + "'",
-                                meta: "action"
+                                icon: "action"
                             }];
                         }
                         return resultList;

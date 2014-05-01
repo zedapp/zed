@@ -6,7 +6,7 @@ define(function(require, exports, module) {
     return plugin;
 
     function plugin(options, imports, register) {
-        var Autocomplete = require("ace/autocomplete").Autocomplete;
+        var Autocomplete = require("./lib/autocomplete").Autocomplete;
         var async = require("async");
 
         var command = imports.command;

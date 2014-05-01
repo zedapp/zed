@@ -1,0 +1,13 @@
+{
+    databases: {
+        symbols: {
+            keyPath: "id",
+            indexes: {
+                path_sym: {
+                    keyPath: ["path", "symbol"],
+                    unique: false
+                }
+            }
+        }
+    }
+}

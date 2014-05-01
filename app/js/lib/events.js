@@ -22,7 +22,7 @@ define(function(require, exports, module) {
         return -1;
     };
 
-    var defaultMaxListeners = 10;
+    var defaultMaxListeners = 25;
 
     EventEmitter.prototype.setMaxListeners = function(n) {
         this._events.maxListeners = n;
