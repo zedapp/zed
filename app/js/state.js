@@ -41,7 +41,10 @@ define(function(require, exports, module) {
                         win.setBounds(bounds);
                     }
                     win.addResizeListener(function() {
-                        api.set("window", win.getBounds());
+                        var bounds = win.getBounds();
+                        // on windows minimized window reports left=-32000
+                        if (bounds.left != -32000)
+                            api.set("window", bounds);
                     });
                 });
             },
