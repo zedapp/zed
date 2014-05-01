@@ -1,0 +1,11 @@
+{
+    modes: {
+        matlab: {
+            name: "MATLAB",
+            highlighter: "ace/mode/matlab",
+            extensions: [
+                "m"
+            ]
+        }
+    }
+}
