@@ -17,9 +17,9 @@ define(function(require, exports, module) {
                 callback(err);
             });
         },
-        deleteMany: function(storeName, objs, callback) {
+        deleteMany: function(storeName, keyPaths, callback) {
             var store = zed.getService("db").get().writeStore(storeName);
-            Promise.all(objs.map(store.delete.bind(store))).then(function() {
+            Promise.all(keyPaths.map(store.delete.bind(store))).then(function() {
                 callback();
             }, function(err) {
                 callback(err);

@@ -264,25 +264,29 @@
                     schema: schema
                 });
             }).then(function(db) {
-                return db.readStore("_meta").get("meta").then(function(meta) {
-                    meta.lastUse = Date.now();
-                    db.writeStore("_meta").put(meta);
-                    if(JSON.stringify(meta.schema) !== JSON.stringify(schema)) {
-                        console.log("Schemas differ, destroying old database and recreating.");
-                        db.close();
-                        return new Promise(function(resolve, reject) {
-                            setTimeout(function() {
-                                exports.delete(name).then(function() {
-                                    exports.openWithSchema(name, schema).then(resolve, reject);
-                                }, function(err) {
-                                    reject(err);
-                                });
-                            }, 200)
-                        });
-                    } else {
-                        return db;
-                    }
-                });
+                if(db.getObjectStoreNames().contains("_meta")) {
+                    return db.readStore("_meta").get("meta").then(function(meta) {
+                        meta.lastUse = Date.now();
+                        db.writeStore("_meta").put(meta);
+                        if(JSON.stringify(meta.schema) !== JSON.stringify(schema)) {
+                            console.log("Schemas differ, destroying old database and recreating.");
+                            db.close();
+                            return new Promise(function(resolve, reject) {
+                                setTimeout(function() {
+                                    exports.delete(name).then(function() {
+                                        exports.openWithSchema(name, schema).then(resolve, reject);
+                                    }, function(err) {
+                                        reject(err);
+                                    });
+                                }, 200)
+                            });
+                        } else {
+                            return db;
+                        }
+                    });
+                } else {
+                    return db;
+                }
             });
         };
 

@@ -176,6 +176,9 @@ define(function(require, exports, module) {
             session.selection.moveCursorToPosition(cursorPos);
             callback();
         },
+        getModeName: function(path, callback) {
+            callback(null, getSession(path).mode.language);
+        },
         flashMessage: function(path, message, length, callback) {
             var session = getSession(path);
             zed.getService("eventbus").emit("sessionactivitystarted", session, message);

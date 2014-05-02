@@ -69,6 +69,9 @@ module.exports = {
     isInsertingSnippet: function(path) {
         return sandboxRequest("zed/session", "isInsertingSnippet", [path]);
     },
+    getModeName: function(path) {
+        return sandboxRequest("zed/session", "getModeName", [path]);
+    },
     flashMessage: function(path, message, length) {
         return sandboxRequest("zed/session", "flashMessage", [path, message, length]);
     }

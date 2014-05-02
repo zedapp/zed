@@ -30,6 +30,9 @@ define(function(require, exports, module) {
         };
 
         function init(schema) {
+            if(db) {
+                db.close();
+            }
             return zedb.openWithSchema(dbName, schema).then(function(db_) {
                 db = db_;
                 eventbus.emit("dbavailable", db);

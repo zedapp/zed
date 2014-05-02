@@ -100,6 +100,9 @@ define(function(require, exports, module) {
             var pos = edit.getCursorPosition();
 
             var line = doc.getLine(pos.row);
+            if(line[pos.column-1] === ".") {
+                return true;
+            }
             return retrievePreceedingIdentifier(line, pos.column);
         }
 
@@ -161,6 +164,7 @@ define(function(require, exports, module) {
             if (edit.completer.popup) {
                 edit.completer.goTo("start");
                 edit.completer.cancelContextMenu();
+                edit.completer.goTo()
             }
         }
 
@@ -180,7 +184,7 @@ define(function(require, exports, module) {
         };
 
         command.define("Edit:Complete", {
-            doc: "Pop up a menu with a list of possible completions for the current word.",
+            doc: "Pop up a menu with a list of possible completions for the current word if preceeding the cursor is an identifier, otherwise indent.",
             exec: function(edit) {
                 if (shouldComplete(edit)) {
                     complete(edit);

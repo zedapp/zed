@@ -1058,6 +1058,10 @@ define(function(require, exports, module) {
             return session.getValue();
         });
 
+        sandbox.defineInputable("modeName", function(session) {
+            return session.mode.language;
+        });
+
         register(null, {
             editor: api
         });

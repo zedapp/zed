@@ -351,6 +351,17 @@ dom.importCssString("\
     background-size: 14px;\
     z-index: -1;\
 }\
+.ace_icon_property {\
+    display: inline-block;\
+    position: absolute;\
+    left: 3px;\
+    margin-top: 1px;\
+    width: 14px;\
+    height: 14px;\
+    background-image: url('img/property.png');\
+    background-size: 14px;\
+    z-index: -1;\
+}\
 .ace_icon_snippet {\
     display: inline-block;\
     position: absolute;\

@@ -28,7 +28,7 @@ module.exports = function(info) {
                     value: symbol.symbol,
                     snippet: symbol.symbol.substring(0, parenPos).replace("$", "\\$") + "(${1})",
                     meta: pathParts[pathParts.length - 1],
-                    score: 0,
+                    score: 1,
                     icon: "function"
                 });
             } else {

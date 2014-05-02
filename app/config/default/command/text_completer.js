@@ -20,11 +20,9 @@ module.exports = function(info) {
      * Does a distance analysis of the word `prefix` at position `pos` in `doc`.
      * @return Map
      */
-    function wordDistance(text, pos) {
+    function wordDistance(words, text, pos) {
         return getWordIndex(pos).then(function(prefixPos) {
-            var words = text.split(splitRegex);
             var wordScores = new Map();
-
             var currentWord = words[prefixPos];
 
             words.forEach(function(word, idx) {
@@ -46,18 +44,21 @@ module.exports = function(info) {
     }
 
     var text;
+    var words;
     return session.getText(path).then(function(text_) {
         text = text_;
+        words = text.split(splitRegex);
         return session.getCursorPosition(path);
     }).then(function(pos) {
-        return wordDistance(text, pos);
+        return wordDistance(words, text, pos);
     }).then(function(wordScores) {
         var wordList = wordScores.keys();
         return wordList.map(function(word) {
+            // console.log("cores", (wordScores.get(word) / words.length));
             return {
                 name: word,
                 value: word,
-                score: wordScores.get(word),
+                score: 10.0 + (wordScores.get(word) / words.length),
                 icon: "local"
             };
         });
