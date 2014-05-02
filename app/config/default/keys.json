@@ -144,6 +144,8 @@
 
         "Cursor:Multiple:Add Above": "Ctrl-Alt-Up",
         "Cursor:Multiple:Add Below": "Ctrl-Alt-Down",
+        "Cursor:Multiple:Add Above Skip Current": "Ctrl-Alt-Shift-Up",
+        "Cursor:Multiple:Add Below Skip Current": "Ctrl-Alt-Shift-Down",
         "Cursor:Multiple:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
         "Cursor:Multiple:Add At Previous Instance Of Identifier": "Ctrl-Alt-Left",
         "Scroll:Page Up": "Option-PageUp",
