@@ -239,7 +239,7 @@ define(function(require, exports, module) {
 
         function checkAnalyticsAllowed() {
             config.loadConfiguration(function() {
-                var enable = config.getPreference("enableAnalytics")
+                var enable = config.getPreference("enableAnalytics");
                 if(enable === undefined) {
                     win.create("analytics.html", 'chrome', 600, 300);
                     // Initial state of checkbox will be on, so let's set that here
@@ -250,7 +250,7 @@ define(function(require, exports, module) {
 
         window.setEnableAnalytics = function(val) {
             config.setPreference("enableAnalytics", val);
-        }
+        };
 
         $("#projects").on("click", ".projects a", function(event) {
             var url = $(event.target).data("url");

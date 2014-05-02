@@ -244,59 +244,6 @@
             }
         };
 
-        exports.openWithSchema = function(name, schema) {
-            return exports.open(name, 1, function(db) {
-                // Let's create a fresh database
-                for (var objectStoreName in schema) {
-                    var storeMeta = schema[objectStoreName];
-                    var store = db.createObjectStore(objectStoreName, {
-                        keyPath: storeMeta.keyPath,
-                        autoIncrement: storeMeta.autoIncrement
-                    });
-                    storeMeta.indexes = storeMeta.indexes || {};
-                    for (var indexName in storeMeta.indexes) {
-                        var indexMeta = storeMeta.indexes[indexName];
-                        store.createIndex(indexName, indexMeta.keyPath, {
-                            unique: indexMeta.unique,
-                            multiEntry: indexMeta.multiEntry
-                        });
-                    }
-                }
-
-                var metaStore = db.createObjectStore("_meta", {
-                    keyPath: "key"
-                });
-                metaStore.add({
-                    key: "meta",
-                    schema: schema
-                });
-            }).then(function(db) {
-                if (db.getObjectStoreNames().contains("_meta")) {
-                    return db.readStore("_meta").get("meta").then(function(meta) {
-                        meta.lastUse = Date.now();
-                        db.writeStore("_meta").put(meta);
-                        if (JSON.stringify(meta.schema) !== JSON.stringify(schema)) {
-                            console.log("Schemas differ, destroying old database and recreating.");
-                            db.close();
-                            return new Promise(function(resolve, reject) {
-                                setTimeout(function() {
-                                    exports.delete(name).then(function() {
-                                        exports.openWithSchema(name, schema).then(resolve, reject);
-                                    }, function(err) {
-                                        reject(err);
-                                    });
-                                }, 200)
-                            });
-                        } else {
-                            return db;
-                        }
-                    });
-                } else {
-                    return db;
-                }
-            });
-        };
-
         exports.garbageCollect = function(age) {
             age = age || 1000 * 60 * 60 * 24 * 14; // 2 weeks
             promisifyRequest(indexedDB.webkitGetDatabaseNames()).then(function(dbNames) {
@@ -339,6 +286,10 @@
 
         exports.delete = function(name) {
             return promisifyRequest(indexedDB.deleteDatabase(name));
+        };
+
+        exports.list = function() {
+            return promisifyRequest(indexedDB.webkitGetDatabaseNames());
         };
 
         // key("=", "Bla") // only

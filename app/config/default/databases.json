@@ -8,6 +8,9 @@
                     unique: false
                 }
             }
+        },
+        _meta: {
+            keyPath: "key"
         }
     }
 }

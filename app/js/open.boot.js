@@ -59,8 +59,7 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
         });
     }
 
-    zedb.garbageCollect(1);
-
+    dbGarbageCollect();
 
     architect.resolveConfig(modules, function(err, config) {
         if (err) {
@@ -87,10 +86,29 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
                     }
                 });
 
-            } catch(e) {
+            } catch (e) {
                 console.error("Error hooking or initing:", e);
             }
 
         });
     });
+
+    function dbGarbageCollect() {
+        var age = 1000 * 60 * 60 * 24 * 14; // 2 weeks
+        zedb.list().then(function(dbNames) {
+            _.each(dbNames, function(dbName) {
+                zedb.open(dbName, 1, null).then(function(db) {
+                    if (db.getObjectStoreNames().contains("_meta")) {
+                        db.readStore("_meta").get("meta").then(function(meta) {
+                            if (meta.lastUse < Date.now() - age) {
+                                console.log("Deleting", dbName, "since it is old");
+                                db.close();
+                                zedb.delete(dbName);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    }
 });
