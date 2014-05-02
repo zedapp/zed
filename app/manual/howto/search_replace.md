@@ -9,7 +9,7 @@ Find and replace
 ----------------
 Zed has no specific find & replace functionality, instead this is realized using multiple cursors:
 
-First search (`Command-F`/`Ctrl-F`) for the phrase to replace, then you add cursors to however many instances of that phrase as you want via `Ctrl-Alt-Right`, after you start typing, the change will be applied at all locations. Pressing `Ctrl-Alt-Right` many times is not ideal, so to put cursors on all instances in the file at once use `Command-Shift-G`/`Ctrl-Shift-K`.
+First search (`Command-F`/`Ctrl-F`) for the phrase to replace, then you add cursors to however many instances of that phrase as you want via `Ctrl-Alt-Right`, after you start typing, the change will be applied at all locations. Pressing `Ctrl-Alt-Right` many times is not ideal, so to put cursors on all instances in the file at once use `Command-Shift-G`/`Ctrl-Alt-F`.
 
 Find in project
 ---------------
