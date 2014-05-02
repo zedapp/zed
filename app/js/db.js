@@ -66,16 +66,13 @@ define(function(require, exports, module) {
                         if (JSON.stringify(meta.schema) !== JSON.stringify(schema)) {
                             console.log("Schemas differ, destroying old database and recreating.");
                             db.close();
-                            // Changed, delete and reinit
-                            return zedb.delete(dbName).then(function() {
-                                return init(schema);
-                            });
+                            return recreate();
                         } else {
                             return db;
                         }
                     });
                 } else {
-                    return db;
+                    return recreate();
                 }
             }).then(function(db_) {
                 db = db_;
@@ -84,6 +81,12 @@ define(function(require, exports, module) {
             }, function(err) {
                 console.error("Could not create databases", err);
             });
+
+            function recreate() {
+                return zedb.delete(dbName).then(function() {
+                    return init(schema);
+                });
+            }
         }
 
         function get() {

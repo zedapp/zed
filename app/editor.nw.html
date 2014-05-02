@@ -26,6 +26,10 @@
                 return lib;
             });
             require(["nw.gui"]);
+
+            process.on("uncaughtException", function(err) {
+                console.error("Uncaught exception:", err);
+            });
         </script>
         <script src="dep/jquery.js"></script>
         <script src="dep/jquery.caret.js"></script>
