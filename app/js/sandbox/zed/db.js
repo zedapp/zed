@@ -25,9 +25,9 @@ define(function(require, exports, module) {
                 callback(err);
             });
         },
-        getAll: function(storeName, callback) {
+        getAll: function(storeName, options, callback) {
             var store = zed.getService("db").get().readStore(storeName);
-            store.getAll().then(function(objs) {
+            store.getAll(null, options).then(function(objs) {
                 callback(null, objs);
             }, function(err) {
                 callback(err);

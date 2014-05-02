@@ -21,8 +21,8 @@ module.exports = {
     deleteMany: function(storeName, keyPaths) {
         return sandboxRequest("zed/db", "deleteMany", [storeName, keyPaths]);
     },
-    getAll: function(storeName) {
-        return sandboxRequest("zed/db", "getAll", [storeName]);
+    getAll: function(storeName, options) {
+        return sandboxRequest("zed/db", "getAll", [storeName, options]);
     },
     query: function(storeName, query) {
         return sandboxRequest("zed/db", "query", [storeName, query]);

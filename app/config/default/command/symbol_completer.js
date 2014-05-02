@@ -7,7 +7,8 @@ module.exports = function(info) {
 
     return session.getPreceedingIdentifier(path).then(function(prefix) {
         return symbol.getSymbols({
-            prefix: prefix
+            prefix: prefix,
+            limit: 200
         });
     }).then(function(symbols) {
         var matches = [];

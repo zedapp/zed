@@ -668,7 +668,7 @@ define(function(require, exports, module) {
                 editor.selectMoreLines(1);
             },
         });
-        
+
         command.define("Cursor:Multiple:Add Above Skip Current", {
             doc: "Move the most recently created multiple curson up by one row.",
             exec: function(editor) {
@@ -682,7 +682,7 @@ define(function(require, exports, module) {
                 editor.selectMoreLines(1, true);
             },
         });
-        
+
         command.define("Cursor:Multiple:Align cursors", {
            doc: "Align all cursors and text to the same vertical position",
            exec: function(editor) {

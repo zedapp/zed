@@ -72,41 +72,51 @@
              * - "prev"
              * - "prevunique"
              */
-            openCursor: function(range, direction, each, error) {
-                direction = direction || "next";
-                var req = this.store.openCursor(range, direction);
+            openCursor: function(range, options, each, error) {
+                options.direction = options.direction || "next";
+                var req = this.store.openCursor(range, options.direction);
                 req.onsuccess = function(e) {
                     var result = e.target.result;
-                    each(result);
-                    if (result) {
+                    var cont = each(result);
+                    if (cont !== false && result) {
                         result["continue"]();
                     }
                 };
 
                 req.onerror = error;
             },
-            getAll: function(range, direction) {
+            getAll: function(range, options) {
                 var store = this;
+                options = options || {};
                 return new Promise(function(resolve, reject) {
                     var results = [];
-                    store.openCursor(range, direction, function(el) {
+                    store.openCursor(range, options, function(el) {
                         if (el) {
                             results.push(el.value);
                         } else {
                             resolve(results);
                         }
+                        if (options.limit && results.length >= options.limit) {
+                            resolve(results);
+                            return false;
+                        }
                     }, reject);
                 });
             },
-            getAllKeys: function(range, direction) {
+            getAllKeys: function(range, options) {
                 var store = this;
+                options = options || {};
                 return new Promise(function(resolve, reject) {
                     var results = [];
-                    store.openCursor(range, direction, function(el) {
+                    store.openCursor(range, options, function(el) {
                         if (el) {
                             results.push(el.key);
                         } else {
                             resolve(results);
+                        }
+                        if (options.limit && results.length >= options.limit) {
+                            resolve(results);
+                            return false;
                         }
                     }, reject);
                 });
@@ -134,54 +144,63 @@
             get: function(value) {
                 return promisifyRequest(this.idx.get(value));
             },
-            openCursor: function(range, direction, each, error) {
-                var req = this.idx.openCursor(range, direction);
+            openCursor: function(range, options, each, error) {
+                options.direction = options.direction || "next";
+                var req = this.idx.openCursor(range, options.direction);
                 req.onsuccess = function(e) {
                     var result = e.target.result;
-                    each(result);
-                    if (result) {
+                    var cont = each(result);
+                    if (cont !== false && result) {
                         result["continue"]();
                     }
                 };
 
                 req.onerror = error;
             },
-            openKeyCursor: function(range, direction, each, error) {
-                var req = this.idx.openKeyCursor(range, direction);
+            openKeyCursor: function(range, options, each, error) {
+                options.direction = options.direction || "next";
+                var req = this.idx.openKeyCursor(range, options.direction);
                 req.onsuccess = function(e) {
                     var result = e.target.result;
-                    each(result);
-                    if (result) {
+                    var cont = each(result);
+                    if (cont !== false && result) {
                         result["continue"]();
                     }
                 };
 
                 req.onerror = error;
             },
-            getAll: function(range, direction) {
-                direction = direction || "next";
+            getAll: function(range, options) {
                 var idx = this;
                 return new Promise(function(resolve, reject) {
                     var results = [];
-                    idx.openCursor(range, direction, function(el) {
+                    idx.openCursor(range, options, function(el) {
                         if (el) {
                             results.push(el.value);
                         } else {
                             resolve(results);
                         }
+                        if (options.limit && results.length >= options.limit) {
+                            resolve(results);
+                            return false;
+                        }
                     }, reject);
                 });
             },
             // Returns promise with array of {key: ..., value: ...}
-            getAllKeys: function(range, direction) {
+            getAllKeys: function(range, options) {
                 var idx = this;
                 return new Promise(function(resolve, reject) {
                     var results = [];
-                    idx.openKeyCursor(range, direction, function(el) {
+                    idx.openKeyCursor(range, options, function(el) {
                         if (el) {
                             results.push(el);
                         } else {
                             resolve(results);
+                        }
+                        if (options.limit && results.length >= options.limit) {
+                            resolve(results);
+                            return false;
                         }
                     }, reject);
                 });
@@ -194,28 +213,16 @@
 
         function query(args, getAll) {
             var r;
-            var direction = "next";
+            var options = {
+                direction: "next"
+            };
             if (args.length % 2 === 0) {
                 r = range.apply(null, args);
             } else {
-                r = range.apply(null, Array.prototype.slice.call(args, 0, args.length - 1));
-                var order = args[args.length - 1];
-                switch (order) {
-                    case "desc":
-                        direction = "prev";
-                        break;
-                    case "desc distinct":
-                        direction = "prevunique";
-                        break;
-                    case "asc":
-                        direction = "next";
-                        break;
-                    case "asc distinct":
-                        direction = "nextunique";
-                        break;
-                }
+                r = range.apply(null, Array.prototype.slice.call(args, 0, -1));
+                options = args[args.length - 1];
             }
-            return getAll(r, direction);
+            return getAll(r, options);
         }
 
         function Transaction(tx) {
@@ -264,11 +271,11 @@
                     schema: schema
                 });
             }).then(function(db) {
-                if(db.getObjectStoreNames().contains("_meta")) {
+                if (db.getObjectStoreNames().contains("_meta")) {
                     return db.readStore("_meta").get("meta").then(function(meta) {
                         meta.lastUse = Date.now();
                         db.writeStore("_meta").put(meta);
-                        if(JSON.stringify(meta.schema) !== JSON.stringify(schema)) {
+                        if (JSON.stringify(meta.schema) !== JSON.stringify(schema)) {
                             console.log("Schemas differ, destroying old database and recreating.");
                             db.close();
                             return new Promise(function(resolve, reject) {
@@ -293,13 +300,13 @@
         exports.garbageCollect = function(age) {
             age = age || 1000 * 60 * 60 * 24 * 14; // 2 weeks
             promisifyRequest(indexedDB.webkitGetDatabaseNames()).then(function(dbNames) {
-                for(var i = 0; i < dbNames.length; i++) {
+                for (var i = 0; i < dbNames.length; i++) {
                     (function() {
                         var dbName = dbNames[i];
                         exports.open(dbName, 1, null).then(function(db) {
-                            if(db.getObjectStoreNames().contains("_meta")) {
+                            if (db.getObjectStoreNames().contains("_meta")) {
                                 db.readStore("_meta").get("meta").then(function(meta) {
-                                    if(meta.lastUse < Date.now() - age) {
+                                    if (meta.lastUse < Date.now() - age) {
                                         console.log("Deleting", dbName, "since it is old");
                                         db.close();
                                         exports.delete(dbName);

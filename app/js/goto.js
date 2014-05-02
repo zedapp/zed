@@ -129,7 +129,8 @@ define(function(require, exports, module) {
                 function filterSymbols(phrase, path) {
                     return symbol.getSymbols({
                         prefix: phrase.substring(1),
-                        path: path
+                        path: path,
+                        limit: 250
                     }).then(function(symbols) {
                         var symbolList = symbols.map(function(t) {
                             var parts = t.path.split("/");

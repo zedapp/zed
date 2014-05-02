@@ -27,7 +27,7 @@ define(function(require, exports, module) {
                     var writeStore = db.writeStore("symbols");
                     var putPromises = [];
                     symbolInfos.forEach(function(symbolInfo) {
-                        symbolInfo.id = symbolInfo.symbol + "~" + path + "~" + symbolInfo.locator;
+                        symbolInfo.id = symbolInfo.symbol.toLowerCase() + "~" + path + "~" + symbolInfo.locator;
                         putPromises.push(writeStore.put(symbolInfo));
                     });
                     return Promise.all(putPromises);
@@ -35,15 +35,26 @@ define(function(require, exports, module) {
             }),
             getSymbols: async.queueUntilEvent(eventbus, "dbavailable", function(opts) {
                 opts = opts || {};
+                if(opts.prefix) {
+                    opts.prefix = opts.prefix.toLowerCase();
+                }
                 var db = dbP.get();
                 if (opts.path && !opts.prefix) {
-                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, ""], "<=", [opts.path, "~"]);
+                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, ""], "<=", [opts.path, "~"], {
+                        limit: opts.limit
+                    });
                 } else if (opts.prefix && !opts.path) {
-                    return db.readStore("symbols").query(">=", opts.prefix, "<=", opts.prefix + "~");
+                    return db.readStore("symbols").query(">=", opts.prefix, "<=", opts.prefix + "~", {
+                        limit: opts.limit
+                    });
                 } else if (opts.prefix && opts.path) {
-                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, opts.prefix], "<=", [opts.path, opts.prefix + "~"]);
+                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, opts.prefix], "<=", [opts.path, opts.prefix + "~"], {
+                        limit: opts.limit
+                    });
                 } else {
-                    return db.readStore("symbols").getAll();
+                    return db.readStore("symbols").getAll(null, {
+                        limit: opts.limit
+                    });
                 }
             })
         };

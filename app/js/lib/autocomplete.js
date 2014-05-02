@@ -251,23 +251,6 @@ var Autocomplete = function() {
     };
 
     this.updateCompletions = function(keepPopupPosition) {
-        if (keepPopupPosition && this.base && this.completions) {
-            var pos = this.editor.getCursorPosition();
-            var prefix = this.editor.session.getTextRange({start: this.base, end: pos});
-            if (prefix == this.completions.filterText)
-                return;
-            this.completions.setFilter(prefix);
-            if (!this.completions.filtered.length)
-                return this.detach();
-            if (this.completions.filtered.length == 1
-            && this.completions.filtered[0].value == prefix
-            && !this.completions.filtered[0].snippet)
-                return this.detach();
-            this.openPopup(this.editor, prefix, keepPopupPosition);
-            return;
-        }
-
-        // Save current gatherCompletions session, session is close when a match is insert
         var _id = this.gatherCompletionsId;
         this.gatherCompletions(this.editor, function(err, results) {
             // Only detach if result gathering is finished
