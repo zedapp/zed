@@ -20,6 +20,7 @@
                 }
             },
             preferences: {
+                trimWhitespaceOnSave: false,
                 wordWrap: true,
                 wordWrapColumn: 80
             },
