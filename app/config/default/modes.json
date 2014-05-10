@@ -10,6 +10,7 @@
         "./mode/groovy.json",
         "./mode/go.json",
         "./mode/haml.json",
+        "./mode/handlebars.json",
         "./mode/haskell.json",
         "./mode/html.json",
         "./mode/ini.json",

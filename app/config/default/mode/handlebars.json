@@ -1,0 +1,12 @@
+{
+  modes: {
+    handlebars: {
+      name: "HANDLEBARS",
+      highlighter: "ace/mode/handlebars",
+      extensions: [
+        "hbs", 
+        "handlebars"
+      ]
+    }
+  }
+}
