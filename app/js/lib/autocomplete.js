@@ -282,7 +282,7 @@ var Autocomplete = function() {
                 return doDetach();
 
             // Autoinsert if one result
-            if (this.autoInsert && filtered.length == 1)
+            if (this.autoInsert && filtered.length == 1 && !keepPopupPosition)
                 return this.insertMatch(filtered[0]);
 
             this.openPopup(this.editor, prefix, keepPopupPosition);

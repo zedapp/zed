@@ -2,7 +2,11 @@
 define(function(require, exports, module) {
     return {
         getMany: function(storeName, keyPaths, callback) {
-            var store = zed.getService("db").get().readStore(storeName);
+            var db = zed.getService("db").get();
+            if(!db) {
+                return callback("DB not available yet");
+            }
+            var store = db.readStore(storeName);
             Promise.all(keyPaths.map(store.get.bind(store))).then(function(objs) {
                 callback(null, objs);
             }, function(err) {
@@ -10,7 +14,11 @@ define(function(require, exports, module) {
             });
         },
         putMany: function(storeName, objs, callback) {
-            var store = zed.getService("db").get().writeStore(storeName);
+            var db = zed.getService("db").get();
+            if(!db) {
+                return callback("DB not available yet");
+            }
+            var store = db.writeStore(storeName);
             Promise.all(objs.map(store.put.bind(store))).then(function() {
                 callback();
             }, function(err) {
@@ -18,7 +26,11 @@ define(function(require, exports, module) {
             });
         },
         deleteMany: function(storeName, keyPaths, callback) {
-            var store = zed.getService("db").get().writeStore(storeName);
+            var db = zed.getService("db").get();
+            if(!db) {
+                return callback("DB not available yet");
+            }
+            var store = db.writeStore(storeName);
             Promise.all(keyPaths.map(store.delete.bind(store))).then(function() {
                 callback();
             }, function(err) {
@@ -26,7 +38,11 @@ define(function(require, exports, module) {
             });
         },
         getAll: function(storeName, options, callback) {
-            var store = zed.getService("db").get().readStore(storeName);
+            var db = zed.getService("db").get();
+            if(!db) {
+                return callback("DB not available yet");
+            }
+            var store = db.readStore(storeName);
             store.getAll(null, options).then(function(objs) {
                 callback(null, objs);
             }, function(err) {
@@ -34,7 +50,11 @@ define(function(require, exports, module) {
             });
         },
         query: function(storeName, query, callback) {
-            var store = zed.getService("db").get().readStore(storeName);
+            var db = zed.getService("db").get();
+            if(!db) {
+                return callback("DB not available yet");
+            }
+            var store = db.readStore(storeName);
             store.query.apply(store, query).then(function(objs) {
                 callback(null, objs);
             }, function(err) {
@@ -42,7 +62,11 @@ define(function(require, exports, module) {
             });
         },
         queryIndex: function(storeName, index, query, callback) {
-            var idx = zed.getService("db").get().readStore(storeName).index(index);
+            var db = zed.getService("db").get();
+            if(!db) {
+                return callback("DB not available yet");
+            }
+            var idx = db.readStore(storeName).index(index);
             idx.query.apply(idx, query).then(function(objs) {
                 callback(null, objs);
             }, function(err) {

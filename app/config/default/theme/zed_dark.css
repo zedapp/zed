@@ -109,3 +109,7 @@
 .ace-zeddark  .ace_invisible {
     color: #999;
 }
+.ace-zeddark .ace_bracket {
+    border: none;
+    background-color: #555;
+}

@@ -27,7 +27,9 @@ define(function(require, exports, module) {
                     var writeStore = db.writeStore("symbols");
                     var putPromises = [];
                     symbolInfos.forEach(function(symbolInfo) {
-                        symbolInfo.id = symbolInfo.symbol.toLowerCase() + "~" + path + "~" + symbolInfo.locator;
+                        var lcSymbol = symbolInfo.symbol.toLowerCase();
+                        symbolInfo.id = lcSymbol + "~" + path + "~" + symbolInfo.locator;
+                        symbolInfo.symbol_lc = lcSymbol;
                         putPromises.push(writeStore.put(symbolInfo));
                     });
                     return Promise.all(putPromises);

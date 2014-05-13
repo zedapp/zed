@@ -9,7 +9,7 @@ ZED_VERSION=$(shell cat app/manifest.json | grep '"version"' | cut -f 4 -d '"')
 /tmp/one_month_ago:
 	touch /tmp/one_month_ago -t $(shell perl -MPOSIX -le 'print strftime "%Y%m%d%H%M", localtime (time - 2592000)')
 
-app/ace: /tmp/one_month_ago
+app/ace:
 	curl -L https://github.com/zefhemel/ace-builds/archive/master.tar.gz | tar xzf -
 	rm -rf app/ace
 	mv ace-builds-master/ace app/ace

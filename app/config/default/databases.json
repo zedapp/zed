@@ -4,7 +4,7 @@
             keyPath: "id",
             indexes: {
                 path_sym: {
-                    keyPath: ["path", "symbol"],
+                    keyPath: ["path", "symbol_lc"],
                     unique: false
                 }
             }

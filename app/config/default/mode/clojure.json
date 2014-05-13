@@ -1,9 +1,27 @@
 {
-    "modes": {
-        "clojure": {
-            "name": "Clojure",
-            "highlighter": "ace/mode/clojure",
-            "extensions": ["clj"]
+    modes: {
+        clojure: {
+            name: "Clojure",
+            highlighter: "ace/mode/clojure",
+            extensions: ["clj"],
+            commands: {
+                "Tools:Index": {
+                    scriptUrl: "/default/command/regex_indexer.js",
+                    inputs: {
+                        text: true
+                    },
+                    regexes: [{
+                        regex: "\\(defn-?\\s*([A-Z-a-z0-9_\\-]+)",
+                        symbolIndex: 1,
+                        type: "function"
+                    }]
+                }
+            },
+            handlers: {
+                index: [
+                    "Tools:Index"
+                ]
+            }
         }
     }
 }
