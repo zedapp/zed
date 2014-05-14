@@ -31,6 +31,8 @@
 define(function(require, exports, module) {
 "use strict";
 
+var ID_REGEX = /[a-zA-Z_0-9\$-]|[^\u0000-\u007F]/;
+
 var HashHandler = require("ace/keyboard/hash_handler").HashHandler;
 var AcePopup = require("./ace_popup").AcePopup;
 var util = require("ace/autocomplete/util");
@@ -219,7 +221,7 @@ var Autocomplete = function() {
                 var pos = editor.getCursorPosition();
                 var line = session.getLine(pos.row);
                 callback(null, {
-                    prefix: util.retrievePrecedingIdentifier(line, pos.column, results[0] && results[0].identifierRegex),
+                    prefix: util.retrievePrecedingIdentifier(line, pos.column, ID_REGEX),
                     matches: matches,
                     finished: (--total === 0)
                 });
@@ -258,6 +260,7 @@ var Autocomplete = function() {
                 if (!results.finished) return;
                 return this.detach();
             }.bind(this);
+
 
             var prefix = results.prefix;
             var matches = results && results.matches;
