@@ -1,6 +1,21 @@
 Changelog
 =========
 
+0.11.3
+------
+* ZeDB: a simple abstraction layer on top of IndexedDB. Packages and other sandbox code can create their own data stores and indexes (via the `databases` key in configuration) and read, write and query that data quickly. This system is current primarily used for symbol indexing and code completion (see below).
+* Complete rework of generic project indexing system, now storing symbol information in IndexedDB for faster retrieval (than the `/tags` file in ctags format that it used to use).
+* Support for full function signatures and icons in symbol list (`Command-R`/`Ctrl-R`) and code completion for certain languages (JavaScript, Go, others still have to be updated)
+* General-purpose regex-based symbol indexer allows to add basic symbol indexing to modes without writing any JavaScript (see Go and JavaScript mode for examples).
+* Additional multi-cursor commands (`Cursor:Multiple:Add Above Skip Current` and `Cursor:Multiple:Add Below Skip Current` by thebishopgame)
+* Standalone:
+    * No longer crashes when an exception occurs
+    * Do not save window position for minimized windows (by nightwing)
+* Modes:
+    * New matlab mode (by timothyrenner)
+    * Markdown: disable strip whitespace (by robru)
+    * Handlebars mode (by chenxsan)
+
 0.11.2
 ------
 * New "Edit in Zed" Chrome Extension for Zed Chrome version: adds a little on-hover Zed icon to textareas on any website in Chrome, when you click it, you can edit the contents of this text area using Zed. [Download the extension from the Chrome Store](https://chrome.google.com/webstore/detail/edit-in-zed/dpkaficlkfnjemlheobmkabnnoafeepg)

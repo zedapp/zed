@@ -13,19 +13,25 @@ module.exports = function(info) {
     var iterations = 0;
     // Regular old functions
     regexInfos.forEach(function(regexInfo) {
-        var match;
-        var regex = new RegExp(regexInfo.regex, "g");
+        var m;
+        var regex = new RegExp(regexInfo.regex, "mg");
         if(debug) {
-            console.log("Now searching for:", regex);
+            console.log("Now searching for:", regexInfo.regex);
         }
-        while (match = regex.exec(text)) {
+        while (m = regex.exec(text)) {
             if(debug) {
-                console.log("Got a match", match);
+                console.log("Got a match", m);
+            }
+            var symbol;
+            if(regexInfo.expr) {
+                symbol = eval(regexInfo.expr);
+            } else {
+                symbol = m[regexInfo.symbolIndex];
             }
             tags.push({
                 path: path,
-                symbol: match[regexInfo.symbolIndex],
-                locator: indexToLine(text, match.index),
+                symbol: symbol,
+                locator: indexToLine(text, m.index),
                 type: regexInfo.type
             });
             iterations++;

@@ -49,6 +49,7 @@
 /default/mode/go/index.js
 /default/mode/groovy.json
 /default/mode/haml.json
+/default/mode/handlebars.json
 /default/mode/haskell.json
 /default/mode/html.json
 /default/mode/html/beautify-html.js

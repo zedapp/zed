@@ -34,8 +34,8 @@ define(function(require, exports, module) {
                         // In bug #169 it was reported that these values can
                         // get negative value when a window is minimized.
                         // so let's reset those values in these cases.
-                        bounds.left = Math.max(20, bounds.left);
-                        bounds.top = Math.max(20, bounds.top);
+                        bounds.left = Math.max(0, bounds.left);
+                        bounds.top = Math.max(0, bounds.top);
                         bounds.width = Math.max(100, bounds.width);
                         bounds.height = Math.max(100, bounds.height);
                         win.setBounds(bounds);

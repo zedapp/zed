@@ -22,7 +22,6 @@ define(function(require, exports, module) {
                         var existing = _.where(projects, {
                             url: url
                         });
-                        console.log("Existing", existing);
                         if (existing.length === 0) {
                             projects.splice(0, 0, {
                                 name: name,

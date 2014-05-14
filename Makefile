@@ -16,8 +16,9 @@ app/ace:
 	rm -rf ace-builds-master
 
 copy-packages:
-	rm -rf app/config/packages/*
-	cp -r $(ZED_DIR)/packages/gh app/config/packages/
+	mkdir -p app/config/packages/gh/zedapp
+	rm -rf app/config/packages/gh/zedapp/*
+	cp -r $(ZED_DIR)/packages/gh/zedapp/* app/config/packages/gh/zedapp/
 	find app/config/packages -name .git -exec rm -rf {} \; || echo
 
 build-package: copy-packages indexes

@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     module.exports = function(files, pattern) {
         var fileRegex, pathRegex;
         var pathMatches = {};
-        
+
         function buildResult(match, segments) {
             var runs = [];
             var insideRuns = [];
@@ -42,7 +42,7 @@ define(function(require, exports, module) {
                 missed: false
             };
         }
-        
+
         function matchPath(filename) {
             var segments = filename.split('/').length - 1;
             var dirname = path.dirname(filename);
@@ -64,7 +64,7 @@ define(function(require, exports, module) {
                 });
             }
         }
-        
+
         function matchFile(filename, pathMatch) {
             var basename = path.filename(filename);
             var dirname = path.dirname(filename);
@@ -83,7 +83,7 @@ define(function(require, exports, module) {
                 return false;
             }
         }
-        
+
         function makePattern(part) {
             function charToPattern(pattern, character) {
                 if (pattern.length) {
@@ -93,7 +93,7 @@ define(function(require, exports, module) {
             }
             return part.split('').reduce(charToPattern, '');
         }
-        
+
         pattern = pattern.replace(/ /g, '');
         var parts = pattern.split('/');
         if (pattern.match(/\/$/)) {
@@ -104,10 +104,10 @@ define(function(require, exports, module) {
             pathRegex = new RegExp('^(.*?)' + parts.map(makePattern).join('(.*?/.*?)') + '(.*?)$', 'i');
         }
         fileRegex = new RegExp("^(.*?)" + (makePattern(filePart)) + "(.*)$", "i");
-        
-        
+
+
         var matches = [];
-        
+
         files.forEach(function(filename) {
             var pathMatch = matchPath(filename);
             if (!pathMatch.missed) {
@@ -117,7 +117,7 @@ define(function(require, exports, module) {
                 }
             }
         });
-        
+
         return matches;
     };
 });
