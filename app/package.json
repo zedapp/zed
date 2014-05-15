@@ -1,5 +1,6 @@
 {
     "name": "zed",
+    "version": "1.0",
     "main": "app://./open.nw.html",
     "window": {
         "title": "Zed",
