@@ -75,14 +75,20 @@ define(function(require, exports, module) {
 
         function splitOne() {
             state.set("split", "1");
+            var activeEditor = editor.getActiveEditor();
+            var newActiveEditor = editor.getEditors(true)[0];
+            // If the editor left is not the one that is currently active
+            // swap the two sessions
+            if(activeEditor !== newActiveEditor) {
+                swapSession(activeEditor, activeEditor.session, 0);
+            }
             resetEditorDiv($("#editor0")).addClass("editor-single");
             resetEditorDiv($("#editor1")).addClass("editor-disabled");
             resetEditorDiv($("#editor2")).addClass("editor-disabled");
-            var edit = editor.getEditors(true)[0];
-            editor.setActiveEditor(edit);
+            editor.setActiveEditor(newActiveEditor);
             resizeEditors();
             eventbus.emit("splitchange", "1");
-            eventbus.emit("splitswitched", edit);
+            eventbus.emit("splitswitched", newActiveEditor);
         }
 
         function splitTwo(style) {
