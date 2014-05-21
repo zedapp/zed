@@ -16,8 +16,6 @@ define(function(require, exports, module) {
         post: function(url, options, callback) {
             options = options || {};
 
-            options = options || {};
-            
             $.ajax({
                 url: url,
                 type: 'POST',
