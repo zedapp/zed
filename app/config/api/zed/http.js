@@ -30,5 +30,11 @@ module.exports = {
      */
     post: function(url, options) {
         return sandboxRequest("zed/http", "post", [url, options]);
+    },
+    put: function(url, options) {
+        return sandboxRequest("zed/http", "put", [url, options]);
+    },
+    del: function(url, options) {
+        return sandboxRequest("zed/http", "del", [url, options]);
     }
 };
