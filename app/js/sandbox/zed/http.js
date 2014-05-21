@@ -16,13 +16,15 @@ define(function(require, exports, module) {
         post: function(url, options, callback) {
             options = options || {};
 
+            options = options || {};
+            
             $.ajax({
                 url: url,
                 type: 'POST',
                 headers: options.headers,
                 data: options.data,
                 dataType: options.type
-            }, function(body) {
+            }).done(function(body) {
                 callback(null, body);
             }).fail(function(jqXHR) {
                 callback(jqXHR.status);
