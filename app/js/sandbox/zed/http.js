@@ -13,17 +13,6 @@ define(function(require, exports, module) {
                 callback(jqXHR.status);
             });
         },
-
-        /**
-         * Sends a HTTP POST request to the given URL.
-         * 
-         * options:
-         * 
-         *     headers: {Object},
-         *     data: {Object || String}: Payload
-         *     type: {String}: Response MIME type
-         * 
-         */
         post: function(url, options, callback) {
             options = options || {};
 
