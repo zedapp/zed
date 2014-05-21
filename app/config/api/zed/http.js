@@ -5,5 +5,8 @@ module.exports = {
     },
     get: function(url, type) {
         return sandboxRequest("zed/http", "get", [url, type]);
+    },
+    post: function(url, options) {
+        return sandboxRequest("zed/http", "post", [url, options]);
     }
 };

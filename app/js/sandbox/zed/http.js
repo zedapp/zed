@@ -12,6 +12,32 @@ define(function(require, exports, module) {
             }, type).fail(function(jqXHR) {
                 callback(jqXHR.status);
             });
+        },
+
+        /**
+         * Sends a HTTP POST request to the given URL.
+         * 
+         * options:
+         * 
+         *     headers: {Object},
+         *     data: {Object || String}: Payload
+         *     type: {String}: Response MIME type
+         * 
+         */
+        post: function(url, options, callback) {
+            options = options || {};
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: options.headers,
+                data: options.data,
+                dataType: options.type
+            }, function(body) {
+                callback(null, body);
+            }).fail(function(jqXHR) {
+                callback(jqXHR.status);
+            });
         }
     };
 });
