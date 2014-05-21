@@ -5,5 +5,30 @@ module.exports = {
     },
     get: function(url, type) {
         return sandboxRequest("zed/http", "get", [url, type]);
+    },
+
+    /**
+     * Sends a HTTP POST request to the given URL.
+     * 
+     * options:
+     * 
+     *     headers: {Object}
+     *
+     *         The HTTP headers
+     * 
+     *     data: {Object || String} (optional)
+     * 
+     *          The HTTP request body payload.
+     *
+     *     type: {String} (optional; default = Intelligent Guess)
+     * 
+     *          The type of data expected from the server.
+     * 
+     * @param {String} url The respective endpoint.
+     * @param {Object} options The configuration object.
+     * 
+     */
+    post: function(url, options) {
+        return sandboxRequest("zed/http", "post", [url, options]);
     }
 };

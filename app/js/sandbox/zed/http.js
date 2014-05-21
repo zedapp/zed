@@ -12,6 +12,21 @@ define(function(require, exports, module) {
             }, type).fail(function(jqXHR) {
                 callback(jqXHR.status);
             });
+        },
+        post: function(url, options, callback) {
+            options = options || {};
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                headers: options.headers,
+                data: options.data,
+                dataType: options.type
+            }, function(body) {
+                callback(null, body);
+            }).fail(function(jqXHR) {
+                callback(jqXHR.status);
+            });
         }
     };
 });
