@@ -24,19 +24,19 @@ define(function(require, exports, module) {
             var options = {
                 dataType: type
             };
-            
+
             request('GET', url, options)
                 .done(function onDone (data, status, jqXHR) {
-                    callback(null, data, status, jqXHR.getAllResponseHeaders());
+                    callback(null, [data, jqXHR.status, jqXHR.getAllResponseHeaders()]);
                 })
                 .fail(function onFail (jqXHR) {
-                    callback(jqXHR.status);
+                    callback(jqXHR.status)
                 });
         },
         post: function(url, options, callback) {
             request('POST', url, options)
                 .done(function onDone (data, status, jqXHR) {
-                    callback(null, data, status, jqXHR.getAllResponseHeaders());
+                    callback(null, [data, jqXHR.status, jqXHR.getAllResponseHeaders()]);
                 })
                 .fail(function onFail (jqXHR) {
                     callback(jqXHR.status);
@@ -45,7 +45,7 @@ define(function(require, exports, module) {
         put: function(url, options, callback) {
              request('PUT', url, options)
                  .done(function onDone (data, status, jqXHR) {
-                     callback(null, data, status, jqXHR.getAllResponseHeaders());
+                     callback(null, [data, jqXHR.status, jqXHR.getAllResponseHeaders()]);
                  })
                  .fail(function onFail (jqXHR) {
                      callback(jqXHR.status);
@@ -54,7 +54,7 @@ define(function(require, exports, module) {
          del: function(url, options, callback) {
               request('DELETE', url, options)
                   .done(function onDone (data, status, jqXHR) {
-                      callback(null, data, status, jqXHR.getAllResponseHeaders());
+                      callback(null, [data, jqXHR.status, jqXHR.getAllResponseHeaders()]);
                   })
                   .fail(function onFail (jqXHR) {
                       callback(jqXHR.status);
