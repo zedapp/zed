@@ -185,9 +185,15 @@ define(function(require, exports, module) {
             if ((opts.get("url").indexOf("config:") === 0) || (config.getPreference("globalAutoRevert"))) {
                 return reloadFile();
             }
+            if(session.$prompting) {
+                // Already showing a prompt
+                return;
+            }
+            session.$prompting = true;
             ui.prompt({
                 message: "File '" + path + "' changed on disk, reload (Ok) or keep original (Cancel)?"
             }, function(err, yes) {
+                session.$prompting = false;
                 if (yes) {
                     reloadFile();
                 } else {
