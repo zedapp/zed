@@ -69,7 +69,8 @@ window.sandboxRequest = function(module, call, args) {
 function handleApiResponse(event) {
     var data = event.data;
     var p = waitingForReply[data.replyTo];
-    if (data.err) {
+
+    if ( (undefined != data.err) || (null != data.err) ) {
         p.reject(data.err);
     } else {
         p.resolve(data.result);
