@@ -31,13 +31,10 @@ define(function(require, exports, module) {
                 eventbus.once("stateloaded", function() {
                     var bounds = api.get('window');
                     if (bounds) {
-                        // In bug #169 it was reported that these values can
-                        // get negative value when a window is minimized.
-                        // so let's reset those values in these cases.
-                        bounds.left = Math.max(0, bounds.left);
-                        bounds.top = Math.max(0, bounds.top);
-                        bounds.width = Math.max(100, bounds.width);
-                        bounds.height = Math.max(100, bounds.height);
+                        bounds.width = Math.min(Math.max(100, bounds.width), window.screen.availWidth);
+                        bounds.height = Math.min(Math.max(100, bounds.height), window.screen.availHeight);
+                        bounds.left = Math.max(0, Math.min(bounds.left, window.screen.availWidth - bounds.width));
+                        bounds.top = Math.max(0, Math.min(bounds.top, window.screen.availHeight - bounds.height));
                         win.setBounds(bounds);
                     }
                     win.addResizeListener(function() {
