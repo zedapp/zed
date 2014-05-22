@@ -59,8 +59,21 @@ define(function(require, exports, module) {
             },
             setPreference: function(key, value) {
                 config.preferences[key] = value;
-                userConfig.preferences[key] = value;
-                writeUserPrefs();
+                if(!userConfig.preferences) {
+                    // If this happens the user.json file contains syntax
+                    // mistakes. However it's important to _still_ save this
+                    // preference. What we'll do is effectively overwrite the
+                    // existing user.json with only preferences, but make
+                    // a backup of user.json
+                    userConfig.preferences = {};
+                    makeUserBackup(function(err) {
+                        userConfig.preferences[key] = value;
+                        writeUserPrefs();
+                    });
+                } else {
+                    userConfig.preferences[key] = value;
+                    writeUserPrefs();
+                }
             },
             togglePreference: function(key, session) {
                 var newvalue = !api.getPreference(key, session);
@@ -222,6 +235,16 @@ define(function(require, exports, module) {
             } else {
                 callback();
             }
+        }
+
+        function makeUserBackup(callback) {
+            configfs.readFile("/user.json", function(err, text) {
+                if(err) {
+                    // No user.json exists, move on
+                    return callback();
+                }
+                configfs.writeFile("/user.backup.json", text, callback);
+            });
         }
 
         function writeUserPrefs() {
