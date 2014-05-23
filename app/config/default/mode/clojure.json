@@ -3,7 +3,7 @@
         clojure: {
             name: "Clojure",
             highlighter: "ace/mode/clojure",
-            extensions: ["clj"],
+            extensions: ["clj", "cljs"],
             commands: {
                 "Tools:Index": {
                     scriptUrl: "/default/command/regex_indexer.js",
