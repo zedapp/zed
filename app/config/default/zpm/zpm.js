@@ -72,7 +72,7 @@ exports.install = function(uri) {
     var url = uriToUrl(uri);
     var packageData, files;
     return http.get(url + "package.json", "json").then(function(packageData_) {
-        packageData = packageData_;
+        packageData = packageData_[0];
         packageData.uri = packageData.uri || uri;
         return exports.getInstalledPackages();
     }).then(function(installed) {
@@ -168,7 +168,7 @@ function downloadPackageFiles(url, uri, files) {
 
     var filePromises = files.map(function(file) {
         return http.get(url + file, "text").then(function(data) {
-            return configfs.writeFile(folder + file, data);
+            return configfs.writeFile(folder + file, data[0]);
         }, function(err) {
             console.error("Could not download " + url + file);
             throw err;
@@ -204,7 +204,7 @@ function copyFiles(folder, newFolder, files) {
 function update(uri, pkg) {
     var packageData;
     return http.get(uriToUrl(uri) + "package.json", "json").then(function(packageData_) {
-        packageData = packageData_;
+        packageData = packageData_[0];
         console.log(uri, "current version", pkg.version, "new", packageData.version);
         if (versionCompare(packageData.version, pkg.version, {
             zeroExtend: true
