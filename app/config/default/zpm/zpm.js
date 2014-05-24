@@ -79,10 +79,7 @@ exports.install = function(uri) {
         if (installed[uri]) {
             throw new Error("Package already installed");
         }
-        if (!packageData.files) {
-            packageData.files = [];
-        }
-        files = packageData.files.slice(0);
+        files = (packageData.files || []).slice(0);
         files.push("config.json");
         var folder = uriToPath(uri) + "/";
         return configfs.writeFile(folder + "package.json", JSON5.stringify(packageData, null, 4));
