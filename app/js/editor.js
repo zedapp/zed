@@ -952,6 +952,24 @@ define(function(require, exports, module) {
                 whitespace.convertIndentation(edit.session);
             }
         });
+        
+        
+        command.define("Edit:Insert New Line Down", {
+            doc: "Insert a new line down current line",
+            exec: function(editor) {
+                editor.navigateLineEnd();
+                editor.splitLine();
+                editor.navigateDown(1);
+            }
+        });
+
+        command.define("Edit:Insert New Line Up", {
+            doc: "Insert a new line up current line",
+            exec: function(editor) {
+                editor.navigateLineStart();
+                editor.splitLine();
+            }
+        });
 
         // FIND
         command.define("Find:Find", {
