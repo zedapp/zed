@@ -958,8 +958,7 @@ define(function(require, exports, module) {
             doc: "Insert a new line down current line",
             exec: function(editor) {
                 editor.navigateLineEnd();
-                editor.splitLine();
-                editor.navigateDown(1);
+                editor.insert("\n");
             }
         });
 
@@ -967,7 +966,8 @@ define(function(require, exports, module) {
             doc: "Insert a new line up current line",
             exec: function(editor) {
                 editor.navigateLineStart();
-                editor.splitLine();
+                editor.insert("\n");
+                editor.navigateUp(1);
             }
         });
 
