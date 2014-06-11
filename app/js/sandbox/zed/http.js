@@ -32,7 +32,7 @@ define(function(require, exports, module) {
         args.type = verb;
         args.headers = options.headers;
         args.data = options.data;
-        args.dataType = options.type;
+        args.dataType = options.dataType;
 
         return $.ajax(args);
     }
