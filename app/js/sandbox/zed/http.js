@@ -75,7 +75,7 @@ define(function(require, exports, module) {
 
         source.forEach(function onEntry (header) {
             var position = header.indexOf(':');
-            var key = header.substr(0, position).toLowerCase();
+            var key = header.substr(0, position);
             var value = header.substr(position + 1).trim();
 
             headers[key] = value;
