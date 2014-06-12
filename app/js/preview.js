@@ -51,10 +51,22 @@ define(function(require, exports, module) {
                 previewEl = $("#preview");
                 previewEl.attr("src", data);
             },
-            showPreview: function(html) {
-                previewEl[0].contentWindow.postMessage({
-                    content: html
-                }, "*");
+            showPreview: function(html, open) {
+                function inject() {
+                    previewEl[0].contentWindow.postMessage({
+                        content: html
+                    }, "*");
+                }
+
+                if (open && !isPreviewing()) {
+                    splitPreview();
+                    
+                    // TODO: Not so nice. Will be removed
+                    // when this component receives a refactoring.
+                    return setTimeout(inject, 800);
+                }
+                
+                inject();
             },
         };
 
