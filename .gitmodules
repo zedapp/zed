@@ -1,0 +1,3 @@
+[submodule "app/manual"]
+	path = app/manual
+	url = https://github.com/zedapp/manual.git
