@@ -22,9 +22,10 @@ define(function(require, exports, module) {
      * @param {String} verb The HTTP verb (e.g. POST, PUT, etc.)
      * @param {String} url The URL endpoint to which the request should be send.
      * @param {Object} options The jQuery request configuration.
+     * @param {Function} callback Node.js style callback.
      * 
      */
-    function request (verb, url, options) {
+    function request(verb, url, options, callback) {
         var args = {};
         
         options = options || {};
@@ -34,7 +35,53 @@ define(function(require, exports, module) {
         args.data = options.data;
         args.dataType = options.dataType;
 
-        return $.ajax(args);
+        $.ajax(args)
+            .done(function onDone (data, status, jqXHR) {
+                var payload = [
+                    data,
+                    jqXHR.status,
+                    convertResponseHeaders(jqXHR.getAllResponseHeaders())
+                ];
+
+                callback(null, payload);
+            })
+            .fail(function onFail (jqXHR) {
+                callback(jqXHR.status)
+            });
+    }
+    
+    /**
+     * The XHR object returns a string with all response header entries in the form:
+     * 
+     *     key: "value"
+     * 
+     * This function converts this string to an object representation.
+     * 
+     * @param {String} source The headers from the XHR object.
+     * 
+     * @returns {Object}
+     * 
+     */
+    function convertResponseHeaders(source) {
+        var newline = /\r?\n/;
+        var headers = {};
+
+        if (!source) {
+            return headers;
+        }
+
+        source = source.trim();
+        source = source.split(newline);
+
+        source.forEach(function onEntry (header) {
+            var position = header.indexOf(':');
+            var key = header.substr(0, position);
+            var value = header.substr(position + 1).trim();
+
+            headers[key] = value;
+        });
+
+        return headers;
     }
     
     return {
@@ -46,48 +93,16 @@ define(function(require, exports, module) {
                 dataType: type
             };
 
-            request('GET', url, options)
-                .done(function onDone (data, status, jqXHR) {
-                    var payload = [data, jqXHR.status, jqXHR.getAllResponseHeaders()];
-
-                    callback(null, payload);
-                })
-                .fail(function onFail (jqXHR) {
-                    callback(jqXHR.status)
-                });
+            request('GET', url, options, callback);
         },
         post: function(url, options, callback) {
-            request('POST', url, options)
-                .done(function onDone (data, status, jqXHR) {
-                    var payload = [data, jqXHR.status, jqXHR.getAllResponseHeaders()];
-
-                    callback(null, payload);
-                })
-                .fail(function onFail (jqXHR) {
-                    callback(jqXHR.status);
-                });
+            request('POST', url, options, callback);
         },
         put: function(url, options, callback) {
-             request('PUT', url, options)
-                 .done(function onDone (data, status, jqXHR) {
-                     var payload = [data, jqXHR.status, jqXHR.getAllResponseHeaders()];
-
-                     callback(null, payload);
-                 })
-                 .fail(function onFail (jqXHR) {
-                     callback(jqXHR.status);
-                 });
-         },
-         del: function(url, options, callback) {
-              request('DELETE', url, options)
-                  .done(function onDone (data, status, jqXHR) {
-                      var payload = [data, jqXHR.status, jqXHR.getAllResponseHeaders()];
-                      
-                      callback(null, payload);
-                  })
-                  .fail(function onFail (jqXHR) {
-                      callback(jqXHR.status);
-                  });
-          }
+             request('PUT', url, options, callback);
+        },
+        del: function(url, options, callback) {
+            request('DELETE', url, options, callback);
+        }
     };
 });
