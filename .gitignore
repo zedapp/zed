@@ -12,7 +12,6 @@ ace
 npm-debug.log
 deps/
 release/
-app/config/packages
 nw/build
 nw/download
 nw/app.nw

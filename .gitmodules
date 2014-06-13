@@ -1,3 +1,21 @@
 [submodule "app/manual"]
 	path = app/manual
 	url = https://github.com/zedapp/manual.git
+[submodule "app/config/packages/gh/zedapp/javascript-mode"]
+	path = app/config/packages/gh/zedapp/javascript-mode
+	url = https://github.com/zedapp/javascript-mode.git
+[submodule "app/config/packages/gh/zedapp/css-mode"]
+	path = app/config/packages/gh/zedapp/css-mode
+	url = https://github.com/zedapp/css-mode.git
+[submodule "app/config/packages/gh/zedapp/php-mode"]
+	path = app/config/packages/gh/zedapp/php-mode
+	url = https://github.com/zedapp/php-mode.git
+[submodule "app/config/packages/gh/zedapp/jsx-mode"]
+	path = app/config/packages/gh/zedapp/jsx-mode
+	url = https://github.com/zedapp/jsx-mode.git
+[submodule "app/config/packages/gh/zedapp/json-mode"]
+	path = app/config/packages/gh/zedapp/json-mode
+	url = https://github.com/zedapp/json-mode.git
+[submodule "app/config/packages/gh/zedapp/json5-mode"]
+	path = app/config/packages/gh/zedapp/json5-mode
+	url = https://github.com/zedapp/json5-mode.git

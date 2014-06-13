@@ -18,16 +18,11 @@ app/ace:
 copy-packages:
 	mkdir -p app/config/packages/gh/zedapp
 	rm -rf app/config/packages/gh/zedapp/*
-	cp -r $(ZED_DIR)/packages/gh/zedapp/* app/config/packages/gh/zedapp/
 	find app/config/packages -name .git -exec rm -rf {} \; || echo
 
-build-package: copy-packages indexes
+package: indexes
 	rm -f zed.zip
 	cd app; zip ../zed.zip -x '*.git*' -x 'node_modules*' -r *
-
-package: build-package
-	rm -rf app/config/packages/*
-	$(INDEX_COMMAND)
 
 index-manual:
 	find app/manual -name '*.*' -not -path "*/.git/*" -not -path "*/.git" | sort | sed "s:^app/manual::" > app/manual/all
