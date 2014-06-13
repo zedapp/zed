@@ -73,6 +73,12 @@ define(function(require, exports, module) {
                 } else {
                     return "<tt>Enter</tt> jumps to the first symbol matching your query.";
                 }
+            } else if(phrase[0] === "#") {
+                if(phrase === "#") {
+                    return "Type a phrase to search the project for";
+                } else {
+                    return "<tt>Enter</tt> will start a project search.";
+                }
             } else if (phrase && (results.length === 0 || phrase[0] === "/")) {
                 return "<tt>Return</tt> creates and/or opens this file.";
             } else {
@@ -160,6 +166,8 @@ define(function(require, exports, module) {
                         }
                     } else if (phrase[0] === "@") {
                         resultsPromise = filterSymbols(phrase);
+                    } else if (phrase[0] === "#") {
+                        resultsPromise = Promise.resolve([]);
                     } else if (phrase[0] === '/') {
                         var results = {};
                         phrase = phrase.toLowerCase();
@@ -230,10 +238,16 @@ define(function(require, exports, module) {
                             }
                         });
 
-                        if (resultList.length === 0 && loc === undefined) {
+                        if (resultList.length === 0 && loc === undefined && phrase[0] !== "#") {
                             resultList = [{
                                 path: phrase,
                                 name: "Create file '" + phrase + "'",
+                                icon: "action"
+                            }];
+                        } else if (phrase[0] === "#") {
+                            resultList = [{
+                                path: phrase,
+                                name: "Project search: " + phrase.substring(1),
                                 icon: "action"
                             }];
                         }
@@ -260,11 +274,19 @@ define(function(require, exports, module) {
                         var fileOnly, loc, phraseParts;
                         phraseParts = locator.parse(phrase);
                         if (file !== phrase) {
-                            fileOnly = file || currentPath;
                             loc = phraseParts[1];
+                            fileOnly = file || currentPath;
                         } else {
                             fileOnly = phraseParts[0] || currentPath;
                             loc = phraseParts[1];
+                        }
+
+                        if(phrase[0] === "#") {
+                            session.$cmdInfo = {
+                                phrase: phrase.substring(1)
+                            };
+                            command.exec("Find:Find In Project Internal", edit, session);
+                            return;
                         }
                         // Actual jumping only needs to happen if it's non-local
                         // i.e. if we're not already there (as is the case with local locators)
@@ -287,6 +309,14 @@ define(function(require, exports, module) {
         command.define("Navigate:Reload Filelist", {
             doc: "Scan the project tree for any new files that were created outside of Zed.",
             exec: fetchFileList,
+            readOnly: true
+        });
+
+        command.define("Find:Find In Project", {
+            doc: "Search the project.",
+            exec: function(edit, session) {
+                command.exec("Navigate:Goto", edit, session, "#");
+            },
             readOnly: true
         });
 

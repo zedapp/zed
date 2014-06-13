@@ -230,10 +230,11 @@
                 "preferences": true
             }
         },
-        "Find:Find In Project": {
+        "Find:Find In Project Internal": {
             "doc": "Recursively search all files within the entire project.",
             "scriptUrl": "./command/search.js",
-            "readOnly": true
+            "readOnly": true,
+            "internal": true
         },
         "Select:Sort Lines": {
             "doc": "Take the selected lines and sort them.",

@@ -1,33 +1,33 @@
 /* global define, $ */
 define(function(require, exports, module) {
     var http_cache = require("../../lib/http_cache");
-    
+
     /**
      * A request wrapper around the jQuery AJAX function.
-     * 
+     *
      * options:
-     * 
+     *
      *     headers: {Object}
      *
      *         The HTTP headers
-     * 
+     *
      *     data: {Object || String} (optional)
-     * 
+     *
      *          The HTTP request body payload.
      *
      *     type: {String} (optional; default = "Intelligent Guess")
-     * 
+     *
      *          The type of data expected from the server.
-     * 
+     *
      * @param {String} verb The HTTP verb (e.g. POST, PUT, etc.)
      * @param {String} url The URL endpoint to which the request should be send.
      * @param {Object} options The jQuery request configuration.
      * @param {Function} callback Node.js style callback.
-     * 
+     *
      */
     function request(verb, url, options, callback) {
         var args = {};
-        
+
         options = options || {};
         args.url = url;
         args.type = verb;
@@ -49,18 +49,18 @@ define(function(require, exports, module) {
                 callback(jqXHR.status)
             });
     }
-    
+
     /**
      * The XHR object returns a string with all response header entries in the form:
-     * 
+     *
      *     key: "value"
-     * 
+     *
      * This function converts this string to an object representation.
-     * 
+     *
      * @param {String} source The headers from the XHR object.
-     * 
+     *
      * @returns {Object}
-     * 
+     *
      */
     function convertResponseHeaders(source) {
         var newline = /\r?\n/;
@@ -83,7 +83,7 @@ define(function(require, exports, module) {
 
         return headers;
     }
-    
+
     return {
         fetchUrl: function(url, callback) {
             http_cache.fetchUrl(url, {}, callback);

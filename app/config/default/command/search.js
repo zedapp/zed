@@ -36,20 +36,19 @@ function stringIsText(text) {
     return isText;
 }
 
-module.exports = function() {
+module.exports = function(info) {
+    var phrase = info.phrase;
+
     function append(text) {
         session.append("zed::search", text, function() {});
     }
     var results = 0;
-    var phrase, fileList;
-    return ui.prompt("Phrase to search for:", "", 300, 150).then(function(phrase_) {
-        phrase = phrase_;
-        if (!phrase) {
-            // Need to throw to jump out here
-            throw new Error("no-search");
-        }
-        return session.goto("zed::search");
-    }).then(function() {
+    var fileList;
+    if (!phrase) {
+        // Need to throw to jump out here
+        return;
+    }
+    session.goto("zed::search").then(function() {
         return fs.listFiles();
     }).then(function(fileList_) {
         fileList = fileList_;
@@ -94,10 +93,9 @@ module.exports = function() {
         } else {
             append("\nFound " + results + " results.");
         }
-    }).catch(function(err) {
-        if(err.message !== "no-search") {
-            console.error("Got error", err);
-            throw err;
-        }
+    }).
+    catch (function(err) {
+        console.error("Got error", err);
+        throw err;
     });
 };
