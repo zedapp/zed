@@ -27,6 +27,7 @@ You can install Zed [via the Chrome Web Store](https://chrome.google.com/webstor
 
     $ git clone https://github.com/zedapp/zed.git
     $ cd zed
+    $ git submodule update --init
     $ make app/ace
 
 Then, in (a recent version of) Chrome, go to the "three-lined" menu > Tools >
@@ -40,6 +41,7 @@ To build locally:
 
     $ git clone https://github.com/zedapp/zed.git
     $ cd zed
+    $ git submodule update --init
 
 After this you can either build the version for your platform of choice:
 
