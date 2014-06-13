@@ -232,7 +232,7 @@ define(function(require, exports, module) {
 
                         resultList.sort(function(r1, r2) {
                             if (r1.score === r2.score) {
-                                return r1.path < r2.path ? -1 : 1;
+                                return r1.path.length - r2.path.length;
                             } else {
                                 return r2.score - r1.score;
                             }

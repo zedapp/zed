@@ -1,6 +1,65 @@
 define(function(require, exports, module) {
     var path = require("./path");
-    module.exports = function(files, pattern) {
+
+    // NEW fuzzy find implementation
+
+    /*
+     * Based on:
+     * https://github.com/myork/fuzzy
+     *
+     * Copyright (c) 2012 Matt York
+     * Licensed under the MIT license.
+     */
+    function match(pattern, string) {
+        var patternIdx = 0,
+            len = string.length,
+            totalScore = 0,
+            currScore = 0,
+            compareString = string.toLowerCase(),
+            ch;
+
+        for (var idx = 0; idx < len; idx++) {
+            ch = string[idx];
+            if (compareString[idx] === pattern[patternIdx]) {
+                patternIdx++;
+
+                // consecutive characters should increase the score more than linearly
+                currScore += 1 + currScore;
+            } else {
+                currScore = 0;
+            }
+            totalScore += currScore;
+        }
+
+        // return rendered string if we have a match for every char
+        if (patternIdx === pattern.length) {
+            return totalScore;
+        }
+
+        return null;
+    }
+
+    function filter(pattern, arr) {
+        pattern = pattern.toLowerCase();
+        var results = [];
+        var maxLength = 0;
+        for (var i = 0; i < arr.length; i++) {
+            var str = arr[i];
+            var score = match(pattern, str);
+            if (score !== null) {
+                results.push({
+                    name: str,
+                    path: str,
+                    score: score
+                });
+                maxLength = Math.max(str.length, maxLength);
+            }
+        }
+
+        return results;
+    }
+
+    function oldFinder(files, pattern) {
         var fileRegex, pathRegex;
         var pathMatches = {};
 
@@ -119,5 +178,11 @@ define(function(require, exports, module) {
         });
 
         return matches;
+    }
+
+
+    module.exports = function(files, pattern) {
+        return filter(pattern, files);
+        // return oldFinder(files, pattern);
     };
 });
