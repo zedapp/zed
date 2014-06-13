@@ -53,6 +53,9 @@ define(function(require, exports, module) {
         function updateEditor(edit) {
             var commands = loadCommands(edit.getSession().mode);
             edit.commands = new CommandManager(useragent.isMac ? "mac" : "win", commands);
+            edit.$mergeableCommands = ["insertstring", "Edit:Backspace", "Edit:Delete"];
+            edit.commands.on("exec", edit.$historyTracker.bind(edit));
+            edit.$initOperationListeners();
             edit.keyBinding.setDefaultHandler(edit.commands);
             edit.getKeyboardHandler();
         }
