@@ -36,6 +36,68 @@ function stringIsText(text) {
     return isText;
 }
 
+function phraseParser(phrase) {
+    var text = '';
+    var quoted = false;
+    var regex = false;
+    var caseInsensitive = false;
+    // The search phrase part
+    for (var i = 0; i < phrase.length; i++) {
+        if (i === 0 && phrase[i] === '"') {
+            quoted = true;
+        } else if (phrase[i] === '"') {
+            i++;
+            break;
+        } else if (quoted) {
+            text += phrase[i];
+        } else if (phrase[i] === ' ') {
+            break;
+        } else {
+            text += phrase[i];
+        }
+    }
+    skipWhitespace();
+    if (phrase[i] === '-') { // options
+        i++;
+        forloop: for (; i < phrase.length; i++) {
+            switch (phrase[i]) {
+                case 'i':
+                    caseInsensitive = true;
+                    break;
+                case 'e':
+                    regex = true;
+                    break;
+                default:
+                    break forloop;
+            }
+        }
+    }
+    skipWhitespace();
+    var pathPattern = phrase.substring(i);
+    return {
+        text: text,
+        regex: regex,
+        caseInsensitive: caseInsensitive,
+        pathPattern: pathPattern
+    };
+
+    function skipWhitespace() {
+        while (phrase[i] === ' ') {
+            i++;
+        }
+    }
+}
+
+function escapeRegExp(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
+function wildcardToRegexp(str) {
+    str = escapeRegExp(str);
+    str = str.replace(/\\\*/g, ".*");
+    return "^" + str + "$";
+}
+
 module.exports = function(info) {
     var phrase = info.phrase;
 
@@ -48,18 +110,31 @@ module.exports = function(info) {
         // Need to throw to jump out here
         return;
     }
+    var parsedPhrase = phraseParser(phrase);
+    console.log("Parsed phrase", parsedPhrase);
     session.goto("zed::search").then(function() {
         return fs.listFiles();
     }).then(function(fileList_) {
+        var pathRegex = new RegExp(wildcardToRegexp(parsedPhrase.pathPattern));
+
         fileList = fileList_;
         fileList = fileList.filter(function(filename) {
             var parts = filename.split('.');
             var ext = parts[parts.length - 1];
-            return filterExtensions.indexOf(ext) === -1;
+            if (filterExtensions.indexOf(ext) !== -1) {
+                return false;
+            }
+            return parsedPhrase.pathPattern ? pathRegex.exec(filename) : true;
         });
-
-        session.setText("zed::search", "Searching " + fileList.length + " files for '" + phrase + "'...\nPut your cursor on the result press Enter to jump.\n");
+        session.setText("zed::search", "Searching " + fileList.length + " files for '" + parsedPhrase.text + "'...\nPut your cursor on the result press Enter to jump.\n");
         var filePromises = fileList.map(function(path) {
+            var phraseText = parsedPhrase.text;
+            if (parsedPhrase.regex) {
+                var phraseRegex = new RegExp(parsedPhrase.text, "g");
+            }
+            if (parsedPhrase.caseInsensitive) {
+                phraseText = phraseText.toLowerCase();
+            }
             if (results >= MAX_RESULTS) {
                 return;
             }
@@ -73,15 +148,30 @@ module.exports = function(info) {
                     return;
                 }
                 var matchIdx = 0;
-                while ((matchIdx = text.indexOf(phrase, matchIdx)) !== -1) {
-                    append("\n" + path + ":" + indexToLine(text, matchIdx) + "\n\t" + getLine(text, matchIdx) + "\n");
-                    matchIdx++;
-                    results++;
-                    if (results >= MAX_RESULTS) {
-                        break;
+                var searchText = parsedPhrase.caseInsensitive ? text.toLowerCase() : text;
+                if (parsedPhrase.regex) {
+                    var lines = searchText.split("\n");
+                    var m;
+                    for (var i = 0; i < lines.length; i++) {
+                        while (m = phraseRegex.exec(lines[i])) {
+                            append("\n" + path + ":" + (i + 1) + "\n\t" + lines[i] + "\n");
+                            results++;
+                            if (results >= MAX_RESULTS) {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    while ((matchIdx = searchText.indexOf(phraseText, matchIdx)) !== -1) {
+                        append("\n" + path + ":" + indexToLine(text, matchIdx) + "\n\t" + getLine(text, matchIdx) + "\n");
+                        matchIdx++;
+                        results++;
+                        if (results >= MAX_RESULTS) {
+                            break;
+                        }
                     }
                 }
-            }, function(err) {
+            }, function() {
                 console.error("Could not read file: " + path);
                 // If a few files fail that's ok, just report
             });
@@ -96,6 +186,7 @@ module.exports = function(info) {
     }).
     catch (function(err) {
         console.error("Got error", err);
+        append("\nGot error: " + err.message);
         throw err;
     });
 };
