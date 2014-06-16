@@ -151,11 +151,11 @@ indexes: index-manual index-config
 install: install-$(PLATFORM)
 
 install-linux:
-	sudo mkdir -p $(PREFIX)/lib/zed
-	sudo cp -a nw/build/zed/* $(PREFIX)/lib/zed
-	sudo cp Zed.png Zed.svg $(PREFIX)/lib/zed
+	mkdir -p $(PREFIX)/lib/zed
+	cp -a nw/build/zed/* $(PREFIX)/lib/zed
+	cp Zed.png Zed.svg $(PREFIX)/lib/zed
 	sed "3cDIR=$(PREFIX)/lib/zed" < nw/zed-linux > Zed.sh
 	sed s:%PREFIX%:$(PREFIX):g < Zed.desktop.tmpl > Zed.desktop
-	sudo cp Zed.sh $(PREFIX)/bin/zed
-	sudo chmod a+x $(PREFIX)/bin/zed
-	sudo cp Zed.desktop $(PREFIX)/share/applications
+	cp Zed.sh $(PREFIX)/bin/zed
+	chmod a+x $(PREFIX)/bin/zed
+	cp Zed.desktop $(PREFIX)/share/applications
