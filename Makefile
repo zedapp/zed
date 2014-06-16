@@ -123,7 +123,8 @@ install-linux:
 	sudo mkdir -p $(PREFIX)/lib/zed
 	sudo cp -a nw/build/zed/* $(PREFIX)/lib/zed
 	sudo cp Zed.png Zed.svg $(PREFIX)/lib/zed
-	sed s:%PREFIX%:$(PREFIX):g < Zed.sh.tmpl > Zed.sh
+	sed "3cDIR=$(PREFIX)/lib/zed" < nw/zed-linux > Zed.sh
 	sed s:%PREFIX%:$(PREFIX):g < Zed.desktop.tmpl > Zed.desktop
 	sudo cp Zed.sh $(PREFIX)/bin/zed
+	sudo chmod a+x $(PREFIX)/bin/zed
 	sudo cp Zed.desktop $(PREFIX)/share/applications
