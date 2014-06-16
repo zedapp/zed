@@ -77,10 +77,12 @@ endif
 
 nw/download-all: nw/download/node-webkit-$(NW_VERSION)-linux-x64 nw/download/node-webkit-$(NW_VERSION)-linux-ia32 nw/download/node-webkit-$(NW_VERSION)-osx-ia32 nw/download/node-webkit-$(NW_VERSION)-win-ia32
 
-apps-npm:
+apps-npm: app/node_modules
+app/node_modules:
 	cd app; npm install
 
-apps-mac: app/ace nw/download apps-npm
+apps-mac: release/zed-mac-v$(ZED_VERSION).tar.gz
+release/zed-mac-v$(ZED_VERSION).tar.gz: app/ace nw/download apps-npm
 	rm -rf nw/build
 	mkdir -p nw/build
 	cp -r nw/download/node-webkit-$(NW_VERSION)-osx-ia32/node-webkit.app nw/build/Zed.app
@@ -93,12 +95,14 @@ apps-mac: app/ace nw/download apps-npm
 	rm -f release/zed-mac.zip
 	cd nw/build; tar czf ../../release/zed-mac-v$(ZED_VERSION).tar.gz Zed.app
 
-app.nw: apps-npm
+app.nw: nw/app.nw
+nw/app.nw: app/node_modules
 	mkdir -p release
 	rm -f nw/app.nw
 	cd app; zip -r ../nw/app.nw *
 
-apps-win: app/ace nw/download app.nw
+apps-win: release/zed-win-v$(ZED_VERSION).tar.gz
+release/zed-win-v$(ZED_VERSION).tar.gz: app/ace nw/download nw/app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
 	cat nw/download/node-webkit-$(NW_VERSION)-win-ia32/nw.exe nw/app.nw > nw/build/zed/zed.exe
@@ -108,7 +112,8 @@ apps-win: app/ace nw/download app.nw
 	cd nw/build; zip -r ../../release/zed-win-v$(ZED_VERSION).zip *
 	cd nw/build; tar cvzf ../../release/zed-win-v$(ZED_VERSION).tar.gz *
 
-apps-linux64: app/ace nw/download app.nw
+apps-linux64: release/zed-linux64-v$(ZED_VERSION).tar.gz
+release/zed-linux64-v$(ZED_VERSION).tar.gz: app/ace nw/download nw/app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
 	cat nw/download/node-webkit-$(NW_VERSION)-linux-x64/nw nw/app.nw > nw/build/zed/zed-bin
@@ -119,7 +124,8 @@ apps-linux64: app/ace nw/download app.nw
 	rm -f release/zed-linux64.tar.gz
 	cd nw/build; tar cvzf ../../release/zed-linux64-v$(ZED_VERSION).tar.gz *
 
-apps-linux32: app/ace nw/download app.nw
+apps-linux32: release/zed-linux32-v$(ZED_VERSION).tar.gz
+release/zed-linux32-v$(ZED_VERSION).tar.gz: app/ace nw/download nw/app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
 	cat nw/download/node-webkit-$(NW_VERSION)-linux-ia32/nw nw/app.nw > nw/build/zed/zed-bin
