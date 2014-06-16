@@ -144,7 +144,8 @@ define(function(require, exports, module) {
                                 name: t.symbol,
                                 path: t.path + ":" + t.locator,
                                 meta: parts[parts.length - 1],
-                                icon: t.type
+                                icon: t.type,
+                                score: 1
                             };
                         });
                         return symbolList;
@@ -202,15 +203,22 @@ define(function(require, exports, module) {
                         });
                         resultsPromise = Promise.resolve(resultList);
                     } else {
-                        var resultList = fuzzyfind(filteredFileCache, phrase);
-                        resultList.forEach(function(result) {
-                            result.name = result.path;
-                            if (sessions[result.path]) {
-                                result.score = sessions[result.path].lastUse;
-                            }
-                            result.icon = "file";
+                        // Regular file path goto
+                        var filterPromise = new Promise(function(resolve, reject) {
+                            var resultList = fuzzyfind(filteredFileCache, phrase);
+                            resultList.forEach(function(result) {
+                                result.name = result.path;
+                                if (sessions[result.path]) {
+                                    result.score = sessions[result.path].lastUse;
+                                }
+                                result.icon = "file";
+                            });
+                            resolve(resultList);
                         });
-                        resultsPromise = Promise.resolve(resultList);
+                        resultsPromise = Promise.all([filterSymbols("@" + phrase), filterPromise]).then(function(matchLists) {
+                            return matchLists[1].concat(matchLists[0]);
+                        });
+                        // resultsPromise = Promise.resolve(resultList);
                     }
 
                     return resultsPromise.then(function(resultList) {
