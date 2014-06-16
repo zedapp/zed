@@ -7,7 +7,16 @@ NW_VERSION=v0.9.2
 ZED_VERSION=$(shell cat app/manifest.json | grep '"version"' | cut -f 4 -d '"')
 LBITS := $(shell getconf LONG_BIT)
 PREFIX=/usr/local
-PLATFORM := $(shell nodejs -e 'switch(process.platform) {case "linux": console.log("linux"); break; case "darwin": console.log("mac"); break; default: console.log("win")}')
+PLATNAME := $(shell uname -s)
+ifeq ($(PLATNAME),Linux)
+  PLATFORM := linux
+else
+ifeq ($(PLATNAME),Darwin)
+  PLATFORM := mac
+else
+  PLATFORM := win
+endif
+endif
 
 _DEFAULT: apps-native
 
