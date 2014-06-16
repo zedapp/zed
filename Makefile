@@ -82,7 +82,7 @@ app/node_modules:
 	cd app; npm install
 
 apps-mac: release/zed-mac-v$(ZED_VERSION).tar.gz
-release/zed-mac-v$(ZED_VERSION).tar.gz: app/ace nw/download apps-npm
+release/zed-mac-v$(ZED_VERSION).tar.gz: app/ace nw/download apps-npm app/* app/*/* app/*/*/*
 	rm -rf nw/build
 	mkdir -p nw/build
 	cp -r nw/download/node-webkit-$(NW_VERSION)-osx-ia32/node-webkit.app nw/build/Zed.app
@@ -96,7 +96,7 @@ release/zed-mac-v$(ZED_VERSION).tar.gz: app/ace nw/download apps-npm
 	cd nw/build; tar czf ../../release/zed-mac-v$(ZED_VERSION).tar.gz Zed.app
 
 app.nw: nw/app.nw
-nw/app.nw: app/node_modules
+nw/app.nw: app/node_modules app/* app/*/* app/*/*/*
 	mkdir -p release
 	rm -f nw/app.nw
 	cd app; zip -r ../nw/app.nw *
