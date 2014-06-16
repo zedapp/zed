@@ -1,6 +1,33 @@
 define(function(require, exports, module) {
     var path = require("./path");
 
+    // EVEN NEWER fuzzy find implementation
+    function escapeRegExp(str) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
+    var MAX_LENGTH = 10000;
+
+    function fuzzyFilter(pattern, files) {
+        var regex = escapeRegExp(pattern);
+        regex = regex.split(/\s+/).join(".*?");
+        regex = regex.replace(/\\\//g, ".*?\\/.*?");
+        var r = new RegExp(regex, "i");
+        var matches = [];
+        for(var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var m = r.exec(file);
+            if(m) {
+                matches.push({
+                    name: file,
+                    path: file,
+                    score: 10000 - (file.length - m[0].length - m.index)
+                });
+            }
+        }
+        return matches;
+    }
+
     // NEW fuzzy find implementation
 
     /*
@@ -164,7 +191,6 @@ define(function(require, exports, module) {
         }
         fileRegex = new RegExp("^(.*?)" + (makePattern(filePart)) + "(.*)$", "i");
 
-
         var matches = [];
 
         files.forEach(function(filename) {
@@ -182,7 +208,8 @@ define(function(require, exports, module) {
 
 
     module.exports = function(files, pattern) {
-        return filter(pattern, files);
+        return fuzzyFilter(pattern, files);
+        // return filter(pattern, files);
         // return oldFinder(files, pattern);
     };
 });
