@@ -34,7 +34,8 @@ copy-packages:
 	rm -rf app/config/packages/gh/zedapp/*
 	find app/config/packages -name .git -exec rm -rf {} \; || echo
 
-package: indexes
+package: zed.zip
+zed.zip: indexes
 	rm -f zed.zip
 	cd app; zip ../zed.zip -x '*.git*' -x 'node_modules*' -r *
 
@@ -44,22 +45,37 @@ index-manual:
 index-config:
 	$(INDEX_COMMAND)
 
-nw/download:
-	rm -rf nw/download
+nw/download/node-webkit-$(NW_VERSION)-linux-x64:
 	mkdir -p nw/download
+	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-x64.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-x64.tar.gz
+
+nw/download/node-webkit-$(NW_VERSION)-linux-ia32:
+	mkdir -p nw/download
+	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-ia32.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-ia32.tar.gz
+
+nw/download/node-webkit-$(NW_VERSION)-osx-ia32:
+	mkdir -p nw/download
+	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-osx-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-osx-ia32 node-webkit-$(NW_VERSION)-osx-ia32.zip
+
+nw/download/node-webkit-$(NW_VERSION)-win-ia32:
+	mkdir -p nw/download
+	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-win-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-win-ia32 node-webkit-$(NW_VERSION)-win-ia32.zip
+
 ifeq ($(PLATFORM),linux)
 ifeq ($LBITS,32)
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-ia32.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-ia32.tar.gz
+nw/download: nw/download/node-webkit-$(NW_VERSION)-linux-x64
 else
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-x64.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-x64.tar.gz
+nw/download: nw/download/node-webkit-$(NW_VERSION)-linux-ia32
 endif
 else
 ifeq ($(PLATFORM),mac)
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-osx-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-osx-ia32 node-webkit-$(NW_VERSION)-osx-ia32.zip
+nw/download: nw/download/node-webkit-$(NW_VERSION)-osx-ia32
 else
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-win-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-win-ia32 node-webkit-$(NW_VERSION)-win-ia32.zip
+nw/download: nw/download/node-webkit-$(NW_VERSION)-win-ia32
 endif
 endif
+
+nw/download-all: nw/download/node-webkit-$(NW_VERSION)-linux-x64 nw/download/node-webkit-$(NW_VERSION)-linux-ia32 nw/download/node-webkit-$(NW_VERSION)-osx-ia32 nw/download/node-webkit-$(NW_VERSION)-win-ia32
 
 apps-npm:
 	cd app; npm install
