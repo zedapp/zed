@@ -1,16 +1,14 @@
 /* global define, $*/
 define(function(require, exports, module) {
     return function(callback) {
-        var nwWindow = require("nw.gui").Window.get();
-        var cleanup = function() { window.close(); };
         var picker = $('<input type="file" nwdirectory/>');
+        var btnEl = $("<button style='margin: 30px 30px;'>Close this window</button>");
         picker.change(function() {
-            window.removeEventListener("focus", cleanup);
-            nwWindow.removeListener("focus", cleanup);
+            btnEl.remove();
             callback(null, this.value);
         });
         picker.click();
-        window.addEventListener("focus", cleanup); // needed for windows
-        nwWindow.on("focus", cleanup); //needed for mac
+        btnEl.click(function() { window.close(); });
+        $("body").append(btnEl);
     };
 });

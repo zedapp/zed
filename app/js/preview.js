@@ -60,12 +60,12 @@ define(function(require, exports, module) {
 
                 if (open && !isPreviewing()) {
                     splitPreview();
-                    
+
                     // TODO: Not so nice. Will be removed
                     // when this component receives a refactoring.
                     return setTimeout(inject, 800);
                 }
-                
+
                 inject();
             },
         };
