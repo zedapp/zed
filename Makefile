@@ -90,7 +90,7 @@ apps-linux64: app/ace nw/download app.nw
 	cp nw/download/node-webkit-$(NW_VERSION)-linux-x64/nw.pak nw/build/zed/
 	cp nw/zed-linux nw/build/zed/zed
 	chmod +x nw/build/zed/zed*
-	cp Zed.sh.tmpl Zed.desktop.tmpl Zed.svg Zed.png nw/build/zed
+	cp Zed.desktop.tmpl Zed.svg Zed.png nw/build/zed
 	rm -f release/zed-linux64.tar.gz
 	cd nw/build; tar cvzf ../../release/zed-linux64-v$(ZED_VERSION).tar.gz *
 
@@ -101,7 +101,7 @@ apps-linux32: app/ace nw/download app.nw
 	cp nw/download/node-webkit-$(NW_VERSION)-linux-ia32/nw.pak nw/build/zed/
 	cp nw/zed-linux nw/build/zed/zed
 	chmod +x nw/build/zed/zed*
-	cp Zed.sh.tmpl Zed.desktop.tmpl Zed.svg Zed.png nw/build/zed
+	cp Zed.desktop.tmpl Zed.svg Zed.png nw/build/zed
 	rm -f release/zed-linux32.tar.gz
 	cd nw/build; tar cvzf ../../release/zed-linux32-v$(ZED_VERSION).tar.gz *
 
