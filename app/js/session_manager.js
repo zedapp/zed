@@ -73,6 +73,11 @@ define(function(require, exports, module) {
             getSessions: function() {
                 return sessions;
             },
+            deleteSession: function(path) {
+                if (sessions[path]) {
+                    delete sessions[path];
+                }
+            }
         };
 
         function setupSave(session) {
