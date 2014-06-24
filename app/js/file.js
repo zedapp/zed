@@ -8,6 +8,7 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var async = require("async");
+        var useragent = require("ace/lib/useragent");
 
         var ui = imports.ui;
         var eventbus = imports.eventbus;
@@ -28,6 +29,7 @@ define(function(require, exports, module) {
                         if (err) {
                             return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not delete file: " + err);
                         }
+                        session_manager.deleteSession(path);
                     });
                 }
             });
@@ -41,24 +43,50 @@ define(function(require, exports, module) {
                 message: "New name:",
                 input: path
             }, function(err, newPath) {
-                if (newPath) {
+                var comparePath = path;
+                var compareNewPath = newPath;
+                if (useragent.isMac) {
+                    comparePath = path.toLowerCase();
+                    compareNewPath = newPath.toLowerCase();
+                }
+                if (newPath && comparePath !== compareNewPath) {
                     eventbus.emit("sessionactivitystarted", edit.getSession(), "Renaming");
-                    fs.writeFile(newPath, session.getValue(), function(err) {
+                    fs.readFile(newPath, function(err) {
                         if (err) {
-                            return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not write to file: " + err);
+                            actuallyRenameFile(edit, session, path, newPath);
+                        } else {
+                            ui.prompt({
+                                message: "Are you sure you want to delete the current file at " + newPath + "?"
+                            }, function(err, yes) {
+                                if (yes) {
+                                    actuallyRenameFile(edit, session, path, newPath);
+                                } else {
+                                    eventbus.emit("sessionactivitycompleted", edit.getSession());
+                                }
+                            });
                         }
-                        // TODO: Copy session state
-                        session_manager.go(newPath, edit);
-                        eventbus.emit("newfilecreated", newPath, session);
-                        fs.deleteFile(path, function(err) {
-                            if (err) {
-                                return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not delete file: " + err);
-                            }
-                            eventbus.emit("filedeleted", path);
-                            eventbus.emit("sessionactivitycompleted", edit.getSession());
-                        });
                     });
                 }
+            });
+        }
+        
+        function actuallyRenameFile(edit, session, path, newPath) {
+            fs.writeFile(newPath, session.getValue(), function(err) {
+                if (err) {
+                    return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not write to file: " + err);
+                }
+                // TODO: Copy session state
+                session_manager.handleChangedFile(newPath);
+                session_manager.go(newPath, edit);
+                eventbus.emit("newfilecreated", newPath, session);
+                fs.deleteFile(path, function(err) {
+                    if (err) {
+                        return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not delete file: " + err);
+                    }
+                    session_manager.deleteSession(path);
+                    eventbus.emit("filedeleted", path);
+                    eventbus.emit("sessionactivitycompleted", edit.getSession());
+                });
             });
         }
 
