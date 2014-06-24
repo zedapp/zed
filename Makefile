@@ -29,11 +29,6 @@ app/ace:
 	mv ace-builds-master/ace app/ace
 	rm -rf ace-builds-master
 
-copy-packages:
-	mkdir -p app/config/packages/gh/zedapp
-	rm -rf app/config/packages/gh/zedapp/*
-	find app/config/packages -name .git -exec rm -rf {} \; || echo
-
 package: zed.zip
 zed.zip: indexes
 	rm -f zed.zip
@@ -140,9 +135,8 @@ apps-linux: apps-linux$(LBITS)
 
 apps-native: apps-$(PLATFORM)
 
-apps-release: copy-packages indexes apps-mac apps-win apps-linux32 apps-linux64
+apps-release: indexes apps-mac apps-win apps-linux32 apps-linux64
 	echo $(ZED_VERSION) > release/current-version.txt
-	rm -rf app/config/packages/*
 	$(INDEX_COMMAND)
 
 indexes: index-manual index-config
