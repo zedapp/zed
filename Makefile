@@ -57,7 +57,7 @@ nw/download/node-webkit-$(NW_VERSION)-win-ia32:
 	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-win-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-win-ia32 node-webkit-$(NW_VERSION)-win-ia32.zip
 
 ifeq ($(PLATFORM),linux)
-ifeq ($LBITS,32)
+ifeq ($(LBITS),64)
 nw/download: nw/download/node-webkit-$(NW_VERSION)-linux-x64
 else
 nw/download: nw/download/node-webkit-$(NW_VERSION)-linux-ia32
