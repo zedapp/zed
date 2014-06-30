@@ -35,6 +35,7 @@
         "./mode/scss.json",
         "./mode/search-results.json",
         "./mode/sh.json",
+        "./mode/stylus.json",
         "./mode/text.json",
         "./mode/xml.json",
         "./mode/xsl.json",
