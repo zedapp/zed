@@ -8,6 +8,7 @@
         "./mode/dart.json",
         "./mode/erlang.json",
         "./mode/groovy.json",
+        "./mode/glsl.json",
         "./mode/go.json",
         "./mode/haml.json",
         "./mode/handlebars.json",
