@@ -1,6 +1,6 @@
 {
     modes: {
-        c: {
+        glsl: {
             name: "GLSL",
             highlighter: "ace/mode/glsl",
             extensions: [
