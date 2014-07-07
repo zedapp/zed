@@ -1,0 +1,13 @@
+{
+    modes: {
+        glsl: {
+            name: "GLSL",
+            highlighter: "ace/mode/glsl",
+            extensions: [
+                "glsl",
+                "frag",
+                "vert"
+            ]
+        }
+    }
+}
