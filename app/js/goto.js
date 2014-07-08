@@ -205,7 +205,7 @@ define(function(require, exports, module) {
                     } else {
                         // Regular file path goto
                         var filterPromise = new Promise(function(resolve, reject) {
-                            var resultList = fuzzyfind(filteredFileCache, phrase);
+                            var resultList = fuzzyfind(filteredFileCache, phrase, 300);
                             resultList.forEach(function(result) {
                                 result.name = result.path;
                                 if (sessions[result.path]) {
