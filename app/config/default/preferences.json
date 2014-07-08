@@ -12,7 +12,7 @@
         "fontFamily": "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
         "fontSize": 12,
         "globalAutoRevert": false,
-        "gotoExclude": ["/tags"],
+        "gotoExclude": ["/.git/*"],
         "highlightActiveLine": true,
         "highlightGutterLine": true,
         "highlightSelectedWord": true,

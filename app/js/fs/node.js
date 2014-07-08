@@ -71,9 +71,9 @@ define(function(require, exports, module) {
                             return callback(err);
                         }
                         async.parForEach(entries, function(entry, next) {
-                            if (entry[0] === ".") {
-                                return next();
-                            }
+                            // if (entry[0] === ".") {
+                            //     return next();
+                            // }
                             var fullPath = dir + "/" + entry;
                             nodeFs.stat(fullPath, function(err, stat) {
                                 if (err) {

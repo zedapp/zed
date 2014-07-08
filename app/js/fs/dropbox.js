@@ -9,7 +9,7 @@ define(function(require, exports, module) {
         var poll_watcher = require("./poll_watcher");
         var async = require("../lib/async");
         var rootPath = options.rootPath;
-        
+
         var history = imports.history;
 
         rootPath = rootPath || "/";
@@ -69,9 +69,9 @@ define(function(require, exports, module) {
                             return callback(err);
                         }
                         async.parForEach(entries, function(entry, next) {
-                            if (entry.name[0] === ".") {
-                                return next();
-                            }
+                            // if (entry.name[0] === ".") {
+                            //     return next();
+                            // }
                             if (entry.isFolder) {
                                 readDir(entry.path, next);
                             } else {
