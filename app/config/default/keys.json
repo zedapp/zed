@@ -54,12 +54,12 @@
             "mac": "Command-F"
         },
         "Find:Next": {
-            "win": "Ctrl-K",
+            "win": "Ctrl-G",
             "mac": "Command-G"
         },
         "Find:Previous": {
             "mac": "Command-Shift-G",
-            "win": "Ctrl-Shift-K"
+            "win": "Ctrl-Shift-G"
         },
         "Find:All": "Ctrl-Alt-F",
         "Find:Find In Project": {
