@@ -205,7 +205,7 @@ define(function(require, exports, module) {
                     } else {
                         // Regular file path goto
                         var filterPromise = new Promise(function(resolve, reject) {
-                            var resultList = fuzzyfind(filteredFileCache, phrase, 300);
+                            var resultList = fuzzyfind(filteredFileCache, phrase);
                             resultList.forEach(function(result) {
                                 result.name = result.path;
                                 if (sessions[result.path]) {
@@ -218,7 +218,6 @@ define(function(require, exports, module) {
                         resultsPromise = Promise.all([filterSymbols("@" + phrase), filterPromise]).then(function(matchLists) {
                             return matchLists[1].concat(matchLists[0]);
                         });
-                        // resultsPromise = Promise.resolve(resultList);
                     }
 
                     return resultsPromise.then(function(resultList) {
@@ -227,9 +226,9 @@ define(function(require, exports, module) {
                         // Filter out paths currently open in an editor
                         resultList = resultList.filter(function(result) {
                             // Filter out files starting with . (TODO: do this properly)
-                            if (result.path[1] === ".") {
-                                return false;
-                            }
+                            // if (result.path[1] === ".") {
+                            //     return false;
+                            // }
                             for (var i = 0; i < editors.length; i++) {
                                 if (editors[i].getSession().filename === result.path) {
                                     return false;

@@ -10,7 +10,29 @@
                 "cxx",
                 "hpp",
                 "hxx"
-            ]
+            ],
+
+            commands: {
+                "Tools:Index": {
+                    scriptUrl: "/default/command/regex_indexer.js",
+                    inputs: {
+                        text: true
+                    },
+                    regexes: [{
+                        regex: "[a-zA-Z0-9_\\$]+\\s+([a-zA-Z0-9_\\$]+)\\s*\\([^\\)]*\\)\\s*\\{",
+                        symbolIndex: 1,
+                        type: "function"
+                    }, {
+                        regex: "struct\\s+([a-zA-Z0-9_\\$]+)\\s*\\{",
+                        symbolIndex: 1,
+                        type: "type"
+                    }]
+                }
+            },
+
+            handlers: {
+                index: ["Tools:Index"]
+            }
         }
     }
 }

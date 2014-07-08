@@ -4,7 +4,29 @@
             name: "Ruby",
             highlighter: "ace/mode/ruby",
             extensions: ["rb"],
-            filenames: ["Vagrantfile"]
+            filenames: ["Vagrantfile"],
+
+            commands: {
+                "Tools:Index": {
+                    scriptUrl: "/default/command/regex_indexer.js",
+                    inputs: {
+                        text: true
+                    },
+                    regexes: [{
+                        regex: "def\\s+(([a-zA-Z0-9_\\$\\?]+)\\s*(\\([^\\)]*\\))?)",
+                        symbolIndex: 1,
+                        type: "function"
+                    }, {
+                        regex: "class\\s+([a-zA-Z0-9_\\$]+)",
+                        symbolIndex: 1,
+                        type: "type"
+                    }]
+                }
+            },
+
+            handlers: {
+                index: ["Tools:Index"]
+            }
         }
     }
 }

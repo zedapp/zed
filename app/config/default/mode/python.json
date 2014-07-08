@@ -8,10 +8,19 @@
             ],
             commands: {
                 "Tools:Index": {
-                    scriptUrl: "/default/mode/python/index.js",
+                    scriptUrl: "/default/command/regex_indexer.js",
                     inputs: {
                         text: true
-                    }
+                    },
+                    regexes: [{
+                        regex: "def\\s+(([a-zA-Z0-9_\\$]+)\\s*\\(([^\\)]*)\\))",
+                        symbolIndex: 1,
+                        type: "function"
+                    }, {
+                        regex: "class\\s+([a-zA-Z0-9_\\$]+)\\s*(\\(|:)",
+                        symbolIndex: 1,
+                        type: "type"
+                    }]
                 },
                 "Tools:Complete:Snippet": {
                     scriptUrl: "/default/command/snippet_completer.js",

@@ -8,7 +8,7 @@ define(function(require, exports, module) {
 
     var MAX_LENGTH = 10000;
 
-    function fuzzyFilter(pattern, files, maxResults) {
+    function fuzzyFilter(pattern, files) {
         var closeMatchRegex = escapeRegExp(pattern);
         closeMatchRegex = closeMatchRegex.split(/\s+/).join(".*?");
         closeMatchRegex = closeMatchRegex.replace(/\\\//g, ".*?\\/.*?");
@@ -35,9 +35,6 @@ define(function(require, exports, module) {
                         score: 10000 - (file.length - m2[0].length - m2.index)
                     });
                 }
-            }
-            if(maxResults && matches.length >= maxResults) {
-                break;
             }
         }
         return matches;
@@ -222,8 +219,8 @@ define(function(require, exports, module) {
     }
 
 
-    module.exports = function(files, pattern, maxResults) {
-        return fuzzyFilter(pattern, files, maxResults);
+    module.exports = function(files, pattern) {
+        return fuzzyFilter(pattern, files);
         // return filter(pattern, files);
         // return oldFinder(files, pattern);
     };
