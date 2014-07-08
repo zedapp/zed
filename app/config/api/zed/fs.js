@@ -8,6 +8,9 @@ module.exports = {
     listFiles: function() {
         return sandboxRequest("zed/fs", "listFiles", []);
     },
+    listFilesOfKnownFileTypes: function() {
+        return sandboxRequest("zed/fs", "listFilesOfKnownFileTypes", []);
+    },
     reloadFileList: function() {
         return sandboxRequest("zed/fs", "reloadFileList", []);
     },

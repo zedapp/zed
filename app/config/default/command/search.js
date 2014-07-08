@@ -113,27 +113,29 @@ module.exports = function(info) {
     var parsedPhrase = phraseParser(phrase);
     console.log("Parsed phrase", parsedPhrase);
     session.goto("zed::search").then(function() {
-        return fs.listFiles();
+        return fs.listFilesOfKnownFileTypes();
     }).then(function(fileList_) {
         var pathRegex = new RegExp(wildcardToRegexp(parsedPhrase.pathPattern));
 
         fileList = fileList_;
         fileList = fileList.filter(function(filename) {
-            var parts = filename.split('.');
-            var ext = parts[parts.length - 1];
-            if (filterExtensions.indexOf(ext) !== -1) {
-                return false;
-            }
             return parsedPhrase.pathPattern ? pathRegex.exec(filename) : true;
         });
         session.setText("zed::search", "Searching " + fileList.length + " files for '" + parsedPhrase.text + "'...\nPut your cursor on the result press Enter to jump.\n");
-        var filePromises = fileList.map(function(path) {
-            var phraseText = parsedPhrase.text;
-            if (parsedPhrase.regex) {
-                var phraseRegex = new RegExp(parsedPhrase.text, "g");
-            }
-            if (parsedPhrase.caseInsensitive) {
-                phraseText = phraseText.toLowerCase();
+
+        var phraseText = parsedPhrase.text;
+        if (parsedPhrase.regex) {
+            var phraseRegex = new RegExp(parsedPhrase.text, "g");
+        }
+        if (parsedPhrase.caseInsensitive) {
+            phraseText = phraseText.toLowerCase();
+        }
+        fileList.reverse();
+
+        function searchFile() {
+            var path = fileList.pop();
+            if (!path) {
+                return;
             }
             if (results >= MAX_RESULTS) {
                 return;
@@ -174,9 +176,13 @@ module.exports = function(info) {
             }, function() {
                 console.error("Could not read file: " + path);
                 // If a few files fail that's ok, just report
+            }).then(function() {
+                return searchFile();
             });
-        });
-        return Promise.all(filePromises);
+        }
+
+
+        return searchFile();
     }).then(function() {
         if (results === 0) {
             append("\nNo results found.");

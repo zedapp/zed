@@ -1,4 +1,3 @@
-/*global define, _, zed*/
 define(function(require, exports, module) {
     plugin.consumes = ["eventbus", "symbol", "ui", "editor", "session_manager", "fs", "command"];
     plugin.provides = ["goto"];
@@ -48,6 +47,12 @@ define(function(require, exports, module) {
             getFileCache: function() {
                 return filteredFileCache;
             },
+            getFileListKnownTypes: function() {
+                var modes = zed.getService("modes");
+                return filteredFileCache.filter(function(path) {
+                    return modes.getModeForPath(path);
+                });
+            }
         };
 
         function hint(phrase, results) {

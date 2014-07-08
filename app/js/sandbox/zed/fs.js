@@ -31,6 +31,9 @@ define(function(require, exports, module) {
         listFiles: function(callback) {
             callback(null, zed.getService("goto").getFileCache());
         },
+        listFilesOfKnownFileTypes: function(callback) {
+            callback(null, zed.getService("goto").getFileListKnownTypes());
+        },
         reloadFileList: function(callback) {
             callback(null, zed.getService("goto").fetchFileList());
         },
