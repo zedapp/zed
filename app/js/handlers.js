@@ -57,14 +57,15 @@ define(function(require, exports, module) {
                     });
                 });
                 eventbus.on("dbavailable", function(db) {
-                    db.readStore("_meta").get("meta").then(function(metaObj) {
-                        console.log("Meta", metaObj);
-                        if (!metaObj.initialIndex) {
-                            metaObj.initialIndex = true;
-                            db.writeStore("_meta").put(metaObj);
-                            indexProject(editor.getActiveEditor(), editor.getActiveSession());
-                        }
-                    });
+                    setTimeout(function() {
+                        db.readStore("_meta").get("meta").then(function(metaObj) {
+                            if (!metaObj.initialIndex) {
+                                metaObj.initialIndex = true;
+                                db.writeStore("_meta").put(metaObj);
+                                indexProject(editor.getActiveEditor(), editor.getActiveSession());
+                            }
+                        });
+                    }, 5000); // Don't start indexing immediately, give it a rest
                 });
             },
             runSessionHandler: runSessionHandler,
