@@ -56,6 +56,16 @@ define(function(require, exports, module) {
                         runSessionHandler(session, "click");
                     });
                 });
+                eventbus.on("dbavailable", function(db) {
+                    db.readStore("_meta").get("meta").then(function(metaObj) {
+                        console.log("Meta", metaObj);
+                        if (!metaObj.initialIndex) {
+                            metaObj.initialIndex = true;
+                            db.writeStore("_meta").put(metaObj);
+                            indexProject(editor.getActiveEditor(), editor.getActiveSession());
+                        }
+                    });
+                });
             },
             runSessionHandler: runSessionHandler,
             /**
@@ -202,48 +212,50 @@ define(function(require, exports, module) {
             });
         }
 
-        command.define("Tools:Index Project", {
-            exec: function(edit, session) {
-                var modes = zed.getService("modes");
-                var fs = zed.getService("fs");
-                var allFiles = zed.getService("goto").getFileCache();
-                var filesToIndex = allFiles.filter(function(path) {
-                    var mode = modes.getModeForPath(path);
-                    return getHandlerCommandsForMode("index", mode).length > 0;
-                });
+        function indexProject(edit, session) {
+            var modes = zed.getService("modes");
+            var fs = zed.getService("fs");
+            var allFiles = zed.getService("goto").getFileCache();
+            var filesToIndex = allFiles.filter(function(path) {
+                var mode = modes.getModeForPath(path);
+                return getHandlerCommandsForMode("index", mode).length > 0;
+            });
 
-                var num = 0;
+            var num = 0;
 
-                async.forEach(filesToIndex, function(path, next) {
-                    num++;
-                    eventbus.emit("sessionactivitystarted", session, "Indexing " + num + " of " + filesToIndex.length);
-                    var mode = modes.getModeForPath(path);
-                    console.log("Indexing", path);
-                    fs.readFile(path, function(err, text) {
-                        if (err) {
-                            console.log("Could not load", path, err);
-                            return next();
+            async.forEach(filesToIndex, function(path, next) {
+                num++;
+                eventbus.emit("sessionactivitystarted", session, "Indexing " + num + " of " + filesToIndex.length);
+                var mode = modes.getModeForPath(path);
+                console.log("Indexing", path);
+                fs.readFile(path, function(err, text) {
+                    if (err) {
+                        console.log("Could not load", path, err);
+                        return next();
+                    }
+                    var fakeSession = {
+                        filename: path,
+                        mode: mode,
+                        getTokenAt: true,
+                        getValue: function() {
+                            return text;
+                        },
+                        getLines: function() {
+                            return text.split("\n");
                         }
-                        var fakeSession = {
-                            filename: path,
-                            mode: mode,
-                            getTokenAt: true,
-                            getValue: function() {
-                                return text;
-                            },
-                            getLines: function() {
-                                return text.split("\n");
-                            }
-                        };
-                        runSessionHandler(fakeSession, "index", null, next);
-                    });
-                }, function done() {
-                    eventbus.emit("sessionactivitystarted", session, "Indexing complete");
-                    setTimeout(function() {
-                        eventbus.emit("sessionactivitycompleted", session);
-                    }, 2000);
+                    };
+                    runSessionHandler(fakeSession, "index", null, next);
                 });
-            },
+            }, function done() {
+                eventbus.emit("sessionactivitystarted", session, "Indexing complete");
+                setTimeout(function() {
+                    eventbus.emit("sessionactivitycompleted", session);
+                }, 2000);
+            });
+        }
+
+        command.define("Tools:Index Project", {
+            exec: indexProject,
             readOnly: true
         });
 
