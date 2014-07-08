@@ -1,0 +1,11 @@
+{
+    modes: {
+        stylus: {
+            name: "Stylus",
+            highlighter: "ace/mode/stylus",
+            extensions: [
+                "styl"
+            ]
+        }
+    }
+}
