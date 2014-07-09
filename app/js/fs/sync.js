@@ -41,20 +41,28 @@ define(function(require, exports, module) {
             var api = {
                 listFiles: function(callback) {
                     var reader = root.createReader();
-                    reader.readEntries(function(entries) {
-                        var results = [];
-                        for (var i = 0; i < entries.length; i++) {
-                            var entry = entries[i];
-                            if (entry.name.indexOf(namespace) !== 0) {
-                                continue;
+
+                    var results = [];
+                    function readDirEntriesUntilEmpty() {
+                        reader.readEntries(function(entries) {
+                            for (var i = 0; i < entries.length; i++) {
+                                var entry = entries[i];
+                                if (entry.name.indexOf(namespace) !== 0) {
+                                    continue;
+                                }
+                                if (entry.name == namespace + ".zedstate") {
+                                    continue;
+                                }
+                                results.push(decodePath(entry.name));
                             }
-                            if (entry.name == namespace + ".zedstate") {
-                                continue;
+                            if(entries.length === 0) {
+                                callback(null, results);
+                            } else {
+                                readDirEntriesUntilEmpty();
                             }
-                            results.push(decodePath(entry.name));
-                        }
-                        callback(null, results);
-                    }, callback);
+                        });
+                    }
+                    readDirEntriesUntilEmpty();
                 },
                 readFile: function(path, callback) {
                     var encodedPath = encodePath(path);
