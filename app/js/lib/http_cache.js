@@ -9,7 +9,7 @@ define(function(require, exports, module) {
      * - refreshTimeout: (in seconds) use cache if cached more recently than the timeout,
      *                   otherwise attempt refresh, if it fails, use cache anyway
      */
-    exports.fetchUrl = function(url, options, callback) {
+    exports.fetchUrl = function(url, options) {
         var cacheKey = "cache:" + url;
 
         var refreshTimeout = Infinity;
@@ -21,47 +21,46 @@ define(function(require, exports, module) {
             return entry && (Date.now() - entry.time) < refreshTimeout;
         }
 
-        function httpGet(callback) {
-            $.ajax({
-                method: "GET",
-                url: url,
-                dataType: "text",
-                success: function(result) {
-                    var cacheEntry = {
-                        time: Date.now(),
-                        content: result
-                    };
-                    if (options.persistent) {
-                        var obj = {};
-                        obj[cacheKey] = cacheEntry;
-                        chrome.storage.local.set(obj);
+        function httpGet() {
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    method: "GET",
+                    url: url,
+                    dataType: "text",
+                    success: function(result) {
+                        var cacheEntry = {
+                            time: Date.now(),
+                            content: result
+                        };
+                        if (options.persistent) {
+                            var obj = {};
+                            obj[cacheKey] = cacheEntry;
+                            chrome.storage.local.set(obj);
+                        }
+                        sessionCache[url] = cacheEntry;
+                        resolve(result);
+                    },
+                    error: function(xhr) {
+                        reject(xhr.status);
                     }
-                    sessionCache[url] = cacheEntry;
-                    callback(null, result);
-                },
-                error: function(xhr) {
-                    callback(xhr.status);
-                }
+                });
             });
         }
 
         function cachedGet(callback) {
             var entry = sessionCache[url];
             if (hasNotTimedOut(entry)) {
-                return callback(null, entry.content);
+                return Promise.resolve(entry.content);
             }
-            httpGet(callback);
+            return httpGet(callback);
         }
 
         if (options.fallbackCache) {
-            httpGet(function(err, result) {
-                if (err) {
-                    return cachedGet(callback);
-                }
-                callback(null, result);
+            return httpGet().catch(function() {
+                return cachedGet();
             });
         } else {
-            cachedGet(callback);
+            return cachedGet();
         }
     };
 

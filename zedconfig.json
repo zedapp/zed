@@ -39,6 +39,11 @@
                             JSON5: true
                         }
                     }
+                },
+                "Tools:Complete:Snippet": {
+                    snippets: {
+                        prom: "new Promise(function(resolve, reject) {\n\t${1}\n})",
+                    }
                 }
             }
         }

@@ -18,7 +18,7 @@ define(function(require, exports, module) {
         // Support opening a single file
         var stats = nodeFs.statSync(rootPath);
         var filename;
-        if(stats.isFile()) {
+        if (stats.isFile()) {
             filename = path.basename(rootPath);
             rootPath = path.dirname(rootPath);
         }
@@ -41,107 +41,124 @@ define(function(require, exports, module) {
             return rootPath + filename;
         }
 
-        function mkdirs(path, callback) {
-            var parts = path.split("/");
-            if (parts.length === 1) {
-                callback();
-            } else {
-                mkdirs(parts.slice(0, parts.length - 1).join("/"), function(err) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    nodeFs.exists(path, function(exists) {
-                        if (exists) {
-                            callback();
-                        } else {
-                            nodeFs.mkdir(path, callback);
-                        }
-                    });
-                });
-            }
+        function mkdirs(path) {
+            return new Promise(function(resolve, reject) {
+                var parts = path.split("/");
+                if (parts.length === 1) {
+                    resolve();
+                } else {
+                    mkdirs(parts.slice(0, parts.length - 1).join("/")).then(function() {
+                        nodeFs.exists(path, function(exists) {
+                            if (exists) {
+                                resolve();
+                            } else {
+                                nodeFs.mkdir(path, function(err) {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        resolve(err);
+                                    }
+                                });
+                            }
+                        });
+                    }, reject);
+                }
+            });
         }
 
         var api = {
-            listFiles: function(callback) {
+            listFiles: function() {
                 var files = [];
 
-                function readDir(dir, callback) {
-                    nodeFs.readdir(dir, function(err, entries) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        async.parForEach(entries, function(entry, next) {
-                            // if (entry[0] === ".") {
-                            //     return next();
-                            // }
-                            var fullPath = dir + "/" + entry;
-                            nodeFs.stat(fullPath, function(err, stat) {
-                                if (err) {
-                                    return next(err);
-                                }
-                                if (stat.isDirectory()) {
-                                    readDir(fullPath, next);
-                                } else {
-                                    files.push(fullPath);
-                                    next();
-                                }
-                            });
-                        }, callback);
-                    });
-                }
-                readDir(rootPath, function(err) {
-                    if (err) {
-                        return callback(err);
+                return new Promise(function(resolve, reject) {
+                    function readDir(dir, callback) {
+                        nodeFs.readdir(dir, function(err, entries) {
+                            if (err) {
+                                return callback(err);
+                            }
+                            async.parForEach(entries, function(entry, next) {
+                                // if (entry[0] === ".") {
+                                //     return next();
+                                // }
+                                var fullPath = dir + "/" + entry;
+                                nodeFs.stat(fullPath, function(err, stat) {
+                                    if (err) {
+                                        return next(err);
+                                    }
+                                    if (stat.isDirectory()) {
+                                        readDir(fullPath, next);
+                                    } else {
+                                        files.push(fullPath);
+                                        next();
+                                    }
+                                });
+                            }, callback);
+                        });
                     }
-                    callback(null, files.map(stripRoot));
+                    readDir(rootPath, function(err) {
+                        if (err) {
+                            return reject(err);
+                        }
+                        resolve(files.map(stripRoot));
+                    });
                 });
+
             },
-            readFile: function(path, callback) {
+            readFile: function(path) {
                 if (path === "/.zedstate" && filename) {
-                    return callback(null, JSON.stringify({
+                    return Promise.resolve(JSON.stringify({
                         "session.current": ["/" + filename]
                     }));
                 }
                 var fullPath = addRoot(path);
-                nodeFs.readFile(fullPath, {
-                    encoding: 'utf8'
-                }, function(err, contents) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    nodeFs.stat(fullPath, function(err, stat) {
+                return new Promise(function(resolve, reject) {
+                    nodeFs.readFile(fullPath, {
+                        encoding: 'utf8'
+                    }, function(err, contents) {
                         if (err) {
-                            console.error("Readfile successful, but error during stat:", err);
-                        }
-                        watcher.setCacheTag(path, "" + stat.mtime);
-                        callback(null, contents);
-                    });
-                });
-            },
-            writeFile: function(path, content, callback) {
-                if (path === "/.zedstate" && filename) {
-                    return callback();
-                }
-                var fullPath = addRoot(path);
-                // First ensure parent dir exists
-                mkdirs(dirname(fullPath), function(err) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    nodeFs.writeFile(fullPath, content, function(err) {
-                        if (err) {
-                            return callback(err);
+                            return reject(err);
                         }
                         nodeFs.stat(fullPath, function(err, stat) {
+                            if (err) {
+                                console.error("Readfile successful, but error during stat:", err);
+                            }
                             watcher.setCacheTag(path, "" + stat.mtime);
-                            callback();
+                            resolve(contents);
                         });
                     });
                 });
             },
-            deleteFile: function(path, callback) {
+            writeFile: function(path, content) {
+                if (path === "/.zedstate" && filename) {
+                    return Promise.resolve();
+                }
                 var fullPath = addRoot(path);
-                nodeFs.unlink(fullPath, callback);
+                // First ensure parent dir exists
+                return mkdirs(dirname(fullPath)).then(function() {
+                    return new Promise(function(resolve, reject) {
+                        nodeFs.writeFile(fullPath, content, function(err) {
+                            if (err) {
+                                return reject(err);
+                            }
+                            nodeFs.stat(fullPath, function(err, stat) {
+                                watcher.setCacheTag(path, "" + stat.mtime);
+                                resolve();
+                            });
+                        });
+                    });
+                });
+            },
+            deleteFile: function(path) {
+                var fullPath = addRoot(path);
+                return new Promise(function(resolve, reject) {
+                    nodeFs.unlink(fullPath, function(err) {
+                        if(err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                });
             },
             watchFile: function(path, callback) {
                 watcher.watchFile(path, callback);
@@ -149,12 +166,14 @@ define(function(require, exports, module) {
             unwatchFile: function(path, callback) {
                 watcher.unwatchFile(path, callback);
             },
-            getCacheTag: function(path, callback) {
-                nodeFs.stat(addRoot(path), function(err, stat) {
-                    if (err) {
-                        return callback(404);
-                    }
-                    callback(null, "" + stat.mtime);
+            getCacheTag: function(path) {
+                return new Promise(function(resolve, reject) {
+                    nodeFs.stat(addRoot(path), function(err, stat) {
+                        if (err) {
+                            return reject(404);
+                        }
+                        resolve("" + stat.mtime);
+                    });
                 });
             }
         };

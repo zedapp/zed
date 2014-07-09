@@ -9,33 +9,33 @@ define(function(require, exports, module) {
 
         chrome.runtime.getBackgroundPage(function(bgPage) {
             var api = {
-                listFiles: function(callback) {
-                    callback(null, ["/text"]);
+                listFiles: function() {
+                    return Promise.resolve(["/text"]);
                 },
-                readFile: function(path, callback) {
+                readFile: function(path) {
                     if (path === "/.zedstate") {
-                        callback(null, JSON.stringify({
+                        return Promise.resolve(JSON.stringify({
                             "session.current": ["/text"]
                         }));
                     } else if (path === "/text") {
-                        callback(null, text);
+                        return Promise.resolve(text);
                     } else {
-                        callback(404);
+                        return Promise.reject(404);
                     }
                 },
-                writeFile: function(path, content, callback) {
+                writeFile: function(path, content) {
                     if (path === "/text") {
                         bgPage.setTextAreaText(id, content);
                     }
-                    callback();
+                    return Promise.resolve();
                 },
-                deleteFile: function(path, callback) {
-                    callback();
+                deleteFile: function(path) {
+                    return Promise.resolve();
                 },
                 watchFile: function() {},
                 unwatchFile: function() {},
                 getCacheTag: function(path, callback) {
-                    callback(null, "1");
+                    return Promise.resolve("1");
                 }
             };
 

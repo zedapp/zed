@@ -13,8 +13,8 @@ define(function(require, exports, module) {
         var readOnlyFn = options.readOnlyFn;
 
         var api = {
-            listFiles: function(callback) {
-                http_cache.fetchUrl(root + "/all", {}, function(err, res) {
+            listFiles: function() {
+                return http_cache.fetchUrl(root + "/all", {}).then(function(res) {
                     var items = res.split("\n");
                     for (var i = 0; i < items.length; i++) {
                         if (!items[i]) {
@@ -22,24 +22,26 @@ define(function(require, exports, module) {
                             i--;
                         }
                     }
-                    callback(null, items);
+                    return items;
                 });
             },
-            readFile: function(path, callback) {
-                http_cache.fetchUrl(root + path, {}, function(err, text) {
-                    if (err) {
-                        return callback(err);
+            readFile: function(path) {
+                return http_cache.fetchUrl(root + path, {}).then(function(text) {
+                    if (readOnlyFn && readOnlyFn(path)) {
+                        return {
+                            readOnly: true,
+                            text: text
+                        };
+                    } else {
+                        return text;
                     }
-                    callback(null, text, {
-                        readOnly: readOnlyFn && readOnlyFn(path)
-                    });
                 });
             },
-            writeFile: function(path, content, callback) {
-                callback(405); // Method not allowed
+            writeFile: function(path, content) {
+                return Promise.reject(405); // Method not allowed
             },
-            deleteFile: function(path, callback) {
-                callback(405); // Method not allowed
+            deleteFile: function(path) {
+                return Promise.reject(405); // Method not allowed
             },
             watchFile: function() {
                 // Nop
@@ -47,12 +49,11 @@ define(function(require, exports, module) {
             unwatchFile: function() {
                 // Nop
             },
-            getCacheTag: function(path, callback) {
-                http_cache.fetchUrl(root + path, {}, function(err) {
-                    if (err) {
-                        return callback(404);
-                    }
-                    callback(null, "unchanged");
+            getCacheTag: function(path) {
+                return http_cache.fetchUrl(root + path, {}).then(function() {
+                    return "unchanged";
+                }, function(err) {
+                    return Promise.reject(404);
                 });
             }
         };

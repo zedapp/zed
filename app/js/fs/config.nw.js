@@ -10,55 +10,57 @@ define(function(require, exports, module) {
 
         var gui = nodeRequire('nw.gui');
 
-        staticFs(function(err, configStatic) {
+        var configStatic;
+
+        staticFs().then(function(configStatic_) {
+            configStatic = configStatic_;
             var configHome = localStorage.configDir || (gui.App.dataPath + "/config");
             console.log("Config home", configHome);
             if (!fs.existsSync(configHome)) {
                 fs.mkdirSync(configHome);
             }
-            getFs({
+            return getFs({
                 packagePath: "fs/node",
                 dir: configHome,
                 dontRegister: true
-            }, function(err, configLocal) {
-                if(err) {
-                    return console.error("Error instantiating nodefs", err);
-                }
-                console.log("File systems for config", configLocal, configStatic);
-                getFs({
-                    packagePath: "fs/union",
-                    fileSystems: [configLocal, configStatic],
-                    watchSelf: watchSelf,
-                }, function(err, fs) {
-                    register(null, {
-                        fs: fs
-                    });
-                });
+            });
+        }).then(function(configLocal) {
+            console.log("File systems for config", configLocal, configStatic);
+            return getFs({
+                packagePath: "fs/union",
+                fileSystems: [configLocal, configStatic],
+                watchSelf: watchSelf,
+            });
+        }).then(function(fs) {
+            register(null, {
+                fs: fs
             });
         });
 
-        function staticFs(callback) {
-            getFs({
+        function staticFs() {
+            return getFs({
                 packagePath: "fs/static",
                 url: "config",
                 readOnlyFn: function(path) {
                     return path !== "/.zedstate" && path !== "/user.json" && path !== "/user.css";
                 }
-            }, callback);
+            });
         }
     }
 
     // Creates local architect application with just the file system module
-    function getFs(config, callback) {
-        architect.resolveConfig([config, "./history.nw"], function(err, config) {
-            if (err) {
-                return callback(err);
-            }
-            architect.createApp(config, function(err, app) {
+    function getFs(config) {
+        return new Promise(function(resolve, reject) {
+            architect.resolveConfig([config, "./history.nw"], function(err, config) {
                 if (err) {
-                    return callback(err);
+                    return reject(err);
                 }
-                callback(null, app.getService("fs"));
+                architect.createApp(config, function(err, app) {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve(app.getService("fs"));
+                });
             });
         });
     }
