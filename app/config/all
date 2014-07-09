@@ -1,4 +1,3 @@
-/.zedstate
 /README.md
 /api/zed/config.js
 /api/zed/config_fs.js
@@ -141,7 +140,6 @@
 /default/zpm/zpm-dev.json
 /default/zpm/zpm.js
 /default/zpm/zpm.json
-/packages/.DS_Store
 /packages/gh/zedapp/bracket-check/check.js
 /packages/gh/zedapp/bracket-check/config.json
 /packages/gh/zedapp/bracket-check/package.json
@@ -177,6 +175,7 @@
 /packages/gh/zedapp/jsx-mode/transform.js
 /packages/gh/zedapp/php-mode/check.js
 /packages/gh/zedapp/php-mode/config.json
+/packages/gh/zedapp/php-mode/index.js
 /packages/gh/zedapp/php-mode/package.json
 /packages/gh/zedapp/php-mode/php.js
 /user.css

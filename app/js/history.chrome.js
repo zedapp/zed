@@ -27,7 +27,7 @@ define(function(require, exports, module) {
                                 name: name,
                                 url: url
                             });
-                            config.loadConfiguration(function() {
+                            config.loadConfiguration().then(function() {
                                 if (projects.length > config.getPreference("recentFolderHistory")) {
                                     var numToRemove = projects.length - config.getPreference("recentFolderHistory");
                                     projects.splice(projects.length - numToRemove, numToRemove);

@@ -41,6 +41,7 @@ define(function(require, exports, module) {
         };
 
         windows.setOpenWindow();
+        console.log("Yo");
 
         analytics_tracker.trackEvent("Application", "Open");
 
@@ -61,7 +62,7 @@ define(function(require, exports, module) {
             if (openProject) {
                 openProject.focus();
             } else {
-                win.create(editorHtml + '?url=' + url + "&title=" + title + (filename ? "&filename=" + filename : ""), 'none', 720, 400, function(err, win) {
+                win.create(editorHtml + '?url=' + url + "&title=" + title + (filename ? "&filename=" + filename : ""), 'none', 720, 400).then(function(win) {
                     if (url !== "dropbox:" && url !== "local:") {
                         openProjects[url] = win;
                         win.addCloseListener(function() {

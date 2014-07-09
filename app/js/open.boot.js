@@ -65,7 +65,7 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
         if (err) {
             return console.error("Architect resolve error", err);
         }
-        architect.createApp(config, function(err, app) {
+        var app = architect.createApp(config, function(err, app) {
             if (err) {
                 window.err = err;
                 return console.error("Architect createApp error", err, err.stack);
@@ -89,7 +89,9 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
             } catch (e) {
                 console.error("Error hooking or initing:", e);
             }
-
+        });
+        app.on("service", function(name) {
+            console.log("Loaded " + name);
         });
     });
 

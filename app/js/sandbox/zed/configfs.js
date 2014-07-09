@@ -2,7 +2,7 @@
 define(function(require, exports, module) {
     return {
         listFiles: function() {
-            return zed.getService("configfs").listFiles();
+            return Promise.resolve(zed.getService("configfs").listFiles());
         },
         readFile: function(path) {
             return zed.getService("configfs").readFile(path);
