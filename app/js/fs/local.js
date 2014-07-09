@@ -59,19 +59,27 @@ define(function(require, exports, module) {
 
                 function readDir(dir, callback) {
                     var reader = dir.createReader();
-                    reader.readEntries(function(entries) {
-                        async.parForEach(entries, function(entry, next) {
-                            // if (entry.name[0] === ".") {
-                            //     return next();
-                            // }
-                            if (entry.isDirectory) {
-                                readDir(entry, next);
-                            } else {
-                                files.push(entry.fullPath);
-                                next();
-                            }
-                        }, callback);
-                    }, callback);
+
+                    function readDirEntriesUntilEmpty(reader, callback) {
+                        function continueCallback() {
+                            readDirEntriesUntilEmpty(reader, callback);
+                        }
+
+                        reader.readEntries(function(entries) {
+                            async.parForEach(entries, function(entry, next) {
+                                // if (entry.name[0] === ".") {
+                                //     return next();
+                                // }
+                                if (entry.isDirectory) {
+                                    readDir(entry, next);
+                                } else {
+                                    files.push(entry.fullPath);
+                                    next();
+                                }
+                            }, (entries.length === 0) ? callback : continueCallback);
+                        });
+                    }
+                    readDirEntriesUntilEmpty(reader, callback);
                 }
                 readDir(root, function(err) {
                     if (err) {
