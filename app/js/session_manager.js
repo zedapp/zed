@@ -93,7 +93,7 @@ define(function(require, exports, module) {
                 }
                 session.dirty = true;
                 var saveTimeout = config.getPreference("saveTimeout");
-                if(saveTimeout > 0) {
+                if (saveTimeout > 0) {
                     saveTimer = setTimeout(function() {
                         saveSession(session);
                     }, saveTimeout);
@@ -102,11 +102,10 @@ define(function(require, exports, module) {
             sessions[path] = session;
         }
 
-        function saveSession(session, callback) {
+        function saveSession(session) {
             var path = session.filename;
             if (!path || !session.dirty || session.readOnly) {
-                callback && callback();
-                return;
+                return Promise.resolve();
             }
             // If this is a new file, this is the moment that it's going to
             // be saved for the first time and ought to appear in the file list,
@@ -117,15 +116,13 @@ define(function(require, exports, module) {
             }
             eventbus.emit("sessionactivitystarted", session, "Saving");
             eventbus.emit("sessionbeforesave", session);
-            fs.writeFile(path, session.getValue(), function(err) {
-                if (err) {
-                    eventbus.emit("sessionactivityfailed", session, "Failed to save");
-                } else {
-                    eventbus.emit("sessionactivitycompleted", session);
-                    eventbus.emit("sessionsaved", session);
-                    session.dirty = false;
-                }
-                callback && callback();
+            return fs.writeFile(path, session.getValue()).then(function() {
+                eventbus.emit("sessionactivitycompleted", session);
+                eventbus.emit("sessionsaved", session);
+                session.dirty = false;
+            }, function(err) {
+                eventbus.emit("sessionactivityfailed", session, "Failed to save");
+                return Promise.reject(err);
             });
         }
 
@@ -164,16 +161,12 @@ define(function(require, exports, module) {
             oldstateJSON = stateJSON;
         }
 
-        function loadFile(path, callback) {
-            fs.readFile(path, function(err, text, options) {
-                if (err) {
-                    return callback(err);
-                }
-                options = options || {};
+        function loadFile(path) {
+            return fs.readFile(path).then(function(text) {
                 var session = editor.createSession(path, text);
-                session.readOnly = !! options.readOnly;
+                session.readOnly = !! window.readOnlyFiles[path];
                 setupSave(session);
-                callback(null, session);
+                return session;
             });
         }
 
@@ -190,44 +183,33 @@ define(function(require, exports, module) {
             if ((opts.get("url").indexOf("config:") === 0) || (config.getPreference("globalAutoRevert"))) {
                 return reloadFile();
             }
-            if(session.$prompting) {
+            if (session.$prompting) {
                 // Already showing a prompt
                 return;
             }
             session.$prompting = true;
             ui.prompt({
                 message: "File '" + path + "' changed on disk, reload (Ok) or keep original (Cancel)?"
-            }, function(err, yes) {
+            }).then(function(yes) {
                 session.$prompting = false;
                 if (yes) {
                     reloadFile();
                 } else {
                     // Create backup of changed file on disk
-                    fs.readFile(path, function(err, text) {
-                        if (err) {
-                            return console.error("Could not load file:", path);
-                        }
-                        fs.writeFile(path + ".bak", text, function(err) {
-                            if (err) {
-                                return console.error("Could not write backup file", path + ".bak");
-                            }
-                            fs.writeFile(path, session.getValue(), function(err) {
-                                if (err) {
-                                    return console.error("Could not write local copy to", path);
-                                }
-                                console.log("Did not reload file, saved backup of disk-version in", path + ".bak");
-                            });
-                        });
+                    return fs.readFile(path).then(function(text) {
+                        return fs.writeFile(path + ".bak", text);
+                    }).then(function() {
+                        return fs.writeFile(path, session.getValue());
+                    }).then(function() {
+                        console.log("Did not reload file, saved backup of disk-version in", path + ".bak");
+                    }, function(err) {
+                        console.error("Could not backup file:", path, err);
                     });
                 }
-
             });
 
             function reloadFile() {
-                fs.readFile(path, function(err, text) {
-                    if (err) {
-                        return console.error("Could not load file:", path);
-                    }
+                return fs.readFile(path).then(function(text) {
                     session.ignoreChange = true;
 
                     // Save scroll/cursor state
@@ -247,6 +229,9 @@ define(function(require, exports, module) {
                     session.setScrollLeft(scrollLeft);
 
                     session.ignoreChange = false;
+                }, function(err) {
+                    console.error("Could not load file:", path, err);
+                    return Promise.reject(err);
                 });
             }
         }
@@ -255,17 +240,16 @@ define(function(require, exports, module) {
          * Navigates to a file, openeing it if hasn't been opened yet, switching to
          * it if it's already loaded in memory
          */
-        function go(path, edit, previousSession, callback) {
+        function go(path, edit, previousSession) {
             edit = edit || editor.getActiveEditor();
             if (!path) {
-                callback && callback("No path");
-                return;
+                return Promise.reject("No path");
             }
 
             if (api.specialDocs[path]) {
                 var session = api.specialDocs[path];
                 show(session);
-                return;
+                return Promise.resolve(session);
             }
             var pathParts = path.split(':');
             if (pathParts[0] !== "zed") {
@@ -280,33 +264,30 @@ define(function(require, exports, module) {
             // Check if somebody is not trying to create a file ending with '/'
             if (path[path.length - 1] === '/') {
                 eventbus.emit("sessionactivityfailed", previousSession, "Cannot create files ending with /");
-                callback && callback("Cannot create files ending with /");
-                return;
+                return Promise.reject("Cannot create files ending with /");
             }
 
             if (sessions[path]) {
-                show(sessions[path]);
+                return show(sessions[path]);
             } else if (path.indexOf("zed::") === 0) {
                 var session = editor.createSession(path, "");
                 session.readOnly = true;
                 session.dontPersist = true;
-                show(session);
                 sessions[path] = session;
                 eventbus.emit("newfilecreated", path, session);
+                return show(session);
             } else {
                 eventbus.emit("sessionactivitystarted", previousSession, "Loading...");
-                loadFile(path, function(err, session) {
+                return loadFile(path).then(function(session) {
                     eventbus.emit("sessionactivitycompleted", previousSession);
-                    if (err) {
-                        console.log("Creating new, empty file", path);
-                        session = editor.createSession(path, "");
-                        setupSave(session);
-                        show(session);
-                        session.newFile = true;
-                    } else {
-                        eventbus.emit("newsession", session);
-                        show(session);
-                    }
+                    eventbus.emit("newsession", session);
+                    return show(session);
+                }, function(err) {
+                    console.log("Creating new, empty file", path);
+                    session = editor.createSession(path, "");
+                    setupSave(session);
+                    session.newFile = true;
+                    return show(session);
                 });
             }
 
@@ -345,7 +326,7 @@ define(function(require, exports, module) {
                     fs.watchFile(session.filename, session.watcherFn);
                 }
 
-                callback && callback(null, session);
+                return Promise.resolve(session);
             }
         }
 
@@ -354,17 +335,14 @@ define(function(require, exports, module) {
 
             go("zed::start");
 
-            async.parForEach(Object.keys(sessionStates), function(path, next) {
+            Promise.all(Object.keys(sessionStates).map(function(path) {
                 var sessionState = sessionStates[path];
-                loadFile(path, function(err, session) {
-                    if (err) {
-                        delete sessionStates[path];
-                    } else {
-                        editor.setSessionState(session, sessionState);
-                    }
-                    next();
+                return loadFile(path).then(function(session) {
+                    editor.setSessionState(session, sessionState);
+                }, function(err) {
+                    delete sessionStates[path];
                 });
-            }, function done() {
+            })).then(function() {
                 console.log("All sessions loaded.");
                 var editors = editor.getEditors();
                 if (state.get("session.current")) {

@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
     function getSession(path) {
         var session = path ? zed.getService("session_manager").getSession(path) : zed.getService("editor").getActiveSession();
-        if(!session) {
+        if (!session) {
             console.error("Could not get session:", path);
             // TODO once we switch this to promises
         }
@@ -19,16 +19,15 @@ define(function(require, exports, module) {
     // This function can take any defined inputable, a path, a callback,
     // and will call the callback with the result of the inputable for
     // the given path.
-    function genericInputable(inputable, path, callback) {
-        callback(null, zed.getService("sandbox").getInputable(
-            getSession(path), inputable));
+    function genericInputable(inputable, path) {
+        return zed.getService("sandbox").getInputable(getSession(path), inputable);
     }
 
     // This returns the above function bound to a given inputable, eg a function
     // that will take only path and callback arguments (as expected below), and
     // then call the callback with the result for the pre-determined inputable.
     function useInputable(inputable) {
-        return genericInputable.bind(genericInputable, inputable);
+        return genericInputable.bind(null, inputable);
     }
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
@@ -42,20 +41,14 @@ define(function(require, exports, module) {
         getSelectionText: useInputable("selectionText"),
         getText: useInputable("text"),
         isInsertingSnippet: useInputable("isInsertingSnippet"),
-        callCommand: function(path, command, callback) {
-            zed.getService("command").exec(
-                command,
-                zed.getService("editor").getActiveEditor(),
-                getSession(path),
-                callback);
+        callCommand: function(path, command) {
+            return zed.getService("command").exec(command,  zed.getService("editor").getActiveEditor(), getSession(path));
         },
-        goto: function(path, callback) {
+        goto: function(path) {
             var edit = zed.getService("editor").getActiveEditor();
-            zed.getService("session_manager").go(path, edit, edit.getSession(), function(err) {
-                callback(err);
-            });
+            return zed.getService("session_manager").go(path, edit, edit.getSession());
         },
-        setAnnotations: function(path, annos, callback) {
+        setAnnotations: function(path, annos) {
             var session = getSession(path);
             (session.annotations || []).forEach(function(anno) {
                 console.log("Removing anno", anno);
@@ -70,12 +63,12 @@ define(function(require, exports, module) {
                 }
             }
             session.setAnnotations(annos);
-            callback();
+            return Promise.resolve();
         },
         // Don't use setText unless you are really changing the entire contents
         // of the document, because it interacts poorly with the selection,
         // cursor position, undo history, etc.
-        setText: function(path, text, callback) {
+        setText: function(path, text) {
             var session = getSession(path);
 
             // Save scroll/cursor state
@@ -92,27 +85,27 @@ define(function(require, exports, module) {
             session.selection.moveCursorToPosition(cursorPos);
             session.setScrollTop(scrollTop);
             session.setScrollLeft(scrollLeft);
-            callback();
+            return Promise.resolve();
         },
-        insertAtCursor: function(path, text, callback) {
+        insertAtCursor: function(path, text) {
             var session = getSession(path);
             session.insert(session.selection.getCursor(), text);
-            callback();
+            return Promise.resolve();
         },
-        insert: function(path, pos, text, callback) {
+        insert: function(path, pos, text) {
             var session = getSession(path);
             session.insert(pos, text);
-            callback();
+            return Promise.resolve();
         },
-        append: function(path, text, callback) {
+        append: function(path, text) {
             var session = getSession(path);
             session.insert({
                 row: session.getLength(),
                 column: 0
             }, text);
-            callback();
+            return Promise.resolve();
         },
-        getPreceedingIdentifier: function(path, callback) {
+        getPreceedingIdentifier: function(path) {
             var session = getSession(path);
             var doc = session.getDocument();
             var pos = session.selection.getCursor();
@@ -126,23 +119,23 @@ define(function(require, exports, module) {
                     break;
                 }
             }
-            callback(null, identBuf.reverse().join(""));
+            return Promise.resolve(identBuf.reverse().join(""));
         },
-        removeInLine: function(path, row, start, end, callback) {
+        removeInLine: function(path, row, start, end) {
             getSession(path).getDocument().removeInLine(row, start, end);
-            callback();
+            return Promise.resolve();
         },
-        removeLines: function(path, start, end, callback) {
+        removeLines: function(path, start, end) {
             getSession(path).getDocument().removeLines(start, end);
-            callback();
+            return Promise.resolve();
         },
-        getTextRange: function(path, start, end, callback) {
-            callback(null, getSession(path).getTextRange(rangify({
+        getTextRange: function(path, start, end) {
+            return Promise.resolve(getSession(path).getTextRange(rangify({
                 start: start,
                 end: end
             })));
         },
-        setCursorIndex: function(path, index, callback) {
+        setCursorIndex: function(path, index) {
             var session = getSession(path);
             var text = session.getValue().slice(0, index);
             var lines = text.split("\n");
@@ -152,21 +145,21 @@ define(function(require, exports, module) {
             };
             session.selection.clearSelection();
             session.selection.moveCursorToPosition(pos);
-            callback();
+            return Promise.resolve();
         },
-        setCursorPosition: function(path, pos, callback) {
+        setCursorPosition: function(path, pos) {
             var session = getSession(path);
             session.selection.clearSelection();
             session.selection.moveCursorToPosition(pos);
-            callback();
+            return Promise.resolve();
         },
-        setScrollPosition: function(path, pos, callback) {
+        setScrollPosition: function(path, pos) {
             var session = getSession(path);
             session.setScrollTop(pos.scrollTop);
             session.setScrollLeft(pos.scrollLeft);
-            callback();
+            return Promise.resolve();
         },
-        replaceRange: function(path, range, text, callback) {
+        replaceRange: function(path, range, text) {
             var session = getSession(path);
             var cursorPos = session.selection.getCursor();
 
@@ -174,18 +167,18 @@ define(function(require, exports, module) {
 
             session.selection.clearSelection();
             session.selection.moveCursorToPosition(cursorPos);
-            callback();
+            return Promise.resolve();
         },
-        getModeName: function(path, callback) {
-            callback(null, getSession(path).mode.language);
+        getModeName: function(path) {
+            return Promise.resolve(getSession(path).mode.language);
         },
-        flashMessage: function(path, message, length, callback) {
+        flashMessage: function(path, message, length) {
             var session = getSession(path);
             zed.getService("eventbus").emit("sessionactivitystarted", session, message);
             setTimeout(function() {
                 zed.getService("eventbus").emit("sessionactivitycompleted", session);
             }, length);
-            callback();
+            return Promise.resolve();
         }
     };
 });

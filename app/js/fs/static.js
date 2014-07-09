@@ -28,10 +28,8 @@ define(function(require, exports, module) {
             readFile: function(path) {
                 return http_cache.fetchUrl(root + path, {}).then(function(text) {
                     if (readOnlyFn && readOnlyFn(path)) {
-                        return {
-                            readOnly: true,
-                            text: text
-                        };
+                        window.readOnlyFiles[path] = true;
+                        return text;
                     } else {
                         return text;
                     }

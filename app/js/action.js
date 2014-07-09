@@ -33,10 +33,7 @@ define(function(require, exports, module) {
                 caption: "Loading..."
             }]);
             show();
-            runSessionHandler(session, "action", null, function(err, results) {
-                if (err) {
-                    return console.error("Error running action", err);
-                }
+            runSessionHandler(session, "action").then(function(results) {
                 if (results && results.length > 0) {
                     popup.setData(results.map(handlerResultToFixResult));
                 } else {
@@ -45,6 +42,8 @@ define(function(require, exports, module) {
                         close();
                     }, 1000);
                 }
+            }, function(err) {
+                console.error("Error running action", err);
             });
 
             function show() {

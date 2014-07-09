@@ -19,20 +19,22 @@ define(function(require, exports, module) {
             setCloseHandler: function(handler) {
                 closeHandler = handler;
             },
-            create: function(url, frameStyle, width, height, callback) {
-                chrome.app.window.create(url, {
-                    frame: frameStyle,
-                    width: width,
-                    height: height,
-                }, function(win) {
-                    callback && callback(null, {
-                        addCloseListener: function(listener) {
-                            win.onClosed.addListener(listener);
-                        },
-                        window: win.contentWindow,
-                        focus: function() {
-                            win.focus();
-                        }
+            create: function(url, frameStyle, width, height) {
+                return new Promise(function(resolve) {
+                    chrome.app.window.create(url, {
+                        frame: frameStyle,
+                        width: width,
+                        height: height,
+                    }, function(win) {
+                        resolve({
+                            addCloseListener: function(listener) {
+                                win.onClosed.addListener(listener);
+                            },
+                            window: win.contentWindow,
+                            focus: function() {
+                                win.focus();
+                            }
+                        });
                     });
                 });
             },

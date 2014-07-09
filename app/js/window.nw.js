@@ -25,7 +25,7 @@ define(function(require, exports, module) {
                 closeHandler = handler;
                 win.on("close", handler);
             },
-            create: function(url, frameStyle, width, height, callback) {
+            create: function(url, frameStyle, width, height) {
                 var frame = true;
                 if (frameStyle == "none") {
                     frame = false;
@@ -38,18 +38,20 @@ define(function(require, exports, module) {
                     toolbar: false,
                     icon: "Icon.png"
                 });
-                w.once("loaded", function() {
-                    w.focus();
-                    callback && callback(null, {
-                        addCloseListener: function(listener) {
-                            w.on("closed", function() {
-                                listener();
-                            });
-                        },
-                        window: w.window,
-                        focus: function() {
-                            w.focus();
-                        }
+                return new Promise(function(resolve) {
+                    w.once("loaded", function() {
+                        w.focus();
+                        resolve({
+                            addCloseListener: function(listener) {
+                                w.on("closed", function() {
+                                    listener();
+                                });
+                            },
+                            window: w.window,
+                            focus: function() {
+                                w.focus();
+                            }
+                        });
                     });
                 });
             },

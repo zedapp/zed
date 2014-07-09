@@ -295,7 +295,7 @@ define(function(require, exports, module) {
              * - message
              * - input (if left undefined there's no input element)
              */
-            prompt: function(options, callback) {
+            prompt: function(options) {
                 var editor = zed.getService("editor");
                 var message = options.message || "";
                 var inputText = options.input;
@@ -306,55 +306,58 @@ define(function(require, exports, module) {
                 var okButton = $("<button>OK</button>");
                 var cancelButton = $("<button>Cancel</button>");
 
-                okButton.click(ok);
-                cancelButton.click(cancel);
+                return new Promise(function(resolve) {
+                    okButton.click(ok);
+                    cancelButton.click(cancel);
 
-                var buttonWrapEl = $("<div class='buttons'>");
-                buttonWrapEl.append(okButton);
-                buttonWrapEl.append(cancelButton);
+                    var buttonWrapEl = $("<div class='buttons'>");
+                    buttonWrapEl.append(okButton);
+                    buttonWrapEl.append(cancelButton);
 
-                if (inputText !== undefined) {
-                    input = $("<input type='text'>");
-                    input.val(inputText);
-                    dialogEl.append(input);
-                    input.focus();
-                    input.select();
-                }
-
-                dialogEl.append(buttonWrapEl);
-
-                editor.getActiveEditor().blur();
-                dialogEl.focus();
-                setTimeout(function() {
-                    $("body").bind("keyup", keyHandler);
-                }, 100);
-
-                function keyHandler(event) {
-                    switch (event.keyCode) {
-                        case keyCode('Return'):
-                            ok();
-                            break;
-                        case keyCode('Esc'):
-                            cancel();
-                            break;
+                    if (inputText !== undefined) {
+                        input = $("<input type='text'>");
+                        input.val(inputText);
+                        dialogEl.append(input);
+                        input.focus();
+                        input.select();
                     }
-                }
 
-                function ok() {
-                    close();
-                    callback && callback(null, input ? input.val() : true);
-                }
+                    dialogEl.append(buttonWrapEl);
 
-                function cancel() {
-                    close();
-                    callback && callback();
-                }
+                    editor.getActiveEditor().blur();
+                    dialogEl.focus();
+                    setTimeout(function() {
+                        $("body").bind("keyup", keyHandler);
+                    }, 100);
 
-                function close() {
-                    dialogEl.remove();
-                    editor.getActiveEditor().focus();
-                    $("body").unbind("keyup", keyHandler);
-                }
+                    function keyHandler(event) {
+                        switch (event.keyCode) {
+                            case keyCode('Return'):
+                                ok();
+                                break;
+                            case keyCode('Esc'):
+                                cancel();
+                                break;
+                        }
+                    }
+
+                    function ok() {
+                        close();
+                        resolve(input ? input.val() : true);
+                    }
+
+                    function cancel() {
+                        close();
+                        resolve();
+                    }
+
+                    function close() {
+                        dialogEl.remove();
+                        editor.getActiveEditor().focus();
+                        $("body").unbind("keyup", keyHandler);
+                    }
+                });
+
             },
             blockUI: function(message, noSpin) {
                 if (blockedEl) {

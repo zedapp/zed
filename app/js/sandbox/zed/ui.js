@@ -1,21 +1,21 @@
 /*global zed, define*/
 define(function(require, exports, module) {
     return {
-        prompt: function(message, inputText, width, height, callback) {
-            zed.getService("ui").prompt({
+        prompt: function(message, inputText, width, height) {
+            return zed.getService("ui").prompt({
                 width: width,
                 height: height,
                 message: message,
                 input: inputText
-            }, callback);
+            });
         },
-        blockUI: function(message, withSpinner, callback) {
+        blockUI: function(message, withSpinner) {
             zed.getService("ui").blockUI(message, !withSpinner);
-            callback();
+            return Promise.resolve();
         },
-        unblockUI: function(callback) {
+        unblockUI: function() {
             zed.getService("ui").unblockUI();
-            callback();
+            return Promise.resolve();
         },
     };
 });

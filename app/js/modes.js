@@ -193,18 +193,12 @@ define(function(require, exports, module) {
                         exec: function(edit, session, callback) {
                             var cmd = commandSpec.modeCommand[session.mode.language];
                             if (cmd) {
-                                zed.getService("sandbox").execCommand(name, cmd, session, function(err, result) {
-                                    if (err) {
-                                        return console.error(err);
-                                    }
-                                    _.isFunction(callback) && callback(err, result);
+                                return zed.getService("sandbox").execCommand(name, cmd, session).catch(function(err) {
+                                    console.error(err);
+                                    return Promise.reject(err);
                                 });
                             } else {
-                                if (_.isFunction(callback)) {
-                                    callback("not-supported");
-                                } else {
-                                    eventbus.emit("sessionactivityfailed", session, "Command " + name + " not supported for this mode");
-                                }
+                                return Promise.reject("not-supported");
                             }
                         },
                         readOnly: true,

@@ -22,32 +22,32 @@ define(function(require, exports, module) {
      * @param {String} verb The HTTP verb (e.g. POST, PUT, etc.)
      * @param {String} url The URL endpoint to which the request should be send.
      * @param {Object} options The jQuery request configuration.
-     * @param {Function} callback Node.js style callback.
      *
      */
-    function request(verb, url, options, callback) {
-        var args = {};
+    function request(verb, url, options) {
+        return new Promise(function(resolve, reject) {
+            var args = {};
 
-        options = options || {};
-        args.url = url;
-        args.type = verb;
-        args.headers = options.headers;
-        args.data = options.data;
-        args.dataType = options.dataType;
+            options = options || {};
+            args.url = url;
+            args.type = verb;
+            args.headers = options.headers;
+            args.data = options.data;
+            args.dataType = options.dataType;
 
-        $.ajax(args)
-            .done(function onDone (data, status, jqXHR) {
+            $.ajax(args)
+                .done(function onDone(data, status, jqXHR) {
                 var payload = [
-                    data,
-                    jqXHR.status,
-                    convertResponseHeaders(jqXHR.getAllResponseHeaders())
-                ];
+                data,
+                jqXHR.status,
+                convertResponseHeaders(jqXHR.getAllResponseHeaders())];
 
-                callback(null, payload);
+                resolve(payload);
             })
-            .fail(function onFail (jqXHR) {
-                callback(jqXHR.status)
+                .fail(function onFail(jqXHR) {
+                reject(jqXHR.status)
             });
+        });
     }
 
     /**
@@ -73,7 +73,7 @@ define(function(require, exports, module) {
         source = source.trim();
         source = source.split(newline);
 
-        source.forEach(function onEntry (header) {
+        source.forEach(function onEntry(header) {
             var position = header.indexOf(':');
             var key = header.substr(0, position);
             var value = header.substr(position + 1).trim();
@@ -85,24 +85,24 @@ define(function(require, exports, module) {
     }
 
     return {
-        fetchUrl: function(url, callback) {
-            http_cache.fetchUrl(url, {}, callback);
+        fetchUrl: function(url) {
+            return http_cache.fetchUrl(url, {});
         },
-        get: function(url, type, callback) {
+        get: function(url, type) {
             var options = {
                 dataType: type
             };
 
-            request('GET', url, options, callback);
+            return request('GET', url, options);
         },
-        post: function(url, options, callback) {
-            request('POST', url, options, callback);
+        post: function(url, options) {
+            return request('POST', url, options);
         },
-        put: function(url, options, callback) {
-             request('PUT', url, options, callback);
+        put: function(url, options) {
+            return request('PUT', url, options);
         },
-        del: function(url, options, callback) {
-            request('DELETE', url, options, callback);
+        del: function(url, options) {
+            return request('DELETE', url, options);
         }
     };
 });

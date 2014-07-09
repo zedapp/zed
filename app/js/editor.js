@@ -329,7 +329,7 @@ define(function(require, exports, module) {
         command.define("Navigate:Line", {
             doc: "Prompts for a specific line to jump to within the file.",
             exec: function(edit, session) {
-                command.exec("Navigate:Goto", edit, session, ":");
+                return command.exec("Navigate:Goto", edit, session, ":");
             },
             readOnly: true
         });
@@ -338,7 +338,7 @@ define(function(require, exports, module) {
             doc: "Open the file indicated by the cursor.",
             exec: function(edit, session) {
                 var path = api.getPathUnderCursor();
-                command.exec("Navigate:Goto", edit, session, path);
+                return command.exec("Navigate:Goto", edit, session, path);
             }
         });
 

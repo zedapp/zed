@@ -49,59 +49,63 @@ define(function(require, exports, module) {
                     });
                 }, 500);
             },
-            renameProject: function(url, name, callback) {
-                chrome.storage.local.get("recentProjects", function(results) {
-                    var projects = results.recentProjects || [];
+            renameProject: function(url, name) {
+                return new Promise(function(resolve) {
+                    chrome.storage.local.get("recentProjects", function(results) {
+                        var projects = results.recentProjects || [];
+                        var project = _.findWhere(projects, {
+                            url: url
+                        });
+                        project.name = name;
+                        chrome.storage.local.set({
+                            recentProjects: projects
+                        }, resolve);
+                    });
+                });
+            },
+            removeProject: function(url) {
+                return new Promise(function(resolve) {
+                    chrome.storage.local.get("recentProjects", function(results) {
+                        var projects = results.recentProjects || [];
+                        projects = _.filter(projects, function(project) {
+                            return project.url !== url;
+                        });
+                        chrome.storage.local.set({
+                            recentProjects: projects
+                        }, resolve);
+                    });
+                });
+            },
+            lookupProjectByUrl: function(url) {
+                return api.getProjects().then(function(projects) {
                     var project = _.findWhere(projects, {
                         url: url
                     });
-                    project.name = name;
-                    chrome.storage.local.set({
-                        recentProjects: projects
-                    }, callback);
+                    return project;
                 });
             },
-            removeProject: function(url, callback) {
-                chrome.storage.local.get("recentProjects", function(results) {
-                    var projects = results.recentProjects || [];
-                    projects = _.filter(projects, function(project) {
-                        return project.url !== url;
-                    });
-                    chrome.storage.local.set({
-                        recentProjects: projects
-                    }, callback);
-                });
-            },
-            lookupProjectByUrl: function(url, callback) {
-                api.getProjects(function(err, projects) {
-                    var project = _.findWhere(projects, {
-                        url: url
-                    });
-                    callback(null, project);
-                });
-            },
-            getProjects: function(callback) {
-                chrome.storage.local.get("recentProjects", function(results) {
-                    var projects = results.recentProjects || [];
-                    // sanity check projects array
-                    if (projects.length > 0 && !projects[0].url) {
-                        projects = [];
-                    }
-                    var validProjects = [];
-                    async.forEach(projects, function(project, next) {
-                        if (project.url.indexOf("local:") === 0) {
-                            chrome.fileSystem.isRestorable(project.url.substring("local:".length), function(yes) {
-                                if (yes) {
-                                    validProjects.push(project);
-                                }
-                                next();
-                            });
-                        } else {
-                            validProjects.push(project);
-                            next();
+            getProjects: function() {
+                return new Promise(function(resolve, reject) {
+                    chrome.storage.local.get("recentProjects", function(results) {
+                        var projects = results.recentProjects || [];
+                        // sanity check projects array
+                        if (projects.length > 0 && !projects[0].url) {
+                            projects = [];
                         }
-                    }, function() {
-                        callback(null, projects);
+                        var validProjects = [];
+                        Promise.all(projects.map(function(project) {
+                            if (project.url.indexOf("local:") === 0) {
+                                chrome.fileSystem.isRestorable(project.url.substring("local:".length), function(yes) {
+                                    if (yes) {
+                                        validProjects.push(project);
+                                    }
+                                });
+                            } else {
+                                validProjects.push(project);
+                            }
+                        })).then(function() {
+                            resolve(projects);
+                        });
                     });
                 });
             },

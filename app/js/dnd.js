@@ -51,29 +51,34 @@ define(function(require, exports, module) {
             }
         };
 
-        function saveFile(entry, rootPath, callback) {
-            var fileReader = new FileReader();
-            fileReader.onload = function(e) {
-                var content = e.target.result;
-                console.log(entry.fullPath);
-                fs.writeFile(rootPath + entry.fullPath, content, callback);
-            };
-            entry.file(function(file) {
-                fileReader.readAsText(file);
+        function saveFile(entry, rootPath) {
+            return new Promise(function(resolve, reject) {
+                var fileReader = new FileReader();
+                fileReader.onload = function(e) {
+                    var content = e.target.result;
+                    console.log(entry.fullPath);
+                    fs.writeFile(rootPath + entry.fullPath, content).then(resolve, reject);
+                };
+                entry.file(function(file) {
+                    fileReader.readAsText(file);
+                });
             });
         }
 
-        function saveDirectory(dir, rootPath, callback) {
-            var reader = dir.createReader();
-            reader.readEntries(function(entries) {
-                async.parForEach(entries, function(entry, next) {
-                    if (entry.isDirectory) {
-                        saveDirectory(entry, rootPath, next);
-                    } else {
-                        saveFile(entry, rootPath, next);
-                    }
-                }, callback);
-            }, callback);
+        function saveDirectory(dir, rootPath) {
+            // TODO: This won't work with directories with > 100 files yet (need to depleate reader)
+            return new Promise(function(resolve, reject) {
+                var reader = dir.createReader();
+                reader.readEntries(function(entries) {
+                    async.parForEach(entries, function(entry, next) {
+                        if (entry.isDirectory) {
+                            saveDirectory(entry, rootPath, next);
+                        } else {
+                            saveFile(entry, rootPath, next);
+                        }
+                    }, resolve);
+                }, reject);
+            });
         }
 
         function filesDropped(data) {
@@ -85,7 +90,7 @@ define(function(require, exports, module) {
             ui.prompt({
                 message: "Uploading files. Desired path prefix:",
                 input: "/"
-            }, function(err, path) {
+            }).then(function(path) {
                 if (!path) {
                     return;
                 }
@@ -93,13 +98,13 @@ define(function(require, exports, module) {
                     path = path.substring(0, path.length - 1);
                 }
                 ui.blockUI("Uploading...");
-                async.parForEach(entries, function(entry, next) {
+                return Promise.all(entries.map(function(entry) {
                     if (entry.isFile) {
-                        saveFile(entry, path, next);
+                        return saveFile(entry, path);
                     } else if (entry.isDirectory) {
-                        saveDirectory(entry, path, next);
+                        return saveDirectory(entry, path);
                     }
-                }, function() {
+                })).then(function() {
                     goto.fetchFileList();
                     ui.unblockUI();
                 });

@@ -73,12 +73,12 @@ define(function(require, exports, module) {
                 return configCommands[path] || commands[path];
             },
 
-            exec: function(path, edit, session, callback) {
+            exec: function(path, edit, session) {
                 var def = api.lookup(path);
                 if (!session.getTokenAt) { // Check if this is a session object
                     console.error("Did not pass in session to exec", arguments);
                 }
-                def.exec.apply(null, _.toArray(arguments).slice(1));
+                return Promise.resolve(def.exec.apply(null, _.toArray(arguments).slice(1)));
             },
 
             allCommands: function() {
@@ -156,7 +156,7 @@ define(function(require, exports, module) {
 
         api.define("Help:Commands", {
             exec: function(edit, session) {
-                zed.getService("session_manager").go("zed::commands", edit, session, function(err, session) {
+                return zed.getService("session_manager").go("zed::commands", edit, session).then(function(session) {
                     var command_list = "> Zed Online Command Reference.\n" +
                         "\n   What follows is a complete reference of all commands " +
                         "known to Zed, and their current keybindings, even if " +

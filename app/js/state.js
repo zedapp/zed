@@ -57,30 +57,27 @@ define(function(require, exports, module) {
             get: function(key) {
                 return state[key];
             },
-            load: function(callback) {
+            load: function() {
                 if (isHygienic()) {
                     state = {};
                     eventbus.emit("stateloaded", api);
-                    return callback && callback({});
+                    return Promise.resolve({});
                 }
-                fs.readFile("/.zedstate", function(err, json) {
-                    if (err) {
-                        // No worries, empty state!
-                        json = "{}";
-                    }
-                    try {
-                        state = JSON.parse(json);
-                    } catch (e) {
-                        console.error("Could not parse state: ", e, json);
-                        state = {};
-                    }
+                return fs.readFile("/.zedstate").then(function(json) {
+                    state = JSON.parse(json);
                     eventbus.emit("stateloaded", api);
-                    callback && callback(state);
+                    return state;
+                }).catch(function(err) {
+                    state = {};
+                    eventbus.emit("stateloaded", api);
+                    return state;
                 });
             },
-            save: function(callback) {
+            save: function() {
                 if (!isHygienic()) {
-                    fs.writeFile("/.zedstate", this.toJSON(), callback || function() {});
+                    return fs.writeFile("/.zedstate", api.toJSON());
+                } else {
+                    return Promise.resolve();
                 }
             },
             toJSON: function() {
@@ -88,7 +85,7 @@ define(function(require, exports, module) {
             },
             reset: function() {
                 state = {};
-                api.save();
+                return api.save();
             }
         };
 

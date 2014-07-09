@@ -73,31 +73,25 @@ define(function(require, exports, module) {
             loadCss(theme.css);
         }
 
-        function loadCss(cssFiles, watch, callback) {
+        function loadCss(cssFiles, watch) {
             var cssCode = "";
-            async.forEach(cssFiles, function(file, next) {
+            return Promise.all(cssFiles.map(function(file) {
                 if (watch) {
                     watchFile(file, reloadTheme);
                 }
-                configfs.readFile(file, function(err, cssCode_) {
-                    if (err) {
-                        return console.error("Error setting theme", err);
-                    }
+                return configfs.readFile(file).then(function(cssCode_) {
                     cssCode += cssCode_ + "\n";
-                    next();
                 });
-            }, function() {
+            })).then(function() {
                 $('#theme-css').html(cssCode);
-                callback && callback();
             });
         }
 
         function loadUserCss() {
-            configfs.readFile("/user.css", function(err, cssCode) {
-                if (err) {
-                    return console.error("Error loading user css", err);
-                }
+            return configfs.readFile("/user.css").then(function(cssCode) {
                 $("#user-css").html(cssCode);
+            }, function(err) {
+                console.error("Error loading user css", err);
             });
         }
 
