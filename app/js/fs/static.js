@@ -27,6 +27,9 @@ define(function(require, exports, module) {
             },
             readFile: function(path) {
                 return http_cache.fetchUrl(root + path, {}).then(function(text) {
+                    if(!window.readOnlyFiles) {
+                        window.readOnlyFiles = {};
+                    }
                     if (readOnlyFn && readOnlyFn(path)) {
                         window.readOnlyFiles[path] = true;
                         return text;

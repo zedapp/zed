@@ -14,11 +14,6 @@ define(function(require, exports, module) {
         var windows = imports.windows;
         var win = imports.window;
 
-        // SUPER FUGLY HACK
-        // file systems keep track of which (read) files are read-only here
-        // used by fs/static.js and session_manager.js#loadFile
-        window.readOnlyFiles = {};
-
         $("title").text(opts.get("title") + " [ Zed ]");
 
         command.define("Project:Open Project Picker", {

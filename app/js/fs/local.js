@@ -38,7 +38,7 @@ define(function(require, exports, module) {
         function mkdirs(path) {
             var parts = path.split("/");
             if (parts.length === 1) {
-                return;
+                return Promise.resolve();
             } else {
                 return mkdirs(parts.slice(0, parts.length - 1).join("/")).then(function() {
                     return new Promise(function(resolve, reject) {

@@ -117,6 +117,7 @@ define(function(require, exports, module) {
                         err: "No such method: " + mod
                     }, "*");
                 }
+                // console.log(mod, data.call);
                 mod[data.call].apply(mod, data.args).then(function(result) {
                     event.source.postMessage({
                         replyTo: data.id,
@@ -182,7 +183,7 @@ define(function(require, exports, module) {
             }
         });
 
-        resetSandbox(function() {
+        resetSandbox().then(function() {
             register(null, {
                 sandbox: api
             });

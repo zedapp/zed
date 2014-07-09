@@ -40,7 +40,7 @@ define(function(require, exports, module) {
         var api = {
             listFiles: function() {
                 var files = [];
-                Promise.all(fileSystems.map(function(fs) {
+                return Promise.all(fileSystems.map(function(fs) {
                     return fs.listFiles().then(function(files_) {
                         files_.forEach(function(filename) {
                             if (files.indexOf(filename) === -1) {

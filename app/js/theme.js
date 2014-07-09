@@ -46,7 +46,7 @@ define(function(require, exports, module) {
         function setTheme(name) {
             clearWatchers();
             var theme = config.getTheme(name) || config.getTheme(defaultTheme);
-            loadCss(theme.css, true, function() {
+            loadCss(theme.css, true).then(function() {
                 $("body").attr("class", theme.cssClass + (theme.dark ? " dark ace_dark" : " ") + (!useragent.isMac ? " non_mac" : " mac"));
             });
         }

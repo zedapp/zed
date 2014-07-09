@@ -58,7 +58,7 @@ define(function(require, exports, module) {
                 });
 
                 win.setCloseHandler(function() {
-                    saveSession(editor.getActiveSession(), function() {
+                    saveSession(editor.getActiveSession()).then(function() {
                         win.close(true);
                     });
                 });
@@ -122,6 +122,7 @@ define(function(require, exports, module) {
                 session.dirty = false;
             }, function(err) {
                 eventbus.emit("sessionactivityfailed", session, "Failed to save");
+                console.error("Failed to save", err);
                 return Promise.reject(err);
             });
         }
@@ -164,7 +165,7 @@ define(function(require, exports, module) {
         function loadFile(path) {
             return fs.readFile(path).then(function(text) {
                 var session = editor.createSession(path, text);
-                session.readOnly = !! window.readOnlyFiles[path];
+                session.readOnly = window.readOnlyFiles && !!window.readOnlyFiles[path];
                 setupSave(session);
                 return session;
             });

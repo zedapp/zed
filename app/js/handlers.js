@@ -111,6 +111,7 @@ define(function(require, exports, module) {
                 if (config.getHandlers()[handlerName]) {
                     commandNames = config.getHandlers()[handlerName];
                 }
+                session = editor.getActiveSession();
             }
 
             function runCommands() {
