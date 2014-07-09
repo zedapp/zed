@@ -1,0 +1,75 @@
+.base16-default {
+  background-color: #151515;
+  color: #d0d0d0;
+}
+
+.base16-default .ace_gutter {
+  background: #202020;
+  color: #505050;
+}
+
+.base16-default .ace_invisible {
+  color: #505050;
+}
+
+.base16-default .ace_print-margin {
+  width: 1px;
+  background: #505050;
+}
+
+.base16-default .ace_entity.ace_name.ace_tag,
+.base16-default .ace_keyword,
+.base16-default .ace_meta.ace_tag,
+.base16-default .ace_storage {
+  color: #f4bf75;
+}
+
+.base16-default .ace_constant.ace_character,
+.base16-default .ace_constant.ace_language,
+.base16-default .ace_constant.ace_numeric,
+.base16-default .ace_constant.ace_other {
+  color: #f4bf75;
+}
+
+.base16-default .ace_string {
+  color: #90a959;
+}
+
+.base16-default .ace_storage.ace_type,
+.base16-default .ace_support.ace_class,
+.base16-default .ace_support.ace_type {
+  color: #d28445;
+}
+
+.base16-default .ace_entity.ace_name.ace_function,
+.base16-default .ace_entity.ace_other,
+.base16-default .ace_entity.ace_other.ace_attribute-name,
+.base16-default .ace_variable {
+  color: #90a959;
+}
+
+.base16-default .ace_regexp {
+  color: #75b5aa;
+}
+
+.base16-default .ace_marker-layer .ace_selection {
+  background: #303030;
+}
+
+.base16-default.ace_multiselect .ace_selection.ace_start {
+  box-shadow: 0 0 3px 0px #303030;
+  border-radius: 2px;
+}
+
+.base16-default .ace_marker-layer .ace_active-line {
+  background: #303030;
+}
+
+.base16-default .ace_gutter-active-line {
+  background-color: #303030;
+  color: #b0b0b0;
+}
+
+.base16-default .ace_comment {
+  color: #505050;
+}

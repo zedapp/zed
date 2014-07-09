@@ -197,6 +197,12 @@
             "dark": true,
             "cssClass": "ace-vibrant-ink",
             "css": "/default/theme/vibrant_ink.css"
+        },
+        "base16": {
+            "name": "Base 16",
+            "dark": true,
+            "cssClass": "base16-default",
+            "css": "/default/theme/base16-default.css"
         }
     }
 }
