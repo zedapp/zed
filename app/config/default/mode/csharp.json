@@ -5,7 +5,29 @@
             highlighter: "ace/mode/csharp",
             extensions: [
                 "cs"
-            ]
+            ],
+
+            commands: {
+                "Tools:Index": {
+                    scriptUrl: "/default/command/regex_indexer.js",
+                    inputs: {
+                        text: true
+                    },
+                    regexes: [{
+                        regex: "[a-zA-Z0-9_\\$]+\\s+([a-zA-Z0-9_\\$]+)\\s*\\([^\\)]*\\)\\s*\\{",
+                        symbolIndex: 1,
+                        type: "function"
+                    }, {
+                        regex: "(class|struct)\\s+([a-zA-Z0-9_\\$]+)\\s*(:|\\{)",
+                        symbolIndex: 2,
+                        type: "type"
+                    }]
+                }
+            },
+
+            handlers: {
+                index: ["Tools:Index"]
+            }
         }
     }
 }

@@ -5,7 +5,29 @@
             highlighter: "ace/mode/java",
             extensions: [
                 "java"
-            ]
+            ],
+
+            commands: {
+                "Tools:Index": {
+                    scriptUrl: "/default/command/regex_indexer.js",
+                    inputs: {
+                        text: true
+                    },
+                    regexes: [{
+                        regex: "[a-zA-Z0-9_\\$]+\\s+([a-zA-Z0-9_\\$]+)\\s*\\([^\\)]*\\)\\s*\\{",
+                        symbolIndex: 1,
+                        type: "function"
+                    }, {
+                        regex: "class\\s+([a-zA-Z0-9_\\$]+)\\s*(extends|implements|\\{)",
+                        symbolIndex: 1,
+                        type: "type"
+                    }]
+                }
+            },
+
+            handlers: {
+                index: ["Tools:Index"]
+            }
         }
     }
 }
