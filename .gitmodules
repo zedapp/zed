@@ -19,3 +19,9 @@
 [submodule "app/config/packages/gh/zedapp/json5-mode"]
 	path = app/config/packages/gh/zedapp/json5-mode
 	url = https://github.com/zedapp/json5-mode.git
+[submodule "app/config/packages/gh/zedapp/follow-complete"]
+	path = app/config/packages/gh/zedapp/follow-complete
+	url = https://github.com/zedapp/follow-complete.git
+[submodule "app/config/packages/gh/zedapp/bracket-check"]
+	path = app/config/packages/gh/zedapp/bracket-check
+	url = https://github.com/zedapp/bracket-check.git
