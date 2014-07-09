@@ -147,6 +147,7 @@ exports.installAll = function() {
         packageUris = packageUris_;
         return exports.getInstalledPackages();
     }).then(function(packages) {
+        // console.log("Installed packages", packages);
         var notYetInstalled = _.filter(packageUris, function(uri) {
             return !packages[uri];
         });

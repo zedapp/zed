@@ -45,8 +45,8 @@
 /default/mode/csharp.json
 /default/mode/dart.json
 /default/mode/erlang.json
+/default/mode/glsl.json
 /default/mode/go.json
-/default/mode/go/index.js
 /default/mode/groovy.json
 /default/mode/haml.json
 /default/mode/handlebars.json
@@ -81,7 +81,6 @@
 /default/mode/plist.json
 /default/mode/protobuf.json
 /default/mode/python.json
-/default/mode/python/index.js
 /default/mode/rhtml.json
 /default/mode/ruby.json
 /default/mode/rust.json
@@ -91,6 +90,7 @@
 /default/mode/search-results.json
 /default/mode/search-results/open.js
 /default/mode/sh.json
+/default/mode/stylus.json
 /default/mode/text.json
 /default/mode/xml.json
 /default/mode/xsl.json
@@ -142,6 +142,9 @@
 /default/zpm/zpm.js
 /default/zpm/zpm.json
 /packages/.DS_Store
+/packages/gh/zedapp/bracket-check/check.js
+/packages/gh/zedapp/bracket-check/config.json
+/packages/gh/zedapp/bracket-check/package.json
 /packages/gh/zedapp/css-mode/beautify-css.js
 /packages/gh/zedapp/css-mode/beautify.js
 /packages/gh/zedapp/css-mode/check.js
@@ -149,6 +152,11 @@
 /packages/gh/zedapp/css-mode/csslint.js
 /packages/gh/zedapp/css-mode/index.js
 /packages/gh/zedapp/css-mode/package.json
+/packages/gh/zedapp/follow-complete/complete.js
+/packages/gh/zedapp/follow-complete/config.json
+/packages/gh/zedapp/follow-complete/index.js
+/packages/gh/zedapp/follow-complete/package.json
+/packages/gh/zedapp/follow-complete/trigger_complete.js
 /packages/gh/zedapp/javascript-mode/beautify-js.js
 /packages/gh/zedapp/javascript-mode/beautify.js
 /packages/gh/zedapp/javascript-mode/check.js
@@ -169,7 +177,6 @@
 /packages/gh/zedapp/jsx-mode/transform.js
 /packages/gh/zedapp/php-mode/check.js
 /packages/gh/zedapp/php-mode/config.json
-/packages/gh/zedapp/php-mode/index.js
 /packages/gh/zedapp/php-mode/package.json
 /packages/gh/zedapp/php-mode/php.js
 /user.css

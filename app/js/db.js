@@ -84,7 +84,9 @@ define(function(require, exports, module) {
 
             function recreate() {
                 return zedb.delete(dbName).then(function() {
-                    return init(schema);
+                    setTimeout(function() {
+                        return init(schema);
+                    }, 1000);
                 });
             }
         }

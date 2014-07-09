@@ -15,6 +15,8 @@
         "gh:zedapp/json5-mode",
         "gh:zedapp/php-mode",
         "gh:zedapp/css-mode",
-        "gh:zedapp/jsx-mode"
+        "gh:zedapp/jsx-mode",
+        "gh:zedapp/follow-complete",
+        "gh:zedapp/bracket-check"
     ]
 }

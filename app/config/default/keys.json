@@ -1,6 +1,5 @@
 {
     "keys": {
-        "Navigate:Reload Filelist": "F5",
         "Navigate:Goto": {
             "mac": "Command-E",
             "win": "Ctrl-E"
@@ -234,6 +233,10 @@
         "Navigate:Path Under Cursor": {
             "mac": "Command-Shift-E",
             "win": "Ctrl-Shift-E"
+        },
+        "Navigate:Reload Filelist": {
+            "mac": "Command-Shift-L|F5",
+            "win": "Ctrl-Shift-L|F5"
         },
         "Find:Next Instance Of Identifier": {
             "mac": "Command-]",

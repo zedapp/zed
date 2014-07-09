@@ -67,9 +67,6 @@ define(function(require, exports, module) {
 
                         reader.readEntries(function(entries) {
                             async.parForEach(entries, function(entry, next) {
-                                // if (entry.name[0] === ".") {
-                                //     return next();
-                                // }
                                 if (entry.isDirectory) {
                                     readDir(entry, next);
                                 } else {
