@@ -39,88 +39,94 @@ define(function(require, exports, module) {
 
         function wrapFilesystem(root) {
             var api = {
-                listFiles: function(callback) {
-                    var reader = root.createReader();
+                listFiles: function() {
+                    return new Promise(function(resolve, reject) {
+                        var reader = root.createReader();
 
-                    var results = [];
-                    function readDirEntriesUntilEmpty() {
-                        reader.readEntries(function(entries) {
-                            for (var i = 0; i < entries.length; i++) {
-                                var entry = entries[i];
-                                if (entry.name.indexOf(namespace) !== 0) {
-                                    continue;
+                        var results = [];
+                        function readDirEntriesUntilEmpty() {
+                            reader.readEntries(function(entries) {
+                                for (var i = 0; i < entries.length; i++) {
+                                    var entry = entries[i];
+                                    if (entry.name.indexOf(namespace) !== 0) {
+                                        continue;
+                                    }
+                                    if (entry.name == namespace + ".zedstate") {
+                                        continue;
+                                    }
+                                    results.push(decodePath(entry.name));
                                 }
-                                if (entry.name == namespace + ".zedstate") {
-                                    continue;
+                                if(entries.length === 0) {
+                                    resolve(results);
+                                } else {
+                                    readDirEntriesUntilEmpty();
                                 }
-                                results.push(decodePath(entry.name));
-                            }
-                            if(entries.length === 0) {
-                                callback(null, results);
-                            } else {
-                                readDirEntriesUntilEmpty();
-                            }
-                        });
-                    }
-                    readDirEntriesUntilEmpty();
-                },
-                readFile: function(path, callback) {
-                    var encodedPath = encodePath(path);
-                    root.getFile(encodedPath, {}, function(f) {
-                        var fileReader = new FileReader();
-                        fileReader.onload = function(e) {
-                            callback(null, e.target.result);
-                        };
-                        f.file(function(file) {
-                            fileReader.readAsText(file);
-                            watcher.setCacheTag(path, "" + file.lastModifiedDate);
-                        });
-                    }, callback);
-                },
-                writeFile: function(path, content, callback) {
-                    var encodedPath = encodePath(path);
-                    watcher.lockFile(path);
-                    root.getFile(encodedPath, {
-                        create: true
-                    }, function(fileEntry) {
-                        // For whatever we need to truncate in a separate step
-                        // Otherwise we'll end up overwriting the start of the file only.
-                        fileEntry.createWriter(function(fileTruncater) {
-                            fileTruncater.onwriteend = function() {
-                                fileEntry.createWriter(function(fileWriter) {
-                                    fileWriter.onwriteend = function() {
-                                        fileEntry.file(function(stat) {
-                                            watcher.setCacheTag(path, "" + stat.lastModifiedDate);
-                                            watcher.unlockFile(path);
-                                            callback();
-                                        });
-                                    };
-                                    fileWriter.onerror = function(e) {
-                                        watcher.unlockFile(path);
-                                        callback(e.toString());
-                                    };
-
-                                    var blob = new Blob([content]);
-                                    fileWriter.write(blob);
-                                }, function(err) {
-                                    watcher.unlockFile(path);
-                                    callback(err);
-                                });
-                            };
-                            fileTruncater.truncate(0);
-                        });
-                    }, function(err) {
-                        watcher.unlockFile(path);
-                        callback(err);
+                            }, reject);
+                        }
+                        readDirEntriesUntilEmpty();
                     });
                 },
-                deleteFile: function(path, callback) {
+                readFile: function(path) {
+                    return new Promise(function(resolve, reject) {
+                        var encodedPath = encodePath(path);
+                        root.getFile(encodedPath, {}, function(f) {
+                            var fileReader = new FileReader();
+                            fileReader.onload = function(e) {
+                                resolve(e.target.result);
+                            };
+                            f.file(function(file) {
+                                fileReader.readAsText(file);
+                                watcher.setCacheTag(path, "" + file.lastModifiedDate);
+                            });
+                        }, reject);
+                    });
+                },
+                writeFile: function(path, content) {
                     var encodedPath = encodePath(path);
-                    root.getFile(encodedPath, {}, function(fileEntry) {
-                        fileEntry.remove(function() {
-                            callback();
-                        }, callback);
-                    }, callback);
+                    watcher.lockFile(path);
+                    return (new Promise(function(resolve, reject) {
+                        root.getFile(encodedPath, {
+                            create: true
+                        }, function(fileEntry) {
+                            // For whatever we need to truncate in a separate step
+                            // Otherwise we'll end up overwriting the start of the file only.
+                            fileEntry.createWriter(function(fileTruncater) {
+                                fileTruncater.onwriteend = function() {
+                                    fileEntry.createWriter(function(fileWriter) {
+                                        fileWriter.onwriteend = function() {
+                                            fileEntry.file(function(stat) {
+                                                watcher.setCacheTag(path, "" + stat.lastModifiedDate);
+                                                watcher.unlockFile(path);
+                                                resolve();
+                                            });
+                                        };
+                                        fileWriter.onerror = function(e) {
+                                            reject(e.toString());
+                                        };
+
+                                        var blob = new Blob([content]);
+                                        fileWriter.write(blob);
+                                    }, function(err) {
+                                        reject(err);
+                                    });
+                                };
+                                fileTruncater.truncate(0);
+                            });
+                        }, function(err) {
+                            reject(err);
+                        });
+                    })).catch(function(err) {
+                        watcher.unlockFile(path);
+                        throw err;
+                    });
+                },
+                deleteFile: function(path) {
+                    var encodedPath = encodePath(path);
+                    return new Promise(function(resolve, reject) {
+                        root.getFile(encodedPath, {}, function(fileEntry) {
+                            fileEntry.remove(resolve, reject);
+                        }, reject);
+                    });
                 },
                 watchFile: function(path, callback) {
                     watcher.watchFile(path, callback);
@@ -128,14 +134,16 @@ define(function(require, exports, module) {
                 unwatchFile: function(path, callback) {
                     watcher.unwatchFile(path, callback);
                 },
-                getCacheTag: function(path, callback) {
+                getCacheTag: function(path) {
                     var encodedPath = encodePath(path);
-                    root.getFile(encodedPath, {}, function(f) {
-                        f.file(function(stat) {
-                            callback(null, "" + stat.lastModifiedDate);
+                    return new Promise(function(resolve, reject) {
+                        root.getFile(encodedPath, {}, function(f) {
+                            f.file(function(stat) {
+                                resolve("" + stat.lastModifiedDate);
+                            });
+                        }, function() {
+                            reject(404);
                         });
-                    }, function() {
-                        callback(404);
                     });
                 }
             };

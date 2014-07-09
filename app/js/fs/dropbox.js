@@ -40,115 +40,129 @@ define(function(require, exports, module) {
                 return rootPath + filename;
             }
 
-            function mkdirs(path, callback) {
+            function mkdirs(path) {
                 var parts = path.split("/");
                 if (parts.length === 1) {
-                    callback();
+                    return Promise.resolve();
                 } else {
-                    mkdirs(parts.slice(0, parts.length - 1).join("/"), function(err) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        dropbox.stat(path, function(err, result) {
-                            if (err || result.isRemoved) {
-                                dropbox.mkdir(path, callback);
-                            } else {
-                                callback();
-                            }
+                    return mkdirs(parts.slice(0, parts.length - 1).join("/")).then(function() {
+                        return new Promise(function(resolve, reject) {
+                            dropbox.stat(path, function(err, result) {
+                                if (err || result.isRemoved) {
+                                    dropbox.mkdir(path, function(err) {
+                                        if (err) {
+                                            return reject(err);
+                                        }
+                                        resolve();
+                                    });
+                                } else {
+                                    resolve();
+                                }
+                            });
                         });
                     });
                 }
             }
 
-            function listFiles(callback) {
+            function listFiles() {
                 var files = [];
-
-                function readDir(dir, callback) {
-                    dropbox.readdir(dir, function(err, stringEntries, dirStat, entries) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        async.parForEach(entries, function(entry, next) {
-                            // if (entry.name[0] === ".") {
-                            //     return next();
-                            // }
-                            if (entry.isFolder) {
-                                readDir(entry.path, next);
-                            } else {
-                                files.push(entry.path);
-                                next();
+                return new Promise(function(resolve, reject) {
+                    function readDir(dir, callback) {
+                        dropbox.readdir(dir, function(err, stringEntries, dirStat, entries) {
+                            if (err) {
+                                return callback(err);
                             }
-                        }, callback);
-                    });
-                }
-                readDir(rootPath, function(err) {
-                    if (err) {
-                        return callback(err);
+                            async.parForEach(entries, function(entry, next) {
+                                // if (entry.name[0] === ".") {
+                                //     return next();
+                                // }
+                                if (entry.isFolder) {
+                                    readDir(entry.path, next);
+                                } else {
+                                    files.push(entry.path);
+                                    next();
+                                }
+                            }, callback);
+                        });
                     }
-                    callback(null, files.map(stripRoot));
+                    readDir(rootPath, function(err) {
+                        if (err) {
+                            return reject(err);
+                        }
+                        resolve(files.map(stripRoot));
+                    });
                 });
+
             }
 
-            function readFile(path, callback) {
+            function readFile(path) {
                 var fullPath = addRoot(path);
-                dropbox.readFile(fullPath, function(err, content, stat) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    watcher.setCacheTag(path, stat.versionTag);
-                    callback(null, content);
+                return new Promise(function(resolve, reject) {
+                    dropbox.readFile(fullPath, function(err, content, stat) {
+                        if (err) {
+                            return reject(err);
+                        }
+                        watcher.setCacheTag(path, stat.versionTag);
+                        resolve(content);
+                    });
                 });
             }
 
             function writeFile(path, content, callback) {
-
                 watcher.lockFile(path);
                 var fullPath = addRoot(path);
 
-                function doWrite(callback) {
-                    dropbox.writeFile(fullPath, content, function(err, stat) {
-                        if (err) {
+                function doWrite() {
+                    return new Promise(function(resolve, reject) {
+                        dropbox.writeFile(fullPath, content, function(err, stat) {
+                            if (err) {
+                                watcher.unlockFile(path);
+                                return reject(err);
+                            }
+                            watcher.setCacheTag(path, stat.versionTag);
                             watcher.unlockFile(path);
-                            return callback(err);
-                        }
-                        watcher.setCacheTag(path, stat.versionTag);
-                        watcher.unlockFile(path);
-                        callback();
+                            resolve();
+                        });
                     });
                 }
 
-                doWrite(function(err) {
-                    if (err) {
-                        // Presumably directory did not yet exist
-                        mkdirs(dirname(fullPath), function(err) {
-                            if (err) {
-                                watcher.unlockFile(path);
-                                return callback(err);
-                            }
-                            doWrite(callback);
-                        });
-                    }
+                return doWrite().then(function() {
                     watcher.unlockFile(path);
-                    callback();
+                }, function(err) {
+                    // Presumably directory did not yet exist
+                    return mkdirs(dirname(fullPath)).then(doWrite);
+                }).
+                catch (function(err) {
+                    watcher.unlockFile(path);
                 });
             }
 
             function deleteFile(path, callback) {
                 var fullPath = addRoot(path);
-                dropbox.remove(fullPath, callback);
+                return new Promise(function(resolve, reject) {
+                    dropbox.remove(fullPath, function(err) {
+                        if(err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                });
             }
 
             function getCacheTag(path, callback) {
                 var fullPath = addRoot(path);
-                dropbox.stat(fullPath, function(err, stat) {
-                    if (err) {
-                        return callback(err);
-                    }
-                    if (stat.isRemoved) {
-                        return callback(404);
-                    } else {
-                        callback(null, stat.versionTag);
-                    }
+                return new Promise(function(resolve, reject) {
+                    dropbox.stat(fullPath, function(err, stat) {
+                        if (err) {
+                            return reject(err);
+                        }
+                        if (stat.isRemoved) {
+                            return reject(404);
+                        } else {
+                            resolve(stat.versionTag);
+                        }
+                    });
                 });
             }
 

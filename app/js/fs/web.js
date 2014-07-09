@@ -11,55 +11,59 @@ define(function(require, exports, module) {
         var fileModeFilename; // if mode === "file"
         var watcher;
 
-        function listFiles(callback) {
-            if (mode === "file") {
-                return callback(null, [fileModeFilename]);
-            }
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {
-                    action: 'filelist'
-                },
-                success: function(res) {
-                    var items = res.split("\n");
-                    for (var i = 0; i < items.length; i++) {
-                        if (!items[i]) {
-                            items.splice(i, 1);
-                            i--;
+        function listFiles() {
+            return new Promise(function(resolve, reject) {
+                if (mode === "file") {
+                    return resolve([fileModeFilename]);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        action: 'filelist'
+                    },
+                    success: function(res) {
+                        var items = res.split("\n");
+                        for (var i = 0; i < items.length; i++) {
+                            if (!items[i]) {
+                                items.splice(i, 1);
+                                i--;
+                            }
                         }
-                    }
-                    callback(null, items);
-                },
-                error: function(xhr) {
-                    callback(xhr.status);
-                },
-                dataType: "text"
+                        resolve(items);
+                    },
+                    error: function(xhr) {
+                        reject(xhr.status);
+                    },
+                    dataType: "text"
+                });
             });
         }
 
-        function readFile(path, callback) {
+        function readFile(path) {
             if (mode === "file") {
                 if (path === "/.zedstate") {
-                    return callback(null, JSON.stringify({
+                    return Promise.resolve(JSON.stringify({
                         "session.current": [fileModeFilename]
                     }));
                 }
                 if (path !== fileModeFilename) {
-                    return callback(404);
+                    return Promise.reject(404);
                 }
             }
-            $.ajax({
-                type: "GET",
-                url: url + path,
-                error: function(xhr) {
-                    callback(xhr.status);
-                },
-                success: function(res, status, xhr) {
-                    watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
-                    callback(null, res);
-                },
-                dataType: "text"
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    type: "GET",
+                    url: url + path,
+                    error: function(xhr) {
+                        reject(xhr.status);
+                    },
+                    success: function(res, status, xhr) {
+                        watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
+                        resolve(res);
+                    },
+                    dataType: "text"
+                });
             });
         }
 
@@ -67,39 +71,41 @@ define(function(require, exports, module) {
             if (mode === "file") {
                 // Ignore state saves
                 if (path === "/.zedstate") {
-                    return callback();
+                    return Promise.resolve();
                 }
                 if (path !== fileModeFilename) {
-                    return callback(500);
+                    return Promise.reject(500);
                 }
             }
             watcher.lockFile(path);
-            $.ajax(url + path, {
-                type: 'PUT',
-                data: content,
-                dataType: 'text',
-                success: function(res, status, xhr) {
-                    watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
-                    watcher.unlockFile(path);
-                    callback(null, res);
-                },
-                error: function(xhr) {
-                    watcher.unlockFile(path);
-                    callback(xhr.status || xhr.statusText);
-                }
+            return new Promise(function(resolve, reject) {
+                $.ajax(url + path, {
+                    type: 'PUT',
+                    data: content,
+                    dataType: 'text',
+                    success: function(res, status, xhr) {
+                        watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
+                        watcher.unlockFile(path);
+                        resolve(res);
+                    },
+                    error: function(xhr) {
+                        watcher.unlockFile(path);
+                        reject(xhr.status || xhr.statusText);
+                    }
+                });
             });
         }
 
         function deleteFile(path, callback) {
-            $.ajax(url + path, {
-                type: 'DELETE',
-                dataType: 'text',
-                success: function(res) {
-                    callback(null, res);
-                },
-                error: function(xhr) {
-                    callback(xhr.status);
-                }
+            return new Promise(function(resolve, reject) {
+                $.ajax(url + path, {
+                    type: 'DELETE',
+                    dataType: 'text',
+                    success: reject,
+                    error: function(xhr) {
+                        resolve(xhr.status);
+                    }
+                });
             });
         }
 
@@ -111,16 +117,18 @@ define(function(require, exports, module) {
             watcher.unwatchFile(path, callback);
         }
 
-        function getCacheTag(path, callback) {
-            $.ajax(url + path, {
-                type: 'HEAD',
-                success: function(data, status, xhr) {
-                    var newEtag = xhr.getResponseHeader("ETag");
-                    callback(null, newEtag);
-                },
-                error: function(xhr) {
-                    callback(xhr.status);
-                }
+        function getCacheTag(path) {
+            return new Promise(function(resolve, reject) {
+                $.ajax(url + path, {
+                    type: 'HEAD',
+                    success: function(data, status, xhr) {
+                        var newEtag = xhr.getResponseHeader("ETag");
+                        resolve(newEtag);
+                    },
+                    error: function(xhr) {
+                        reject(xhr.status);
+                    }
+                });
             });
         }
 

@@ -20,74 +20,59 @@ define(function(require, exports, module) {
          * @param options:
          *    - watchSelf: emit change events on things written by this fs
          */
-        function attempt(fnName, args, callback) {
+        function attempt(fnName, args) {
             var index = 0;
 
             function attemptOne() {
-                fileSystems[index][fnName].apply(fileSystems[index], args.concat([function(err) {
-                    if (err) {
-                        index++;
-                        if (index >= fileSystems.length) {
-                            return callback(err);
-                        } else {
-                            return attemptOne();
-                        }
+                return fileSystems[index][fnName].apply(fileSystems[index], args).catch(function(err) {
+                    index++;
+                    if (index >= fileSystems.length) {
+                        return Promise.reject(err);
+                    } else {
+                        return attemptOne();
                     }
-                    callback.apply(null, arguments);
-                }]));
+                });
             }
-            attemptOne();
+            return attemptOne();
         }
 
 
         var api = {
-            listFiles: function(callback) {
+            listFiles: function() {
                 var files = [];
-                async.parForEach(fileSystems, function(fs, next) {
-                    fs.listFiles(function(err, files_) {
-                        if (err) {
-                            console.error("Got error from filesystem", fs, err);
-                            return next();
-                        }
+                Promise.all(fileSystems.map(function(fs) {
+                    return fs.listFiles().then(function(files_) {
                         files_.forEach(function(filename) {
                             if (files.indexOf(filename) === -1) {
                                 files.push(filename);
                             }
                         });
-                        next();
+                    }, function(err) {
+                        console.error("Got error from filesystem", fs, err);
                     });
-                }, function() {
-                    callback(null, files);
+                })).then(function() {
+                    return files;
                 });
             },
-            readFile: function(path, callback) {
-                attempt("readFile", [path], function(err) {
-                    if (!err) {
-                        api.getCacheTag(path, function(err, tag) {
-                            if (err) {
-                                return console.error("Could not get tag for", path, "this shouldn't happen.");
-                            }
+            readFile: function(path) {
+                return attempt("readFile", [path]).then(function(d) {
+                    api.getCacheTag(path).then(function(tag) {
+                        watcher.setCacheTag(path, tag);
+                    });
+                    return d;
+                });
+            },
+            writeFile: function(path, content) {
+                return attempt("writeFile", [path, content]).then(function() {
+                    if (!watchSelf) {
+                        api.getCacheTag(path).then(function(tag) {
                             watcher.setCacheTag(path, tag);
                         });
                     }
-                    callback.apply(null, arguments);
                 });
             },
-            writeFile: function(path, content, callback) {
-                attempt("writeFile", [path, content], function(err) {
-                    if (!err && !watchSelf) {
-                        api.getCacheTag(path, function(err, tag) {
-                            if (err) {
-                                return console.error("Could not get tag for", path, "this shouldn't happen.");
-                            }
-                            watcher.setCacheTag(path, tag);
-                        });
-                    }
-                    callback.apply(null, arguments);
-                });
-            },
-            deleteFile: function(path, callback) {
-                attempt("deleteFile", [path], callback);
+            deleteFile: function(path) {
+                return attempt("deleteFile", [path]);
             },
             watchFile: function(path, callback) {
                 watcher.watchFile(path, callback);
@@ -95,8 +80,8 @@ define(function(require, exports, module) {
             unwatchFile: function(path, callback) {
                 watcher.unwatchFile(path, callback);
             },
-            getCacheTag: function(path, callback) {
-                attempt("getCacheTag", [path], callback);
+            getCacheTag: function(path) {
+                return attempt("getCacheTag", [path]);
             }
         };
 
