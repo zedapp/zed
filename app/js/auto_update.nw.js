@@ -35,28 +35,29 @@ define(function(require, exports, module) {
         setInterval(checkForUpdate, 1000 * 60 * 60 * 3);
 
         function checkForUpdate() {
-            if(updated) {
+            if (updated) {
                 // Already updated, no need to check again
                 return;
             }
-            getCurrentVersion(function(err, currentVersion) {
-                getNewVersion(function(err, newVersion) {
-                    if (err) {
-                        return showUpdateError("Couldn't check for updated version. No internet connection?");
-                    }
-                    console.log("Current version", currentVersion, "new version", newVersion);
-                    if (versionCompare(newVersion, currentVersion) > 0) {
-                        upgrade(newVersion, function(err) {
-                            if(err) {
-                                return showUpdateError(typeof err === "string" ? err : err.message);
-                            }
-                            updated = true;
-                            $("#update-available").fadeIn();
-                        });
-                    } else {
-                        console.log("No upgrade required");
-                    }
-                });
+            var currentVersion;
+            getCurrentVersion().then(function(currentVersion_) {
+                currentVersion = currentVersion_;
+                return getNewVersion();
+            }).then(function(newVersion) {
+                console.log("Current version", currentVersion, "new version", newVersion);
+                if (versionCompare(newVersion, currentVersion) > 0) {
+                    return upgrade(newVersion).then(function() {
+                        updated = true;
+                        $("#update-available").fadeIn();
+                    }, function(err) {
+                        return showUpdateError(typeof err === "string" ? err : err.message);
+                    });
+                } else {
+                    console.log("No upgrade required");
+                }
+            }).
+            catch (function(err) {
+                return showUpdateError("Couldn't check for updated version. No internet connection?");
             });
         }
 
@@ -68,31 +69,35 @@ define(function(require, exports, module) {
             }, 10 * 1000);
         }
 
-        function getCurrentVersion(callback) {
-            $.get("app://./manifest.json", function(text) {
-                var json = JSON.parse(text);
-                callback(null, json.version);
-            }).error(function(err) {
-                callback(err);
+        function getCurrentVersion() {
+            return new Promise(function(resolve, reject) {
+                $.get("app://./manifest.json", function(text) {
+                    var json = JSON.parse(text);
+                    resolve(json.version);
+                }).error(function(err) {
+                    reject(err);
+                });
             });
         }
 
-        function getNewVersion(callback) {
-            $.get(downloadUrl + "current-version.txt", function(text) {
-                callback(null, text.trim());
-            }).error(function(err) {
-                callback(err);
+        function getNewVersion() {
+            return new Promise(function(resolve, reject) {
+                $.get(downloadUrl + "current-version.txt", function(text) {
+                    resolve(text.trim());
+                }).error(function(err) {
+                    reject(err);
+                });
             });
         }
 
-        function downloadVersion(version, callback) {
+        function downloadVersion(version) {
             var downloadFilename = "zed-";
             switch (process.platform) {
                 case "darwin":
                     downloadFilename += "mac";
                     break;
                 case "linux":
-                    if(process.arch === "ia32") {
+                    if (process.arch === "ia32") {
                         downloadFilename += "linux32";
                     } else {
                         downloadFilename += "linux64";
@@ -102,7 +107,7 @@ define(function(require, exports, module) {
                     downloadFilename += "win";
                     break;
                 default:
-                    return callback("Platform not supported for auto updates");
+                    return Promise.reject("Platform not supported for auto updates");
             }
             downloadFilename += "-v" + version + ".tar.gz";
             var newAppDir = path.normalize(applicationPath + "/../zed.update");
@@ -112,32 +117,31 @@ define(function(require, exports, module) {
                 if (e.errno === -17) {
                     console.log("Directory already exists, that's ok.");
                 } else {
-                    return callback(e);
+                    return Promise.reject(e);
                 }
             }
-            http.get(downloadUrl + downloadFilename, function(res) {
-                res.pipe(zlib.createGunzip()).pipe(tar.Extract({
-                    path: newAppDir
-                })).on("error", function(err) {
-                    callback(err);
+            return new Promise(function(resolve, reject) {
+                http.get(downloadUrl + downloadFilename, function(res) {
+                    res.pipe(zlib.createGunzip()).pipe(tar.Extract({
+                        path: newAppDir
+                    })).on("error", function(err) {
+                        reject(err);
+                    });
+                    res.on("end", function() {
+                        resolve(newAppDir);
+                    });
+                    res.on("error", function(e) {
+                        reject(e);
+                    });
+                }).on('error', function(e) {
+                    reject(e);
                 });
-                res.on("end", function() {
-                    callback(null, newAppDir);
-                });
-                res.on("error", function(e) {
-                    callback(e);
-                });
-            }).on('error', function(e) {
-                callback(e);
             });
         }
 
-        function upgrade(version, callback) {
-            downloadVersion(version, function(err, outDir) {
+        function upgrade(version) {
+            return downloadVersion(version).then(function(outDir) {
                 var win = gui.Window.get();
-                if (err) {
-                    return callback("Download of update failed:" + err);
-                }
                 var dirName = outDir + "/zed";
                 if (process.platform === "darwin") {
                     dirName = outDir + "/Zed.app";
@@ -148,16 +152,16 @@ define(function(require, exports, module) {
                     // For windows we generate a batch file that is launched
                     // asynchronously, and does the switcharoo while Zed is not
                     // running to avoid locking errors.
-                    if(process.platform === "win32") {
+                    if (process.platform === "win32") {
                         var batchScriptPath = os.tmpdir() + "zed-update.bat";
                         fs.writeFileSync(batchScriptPath,
                             "echo Will update Zed in 5 seconds...\n\
-                            timeout /t 5 /nobreak\n\
-                            move \"" + applicationPath + "\" \"" + applicationPath+ ".prev\"\n\
-                            move \"" + dirName + "\" \"" + applicationPath+ "\"\n\
-                            rmdir /S /Q \"" + outDir + "\"\n\
-                            rmdir /S /Q \"" + applicationPath + ".prev\"\n\
-                            exit");
+                                timeout /t 5 /nobreak\n\
+                                move \"" + applicationPath + "\" \"" + applicationPath + ".prev\"\n\
+                                move \"" + dirName + "\" \"" + applicationPath + "\"\n\
+                                rmdir /S /Q \"" + outDir + "\"\n\
+                                rmdir /S /Q \"" + applicationPath + ".prev\"\n\
+                                exit");
                         exec("start " + batchScriptPath);
                         setTimeout(function() {
                             windows.closeAll();
@@ -171,12 +175,11 @@ define(function(require, exports, module) {
                             deleteFolderRecursive(outDir);
                             deleteFolderRecursive(applicationPath + ".prev");
                             this.close(true);
-                        } catch(e) {
-                            callback(e);
+                        } catch (e) {
+                            console.error("Failed to rename", e);
                         }
                     }
                 });
-                callback();
             });
         }
 

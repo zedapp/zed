@@ -1,17 +1,17 @@
 /* global define, zed */
 define(function(require, exports, module) {
     return {
-        listFiles: function(callback) {
-            zed.getService("configfs").listFiles(callback);
+        listFiles: function() {
+            return zed.getService("configfs").listFiles();
         },
-        readFile: function(path, callback) {
-            zed.getService("configfs").readFile(path, callback);
+        readFile: function(path) {
+            return zed.getService("configfs").readFile(path);
         },
-        writeFile: function(path, content, callback) {
-            zed.getService("configfs").writeFile(path, content, callback);
+        writeFile: function(path, content) {
+            return zed.getService("configfs").writeFile(path, content);
         },
-        deleteFile: function(path, callback) {
-            zed.getService("configfs").deleteFile(path, callback);
+        deleteFile: function(path) {
+            return zed.getService("configfs").deleteFile(path);
         }
     };
 });

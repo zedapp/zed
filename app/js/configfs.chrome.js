@@ -42,7 +42,7 @@ define(function(require, exports, module) {
                     }, function() {
                         zed.getService("ui").prompt({
                             message: "Configuration location set, will now restart Zed for changes to take effect."
-                        }, function() {
+                        }).then(function() {
                             chrome.runtime.reload();
                         });
                     });
@@ -58,7 +58,7 @@ define(function(require, exports, module) {
                 chrome.storage.local.remove("configDir", function() {
                     zed.getService("ui").prompt({
                         message: "Configuration location set to Google Drive, will now restart Zed for changes to take effect."
-                    }, function() {
+                    }).then(function() {
                         chrome.runtime.reload();
                     });
                 });

@@ -14,6 +14,11 @@ define(function(require, exports, module) {
         var windows = imports.windows;
         var win = imports.window;
 
+        // SUPER FUGLY HACK
+        // file systems keep track of which (read) files are read-only here
+        // used by fs/static.js and session_manager.js#loadFile
+        window.readOnlyFiles = {};
+
         $("title").text(opts.get("title") + " [ Zed ]");
 
         command.define("Project:Open Project Picker", {
@@ -35,7 +40,7 @@ define(function(require, exports, module) {
                 zed.getService("ui").prompt({
                     message: "Rename project to:",
                     input: opts.get('title')
-                }, function(err, name) {
+                }).then(function(name) {
                     if (!name) {
                         // canceled
                         return;

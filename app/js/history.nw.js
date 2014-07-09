@@ -9,8 +9,8 @@ define(function(require, exports, module) {
                 // Using setTimeout to wait for the whole architect app to the initialized
                 // kind of hacky, but ok
                 setTimeout(function pushIt() {
-                    if(!window.zed) {
-                        console.log("not Yet");
+                    if(!window.zed || !zed.getService("config")) {
+                        console.log("Not yet...");
                         return setTimeout(pushIt, 500);
                     }
                     console.log("Pushing project", name, url);
@@ -33,7 +33,7 @@ define(function(require, exports, module) {
                             name: name,
                             url: url
                         });
-                        config.loadConfiguration(function() {
+                        config.loadConfiguration().then(function() {
                             if (projects.length > config.getPreference("recentFolderHistory")) {
                                 var numToRemove = projects.length - config.getPreference("recentFolderHistory");
                                 projects.splice(projects.length - numToRemove, numToRemove);
@@ -50,7 +50,7 @@ define(function(require, exports, module) {
                     }
                 }, 500);
             },
-            renameProject: function(url, name, callback) {
+            renameProject: function(url, name) {
                 var projects;
                 try {
                     projects = JSON.parse(localStorage.recentProjects);
@@ -62,9 +62,9 @@ define(function(require, exports, module) {
                 });
                 project.name = name;
                 localStorage.recentProjects = JSON.stringify(projects);
-                callback && callback();
+                return Promise.resolve();
             },
-            removeProject: function(url, callback) {
+            removeProject: function(url) {
                 var projects;
                 try {
                     projects = JSON.parse(localStorage.recentProjects);
@@ -75,24 +75,24 @@ define(function(require, exports, module) {
                     return project.url !== url;
                 });
                 localStorage.recentProjects = JSON.stringify(projects);
-                callback();
+                return Promise.resolve();
             },
-            lookupProjectByUrl: function(url, callback) {
-                api.getProjects(function(err, projects) {
+            lookupProjectByUrl: function(url) {
+                return api.getProjects().then(function(projects) {
                     var project = _.findWhere(projects, {
                         url: url
                     });
-                    callback(null, project);
+                    return project;
                 });
             },
-            getProjects: function(callback) {
+            getProjects: function() {
                 var projects;
                 try {
                     projects = JSON.parse(localStorage.recentProjects);
                 } catch (e) {
                     projects = [];
                 }
-                callback(null, projects);
+                return Promise.resolve(projects);
             },
             addProjectChangeListener: function(listener) {
                 window.addEventListener('storage', listener, false);

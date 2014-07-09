@@ -59,7 +59,7 @@ define(function(require, exports, module) {
             },
             setPreference: function(key, value) {
                 config.preferences[key] = value;
-                if(!userConfig.preferences) {
+                if (!userConfig.preferences) {
                     // If this happens the user.json file contains syntax
                     // mistakes. However it's important to _still_ save this
                     // preference. What we'll do is effectively overwrite the
@@ -131,9 +131,9 @@ define(function(require, exports, module) {
                 var removals = {};
                 var newArray = [];
                 var el, i;
-                for(i = 0; i < dest.length; i++) {
+                for (i = 0; i < dest.length; i++) {
                     el = dest[i];
-                    if(_.isString(el) && el[0] === "!") {
+                    if (_.isString(el) && el[0] === "!") {
                         removals[el.substring(1)] = true;
                     } else {
                         newArray.push(el);
@@ -141,9 +141,9 @@ define(function(require, exports, module) {
                 }
                 for (i = 0; i < source.length; i++) {
                     el = source[i];
-                    if(_.isString(el) && el[0] === "!") {
+                    if (_.isString(el) && el[0] === "!") {
                         var idx = newArray.indexOf(el.substring(1));
-                        if(idx !== -1) {
+                        if (idx !== -1) {
                             // Remove from newArray
                             newArray.splice(idx, 1);
                         }
@@ -194,7 +194,7 @@ define(function(require, exports, module) {
         /**
          * Recursively import "imports" into the `expandedConfiguration` variable
          */
-        function expandConfiguration(setts, importedPackages, callback) {
+        function expandConfiguration(setts, importedPackages) {
             setts = _.extend({}, setts);
             var imports = setts.imports;
             delete setts.imports;
@@ -210,48 +210,39 @@ define(function(require, exports, module) {
             }
 
             if (imports) {
-                async.forEach(imports, function(imp, next) {
-                    function handleFile(err, text) {
-                        if (err) {
-                            console.warn("Error loading", imp, err);
-                            return next();
-                        }
+                return Promise.all(imports.map(function(imp) {
+                    return configfs.readFile(imp).then(function(text) {
                         var json;
                         try {
                             json = JSON5.parse(text);
                         } catch (e) {
                             console.error("In file", imp, e);
-                            next();
                             return;
                         }
                         resolveRelativePaths(json, imp);
-                        expandConfiguration(json, importedPackages, next);
-                    }
-
-                    configfs.readFile(imp, handleFile);
-                }, function() {
-                    callback();
-                });
+                        return expandConfiguration(json, importedPackages);
+                    }, function(err) {
+                        console.warn("Error loading", imp, err);
+                    });
+                }));
             } else {
-                callback();
+                return Promise.resolve();
             }
         }
 
-        function makeUserBackup(callback) {
-            configfs.readFile("/user.json", function(err, text) {
-                if(err) {
-                    // No user.json exists, move on
-                    return callback();
-                }
-                configfs.writeFile("/user.backup.json", text, callback);
+        function makeUserBackup() {
+            return configfs.readFile("/user.json").then(function(text) {
+                return configfs.writeFile("/user.backup.json", text);
+            }, function(err) {
+                // Probably the file didn't exist, that's ok -- move on
+                return;
             });
         }
 
         function writeUserPrefs() {
-            configfs.writeFile("/user.json", JSON5.stringify(userConfig, null, 4) + "\n", function(err) {
-                if (err) {
-                    console.error("Error during writing config:", err);
-                }
+            return configfs.writeFile("/user.json", JSON5.stringify(userConfig, null, 4) + "\n").
+            catch (function(err) {
+                console.error("Error during writing config:", err);
             });
         }
 
@@ -260,19 +251,19 @@ define(function(require, exports, module) {
          * - if a /zedconfig.json file exists in the project, use it
          * - otherwise use the /user.json file in the config project
          */
-        function loadConfiguration(callback) {
+        function loadConfiguration() {
             if (zed.services.goto && zed.getService("goto").getFileCache().indexOf("/zedconfig.json") !== -1) {
-                zed.getService("fs").readFile("/zedconfig.json", function(err, text) {
+                return zed.getService("fs").readFile("/zedconfig.json").then(function(text) {
                     var base = {};
                     try {
                         base = JSON5.parse(text);
                     } catch (e) {
                         console.error("Error parsing zedconfig.json", e);
                     }
-                    loadUserConfiguration(base, callback);
+                    return loadUserConfiguration(base);
                 });
             } else {
-                loadUserConfiguration({}, callback);
+                return loadUserConfiguration({});
             }
         }
 
@@ -281,26 +272,26 @@ define(function(require, exports, module) {
          * Extend the project config (or the empty object, if not present)
          * with config from /user.json from the config project
          */
-        function loadUserConfiguration(base, callback) {
+        function loadUserConfiguration(base) {
             var rootFile = "/user.json";
             config = superExtend(base, minimumConfiguration);
             expandedConfiguration = _.extend({}, config);
             clearWatchers();
             watchFile(configfs, rootFile, loadConfiguration);
-            configfs.readFile(rootFile, function(err, config_) {
+            return configfs.readFile(rootFile).then(function(config_) {
                 var json = {};
                 try {
                     json = JSON5.parse(config_);
                     resolveRelativePaths(json, rootFile);
-                } catch(e) {
+                } catch (e) {
                     console.error("Error parsing /user.json", e);
                 }
                 userConfig = json;
                 config = superExtend(config, json);
-                expandConfiguration(config, {}, function() {
-                    eventbus.emit("configchanged", api);
-                    _.isFunction(callback) && callback(null, api);
-                });
+                return expandConfiguration(config, {});
+            }).then(function() {
+                eventbus.emit("configchanged", api);
+                return api;
             });
         }
 
@@ -364,12 +355,12 @@ define(function(require, exports, module) {
                     message: "Are you sure you reset all config?"
                 }, function(err, yes) {
                     if (yes) {
-                        configfs.listFiles(function(err, files) {
-                            async.parForEach(files, function(path, next) {
-                                configfs.deleteFile(path, next);
-                            }, function() {
+                        configfs.listFiles().then(function(files) {
+                            return Promise.all(files.map(function(path) {
+                                return configfs.deleteFile(path);
+                            })).then(function() {
                                 console.log("All files removed!");
-                                loadConfiguration();
+                                return loadConfiguration();
                             });
                         });
                     }
@@ -379,8 +370,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Configuration:Show Full", {
-            doc: "Dump all configuration data into a temporary buffer called " +
-            "`zed::config` for ready-only inspection.",
+            doc: "Dump all configuration data into a temporary buffer called " + "`zed::config` for ready-only inspection.",
             exec: function(edit, session) {
                 zed.getService("session_manager").go("zed::config", edit, session, function(err, session) {
                     session.setMode("ace/mode/json");

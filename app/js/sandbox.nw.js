@@ -37,30 +37,38 @@ define(function(require, exports, module) {
              * Any other arguments added in spec are passed along as the first argument to the
              * module which is executed as a function.
              */
-            execCommand: function(name, spec, session, callback) {
-                if (session.$cmdInfo) {
-                    spec = _.extend(spec, session.$cmdInfo);
-                    session.$cmdInfo = null;
-                }
-                id++;
-                waitingForReply[id] = callback;
-                var scriptUrl = spec.scriptUrl;
-                if (scriptUrl[0] === "/") {
-                    scriptUrl = "configfs!" + scriptUrl;
-                }
-                // This data can be requested as input in commands.json
-                var inputs = {};
-                for (var input in (spec.inputs || {})) {
-                    inputs[input] = this.getInputable(session, input);
-                }
-                sandboxWorker.postMessage({
-                    url: scriptUrl,
-                    data: _.extend({}, spec, {
-                        path: session.filename,
-                        inputs: inputs
-                    }),
-                    id: id
-                });
+            execCommand: function(name, spec, session) {
+                return new Promise(function(resolve, reject) {
+                    if (session.$cmdInfo) {
+                        spec = _.extend(spec, session.$cmdInfo);
+                        session.$cmdInfo = null;
+                    }
+                    id++;
+                    waitingForReply[id] = function(err, result) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    };
+                    var scriptUrl = spec.scriptUrl;
+                    if (scriptUrl[0] === "/") {
+                        scriptUrl = "configfs!" + scriptUrl;
+                    }
+                    // This data can be requested as input in commands.json
+                    var inputs = {};
+                    for (var input in (spec.inputs || {})) {
+                        inputs[input] = api.getInputable(session, input);
+                    }
+                    sandboxWorker.postMessage({
+                        url: scriptUrl,
+                        data: _.extend({}, spec, {
+                            path: session.filename,
+                            inputs: inputs
+                        }),
+                        id: id
+                    });
+                })
             }
         };
 
@@ -114,13 +122,17 @@ define(function(require, exports, module) {
                         err: "No such method: " + mod
                     });
                 }
-                mod[data.call].apply(mod, data.args.concat([function(err, result) {
+                mod[data.call].apply(mod, data.args).then(function(result) {
                     sandboxWorker.postMessage({
                         replyTo: data.id,
-                        err: err,
                         result: result
                     });
-                }]));
+                }, function(err) {
+                    sandboxWorker.postMessage({
+                        replyTo: data.id,
+                        err: err
+                    });
+                });
             });
         }
 
@@ -128,18 +140,18 @@ define(function(require, exports, module) {
             var parts = api.split('.');
             var mod = parts.slice(0, parts.length - 1).join('/');
             var call = parts[parts.length - 1];
-            require(["./sandbox/" + mod], function(mod) {
-                if (!mod[call]) {
-                    return callback("No such method: " + call);
-                }
-                mod[call].apply(this, args.concat([callback]));
+            return new Promise(function(resolve, reject) {
+                require(["./sandbox/" + mod], function(mod) {
+                    if (!mod[call]) {
+                        return callback("No such method: " + call);
+                    }
+                    mod[call].apply(this, args).then(resolve, reject);
+                });
             });
         };
 
         command.define("Sandbox:Reset", {
-            doc: "Reload all sandbox code. If you've made changes to a Zed " +
-            "extension in your sandbox, you must run this for those changes " +
-            "to take effect.",
+            doc: "Reload all sandbox code. If you've made changes to a Zed " + "extension in your sandbox, you must run this for those changes " + "to take effect.",
             exec: resetSandbox,
             readOnly: true
         });

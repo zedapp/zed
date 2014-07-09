@@ -50,13 +50,10 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome");
     }
 
-    fsPicker(function(err, fsConfig) {
-        if (err) {
-            return console.error("Fs picker error", err);
-        }
+    fsPicker().then(function(fsConfig) {
         modules.push(fsConfig);
         console.log("Fs config", fsConfig);
-        var app = architect.resolveConfig(modules, function(err, config) {
+        architect.resolveConfig(modules, function(err, config) {
             if (err) {
                 return console.error("Architect resolve error", err);
             }

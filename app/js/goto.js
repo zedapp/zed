@@ -93,16 +93,16 @@ define(function(require, exports, module) {
 
         function fetchFileList() {
             console.log("Fetching file list...");
-            fs.listFiles(function(err, files) {
-                if (err) {
-                    return console.error("Error listing files", err);
-                }
+            return fs.listFiles().then(function(files) {
                 fileCache = files;
                 Object.keys(session_manager.specialDocs).forEach(function(path) {
                     fileCache.push(path);
                 });
                 updateFilteredFileCache();
                 eventbus.emit("loadedfilelist");
+            }, function(err) {
+                console.error("Error listing files", err);
+                return Promise.reject(err);
             });
         }
 

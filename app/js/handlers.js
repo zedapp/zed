@@ -27,7 +27,7 @@ define(function(require, exports, module) {
                     // The command handler to update its sandbox commands, which happens
                     // within a tick
                     setTimeout(function() {
-                        runHandler("configchanged");
+                        runSessionHandler(null, "configchanged");
                     });
                 });
                 eventbus.on("sessionbeforesave", function(session) {
@@ -101,82 +101,47 @@ define(function(require, exports, module) {
             return commandNames;
         }
 
-        function runSessionHandler(session, handlerName, debounceTimeout, callback) {
-            var path = session.filename;
-            var mode = session.mode;
-            var commandNames = getHandlerCommandsForMode(handlerName, mode);
+        function runSessionHandler(session, handlerName, debounceTimeout) {
+            var path, commandNames = [];
+            if (session) {
+                path = session.filename;
+                commandNames = getHandlerCommandsForMode(handlerName, session.mode);
+            } else {
+                path = "";
+                if (config.getHandlers()[handlerName]) {
+                    commandNames = config.getHandlers()[handlerName];
+                }
+            }
 
             function runCommands() {
-                var waitingFor = commandNames.length;
                 var results = [];
                 var edit = editor.getActiveEditor();
                 var before = Date.now();
 
-                commandNames.forEach(function(commandName) {
-                    command.exec(commandName, edit, session, function(err, results_) {
-                        if (err) {
-                            return callback(err);
-                        }
+                return Promise.all(commandNames.map(function(commandName) {
+                    return Promise.resolve(command.exec(commandName, edit, session)).then(function(results_) {
                         results = results.concat(results_);
-                        waitingFor--;
-                        if (waitingFor === 0) {
-                            done();
-                        }
                     });
-                });
-
-                if (waitingFor === 0) {
-                    done();
-                }
-
-                function done() {
+                })).then(function() {
                     api.updateHandlerTimeout(handlerName, session.filename, before, debounceTimeout);
-                    _.isFunction(callback) && callback(null, results);
-                }
+                    return results;
+                });
             }
 
             if (commandNames.length > 0) {
                 if (debounceTimeout) {
                     var id = path + ':' + handlerName;
                     clearTimeout(timeOutIds[id]);
-                    timeOutIds[id] = setTimeout(function() {
-                        runCommands();
-                    }, debounceTimeout);
+                    return new Promise(function(resolve, reject) {
+                        timeOutIds[id] = setTimeout(function() {
+                            runCommands().then(resolve, reject);
+                        }, debounceTimeout);
+                    });
                 } else {
-                    runCommands();
+                    return runCommands();
                 }
-                return true;
             } else {
-                _.isFunction(callback) && callback();
-                return false;
-            }
-        }
-
-        function runHandler(handlerName, callback) {
-            var commandNames = [];
-            if (config.getHandlers()[handlerName]) {
-                commandNames = commandNames.concat(config.getHandlers()[handlerName]);
-            }
-
-            var waitingFor = commandNames.length;
-            var results = [];
-            var edit = editor.getActiveEditor();
-            var session = edit.getSession();
-            commandNames.forEach(function(commandName) {
-                command.exec(commandName, edit, session, function(err, results_) {
-                    if (err) {
-                        console.error("Command", commandName, "returned error:", err);
-                        return _.isFunction(callback) && callback(err);
-                    }
-                    results = results.concat(results_);
-                    waitingFor--;
-                    if (waitingFor === 0) {
-                        _.isFunction(callback) && callback(null, results);
-                    }
-                });
-            });
-            if (waitingFor === 0) {
-                _.isFunction(callback) && callback(null, results);
+                return Promise.resolve(false);
             }
         }
 
@@ -200,7 +165,7 @@ define(function(require, exports, module) {
         // handlerName -> { path -> timeout }
         var timeOuts = {};
 
-        window.timeOuts = timeOuts;
+        // window.timeOuts = timeOuts;
 
         /**
          * Analyzes session and sets findings as annotations
@@ -229,11 +194,7 @@ define(function(require, exports, module) {
                 eventbus.emit("sessionactivitystarted", session, "Indexing " + num + " of " + filesToIndex.length);
                 var mode = modes.getModeForPath(path);
                 console.log("Indexing", path);
-                fs.readFile(path, function(err, text) {
-                    if (err) {
-                        console.log("Could not load", path, err);
-                        return next();
-                    }
+                fs.readFile(path).then(function(text) {
                     var fakeSession = {
                         filename: path,
                         mode: mode,
@@ -245,7 +206,10 @@ define(function(require, exports, module) {
                             return text.split("\n");
                         }
                     };
-                    runSessionHandler(fakeSession, "index", null, next);
+                    runSessionHandler(fakeSession, "index", null).then(next);
+                }, function(err) {
+                    console.log("Could not load", path, err);
+                    next();
                 });
             }, function done() {
                 eventbus.emit("sessionactivitystarted", session, "Indexing complete");

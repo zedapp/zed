@@ -148,16 +148,15 @@ define(function(require, exports, module) {
             return projects;
         }
 
-        function updateRecentProjects(callback) {
+        function updateRecentProjects() {
             console.log("Updating project list");
-            history.getProjects(function(err, projects) {
+            return history.getProjects().then(function(projects) {
                 if (_.isEqual(projects, projectCache)) {
                     return;
                 }
 
                 validProjectCache = projects;
                 updateProjectList();
-                _.isFunction(callback) && callback();
             });
         }
 
@@ -238,7 +237,7 @@ define(function(require, exports, module) {
         }
 
         function checkAnalyticsAllowed() {
-            config.loadConfiguration(function() {
+            config.loadConfiguration().then(function() {
                 var enable = config.getPreference("enableAnalytics");
                 if(enable === undefined) {
                     win.create("analytics.html", 'chrome', 600, 300);

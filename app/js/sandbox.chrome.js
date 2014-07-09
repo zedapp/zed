@@ -37,30 +37,39 @@ define(function(require, exports, module) {
              * Any other arguments added in spec are passed along as the first argument to the
              * module which is executed as a function.
              */
-            execCommand: function(name, spec, session, callback) {
-                if (session.$cmdInfo) {
-                    spec = _.extend(spec, session.$cmdInfo);
-                    session.$cmdInfo = null;
-                }
-                id++;
-                waitingForReply[id] = callback;
-                var scriptUrl = spec.scriptUrl;
-                if (scriptUrl[0] === "/") {
-                    scriptUrl = "configfs!" + scriptUrl;
-                }
-                // This data can be requested as input in commands.json
-                var inputs = {};
-                for (var input in (spec.inputs || {})) {
-                    inputs[input] = this.getInputable(session, input);
-                }
-                sandboxEl[0].contentWindow.postMessage({
-                    url: scriptUrl,
-                    data: _.extend({}, spec, {
-                        path: session.filename,
-                        inputs: inputs
-                    }),
-                    id: id
-                }, '*');
+            execCommand: function(name, spec, session) {
+                return new Promise(function(resolve, reject) {
+                    if (session.$cmdInfo) {
+                        spec = _.extend(spec, session.$cmdInfo);
+                        session.$cmdInfo = null;
+                    }
+                    id++;
+                    waitingForReply[id] = function(err, result) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    };
+                    var scriptUrl = spec.scriptUrl;
+                    if (scriptUrl[0] === "/") {
+                        scriptUrl = "configfs!" + scriptUrl;
+                    }
+                    // This data can be requested as input in commands.json
+                    var inputs = {};
+                    for (var input in (spec.inputs || {})) {
+                        inputs[input] = api.getInputable(session, input);
+                    }
+                    sandboxEl[0].contentWindow.postMessage({
+                        url: scriptUrl,
+                        data: _.extend({}, spec, {
+                            path: session.filename,
+                            inputs: inputs
+                        }),
+                        id: id
+                    }, '*');
+
+                });
             }
         };
 
@@ -68,30 +77,32 @@ define(function(require, exports, module) {
          * If we would like to reset our sandbox (e.d. to reload code), we can
          * simply delete and readd the iframe.
          */
-        function resetSandbox(callback) {
-            if (sandboxEl) {
-                // sandboxEl[0].clearData({}, {cache: true}, function() {
-                // });
-                sandboxEl.remove();
-            }
-            $("body").append('<webview id="sandbox" partition="persist:sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
-            sandboxEl = $("#sandbox");
-            var sandbox = sandboxEl[0];
-            sandbox.addEventListener('permissionrequest', function(e) {
-                console.log("Got permission request", e);
-            });
-            sandboxEl.css("left", "-1000px");
-            sandbox.addEventListener("contentload", function() {
-                sandbox.executeScript({
-                    code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js") + require("text!../dep/json5.js") + require("text!../dep/zedb.js")
+        function resetSandbox() {
+            return new Promise(function(resolve) {
+                if (sandboxEl) {
+                    // sandboxEl[0].clearData({}, {cache: true}, function() {
+                    // });
+                    sandboxEl.remove();
+                }
+                $("body").append('<webview id="sandbox" partition="persist:sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
+                sandboxEl = $("#sandbox");
+                var sandbox = sandboxEl[0];
+                sandbox.addEventListener('permissionrequest', function(e) {
+                    console.log("Got permission request", e);
                 });
-                _.isFunction(callback) && callback();
+                sandboxEl.css("left", "-1000px");
+                sandbox.addEventListener("contentload", function() {
+                    sandbox.executeScript({
+                        code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js") + require("text!../dep/json5.js") + require("text!../dep/zedb.js")
+                    });
+                    resolve();
+                });
+                sandbox.addEventListener('consolemessage', function(e) {
+                    console.log('[Sandbox]: ' + e.message + ' (line: ' + e.line + ')');
+                });
+                waitingForReply = {};
+                id = 0;
             });
-            sandbox.addEventListener('consolemessage', function(e) {
-                console.log('[Sandbox]: ' + e.message + ' (line: ' + e.line + ')');
-            });
-            waitingForReply = {};
-            id = 0;
         }
 
         /**
@@ -106,13 +117,17 @@ define(function(require, exports, module) {
                         err: "No such method: " + mod
                     }, "*");
                 }
-                mod[data.call].apply(mod, data.args.concat([function(err, result) {
+                mod[data.call].apply(mod, data.args).then(function(result) {
+                    event.source.postMessage({
+                        replyTo: data.id,
+                        result: result
+                    }, "*");
+                }, function(err) {
                     event.source.postMessage({
                         replyTo: data.id,
                         err: err,
-                        result: result
                     }, "*");
-                }]));
+                });
             });
         }
 
@@ -137,15 +152,17 @@ define(function(require, exports, module) {
         });
 
 
-        window.execSandboxApi = function(api, args, callback) {
+        window.execSandboxApi = function(api, args) {
             var parts = api.split('.');
             var mod = parts.slice(0, parts.length - 1).join('/');
             var call = parts[parts.length - 1];
-            require(["./sandbox/" + mod], function(mod) {
-                if (!mod[call]) {
-                    return callback("No such method: " + call);
-                }
-                mod[call].apply(this, args.concat([callback]));
+            return new Promise(function(resolve, reject) {
+                require(["./sandbox/" + mod], function(mod) {
+                    if (!mod[call]) {
+                        return reject("No such method: " + call);
+                    }
+                    mod[call].apply(this, args).then(resolve, reject);
+                });
             });
         };
 

@@ -34,7 +34,7 @@ define(function(require, exports, module) {
                     localStorage.configDir = path;
                     zed.getService("ui").prompt({
                         message: "Configuration location set, will now exit Zed. Please restart for the changes to take effect."
-                    }, function() {
+                    }).then(function() {
                         var gui = nodeRequire('nw.gui');
                         gui.App.quit();
                     });

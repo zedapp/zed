@@ -19,17 +19,15 @@ define(function(require, exports, module) {
 
         function confirmDelete(edit) {
             var path = edit.getSession().filename;
-            ui.prompt({
+            return ui.prompt({
                 message: "Are you sure you want to delete " + path + "?"
-            }, function(err, yes) {
+            }).then(function(yes) {
                 if (yes) {
                     eventbus.emit("sessionactivitystarted", edit.getSession(), "Deleting");
-
-                    fs.deleteFile(path, function(err) {
-                        if (err) {
-                            return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not delete file: " + err);
-                        }
+                    return fs.deleteFile(path).then(function() {
                         session_manager.deleteSession(path);
+                    }, function(err) {
+                        return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not delete file: " + err);
                     });
                 }
             });
@@ -39,10 +37,10 @@ define(function(require, exports, module) {
             var session = edit.getSession();
             var path = session.filename;
             console.log("Filename", path);
-            ui.prompt({
+            return ui.prompt({
                 message: "New name:",
                 input: path
-            }, function(err, newPath) {
+            }).then(function(newPath) {
                 var comparePath = path;
                 var compareNewPath = newPath;
                 if (useragent.isMac) {
@@ -51,42 +49,37 @@ define(function(require, exports, module) {
                 }
                 if (newPath && comparePath !== compareNewPath) {
                     eventbus.emit("sessionactivitystarted", edit.getSession(), "Renaming");
-                    fs.readFile(newPath, function(err) {
-                        if (err) {
-                            actuallyRenameFile(edit, session, path, newPath);
-                        } else {
-                            ui.prompt({
-                                message: "Are you sure you want to delete the current file at " + newPath + "?"
-                            }, function(err, yes) {
-                                if (yes) {
-                                    actuallyRenameFile(edit, session, path, newPath);
-                                } else {
-                                    eventbus.emit("sessionactivitycompleted", edit.getSession());
-                                }
-                            });
-                        }
+                    fs.readFile(newPath).then(function() {
+                        ui.prompt({
+                            message: "Are you sure you want to delete the current file at " + newPath + "?"
+                        }).then(function(yes) {
+                            if (yes) {
+                                return actuallyRenameFile(edit, session, path, newPath);
+                            } else {
+                                eventbus.emit("sessionactivitycompleted", edit.getSession());
+                            }
+                        });
+                    }, function(err) {
+                        actuallyRenameFile(edit, session, path, newPath);
                     });
                 }
             });
         }
-        
+
         function actuallyRenameFile(edit, session, path, newPath) {
-            fs.writeFile(newPath, session.getValue(), function(err) {
-                if (err) {
-                    return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not write to file: " + err);
-                }
+            return fs.writeFile(newPath, session.getValue()).then(function() {
                 // TODO: Copy session state
                 session_manager.handleChangedFile(newPath);
                 session_manager.go(newPath, edit);
                 eventbus.emit("newfilecreated", newPath, session);
-                fs.deleteFile(path, function(err) {
-                    if (err) {
-                        return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not delete file: " + err);
-                    }
+                return fs.deleteFile(path).then(function() {
                     session_manager.deleteSession(path);
                     eventbus.emit("filedeleted", path);
                     eventbus.emit("sessionactivitycompleted", edit.getSession());
                 });
+            }).
+            catch (function(err) {
+                eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not write to file: " + err);
             });
         }
 
@@ -97,17 +90,16 @@ define(function(require, exports, module) {
             ui.prompt({
                 message: "Copy to path:",
                 input: path
-            }, function(err, newPath) {
+            }).then(function(newPath) {
                 if (newPath) {
                     eventbus.emit("sessionactivitystarted", edit.getSession(), "Copying");
-                    fs.writeFile(newPath, session.getValue(), function(err) {
-                        if (err) {
-                            return eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not write to file: " + err);
-                        }
+                    return fs.writeFile(newPath, session.getValue()).then(function() {
                         // TODO: Copy session state
                         session_manager.go(newPath, edit);
                         eventbus.emit("newfilecreated", newPath, session);
                         eventbus.emit("sessionactivitycompleted", edit.getSession());
+                    }, function(err) {
+                        eventbus.emit("sessionactivityfailed", edit.getSession(), "Could not write to file: " + err);
                     });
                 }
             });
@@ -140,21 +132,21 @@ define(function(require, exports, module) {
                 ui.prompt({
                     message: "Prefix of tree to delete:",
                     input: ""
-                }, function(err, prefix) {
+                }).then(function(prefix) {
                     if (prefix) {
                         ui.prompt({
                             message: "Are you sure you want to delete all files under " + prefix + "?"
-                        }, function(err, yes) {
+                        }).then(function(yes) {
                             if (!yes) {
                                 return;
                             }
-                            fs.listFiles(function(err, files) {
+                            return fs.listFiles(function(files) {
                                 files = _.filter(files, function(path) {
                                     return path.indexOf(prefix) === 0;
                                 });
-                                async.each(files, function(path, next) {
-                                    fs.deleteFile(path, next);
-                                }, function() {
+                                return Promise.all(files.map(function(file) {
+                                    return fs.deleteFile(file);
+                                })).then(function() {
                                     goto.fetchFileList();
                                     console.log("All files under", prefix, "removed!");
                                 });

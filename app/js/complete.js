@@ -50,6 +50,7 @@ define(function(require, exports, module) {
         };
 
         var completer = {
+            // This uses callback style because that's what Ace's completer expects
             getCompletions: function(edit, session, pos, prefix, callback) {
                 var modeCompleteCommands = session.mode.handlers.complete;
                 var globalCompleteCommands = config.getHandlers().complete;
