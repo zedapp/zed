@@ -1,0 +1,11 @@
+{
+    modes: {
+        gherkin: {
+            name: "Gherkin",
+            highlighter: "ace/mode/gherkin",
+            extensions: [
+                "feature"
+            ]
+        }
+    }
+}
