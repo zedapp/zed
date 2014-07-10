@@ -6,7 +6,6 @@ define(function(require, exports, module) {
     return plugin;
 
     function plugin(options, imports, register) {
-        var async = require("./lib/async");
         var path = require("./lib/path");
 
         var eventbus = imports.eventbus;

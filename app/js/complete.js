@@ -98,10 +98,12 @@ define(function(require, exports, module) {
             var pos = edit.getCursorPosition();
 
             var line = doc.getLine(pos.row);
-            if (line[pos.column - 1] === ".") {
-                return true;
-            }
-            return retrievePreceedingIdentifier(line, pos.column);
+            var ch = line[pos.column - 1];
+            return ch && /\S/.exec(ch);
+            // if (line[pos.column - 1] === ".") {
+            //     return true;
+            // }
+            // return retrievePreceedingIdentifier(line, pos.column);
         }
 
         function editorForSession(session) {
