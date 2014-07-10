@@ -63,16 +63,13 @@ define(function(require, exports, module) {
                     completeCommands = completeCommands.concat(globalCompleteCommands);
                 }
                 var startDate = Date.now();
-                async.each(completeCommands, function(cmdName, next) {
-                    command.exec(cmdName, edit, session, function(err, results_) {
-                        if (err) {
-                            console.error(err);
-                            return next();
-                        }
+                Promise.all(completeCommands.map(function(cmdName) {
+                    return command.exec(cmdName, edit, session).then(function(results_) {
                         results = results.concat(results_);
-                        next();
+                    }, function(err) {
+                        console.error("Error during completion: ", err);
                     });
-                }, function() {
+                })).then(function() {
                     handlers.updateHandlerTimeout("complete", session.filename, startDate, config.getPreference("continuousCompletionDelay"));
                     callback(null, results);
                 });
@@ -101,7 +98,7 @@ define(function(require, exports, module) {
             var pos = edit.getCursorPosition();
 
             var line = doc.getLine(pos.row);
-            if(line[pos.column-1] === ".") {
+            if (line[pos.column - 1] === ".") {
                 return true;
             }
             return retrievePreceedingIdentifier(line, pos.column);

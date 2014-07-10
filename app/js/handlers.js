@@ -174,7 +174,7 @@ define(function(require, exports, module) {
         function analyze(session, instant) {
             runSessionHandler(session, "change", 1000);
             runSessionHandler(session, "index", instant ? null : api.getHandlerTimeout("index", session.filename, 1000));
-            runSessionHandler(session, "check", instant ? null : api.getHandlerTimeout("check", session.filename, 2000), function(err, annos) {
+            runSessionHandler(session, "check", instant ? null : api.getHandlerTimeout("check", session.filename, 2000)).then(function(annos) {
                 setAnnotations(session, annos);
             });
         }

@@ -27,12 +27,9 @@ define(function(require, exports, module) {
         function defineUserCommand(name, cmd) {
             api.defineConfig(name, {
                 doc: cmd.doc,
-                exec: function(edit, session, callback) {
-                    zed.getService("sandbox").execCommand(name, cmd, session, function(err, result) {
-                        if (err) {
-                            console.error("Command", name, "failed:", err);
-                        }
-                        _.isFunction(callback) && callback(err, result);
+                exec: function(edit, session) {
+                    return zed.getService("sandbox").execCommand(name, cmd, session).catch(function(err) {
+                        console.error("Command", name, "failed:", err);
                     });
                 },
                 readOnly: cmd.readOnly,

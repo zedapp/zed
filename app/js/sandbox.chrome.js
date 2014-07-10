@@ -117,8 +117,11 @@ define(function(require, exports, module) {
                         err: "No such method: " + mod
                     }, "*");
                 }
-                // console.log(mod, data.call);
-                mod[data.call].apply(mod, data.args).then(function(result) {
+                var r = mod[data.call].apply(mod, data.args);
+                if(!r.then) {
+                    console.error("Got empty result from", mod, data.call);
+                }
+                r.then(function(result) {
                     event.source.postMessage({
                         replyTo: data.id,
                         result: result
@@ -143,7 +146,6 @@ define(function(require, exports, module) {
             }
             var err = data.err;
             var result = data.result;
-
             if (waitingForReply[replyTo]) {
                 waitingForReply[replyTo](err, result);
                 delete waitingForReply[replyTo];
