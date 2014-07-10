@@ -16,18 +16,11 @@ define(function(require, exports, module) {
         return session;
     }
 
-    // This function can take any defined inputable, a path, a callback,
-    // and will call the callback with the result of the inputable for
-    // the given path.
-    function genericInputable(inputable, path) {
-        return zed.getService("sandbox").getInputable(getSession(path), inputable);
-    }
 
-    // This returns the above function bound to a given inputable, eg a function
-    // that will take only path and callback arguments (as expected below), and
-    // then call the callback with the result for the pre-determined inputable.
-    function useInputable(inputable) {
-        return genericInputable.bind(null, inputable);
+    function useInputable(inputableName) {
+        return function(path) {
+            return Promise.resolve(zed.getService("sandbox").getInputable(getSession(path), inputableName));
+        };
     }
 
     var identifierRegex = /[a-zA-Z_0-9\$\-]/;
@@ -46,7 +39,9 @@ define(function(require, exports, module) {
         },
         goto: function(path) {
             var edit = zed.getService("editor").getActiveEditor();
-            return zed.getService("session_manager").go(path, edit, edit.getSession());
+            return zed.getService("session_manager").go(path, edit, edit.getSession()).then(function() {
+                return; // Return nothing
+            });
         },
         setAnnotations: function(path, annos) {
             var session = getSession(path);
