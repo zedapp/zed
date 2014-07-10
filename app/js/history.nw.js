@@ -66,11 +66,13 @@ define(function(require, exports, module) {
             },
             removeProject: function(url) {
                 var projects;
+                console.log("Deleting", url);
                 try {
                     projects = JSON.parse(localStorage.recentProjects);
                 } catch (e) {
                     projects = [];
                 }
+                console.log("All projects", projects);
                 projects = _.filter(projects, function(project) {
                     return project.url !== url;
                 });

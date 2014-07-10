@@ -140,7 +140,7 @@ define(function(require, exports, module) {
                             if (!yes) {
                                 return;
                             }
-                            return fs.listFiles(function(files) {
+                            return fs.listFiles().then(function(files) {
                                 files = _.filter(files, function(path) {
                                     return path.indexOf(prefix) === 0;
                                 });

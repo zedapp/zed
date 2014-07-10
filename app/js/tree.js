@@ -157,7 +157,6 @@ define(function(require, exports, module) {
             exec: function(edit) {
                 eventbus.emit("commandtree");
                 showTree("command-tree", edit, command.allCommands().sort(), ":", function(cmd) {
-                    console.log("Selected somethign!", cmd);
                     cmd = cmd.substring(1); // Strip leading ':'
                     var recentCommands = state.get("recent.commands") || {};
                     recentCommands[cmd] = Date.now();

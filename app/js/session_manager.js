@@ -310,11 +310,12 @@ define(function(require, exports, module) {
                 if (!session.readOnly) {
                     session.watcherFn = function(path, kind) {
                         ui.unblockUI();
+                        console.log("Got watcher fn", path, kind)
                         if (kind === "changed") {
                             handleChangedFile(path);
                         } else if (kind === "deleted") {
                             var session = sessions[path];
-                            if (!session.newFile) {
+                            if (!session || !session.newFile) {
                                 console.log("File deleted", path);
                                 delete sessions[path];
                                 eventbus.emit("filedeleted", path);

@@ -66,7 +66,7 @@ define(function(require, exports, module) {
                     // existing user.json with only preferences, but make
                     // a backup of user.json
                     userConfig.preferences = {};
-                    makeUserBackup(function(err) {
+                    makeUserBackup().then(function() {
                         userConfig.preferences[key] = value;
                         writeUserPrefs();
                     });
@@ -353,7 +353,7 @@ define(function(require, exports, module) {
             exec: function() {
                 zed.getService("ui").prompt({
                     message: "Are you sure you reset all config?"
-                }, function(err, yes) {
+                }).then(function(yes) {
                     if (yes) {
                         configfs.listFiles().then(function(files) {
                             return Promise.all(files.map(function(path) {
@@ -372,7 +372,7 @@ define(function(require, exports, module) {
         command.define("Configuration:Show Full", {
             doc: "Dump all configuration data into a temporary buffer called " + "`zed::config` for ready-only inspection.",
             exec: function(edit, session) {
-                zed.getService("session_manager").go("zed::config", edit, session, function(err, session) {
+                return zed.getService("session_manager").go("zed::config", edit, session).then(function(session) {
                     session.setMode("ace/mode/json");
                     session.setValue(JSON5.stringify(expandedConfiguration, null, 4));
                 });

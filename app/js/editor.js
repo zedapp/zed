@@ -512,7 +512,7 @@ define(function(require, exports, module) {
         command.define("Cursor:Up", {
             doc: "Move the cursor up one line.",
             exec: function(editor, session, args) {
-                editor.navigateUp(args.times);
+                editor.navigateUp(args && args.times);
             },
             multiSelectAction: "forEach",
             readOnly: true
@@ -521,7 +521,7 @@ define(function(require, exports, module) {
         command.define("Cursor:Down", {
             doc: "Move the cursor down one line.",
             exec: function(editor, session, args) {
-                editor.navigateDown(args.times);
+                editor.navigateDown(args && args.times);
             },
             multiSelectAction: "forEach",
             readOnly: true
@@ -575,7 +575,7 @@ define(function(require, exports, module) {
         command.define("Cursor:Left", {
             doc: "Move the cursor one character to the left.",
             exec: function(editor, session, args) {
-                editor.navigateLeft(args.times);
+                editor.navigateLeft(args && args.times);
             },
             multiSelectAction: "forEach",
             readOnly: true
@@ -593,7 +593,7 @@ define(function(require, exports, module) {
         command.define("Cursor:Right", {
             doc: "Move the cursor one character to the right.",
             exec: function(editor, session, args) {
-                editor.navigateRight(args.times);
+                editor.navigateRight(args && args.times);
             },
             multiSelectAction: "forEach",
             readOnly: true

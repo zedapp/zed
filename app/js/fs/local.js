@@ -146,6 +146,7 @@ define(function(require, exports, module) {
                 });
             },
             deleteFile: function(path) {
+                console.log("Got delete", path);
                 return new Promise(function(resolve, reject) {
                     var fullPath = addRoot(path);
                     root.getFile(fullPath, {}, function(fileEntry) {

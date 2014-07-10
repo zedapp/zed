@@ -53,7 +53,7 @@ define(function(require, exports, module) {
                     delete openProjects[url];
                     openProject = null;
                 }
-            } catch(e) {
+            } catch (e) {
                 // accessing openProject.window sometimes raises an error,
                 // which means the window was closed
                 delete openProjects[url];
@@ -221,11 +221,11 @@ define(function(require, exports, module) {
                 case keyCode('Delete'):
                     var selectedEl = $(".projects a").eq(selectIdx);
                     var url = selectedEl.data("url");
-                    return history.removeProject(url, function() {
-                        updateRecentProjects(function() {
-                            selectIdx = Math.min(getAllVisibleProjects().length - 1, selectIdx);
-                            updateProjectSelection();
-                        });
+                    return history.removeProject(url).then(function() {
+                        return updateRecentProjects();
+                    }).then(function() {
+                        selectIdx = Math.min(getAllVisibleProjects().length - 1, selectIdx);
+                        updateProjectSelection();
                     });
             }
             updateProjectSelection();
@@ -240,7 +240,7 @@ define(function(require, exports, module) {
         function checkAnalyticsAllowed() {
             config.loadConfiguration().then(function() {
                 var enable = config.getPreference("enableAnalytics");
-                if(enable === undefined) {
+                if (enable === undefined) {
                     win.create("analytics.html", 'chrome', 600, 300);
                     // Initial state of checkbox will be on, so let's set that here
                     config.setPreference("enableAnalytics", true);

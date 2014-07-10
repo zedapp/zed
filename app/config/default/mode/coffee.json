@@ -4,7 +4,6 @@
             name: "CoffeeScript",
             highlighter: "ace/mode/coffee",
             extensions: [
-                "cs",
                 "coffee"
             ],
             commands: {

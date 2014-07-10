@@ -33,7 +33,7 @@ define(function(require, exports, module) {
             if(path.indexOf("http://") === 0 || path.indexOf("https://") === 0) {
                 url = path;
             }
-            history.lookupProjectByUrl(url, function(err, project) {
+            history.lookupProjectByUrl(url).then(function(project) {
                 if (project) {
                     open.open(url, project.name);
                 } else {
