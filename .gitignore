@@ -2,6 +2,7 @@
 *.swp
 *.tmp
 .*
+*~
 !.gitignore
 .*.gz
 node_modules/
