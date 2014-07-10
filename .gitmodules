@@ -25,3 +25,6 @@
 [submodule "app/config/packages/gh/zedapp/bracket-check"]
 	path = app/config/packages/gh/zedapp/bracket-check
 	url = https://github.com/zedapp/bracket-check.git
+[submodule "app/ace"]
+	path = app/ace
+	url = https://github.com/zefhemel/ace-builds.git

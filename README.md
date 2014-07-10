@@ -28,7 +28,6 @@ You can install Zed [via the Chrome Web Store](https://chrome.google.com/webstor
     $ git clone https://github.com/zedapp/zed.git
     $ cd zed
     $ git submodule update --init
-    $ make app/ace
 
 Then, in (a recent version of) Chrome, go to the "three-lined" menu > Tools >
 Extensions and click the "Load unpacked extension..." button, navigate to the
