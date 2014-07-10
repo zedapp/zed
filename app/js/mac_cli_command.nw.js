@@ -46,8 +46,8 @@ define(function(require, exports, module) {
 
             ui.prompt({
                 message: "This will extend your ~/.profile, ~/.bash_profile, or ~/.bashrc PATH variable to include Zed. Proceed?"
-            }, function(err, yes) {
-                if(err || !yes) {
+            }).then(function(yes) {
+                if(!yes) {
                     return;
                 }
                 // Determine startup file to add to

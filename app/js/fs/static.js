@@ -54,6 +54,7 @@ define(function(require, exports, module) {
                 return http_cache.fetchUrl(root + path, {}).then(function() {
                     return "unchanged";
                 }, function(err) {
+                    console.log("Doesn't exist", path);
                     return Promise.reject(404);
                 });
             }

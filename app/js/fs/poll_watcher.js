@@ -14,35 +14,32 @@ define(function(require, exports, module) {
                 }
 
                 // If the file is locked (e.g. write going on), let's not poll
-                if(fileLocks[path] && fileLocks[path] > Date.now() - LOCK_TIMEOUT) {
+                if (fileLocks[path] && fileLocks[path] > Date.now() - LOCK_TIMEOUT) {
                     return;
                 }
 
-                fs.getCacheTag(path, function(err, tag) {
-                    if(err) {
-                        delete tagCache[path];
-                        if (err === 404) {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "deleted");
-                            });
-                            delete fileWatchers[path];
-                        } else if (err === 410) {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "disconnected");
-                            });
-                        } else {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "error");
-                            });
-                        }
-
+                fs.getCacheTag(path).then(function(tag) {
+                    if (tagCache[path] !== tag) {
+                        fileWatchers[path].forEach(function(fn) {
+                            fn(path, "changed");
+                        });
+                        tagCache[path] = tag;
+                    }
+                }, function(err) {
+                    delete tagCache[path];
+                    if (err === 404) {
+                        fileWatchers[path].forEach(function(fn) {
+                            fn(path, "deleted");
+                        });
+                        delete fileWatchers[path];
+                    } else if (err === 410) {
+                        fileWatchers[path].forEach(function(fn) {
+                            fn(path, "disconnected");
+                        });
                     } else {
-                        if (tagCache[path] !== tag) {
-                            fileWatchers[path].forEach(function(fn) {
-                                fn(path, "changed");
-                            });
-                            tagCache[path] = tag;
-                        }
+                        fileWatchers[path].forEach(function(fn) {
+                            fn(path, "error");
+                        });
                     }
                 });
             });
@@ -56,7 +53,7 @@ define(function(require, exports, module) {
                 fileWatchers[path].push(callback);
             },
             unwatchFile: function(path, callback) {
-                if(!fileWatchers[path]) {
+                if (!fileWatchers[path]) {
                     return;
                 }
                 fileWatchers[path].splice(fileWatchers[path].indexOf(callback), 1);
