@@ -4,6 +4,7 @@
             name: "Clojure",
             highlighter: "ace/mode/clojure",
             extensions: ["clj", "cljs"],
+            completionTriggers: ["/"],
             commands: {
                 "Tools:Index": {
                     scriptUrl: "/default/command/regex_indexer.js",

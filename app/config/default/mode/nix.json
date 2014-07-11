@@ -6,6 +6,7 @@
             extensions: [
                 "nix"
             ],
+            completionTriggers: ["."],
             commands: {
                 "Tools:Index": {
                     scriptUrl: "/default/mode/nix/index.js",

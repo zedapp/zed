@@ -214,7 +214,7 @@ define(function(require, exports, module) {
                             resultList.forEach(function(result) {
                                 result.name = result.path;
                                 if (sessions[result.path]) {
-                                    result.score = sessions[result.path].lastUse;
+                                    result.score += sessions[result.path].lastUse / 100000000;
                                 }
                                 result.icon = "file";
                             });

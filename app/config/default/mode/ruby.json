@@ -5,6 +5,7 @@
             highlighter: "ace/mode/ruby",
             extensions: ["rb"],
             filenames: ["Vagrantfile"],
+            completionTriggers: ["."],
 
             commands: {
                 "Tools:Index": {

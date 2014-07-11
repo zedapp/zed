@@ -7,15 +7,12 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var Autocomplete = require("./lib/autocomplete").Autocomplete;
-        var async = require("async");
-
         var command = imports.command;
         var eventbus = imports.eventbus;
         var config = imports.config;
         var editor = imports.editor;
         var handlers = imports.handlers;
 
-        var identifierRegex = /[a-zA-Z_0-9\$\-]/;
         var completionRegex = /^[a-zA-Z_\$]$/;
 
         // Continuous completion related variables
@@ -34,6 +31,9 @@ define(function(require, exports, module) {
                             return;
                         }
                         completionListener(edit, delta);
+                    }
+                    if (config.getPreference("autoTriggerCompletion") && delta.data.action === "insertText" && delta.data.text.length === 1) {
+                        completionTriggerCheck(session);
                     }
                 });
                 // If the selection (cursor) changed and the session changed, cursor line changed
@@ -76,17 +76,29 @@ define(function(require, exports, module) {
             }
         };
 
-        function retrievePreceedingIdentifier(text, pos) {
-            var identBuf = [];
-            for (var i = pos - 1; i >= 0; i--) {
-                if (identifierRegex.test(text[i])) {
-                    identBuf.push(text[i]);
-                } else {
-                    break;
+        function completionTriggerCheck(session) {
+            setTimeout(function() {
+                var triggers = session.mode.completionTriggers;
+                if (!triggers) {
+                    return;
                 }
-            }
-
-            return identBuf.reverse().join("");
+                var cursor = session.selection.getCursor();
+                var line = session.getLine(cursor.row);
+                for (var i = 0; i < triggers.length; i++) {
+                    var trigger = triggers[i];
+                    var match = true;
+                    for_loop: for (var j = 0; j < trigger.length; j++) {
+                        if (trigger[j] != line[cursor.column - (trigger.length - j)]) {
+                            match = false;
+                            break for_loop;
+                        }
+                    }
+                    if (match) {
+                        complete(editorForSession(session), true);
+                        return;
+                    }
+                }
+            }, 0);
         }
 
         function shouldComplete(edit) {
@@ -100,10 +112,6 @@ define(function(require, exports, module) {
             var line = doc.getLine(pos.row);
             var ch = line[pos.column - 1];
             return ch && /\S/.exec(ch);
-            // if (line[pos.column - 1] === ".") {
-            //     return true;
-            // }
-            // return retrievePreceedingIdentifier(line, pos.column);
         }
 
         function editorForSession(session) {

@@ -6,6 +6,7 @@
             extensions: [
                 "dart"
             ],
+            completionTriggers: ["."],
             commands: {
                 "Tools:Beautify": {
                     scriptUrl: "plugin/beautify/javascript.js"

@@ -6,6 +6,7 @@
             extensions: [
                 "lua"
             ],
+            completionTriggers: ["."],
             commands: {
                 "Tools:Check": {
                     scriptUrl: "/default/mode/lua/check.js",

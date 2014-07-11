@@ -6,8 +6,6 @@ define(function(require, exports, module) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
-    var MAX_LENGTH = 10000;
-
     function fuzzyFilter(pattern, files) {
         var closeMatchRegex = escapeRegExp(pattern);
         closeMatchRegex = closeMatchRegex.split(/\s+/).join(".*?");
@@ -16,6 +14,15 @@ define(function(require, exports, module) {
         var r1 = new RegExp(closeMatchRegex, "i");
         var r2 = new RegExp(distantMatchRegex, "i");
         var matches = [];
+        if(!pattern) {
+            return files.map(function(f) {
+                return {
+                    name: f,
+                    path: f,
+                    score: 1000
+                };
+            });
+        }
         for(var i = 0; i < files.length; i++) {
             var file = files[i];
             var m = r1.exec(file);

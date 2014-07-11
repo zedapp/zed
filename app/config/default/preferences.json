@@ -5,6 +5,7 @@
         "behaviorsEnabled": true,
         "continuousCompletion": false,
         "continuousCompletionDelay": 250,
+        "autoTriggerCompletion": true,
         "defaultMode": "ace/mode/text",
         "detectIndentation": true,
         "dimInactiveEditors": true,

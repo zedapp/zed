@@ -6,7 +6,7 @@
             extensions: [
                 "java"
             ],
-
+            completionTriggers: ["."],
             commands: {
                 "Tools:Index": {
                     scriptUrl: "/default/command/regex_indexer.js",

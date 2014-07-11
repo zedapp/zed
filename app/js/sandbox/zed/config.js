@@ -8,6 +8,9 @@ define(function(require, exports, module) {
         setPreference: function(preference, value) {
             return Promise.resolve(zed.getService("config").setPreference(preference, value));
         },
+        getMode: function(modeName) {
+            return Promise.resolve(zed.getService("config").getModes()[modeName]);
+        },
         togglePreference: function(preference) {
             return Promise.resolve(zed.getService("config").togglePreference(preference, zed.getService("editor").getActiveSession()));
         },

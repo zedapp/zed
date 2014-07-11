@@ -1083,6 +1083,10 @@ define(function(require, exports, module) {
             return session.mode.language;
         });
 
+        sandbox.defineInputable("mode", function(session) {
+            return session.mode;
+        });
+
         register(null, {
             editor: api
         });

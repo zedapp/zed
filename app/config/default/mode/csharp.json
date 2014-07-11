@@ -6,6 +6,7 @@
             extensions: [
                 "cs"
             ],
+            completionTriggers: ["."],
 
             commands: {
                 "Tools:Index": {
