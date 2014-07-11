@@ -118,7 +118,7 @@ define(function(require, exports, module) {
                     }, "*");
                 }
                 var r = mod[data.call].apply(mod, data.args);
-                if(!r.then) {
+                if(!r || !r.then) {
                     console.error("Got empty result from", mod, data.call);
                 }
                 r.then(function(result) {

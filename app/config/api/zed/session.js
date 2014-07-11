@@ -3,6 +3,9 @@ module.exports = {
     goto: function(path) {
         return sandboxRequest("zed/session", "goto", [path]);
     },
+    deleteSession: function(path) {
+        return sandboxRequest("zed/session", "deleteSession", [path]);
+    },
     callCommand: function(path, command) {
         return sandboxRequest("zed/session", "callCommand", [path, command]);
     },

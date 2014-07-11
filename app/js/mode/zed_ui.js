@@ -5,11 +5,8 @@ define(function(require, exports, module) {
     var TextMode = require("ace/mode/text").Mode;
     var ZedUiHighlightRules = require("./zed_ui_highlight_rules").ZedUiHighlightRules;
 
-    console.log("YOYUOYO");
-
     var Mode = function() {
         this.HighlightRules = ZedUiHighlightRules;
-        console.log("YEAHzzzzz")
     };
     oop.inherits(Mode, TextMode);
 

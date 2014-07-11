@@ -22,12 +22,44 @@ define(function(require, exports, module) {
                 eventbus.on("configchanged", function(config) {
                     var databases = config.getDatabases();
                     if (Object.keys(databases).length > 0) {
-                        console.log("Creating databases", databases);
-                        init(databases);
+                        if(!db) {
+                            init(databases);
+                        } else {
+                            checkSchemaChange(databases)(db);
+                        }
                     }
                 });
             }
         };
+
+        function checkSchemaChange(schema) {
+            return function(db) {
+                // Let's see if the schema changed since last time we opened it
+                if (db.getObjectStoreNames().contains("_meta")) {
+                    return db.readStore("_meta").get("meta").then(function(meta) {
+                        meta.lastUse = Date.now();
+                        db.writeStore("_meta").put(meta);
+                        if (JSON.stringify(meta.schema) !== JSON.stringify(schema)) {
+                            console.info("Schemas differ, destroying old database and recreating.");
+                            db.close();
+                            return recreate();
+                        } else {
+                            return db;
+                        }
+                    });
+                } else {
+                    return recreate();
+                }
+
+                function recreate() {
+                    return zedb.delete(dbName).then(function() {
+                        setTimeout(function() {
+                            return init(schema);
+                        }, 1000);
+                    });
+                }
+            };
+        }
 
         function init(schema) {
             if (db) {
@@ -57,24 +89,7 @@ define(function(require, exports, module) {
                         });
                     }
                 }
-            }).then(function(db) {
-                // Let's see if the schema changed since last time we opened it
-                if (db.getObjectStoreNames().contains("_meta")) {
-                    return db.readStore("_meta").get("meta").then(function(meta) {
-                        meta.lastUse = Date.now();
-                        db.writeStore("_meta").put(meta);
-                        if (JSON.stringify(meta.schema) !== JSON.stringify(schema)) {
-                            console.log("Schemas differ, destroying old database and recreating.");
-                            db.close();
-                            return recreate();
-                        } else {
-                            return db;
-                        }
-                    });
-                } else {
-                    return recreate();
-                }
-            }).then(function(db_) {
+            }).then(checkSchemaChange(schema)).then(function(db_) {
                 db = db_;
                 eventbus.emit("dbavailable", db);
                 return db;
@@ -82,13 +97,6 @@ define(function(require, exports, module) {
                 console.error("Could not create databases", err);
             });
 
-            function recreate() {
-                return zedb.delete(dbName).then(function() {
-                    setTimeout(function() {
-                        return init(schema);
-                    }, 1000);
-                });
-            }
         }
 
         function get() {

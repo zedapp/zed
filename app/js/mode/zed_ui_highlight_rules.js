@@ -9,8 +9,6 @@ define(function(require, exports, module) {
         // regexp must not have capturing parentheses
         // regexps are ordered -> the first match is used
 
-        console.log("HEREHERHERER");
-
         this.$rules = {
             "start": [{ // button
                 token: "ui_button",

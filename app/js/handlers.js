@@ -85,7 +85,8 @@ define(function(require, exports, module) {
                 if (!timeOuts[handlerName]) {
                     return defaultTimeout;
                 }
-                return timeOuts[handlerName][path] || defaultTimeout;
+                var timeOut = timeOuts[handlerName][path];
+                return timeOut ? Math.max(defaultTimeout, timeOut) : defaultTimeout;
             },
         };
 
@@ -165,6 +166,7 @@ define(function(require, exports, module) {
 
         // handlerName -> { path -> timeout }
         var timeOuts = {};
+        window.timeOuts = timeOuts;
 
         // window.timeOuts = timeOuts;
 

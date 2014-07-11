@@ -117,7 +117,12 @@ var Autocomplete = function() {
     this.changeListener = function(e) {
         var cursor = this.editor.selection.lead;
         if (cursor.row != this.base.row || cursor.column < this.base.column) {
-            this.detach();
+            return this.detach();
+        }
+        var line = this.editor.session.getLine(cursor.row);
+        var insertedCh = line[cursor.column-1];
+        if(!ID_REGEX.exec(insertedCh)) {
+            return this.detach();
         }
         if (this.activated)
             this.changeTimer.schedule();

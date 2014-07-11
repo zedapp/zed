@@ -28,3 +28,6 @@
 [submodule "app/ace"]
 	path = app/ace
 	url = https://github.com/zefhemel/ace-builds.git
+[submodule "app/config/packages/gh/zedapp/snippets"]
+	path = app/config/packages/gh/zedapp/snippets
+	url = https://github.com/zedapp/snippets.git

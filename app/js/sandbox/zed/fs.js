@@ -13,7 +13,7 @@ define(function(require, exports, module) {
             });
         },
         writeFile: function(path, text) {
-            zed.getService("fs").writeFile(path, text).then(function() {
+            return zed.getService("fs").writeFile(path, text).then(function() {
                 // TODO: perhaps replace with different event?
                 zed.getService("eventbus").emit("newfilecreated", path);
             }).

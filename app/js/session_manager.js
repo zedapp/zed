@@ -88,6 +88,9 @@ define(function(require, exports, module) {
                     return;
                 }
                 eventbus.emit("sessionchanged", session, delta);
+                if(session.dontPersist) {
+                    return;
+                }
                 if (saveTimer) {
                     clearTimeout(saveTimer);
                 }
@@ -271,11 +274,17 @@ define(function(require, exports, module) {
             if (sessions[path]) {
                 return show(sessions[path]);
             } else if (path.indexOf("zed::") === 0) {
+                var readOnly = true;
+                if(path.indexOf("|write") !== -1) {
+                    path = path.substring(0, path.indexOf("|write"));
+                    readOnly = false;
+                }
                 var session = editor.createSession(path, "");
-                session.readOnly = true;
+                session.readOnly = readOnly;
                 session.dontPersist = true;
                 sessions[path] = session;
                 eventbus.emit("newfilecreated", path, session);
+                setupSave(session); // Not really saving, but for listening to change events
                 return show(session);
             } else {
                 eventbus.emit("sessionactivitystarted", previousSession, "Loading...");
@@ -307,7 +316,7 @@ define(function(require, exports, module) {
                 }
 
                 // File watching
-                if (!session.readOnly) {
+                if (!session.readOnly && session.filename.indexOf("zed::") !== 0) {
                     session.watcherFn = function(path, kind) {
                         ui.unblockUI();
                         console.log("Got watcher fn", path, kind)

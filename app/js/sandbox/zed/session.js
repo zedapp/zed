@@ -43,6 +43,12 @@ define(function(require, exports, module) {
                 return; // Return nothing
             });
         },
+        deleteSession: function(path) {
+            var sessions = zed.getService("session_manager").getSessions();
+            delete sessions[path];
+            zed.getService("eventbus").emit("filedeleted", path);
+            return Promise.resolve();
+        },
         setAnnotations: function(path, annos) {
             var session = getSession(path);
             (session.annotations || []).forEach(function(anno) {

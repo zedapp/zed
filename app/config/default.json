@@ -17,6 +17,7 @@
         "gh:zedapp/css-mode",
         "gh:zedapp/jsx-mode",
         "gh:zedapp/follow-complete",
-        "gh:zedapp/bracket-check"
+        "gh:zedapp/bracket-check",
+        "gh:zedapp/snippets"
     ]
 }
