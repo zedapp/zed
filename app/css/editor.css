@@ -567,3 +567,9 @@ body.dark #titlebar .title {
 #editor0, #editor1, #editor2, #preview-wrapper {
     top: 46px;
 }
+
+.ace_ui_button {
+    background-color: #0280AA;
+    color: #BAEFF3;
+    box-shadow: 0 0 10px #888;
+}

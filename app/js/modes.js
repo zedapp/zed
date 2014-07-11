@@ -61,7 +61,7 @@ define(function(require, exports, module) {
             },
             getModeForSession: function(session) {
                 var mode = api.getModeForPath(session.filename);
-                if(mode) {
+                if (mode) {
                     return mode;
                 }
 
@@ -99,7 +99,13 @@ define(function(require, exports, module) {
                 }
                 if (mode) {
                     session.mode = mode;
-                    session.setMode(mode.highlighter);
+                    if (mode.highlighter.indexOf("ace/mode") === 0) {
+                        session.setMode(mode.highlighter);
+                    } else {
+                        require([mode.highlighter], function(mod) {
+                            session.setMode(new mod.Mode());
+                        });
+                    }
                     session.clearAnnotations();
                     eventbus.emit("modeset", session, mode);
                 }
@@ -193,7 +199,8 @@ define(function(require, exports, module) {
                         exec: function(edit, session, callback) {
                             var cmd = commandSpec.modeCommand[session.mode.language];
                             if (cmd) {
-                                return zed.getService("sandbox").execCommand(name, cmd, session).catch(function(err) {
+                                return zed.getService("sandbox").execCommand(name, cmd, session).
+                                catch (function(err) {
                                     console.error(err);
                                     return Promise.reject(err);
                                 });

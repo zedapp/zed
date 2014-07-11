@@ -2,7 +2,7 @@
     "modes": {
         "installed-extensions": {
             "name": "Installed Extensions",
-            "highlighter": "ace/mode/markdown",
+            "highlighter": "mode/zed_ui",
             "filenames": ["zed::zpm::installed"],
 
             "keys": {
