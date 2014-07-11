@@ -4,9 +4,31 @@
             name: "Scala",
             highlighter: "ace/mode/scala",
             extensions: [
-                "scala"
-            ],
-            completionTriggers: ["."]
+                "scala"],
+            completionTriggers: ["."],
+
+            commands: {
+                "Tools:Index": {
+                    scriptUrl: "/default/command/regex_indexer.js",
+                    inputs: {
+                        text: true
+                    },
+                    regexes: [{
+                        regex: "def\\s+([a-zA-Z0-9_\\$]+)\\s*(\\{|\\(|:|=\\s*\\{)",
+                        symbolIndex: 1,
+                        type: "function"
+                    }, {
+                        regex: "(object|class|trait)\\s+([a-zA-Z0-9_\\$]+)\\s*(extends|implements|\\{|\\[)",
+                        symbolIndex: 2,
+                        type: "type"
+                    }]
+                }
+            },
+            handlers: {
+                index: [
+                    "Tools:Index"
+                ]
+            }
         }
     }
 }
