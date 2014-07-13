@@ -91,7 +91,8 @@ define(function(require, exports, module) {
                 api.getEditors(true).forEach(function(edit) {
                     api.setEditorConfiguration(edit);
                 });
-                var sessions = zed.getService("session_manager").getSessions();
+                var session_manager = zed.getService("session_manager");
+                var sessions = _.values(session_manager.getSessions()).concat(_.values(session_manager.specialDocs));
                 _.each(sessions, function(session) {
                     api.setSessionConfiguration(session);
                 });
