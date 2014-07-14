@@ -41,7 +41,8 @@ define(function(require, exports, module) {
                 var currentPath = options.currentPath;
 
                 var edit = editor.getActiveEditor();
-                $("body").append("<div id='goto'><input type='text' id='gotoinput' spellcheck='false' autocomplete='off' placeholder='" + placeholder + "'/><div id='gotohint'></div><div id='results'>");
+                var editorWrapperEl = $("#editor-wrapper");
+                editorWrapperEl.append("<div id='goto'><input type='text' id='gotoinput' spellcheck='false' autocomplete='off' placeholder='" + placeholder + "'/><div id='gotohint'></div><div id='results'>");
 
                 var editorEl = $(edit.container);
                 var gotoEl = $("#goto");
@@ -49,7 +50,7 @@ define(function(require, exports, module) {
                 var box = $("#goto");
                 var input = $("#gotoinput");
 
-                gotoEl.css("left", (editorEl.offset().left + 40) + "px");
+                gotoEl.css("left", (editorEl.offset().left - editorWrapperEl.offset().left + 40) + "px");
                 gotoEl.css("width", (editorEl.width() - 80) + "px");
                 // gotoEl.css("top", editorEl.offset().top + "px");
                 var popup = new AcePopup($("#results")[0]);

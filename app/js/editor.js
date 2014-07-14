@@ -99,9 +99,9 @@ define(function(require, exports, module) {
             },
             // Automatically called after all plugins are instantiated
             init: function() {
-                $("body").append("<div id='editor0' class='editor-single'>");
-                $("body").append("<div id='editor1' class='editor-disabled'>");
-                $("body").append("<div id='editor2' class='editor-disabled'>");
+                $("#editor-wrapper").append("<div id='editor0' class='editor-single'>");
+                $("#editor-wrapper").append("<div id='editor1' class='editor-disabled'>");
+                $("#editor-wrapper").append("<div id='editor2' class='editor-disabled'>");
 
                 ace.config.setDefaultValue("editor", "enableBasicAutocompletion", true);
 

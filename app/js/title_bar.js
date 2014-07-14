@@ -19,7 +19,7 @@ define(function(require, exports, module) {
         eventbus.declare("sessionactivityfailed"); // session, error
 
         var winButtons;
-        var barEl;
+        var barEl, pathBarEl;
 
         var api = {
             hook: function() {
@@ -29,7 +29,9 @@ define(function(require, exports, module) {
                     winButtons = "<div class='minimize'></div><div class='maximize'></div><div class='close'></div>";
                 }
                 barEl = $("<div id='titlebar'><div class='windowbuttons'>" + winButtons + "</div><div class='title'></div><div class='fullscreen'></div>");
+                pathBarEl = $("<div id='pathbar-wrapper'>");
                 $("body").append(barEl);
+                $("#editor-wrapper").append(pathBarEl);
 
                 // TODO: Rework this to toggle CSS styles
                 var buttonsEl = barEl.find(".windowbuttons");
@@ -90,7 +92,7 @@ define(function(require, exports, module) {
                     update();
                     editor.getEditors(true).forEach(function(edit) {
                         var el = $("<div class='pathbar'><div class='path'>No file</div><div class='info' 'display: none;'></div>");
-                        barEl.append(el);
+                        pathBarEl.append(el);
                         el.find(".path").click(function() {
                             editor.setActiveEditor(edit);
                             eventbus.emit("splitswitched", edit);

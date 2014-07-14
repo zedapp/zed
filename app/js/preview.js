@@ -47,7 +47,7 @@ define(function(require, exports, module) {
                 } else {
                     previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><webview nwdisable nwfaketop id='preview'>").hide();
                 }
-                $("body").append(previewWrapperEl);
+                $("#editor-wrapper").append(previewWrapperEl);
                 previewEl = $("#preview");
                 previewEl.attr("src", data);
             },
