@@ -1,5 +1,9 @@
 {
     "keys": {
+        "File:New": {
+            "mac": "Command-N",
+            "win": "Ctrl-N"
+        },
         "Navigate:Goto": {
             "mac": "Command-E",
             "win": "Ctrl-E"

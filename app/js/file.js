@@ -9,6 +9,7 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var async = require("async");
         var useragent = require("ace/lib/useragent");
+        var path = require("./lib/path");
 
         var ui = imports.ui;
         var eventbus = imports.eventbus;
@@ -104,6 +105,16 @@ define(function(require, exports, module) {
                 }
             });
         }
+
+        command.define("File:New", {
+            doc: "Create a new file",
+            exec: function(edit, session) {
+                var currentPath = session.filename;
+                var dir = path.dirname(currentPath);
+                command.exec("Navigate:Goto", edit, session, dir + "/");
+            },
+            readOnly: true
+        });
 
         command.define("File:Delete", {
             doc: "Remove the current file from disk.",
