@@ -1,3 +1,4 @@
+/.zedstate
 /README.md
 /api/zed/config.js
 /api/zed/config_fs.js
@@ -44,6 +45,7 @@
 /default/mode/csharp.json
 /default/mode/dart.json
 /default/mode/erlang.json
+/default/mode/gherkin.json
 /default/mode/glsl.json
 /default/mode/go.json
 /default/mode/groovy.json
@@ -141,6 +143,7 @@
 /default/zpm/zpm-dev.json
 /default/zpm/zpm.js
 /default/zpm/zpm.json
+/packages/.DS_Store
 /packages/gh/zedapp/bracket-check/check.js
 /packages/gh/zedapp/bracket-check/config.json
 /packages/gh/zedapp/bracket-check/package.json
@@ -155,7 +158,6 @@
 /packages/gh/zedapp/follow-complete/config.json
 /packages/gh/zedapp/follow-complete/index.js
 /packages/gh/zedapp/follow-complete/package.json
-/packages/gh/zedapp/follow-complete/trigger_complete.js
 /packages/gh/zedapp/javascript-mode/beautify-js.js
 /packages/gh/zedapp/javascript-mode/beautify.js
 /packages/gh/zedapp/javascript-mode/check.js
@@ -179,6 +181,9 @@
 /packages/gh/zedapp/php-mode/index.js
 /packages/gh/zedapp/php-mode/package.json
 /packages/gh/zedapp/php-mode/php.js
+/packages/gh/zedapp/snippets/config.json
+/packages/gh/zedapp/snippets/package.json
+/packages/gh/zedapp/snippets/snippets.js
 /user.css
 /user.json
 /zedconfig.json

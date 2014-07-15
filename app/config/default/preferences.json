@@ -20,7 +20,6 @@
         "hygienicMode": false,
         "hygienicModeRemote": true,
         "keybinding": "zed",
-        "showMenus": false,
         "persistentTree": false,
         "previewDelay": 500,
         "printMarginColumn": 80,

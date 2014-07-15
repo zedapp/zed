@@ -240,6 +240,9 @@ define(function(require, exports, module) {
         }, {
             name: "Help",
             items: [{
+                name: "Introduction",
+                command: "Help:Intro"
+            }, {
                 name: "Command Reference",
                 command: "Help:Commands"
             }, {

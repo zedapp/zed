@@ -261,6 +261,11 @@
             "scriptUrl": "./command/goto.js",
             "destination": "zed::log"
         },
+        "Help:Intro": {
+            "doc": "Shows the zed introduction screen.",
+            "scriptUrl": "./command/goto.js",
+            "destination": "zed::start"
+        },
         "Help:View Start Page": {
             "doc": "Shows the zed start page, which contains a quick reference for basic Zed commands.",
             "scriptUrl": "./command/goto.js",

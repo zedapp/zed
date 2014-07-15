@@ -355,7 +355,7 @@ body.dark .dynatree-container {
     background-color: #222;
 }
 body.dark .dynatree-container a {
-    color: #ddd;
+    color: #bbb;
 }
 body.dark .dynatree-focused a:link {
     background-color: #333;
@@ -613,21 +613,19 @@ body.dark #titlebar .title {
     box-shadow: 0 0 10px #888;
 }
 /* MENU */
-#main-menu {
+ #main-menu {
     position: absolute;
     top: 25px;
     left: 0;
     width: 100%;
     z-index: 99999;
-    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-    font-size: 12px;
+    font-family:'Tahoma';
+    font-size: 13px;
     background-color: #ccc;
 }
-
 body.dark #main-menu {
     background-color: #222;
 }
-
 #main-menu > ul > li > ul > li > ul {
     position: absolute;
     top: 0;
@@ -676,19 +674,15 @@ body.dark #main-menu {
     float: left;
     height: 25px;
 }
-
 #main-menu > ul > li > a {
     color: #333;
 }
-
 #main-menu > ul > li > a {
     color: #333;
 }
-
 body.dark #main-menu > ul > li > a {
     color: #ddd;
 }
-
 #main-menu > ul > li:hover {
     background: #444;
 }
@@ -696,10 +690,8 @@ body.dark #main-menu > ul > li > a {
     color: #ddd;
 }
 #main-menu > ul li:hover > ul {
-    /* On hover, display the next level's menu */
     display: inline;
 }
-/* Menu Link Styles */
 #main-menu > ul a {
     color: #ddd;
     text-decoration: none;
@@ -711,21 +703,17 @@ body.dark #main-menu > ul > li > a {
 #main-menu > ul a:hover {
     color: #fff;
 }
-
 #main-menu > ul > li li.has-children > a::after {
-    content: "  ►";
+    content:"    ▶";
 }
-
 #main-menu .key {
     display: block;
     float: right;
     opacity: 0.5;
 }
-
 #main-menu ul.hidden {
     display: none !important;
 }
-
 #main-menu li.separator {
     height: 2px !important;
     border-bottom: 1px solid #444 !important;

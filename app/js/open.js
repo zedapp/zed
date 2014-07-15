@@ -240,16 +240,19 @@ define(function(require, exports, module) {
         function checkAnalyticsAllowed() {
             config.loadConfiguration().then(function() {
                 var enable = config.getPreference("enableAnalytics");
-                if (enable === undefined) {
-                    win.create("analytics.html", 'chrome', 600, 300);
-                    // Initial state of checkbox will be on, so let's set that here
-                    config.setPreference("enableAnalytics", true);
+                var showMenus = config.getPreference("showMenus");
+                if (enable === undefined || showMenus === undefined) {
+                    win.create("firstrun.html", 'chrome', 800, 600);
                 }
             });
         }
 
-        window.setEnableAnalytics = function(val) {
-            config.setPreference("enableAnalytics", val);
+        window.setPreference = function(name, val) {
+            config.setPreference(name, val);
+        };
+
+        window.openManual = function() {
+            open("manual:", "Manual");
         };
 
         $("#projects").on("click", ".projects a", function(event) {

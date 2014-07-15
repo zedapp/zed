@@ -12,7 +12,6 @@ define(function(require, exports, module) {
         var session_manager = imports.session_manager;
         var editor = imports.editor;
         var config = imports.config;
-        var state = imports.state;
 
         var ignoreActivate = false;
         var treeVisible = false;
@@ -68,7 +67,7 @@ define(function(require, exports, module) {
             var elements = [];
             _.each(obj, function(entry, filename) {
                 var fullPath = path + sep + filename;
-                if (fullPath.indexOf("zed::") === 0) {
+                if (fullPath.indexOf("zed::") !== -1) {
                     fullPath = fullPath.substring(1);
                 }
                 if (entry === true) {
