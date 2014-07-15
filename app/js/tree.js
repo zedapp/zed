@@ -1,7 +1,7 @@
 /*global define, $, _ */
 define(function(require, exports, module) {
     "use strict";
-    plugin.consumes = ["eventbus", "goto", "command", "state", "session_manager", "editor"];
+    plugin.consumes = ["eventbus", "goto", "command", "state", "session_manager", "editor", "config"];
     plugin.provides = ["tree"];
     return plugin;
 
@@ -9,12 +9,29 @@ define(function(require, exports, module) {
         var eventbus = imports.eventbus;
         var goto = imports.goto;
         var command = imports.command;
-        var state = imports.state;
         var session_manager = imports.session_manager;
         var editor = imports.editor;
+        var config = imports.config;
+        var state = imports.state;
+
+        var ignoreActivate = false;
+        var treeVisible = false;
 
         var api = {
             buildDirectoryObject: buildDirectoryObject,
+            hook: function() {
+                eventbus.on("loadedfilelist", updateTree);
+                eventbus.on("newfilecreated", updateTree);
+                eventbus.on("filedeleted", updateTree);
+                eventbus.on("configchanged", function() {
+                    if (config.getPreference("persistentTree")) {
+                        treeVisible = true;
+                        updateTree();
+                    } else {
+                        hideTree();
+                    }
+                });
+            }
         };
 
         eventbus.declare("tree");
@@ -51,7 +68,7 @@ define(function(require, exports, module) {
             var elements = [];
             _.each(obj, function(entry, filename) {
                 var fullPath = path + sep + filename;
-                if(fullPath.indexOf("zed::") === 0) {
+                if (fullPath.indexOf("zed::") === 0) {
                     fullPath = fullPath.substring(1);
                 }
                 if (entry === true) {
@@ -71,28 +88,54 @@ define(function(require, exports, module) {
             return elements;
         }
 
-        eventbus.on("loadedfilelist", function() {
-            $("#file-tree").remove();
-        });
+        function updateTree() {
+            setTimeout(function() {
+                if (treeVisible) {
+                    $("#file-tree").remove();
+                    var edit = editor.getActiveEditor();
+                    showTree("file-tree", edit, goto.getFileCache(), "/", session_manager.go, false);
+                }
+            });
+        }
 
-        var ignoreActivate = true;
+        function hideTree() {
+            $("#file-tree").hide();
+            editor.getActiveEditor().focus();
+            treeVisible = false;
+            $("#editor-wrapper-wrapper").removeClass("left-tree");
+            editor.resizeEditors();
+        }
 
-        function showTree(treeId, edit, list, sep, onSelect) {
+
+        function showTree(treeId, edit, list, sep, onSelect, focus) {
             var editorEl = $(edit.container);
             var treeEl = $("#" + treeId);
+            treeVisible = true;
 
-            ignoreActivate = true;
+            $("#editor-wrapper-wrapper").addClass("left-tree");
+            editor.resizeEditors();
+
+            if (focus) {
+                ignoreActivate = true;
+            }
             var lastFocusEl = null;
 
-            function close() {
-                treeEl.hide();
+            function cancel() {
+                if (!config.getPreference("persistentTree")) {
+                    treeEl.hide();
+                    treeVisible = false;
+                    $("#editor-wrapper-wrapper").removeClass("left-tree");
+                }
                 editor.getActiveEditor().focus();
             }
 
             function focusTree() {
+                if (!focus) {
+                    return;
+                }
                 setTimeout(function() {
-                    editor.getActiveEditor().blur();
                     var tree = treeEl.dynatree("getTree");
+                    editor.getActiveEditor().blur();
                     ignoreActivate = true;
                     tree.activateKey(editor.getActiveSession().filename);
                     if (!tree.getActiveNode()) {
@@ -104,7 +147,6 @@ define(function(require, exports, module) {
                 }, 100);
             }
 
-
             if (treeEl.length === 0) {
                 $("body").append("<div id='" + treeId + "' class='tree'>");
 
@@ -115,14 +157,14 @@ define(function(require, exports, module) {
                             return;
                         }
                         if (!node.data.isFolder) {
-                            close();
+                            cancel();
                             onSelect(node.data.key);
                             editor.getActiveEditor().focus();
                         }
                     },
                     onKeydown: function(node, event) {
                         if (event.keyCode === 27) {
-                            close();
+                            cancel();
                         }
                     },
                     onFocus: function(node) {
@@ -138,31 +180,14 @@ define(function(require, exports, module) {
                 treeEl.show();
                 focusTree();
             }
-            treeEl.css("left", (editorEl.offset().left + 40) + "px");
-            treeEl.css("width", (editorEl.width() - 80) + "px");
-            treeEl.css("top", editorEl.offset().top + "px");
+            treeEl.css("top", (editorEl.offset().top - 21) + "px");
         }
 
         command.define("Navigate:File Tree", {
             doc: "Display the files of the current project in a tree heirarchy.",
             exec: function(edit) {
                 eventbus.emit("tree");
-                showTree("file-tree", edit, goto.getFileCache(), "/", session_manager.go);
-            },
-            readOnly: true
-        });
-
-        command.define("Command:Command Tree", {
-            doc: "Display the available commands in a tree heirarchy.",
-            exec: function(edit) {
-                eventbus.emit("commandtree");
-                showTree("command-tree", edit, command.allCommands().sort(), ":", function(cmd) {
-                    cmd = cmd.substring(1); // Strip leading ':'
-                    var recentCommands = state.get("recent.commands") || {};
-                    recentCommands[cmd] = Date.now();
-                    state.set("recent.commands", recentCommands);
-                    command.exec(cmd, edit, edit.getSession());
-                });
+                showTree("file-tree", edit, goto.getFileCache(), "/", session_manager.go, true);
             },
             readOnly: true
         });

@@ -28,7 +28,8 @@ define(function(require, exports, module) {
             api.defineConfig(name, {
                 doc: cmd.doc,
                 exec: function(edit, session) {
-                    return zed.getService("sandbox").execCommand(name, cmd, session).catch(function(err) {
+                    return zed.getService("sandbox").execCommand(name, cmd, session).
+                    catch (function(err) {
                         console.error("Command", name, "failed:", err);
                     });
                 },
@@ -70,6 +71,20 @@ define(function(require, exports, module) {
                 return configCommands[path] || commands[path];
             },
 
+            isVisible: function(session, cmd) {
+                if (cmd.modeCommand) {
+                    if (!session.mode) {
+                        return true;
+                    }
+                    var modeName = session.mode.language;
+                    return cmd.modeCommand[modeName] && !cmd.modeCommand[modeName].internal;
+                }
+                if (cmd.internal) {
+                    return false;
+                }
+                return true;
+            },
+
             exec: function(path, edit, session) {
                 var def = api.lookup(path);
                 if (!session.getTokenAt) { // Check if this is a session object
@@ -78,49 +93,42 @@ define(function(require, exports, module) {
                 return Promise.resolve(def.exec.apply(null, _.toArray(arguments).slice(1)));
             },
 
+            identifyCurrentKey: function(path) {
+                var commandKeys = keys.getCommandKeys();
+                var key = commandKeys[path];
+                if (key) {
+                    if (_.isString(key)) {
+                        return key;
+                    } else {
+                        return useragent.isMac ? key.mac : key.win;
+                    }
+                }
+            },
+
             allCommands: function() {
                 return Object.keys(configCommands).concat(Object.keys(commands));
             }
         };
 
-
-        function identifyCurrentKey(key) {
-            if (key) {
-                if (_.isString(key)) {
-                    return key;
-                } else {
-                    return useragent.isMac ? key.mac : key.win;
-                }
-            }
-        }
-
         api.define("Command:Enter Command", {
             doc: "Prompts for a command to invoke, with a convenient searchable interface.",
-            exec: function(edit, session) {
+            exec: function(edit, session, prefix) {
+                if (typeof prefix !== "string") {
+                    prefix = undefined;
+                }
                 // Lazy loading these
                 var recentCommands = zed.getService("state").get("recent.commands") || {};
-                var commandKeys = keys.getCommandKeys();
 
                 function filter(phrase) {
                     var results = fuzzyfind(api.allCommands(), phrase);
                     results = results.filter(function(result) {
-                        result.meta = identifyCurrentKey(commandKeys[result.path]);
+                        result.meta = api.identifyCurrentKey(result.path);
                         result.icon = "action";
                         // Let's rename the `cmd` variable using multiple cursors...
                         // There are three instances
                         var command = api.lookup(result.path);
                         // Filter out commands that are language-specific and don't apply to this mode
-                        if (command.modeCommand) {
-                            if (!session.mode) {
-                                return true;
-                            }
-                            var modeName = session.mode.language;
-                            return command.modeCommand[modeName] && !command.modeCommand[modeName].internal;
-                        }
-                        if (command.internal) {
-                            return false;
-                        }
-                        return true;
+                        return api.isVisible(session, command);
                     });
                     results.sort(function(a, b) {
                         if (a.score === b.score) {
@@ -140,6 +148,7 @@ define(function(require, exports, module) {
                 zed.getService("ui").filterBox({
                     placeholder: "Enter command",
                     filter: filter,
+                    text: prefix || "",
                     onSelect: function(cmd) {
                         recentCommands[cmd] = Date.now();
                         zed.getService("state").set("recent.commands", recentCommands);
@@ -159,7 +168,6 @@ define(function(require, exports, module) {
                         "known to Zed, and their current keybindings, even if " +
                         "you've modified the defaults. Click a command to activate it.\n\n" +
                         "   `Fold:Fold All`\n   `Fold:Unfold All`\n\n\n";
-                    var commandKeys = keys.getCommandKeys();
                     var prev_tree = [];
                     api.allCommands().sort().forEach(function(command_name) {
                         // Ignore internal and wrong-mode commands.
@@ -168,7 +176,7 @@ define(function(require, exports, module) {
                             if (command.modeCommand[session.mode.language].internal) {
                                 return;
                             }
-                        } catch (e) { }
+                        } catch (e) {}
                         if (command.internal) {
                             return;
                         }
@@ -178,18 +186,17 @@ define(function(require, exports, module) {
                         var len = command_tree.length - 1;
                         for (var i = 0; i < len; ++i) {
                             if (prev_tree[i] !== command_tree[i]) {
-                                command_list += "\n"+ new Array(i + 2).join("#") +
+                                command_list += "\n" + new Array(i + 2).join("#") +
                                     " " + command_tree[i] + "\n\n";
                             }
                         }
                         prev_tree = command_tree;
 
                         // Get the command documentation.
-                        var doc = command.doc ? "\n   " +
-                            command.doc.replace(/\n/g, "\n\n   ") + "\n" : "";
+                        var doc = command.doc ? "\n   " + command.doc.replace(/\n/g, "\n\n   ") + "\n" : "";
 
                         // Get the current keybinding.
-                        var binding = identifyCurrentKey(commandKeys[command_name]) || "";
+                        var binding = api.identifyCurrentKey(command_name) || "";
                         binding = binding ? "`" + binding + "`" : "Not set";
 
                         // Add the full command details to the document.

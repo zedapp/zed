@@ -4,7 +4,8 @@
         gotoExclude: [
             "/release/zed-*",
             "/nw/build/*",
-            "/nw/download/*"
+            "/nw/download/*",
+            "*/node_modules/*"
         ]
     },
     modes: {

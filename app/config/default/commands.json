@@ -176,6 +176,18 @@
             "preference": "wordWrap",
             "readOnly": true
         },
+        "Configuration:Preferences:Toggle Persistent Tree": {
+            "doc": "Toggle whether or not the file tree should always be visible on the left side of the screen.",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "persistentTree",
+            "readOnly": true
+        },
+        "Configuration:Preferences:Toggle Menus": {
+            "doc": "Toggle whether or not to show menus.",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "showMenus",
+            "readOnly": true
+        },
         "Configuration:Preferences:Toggle Continuous Completion": {
             "doc": "Toggle whether or not you must hit the Tab key before word completions are displayed to you.",
             "scriptUrl": "./command/toggle.js",

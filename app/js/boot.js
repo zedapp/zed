@@ -42,6 +42,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./log",
         "./window_commands",
         "./analytics",
+        "./menu",
         "./db"];
 
     if (window.isNodeWebkit) {

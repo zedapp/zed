@@ -254,10 +254,10 @@
             "mac": "Command-.",
             "win": "Ctrl-."
         },
-        "Command:Command Tree": {
-            "mac": "Command-Shift-.",
-            "win": "Ctrl-Shift-."
-        },
+        // "Command:Command Tree": {
+        //     "mac": "Command-Shift-.",
+        //     "win": "Ctrl-Shift-."
+        // },
         "Split:One": {
             "mac": "Command-1",
             "win": "Ctrl-1"

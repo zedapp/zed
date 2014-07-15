@@ -174,6 +174,11 @@ define(function(require, exports, module) {
                     return $(edit.container).is(':visible');
                 });
             },
+            resizeEditors: function() {
+                api.getEditors().forEach(function(edit) {
+                    edit.resize();
+                });
+            },
             getActiveSession: function() {
                 return api.getActiveEditor().getSession();
             },

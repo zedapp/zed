@@ -3,7 +3,6 @@ body {
     overflow: hidden;
     background-color: #fff;
 }
-
 #editor-wrapper-wrapper {
     position: absolute;
     top: 25px;
@@ -11,12 +10,21 @@ body {
     left: 0;
     right: 0;
 }
+#editor-wrapper-wrapper.left-tree {
+    left: 300px;
+}
+#editor-wrapper-wrapper.top-menu {
+    top: 50px;
+}
 #editor-wrapper {
     position: relative;
     width: 100%;
     height: 100%;
+    background-color: #fff;
 }
-
+body.dark #editor-wrapper {
+    background-color: #333;
+}
 #sandbox {
     z-index: 500;
     position: absolute;
@@ -261,7 +269,7 @@ body.dark .pathbar.active {
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
     background-color: #aaa;
-    -webkit-app-region: no-drag;
+    /*-webkit-app-region: no-drag;*/
 }
 body.dark .pathbar .path {
     background-color: #000;
@@ -327,16 +335,16 @@ body .ace_autocomplete .ace_line {
     background: #eee !important;
 }
 .tree {
-    position: fixed;
-    border-left: solid 1px black;
-    border-bottom: solid 1px black;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 300px;
     border-right: solid 1px black;
     background: #fff;
     padding: 0;
     z-index: 999;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
-    max-height: 80%;
     overflow: scroll;
 }
 .dynatree-container {
@@ -344,7 +352,7 @@ body .ace_autocomplete .ace_line {
     background-color: #fff;
 }
 body.dark .dynatree-container {
-    background-color: #000;
+    background-color: #222;
 }
 body.dark .dynatree-container a {
     color: #ddd;
@@ -479,7 +487,7 @@ body.dark #titlebar {
     font-size: 13px;
     z-index: 1000;
     padding-left: 35px;
-    -webkit-app-region: drag;
+    /*-webkit-app-region: drag;*/
     -webkit-user-select: none;
     background-color: #ccc;
     color: #fff;
@@ -489,7 +497,6 @@ body.dark #pathbar-wrapper {
     border-bottom: 1px solid #111;
     background-color: #222;
 }
-
 body.mac #titlebar .windowbuttons {
     top: 7px;
     left: 9px;
@@ -600,9 +607,126 @@ body.dark #titlebar .title {
 #editor0, #editor1, #editor2, #preview-wrapper {
     top: 21px;
 }
-
 .ace_ui_button {
     background-color: #0280AA;
     color: #BAEFF3;
     box-shadow: 0 0 10px #888;
+}
+/* MENU */
+#main-menu {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 100%;
+    z-index: 99999;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 12px;
+    background-color: #ccc;
+}
+
+body.dark #main-menu {
+    background-color: #222;
+}
+
+#main-menu > ul > li > ul > li > ul {
+    position: absolute;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
+    border: 1px solid #444;
+}
+#main-menu > ul > li > ul > li > ul > li {
+    height: 25px;
+    background: #222;
+}
+#main-menu > ul > li > ul > li > ul > li:hover {
+    background: #444;
+}
+#main-menu > ul > li > ul {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 350px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
+    border: 1px solid #444;
+    z-index: 1000000;
+}
+#main-menu > ul > li > ul > li {
+    position: relative;
+    height: 25px;
+    background: #222;
+}
+#main-menu > ul > li > ul > li:hover {
+    background: #444;
+}
+#main-menu > ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0 5px;
+}
+#main-menu > ul > li {
+    position: relative;
+    float: left;
+    height: 25px;
+}
+
+#main-menu > ul > li > a {
+    color: #333;
+}
+
+#main-menu > ul > li > a {
+    color: #333;
+}
+
+body.dark #main-menu > ul > li > a {
+    color: #ddd;
+}
+
+#main-menu > ul > li:hover {
+    background: #444;
+}
+#main-menu > ul > li:hover > a {
+    color: #ddd;
+}
+#main-menu > ul li:hover > ul {
+    /* On hover, display the next level's menu */
+    display: inline;
+}
+/* Menu Link Styles */
+#main-menu > ul a {
+    color: #ddd;
+    text-decoration: none;
+    padding: 0 7px;
+    /* Make the link cover the entire list item-container */
+    display: block;
+    line-height: 25px;
+}
+#main-menu > ul a:hover {
+    color: #fff;
+}
+
+#main-menu > ul > li li.has-children > a::after {
+    content: "  ►";
+}
+
+#main-menu .key {
+    display: block;
+    float: right;
+    opacity: 0.5;
+}
+
+#main-menu ul.hidden {
+    display: none !important;
+}
+
+#main-menu li.separator {
+    height: 2px !important;
+    border-bottom: 1px solid #444 !important;
 }

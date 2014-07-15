@@ -95,6 +95,13 @@ define(function(require, exports, module) {
             });
         }
 
+        command.define("Configuration:Preferences:Pick Theme", {
+            exec: function(edit, session) {
+                return command.exec("Command:Enter Command", edit, session, "Configuration:Theme:");
+            },
+            readOnly: true
+        });
+
         register(null, {
             theme: api
         });
