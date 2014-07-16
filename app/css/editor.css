@@ -610,7 +610,6 @@ body.dark #titlebar .title {
 .ace_ui_button {
     background-color: #0280AA;
     color: #BAEFF3;
-    box-shadow: 0 0 10px #888;
 }
 /* MENU */
  #main-menu {
@@ -629,8 +628,8 @@ body.dark #main-menu {
 #main-menu > ul > li > ul > li > ul {
     position: absolute;
     top: 0;
-    right: -350px;
-    width: 350px;
+    right: -300px;
+    width: 300px;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -648,7 +647,7 @@ body.dark #main-menu {
     position: absolute;
     top: 25px;
     left: 0;
-    width: 350px;
+    width: 300px;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -681,7 +680,7 @@ body.dark #main-menu {
     color: #333;
 }
 body.dark #main-menu > ul > li > a {
-    color: #ddd;
+    color: #8D8D8D;
 }
 #main-menu > ul > li:hover {
     background: #444;

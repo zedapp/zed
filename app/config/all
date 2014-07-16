@@ -17,6 +17,7 @@
 /default/command/builtin_completer.js
 /default/command/config_int.js
 /default/command/goto.js
+/default/command/manual_enter.js
 /default/command/regex_indexer.js
 /default/command/search.js
 /default/command/set_preference.js

@@ -3,24 +3,22 @@ define(function(require, exports, module) {
 
     var oop = require("ace/lib/oop");
     var lang = require("ace/lib/lang");
-    var TextHighlightRules = require("ace/mode/text_highlight_rules").TextHighlightRules;
+    var MarkdownHighlightRules = require("ace/mode/markdown_highlight_rules").MarkdownHighlightRules;
 
     var ZedUiHighlightRules = function() {
-        // regexp must not have capturing parentheses
-        // regexps are ordered -> the first match is used
+        MarkdownHighlightRules.call(this);
 
-        this.$rules = {
-            "start": [{ // button
-                token: "ui_button",
-                regex: /\[[^\]]+\]/
-            }, {
-                defaultToken: "text"
-            }]
-        };
+        this.$rules.start.unshift({
+            token: "ui_button",
+            regex: /\[[^\]]+\]/
+        });
+        this.$rules.listblock.unshift({
+            token: "ui_button",
+            regex: /\[[^\]]+\]/
+        });
 
-        // this.normalizeRules();
     };
-    oop.inherits(ZedUiHighlightRules, TextHighlightRules);
+    oop.inherits(ZedUiHighlightRules, MarkdownHighlightRules);
 
     exports.ZedUiHighlightRules = ZedUiHighlightRules;
 });

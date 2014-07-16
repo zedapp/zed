@@ -35,6 +35,9 @@ define(function(require, exports, module) {
             }, {}, {
                 name: "Reload Filelist",
                 command: "Navigate:Reload Filelist"
+            }, {}, {
+                name: "Close",
+                command: "Window:Close"
             }]
         }, {
             name: "Edit",
@@ -70,6 +73,15 @@ define(function(require, exports, module) {
                 }, {
                     name: "Align cursors",
                     command: "Cursor:Multiple:Align cursors"
+                }]
+            }, {
+                name: "Macro",
+                items: [{
+                    name: "Toggle Recording",
+                    command: "Macro:Toggle Recording"
+                }, {
+                    name: "Replay",
+                    command: "Macro:Replay"
                 }]
             }, {}, {
                 name: "Remove Line",
@@ -110,6 +122,9 @@ define(function(require, exports, module) {
             }, {
                 name: "Lookup Symbol Under Cursor",
                 command: "Navigate:Lookup Symbol Under Cursor"
+            }, {}, {
+                name: "Project Picker",
+                command: "Project:Open Project Picker"
             }]
         }, {
             name: "Find",

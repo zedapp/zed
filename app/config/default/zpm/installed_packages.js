@@ -5,7 +5,7 @@ module.exports = function() {
     return session.goto("zed::zpm::installed").then(function() {
         return zpm.getInstalledPackages();
     }).then(function(packages) {
-        session.setText("zed::zpm::installed", "This is a list of your installed packages. \nPut your cursor on a command and press Enter to execute it.\n");
+        session.setText("zed::zpm::installed", "Installed packages\n==================\n");
         append("\nCommands: [Install New]      [Update All]\n");
         var pkg;
         if (Object.keys(packages).length === 0) {
