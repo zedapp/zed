@@ -59,7 +59,7 @@ define(function(require, exports, module) {
                 eventbus.on("dbavailable", function(db) {
                     setTimeout(function() {
                         db.readStore("_meta").get("meta").then(function(metaObj) {
-                            if (!metaObj.initialIndex) {
+                            if (!metaObj.initialIndex && options.get('url').indexOf("http") !== 0) {
                                 metaObj.initialIndex = true;
                                 db.writeStore("_meta").put(metaObj);
                                 indexProject(editor.getActiveEditor(), editor.getActiveSession());

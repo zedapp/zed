@@ -20,7 +20,8 @@
         "unlimitedStorage",
         {"fileSystem": ["write", "retainEntries", "directory"]},
         "http://*/",
-        "https://*/"
+        "https://*/",
+        "*://*/*"
     ],
     "icons": {
         "128": "Icon.png",

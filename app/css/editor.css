@@ -371,6 +371,7 @@ body.dark .dynatree-focused a:link {
     text-align: center;
     padding-top: 100px;
     background-color: #eee;
+    color: #000;
     z-index: 9999;
 }
 #blockui img {

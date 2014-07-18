@@ -1,6 +1,6 @@
 /*global define, $, chrome, _*/
 define(function(require, exports, module) {
-    plugin.consumes = ["history", "window", "windows", "config", "analytics_tracker"];
+    plugin.consumes = ["history", "window", "windows", "config", "eventbus", "analytics_tracker"];
     plugin.provides = ["open"];
     return plugin;
 
@@ -18,6 +18,7 @@ define(function(require, exports, module) {
         var windows = imports.windows;
         var config = imports.config;
         var analytics_tracker = imports.analytics_tracker;
+        var eventbus = imports.eventbus;
 
         var builtinProjects = options.builtinProjects;
         var editorHtml = options.editorHtml;
@@ -41,7 +42,6 @@ define(function(require, exports, module) {
         };
 
         windows.setOpenWindow();
-        console.log("Yo");
 
         analytics_tracker.trackEvent("Application", "Open");
 
@@ -286,6 +286,90 @@ define(function(require, exports, module) {
         register(null, {
             open: api
         });
+
+        // Editor socket
+        // TODO: Factor this out somehow
+        var timeOut = 2000;
+        var reconnectTimeout = null;
+        var editorSocketConn;
+        var currentSocketOptions = {};
+
+        function initEditorSocket() {
+            function createUUID() {
+                var s = [];
+                var hexDigits = "0123456789ABCDEF";
+                for (var i = 0; i < 32; i++) {
+                    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+                }
+                s[12] = "4";
+                s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);
+
+                var uuid = s.join("");
+                return uuid;
+            }
+
+            if (!config.getPreference("zedrem")) {
+                var userKey = createUUID();
+                config.setPreference("zedrem", {
+                    server: "wss://remote.zedapp.org:443",
+                    userKey: userKey
+                });
+            }
+            currentSocketOptions = config.getPreference("zedrem");
+            editorSocket(currentSocketOptions);
+        }
+
+
+        eventbus.on("configchanged", function() {
+            if(JSON.stringify(config.getPreference("zedrem")) === JSON.stringify(currentSocketOptions)) {
+                return;
+            }
+            console.log("Config changed.");
+            if (editorSocketConn) {
+                if(reconnectTimeout) {
+                    clearTimeout(reconnectTimeout);
+                }
+                editorSocketConn.onclose = function() {};
+                editorSocketConn.close();
+            }
+            initEditorSocket();
+        });
+
+        function editorSocket(zedremConfig) {
+            if(!zedremConfig.server) {
+                // You can disable connecting to zedrem by setting server to null or false
+                return;
+            }
+            console.log("Attempting to connect to", zedremConfig.server + "/editorsocket");
+            editorSocketConn = new WebSocket(zedremConfig.server + '/editorsocket');
+            editorSocketConn.onopen = function() {
+                console.log("Connected to zedrem server!");
+                editorSocketConn.send(JSON.stringify({
+                    version: "1",
+                    UUID: zedremConfig.userKey
+                }));
+                timeOut = 2000;
+            };
+            editorSocketConn.onerror = function(err) {
+                // console.error("Socket error", err);
+            };
+            editorSocketConn.onmessage = function(e) {
+                var url = e.data;
+                url = zedremConfig.server.replace("ws://", "http://").replace("wss://", "https://") + "/fs/" + url;
+                console.log("Now have ot open URL:", url);
+                openChecked(url);
+            };
+            editorSocketConn.onclose = function(e) {
+                // console.log("Close", e);
+                if (timeOut < 10 * 60 * 1000) { // 10 minutes max
+                    timeOut *= 2;
+                }
+                console.log("Socket closed, retrying in", timeOut / 1000, "seconds");
+                reconnectTimeout = setTimeout(function() {
+                    editorSocket(zedremConfig);
+                }, timeOut);
+            }
+        }
     }
 
 });

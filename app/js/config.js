@@ -379,6 +379,16 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
+        command.define("Configuration:Zedrem:Get User Key", {
+            exec: function() {
+                zed.getService("ui").prompt({
+                    message: "Your user key: ",
+                    input: api.getPreference("zedrem").userKey
+                });
+            },
+            readOnly: true
+        });
+
         sandbox.defineInputable("preferences", function() {
             return expandedConfiguration.preferences;
         });
