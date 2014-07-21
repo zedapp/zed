@@ -396,7 +396,7 @@ define(function(require, exports, module) {
             };
             editorSocketConn.onclose = function(e) {
                 // console.log("Close", e);
-                if (timeOut < 10 * 60 * 1000) { // 10 minutes max
+                if (timeOut < 5 * 60 * 1000) { // 5 minutes max
                     timeOut *= 2;
                 }
                 closeSocket();
