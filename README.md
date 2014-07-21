@@ -68,6 +68,7 @@ Technology
 ----------
 
 * The excellent [ACE](http://github.com/ajaxorg/ace) editor
+* [Architect](https://github.com/c9/architect)
 * [jQuery](http://jquery.com)
 * [Require.js](http://requirejs.org)
 
