@@ -291,6 +291,8 @@ define(function(require, exports, module) {
         // TODO: Factor this out somehow
         var timeOut = 2000;
         var reconnectTimeout = null;
+        var pingInterval = null;
+        var pongTimeout = null;
         var editorSocketConn;
         var currentSocketOptions = {};
 
@@ -325,15 +327,25 @@ define(function(require, exports, module) {
                 return;
             }
             console.log("Config changed.");
+            closeSocket();
+            initEditorSocket();
+        });
+
+        function closeSocket() {
             if (editorSocketConn) {
                 if(reconnectTimeout) {
                     clearTimeout(reconnectTimeout);
                 }
+                if(pingInterval) {
+                    clearInterval(pingInterval);
+                }
+                if(pongTimeout) {
+                    clearTimeout(pongTimeout);
+                }
                 editorSocketConn.onclose = function() {};
                 editorSocketConn.close();
             }
-            initEditorSocket();
-        });
+        }
 
         function editorSocket(zedremConfig) {
             if(!zedremConfig.server) {
@@ -349,21 +361,45 @@ define(function(require, exports, module) {
                     UUID: zedremConfig.userKey
                 }));
                 timeOut = 2000;
+                pingInterval = setInterval(function() {
+                    console.log("Ping");
+                    editorSocketConn.send(JSON.stringify({type: "ping"}));
+                    pongTimeout = setTimeout(function() {
+                        console.log("Ping timed out, reconnecting...");
+                        closeSocket();
+                        initEditorSocket();
+                    }, 3000);
+                }, 5000);
             };
             editorSocketConn.onerror = function(err) {
-                // console.error("Socket error", err);
+                console.error("Socket error", err);
             };
             editorSocketConn.onmessage = function(e) {
-                var url = e.data;
-                url = zedremConfig.server.replace("ws://", "http://").replace("wss://", "https://") + "/fs/" + url;
-                console.log("Now have ot open URL:", url);
-                openChecked(url);
+                var message = e.data;
+                try {
+                    message = JSON.parse(message);
+                    switch(message.type) {
+                        case 'pong':
+                            clearTimeout(pongTimeout);
+                            pongTimeout = null;
+                            console.log("Got pong");
+                            break;
+                        case 'open':
+                            var url = zedremConfig.server.replace("ws://", "http://").replace("wss://", "https://") + "/fs/" + message.url;
+                            console.log("Now have ot open URL:", url);
+                            openChecked(url);
+                            break;
+                    }
+                } catch(e) {
+                    console.error("Couldn't deserialize:", message, e);
+                }
             };
             editorSocketConn.onclose = function(e) {
                 // console.log("Close", e);
                 if (timeOut < 10 * 60 * 1000) { // 10 minutes max
                     timeOut *= 2;
                 }
+                closeSocket();
                 console.log("Socket closed, retrying in", timeOut / 1000, "seconds");
                 reconnectTimeout = setTimeout(function() {
                     editorSocket(zedremConfig);
