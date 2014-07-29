@@ -19,15 +19,21 @@
                     inputs: {
                         text: true
                     },
-                    regexes: [{
-                        regex: "[a-zA-Z0-9_\\$]+\\s+([a-zA-Z0-9_\\$]+)\\s*\\([^\\)]*\\)\\s*\\{",
-                        symbolIndex: 1,
-                        type: "function"
-                    }, {
-                        regex: "struct\\s+([a-zA-Z0-9_\\$]+)\\s*\\{",
-                        symbolIndex: 1,
-                        type: "type"
-                    }]
+                    regexes: [
+                        {
+                            regex: "(\\w+\\s*\\([^;{)]*\\))\\s*(?:(->|:)[^;{]*)?(?:const|override|final|\\s)*\\{",
+                            symbolIndex: 1,
+                            type: "function"
+                        }, {
+                            regex: "(?:template\\s*<[^>]*>\\s*)?(?:class|struct|union)\\s+(?:(?:\\[\\[[\\s:\\w,\\(\\)\\'\\\"]*\\]\\])?\\s*(?:alignas\\s*\\(\\s*\\w*\\s*\\))?\\s*)*([a-zA-Z_][0-9a-zA-Z_]*)[^{;]*\\{",
+                            symbolIndex: 1,
+                            type: "type"
+                        }, {
+                            regex: "typedef\\s+[^;]*\\s+(\\w*)\\s*;",
+                            symbolIndex: 1,
+                            type: "type"
+                        }
+                    ]
                 }
             },
 
