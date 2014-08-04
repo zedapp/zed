@@ -1043,6 +1043,12 @@ define(function(require, exports, module) {
             return session.selection.getCursor();
         });
 
+        sandbox.defineInputable("cursors", function(session) {
+            return session.selection.getAllRanges().map(function(r) {
+                return r.cursor || r.end;
+            });
+        });
+
         sandbox.defineInputable("cursorIndex", function(session) {
             var cursor = session.selection.getCursor();
             var lines = session.getDocument().getAllLines();

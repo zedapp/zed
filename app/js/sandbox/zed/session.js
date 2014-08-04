@@ -29,6 +29,7 @@ define(function(require, exports, module) {
         getAllLines: useInputable("lines"),
         getCursorIndex: useInputable("cursorIndex"),
         getCursorPosition: useInputable("cursor"),
+        getCursorPositions: useInputable("cursors"),
         getScrollPosition: useInputable("scrollPosition"),
         getSelectionRange: useInputable("selectionRange"),
         getSelectionText: useInputable("selectionText"),

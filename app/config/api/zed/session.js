@@ -57,6 +57,9 @@ module.exports = {
     getCursorPosition: function(path) {
         return sandboxRequest("zed/session", "getCursorPosition", [path]);
     },
+    getCursorPositions: function(path) {
+        return sandboxRequest("zed/session", "getCursorPositions", [path]);
+    },
     setCursorPosition: function(path, pos) {
         return sandboxRequest("zed/session", "setCursorPosition", [path, pos]);
     },

@@ -225,7 +225,7 @@
             "doc": "This command will strip spaces and tabs from the end of every line (but not the line containing the cursor), and also ensures that the document ends with one and only one newline character.",
             "scriptUrl": "./command/stripper.js",
             "inputs": {
-                "cursor": true,
+                "cursors": true,
                 "isInsertingSnippet": true,
                 "lines": true,
                 "preferences": true
@@ -236,7 +236,7 @@
             "scriptUrl": "./command/stripper.js",
             "internal": true,
             "inputs": {
-                "cursor": true,
+                "cursors": true,
                 "isInsertingSnippet": true,
                 "lines": true,
                 "preferences": true
