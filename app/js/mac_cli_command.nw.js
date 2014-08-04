@@ -18,7 +18,7 @@ define(function(require, exports, module) {
             var rootMenu = new gui.Menu({
                 type: 'menubar'
             });
-            if(root.createMacBuiltin) {
+            if(rootMenu.createMacBuiltin) {
                 rootMenu.createMacBuiltin("Zed");
             }
             var toolsMenu = new gui.Menu();

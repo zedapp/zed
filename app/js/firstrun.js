@@ -34,8 +34,8 @@ $("td").click(function(event) {
     }
 });
 
-$(function() {
+setTimeout(function() {
     setPreference("enableAnalytics", true);
     setPreference("showMenus", false);
     setPreference("persistentTree", false);
-})
+}, 1000);

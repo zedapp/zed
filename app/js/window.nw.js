@@ -41,6 +41,7 @@ define(function(require, exports, module) {
                 return new Promise(function(resolve) {
                     w.once("loaded", function() {
                         w.focus();
+                        w.window.opener = window;
                         resolve({
                             addCloseListener: function(listener) {
                                 w.on("closed", function() {
