@@ -244,7 +244,13 @@ define(function(require, exports, module) {
 
                         resultList.sort(function(r1, r2) {
                             if (r1.score === r2.score) {
-                                return r1.path.length - r2.path.length;
+                                if(r1.icon === "file") {
+                                    // In case of files shorter is better
+                                    return r1.path.length - r2.path.length;
+                                } else {
+                                    // In case of the rest, just sort by path
+                                    return r1.path < r2.path ? -1 : 1;
+                                }
                             } else {
                                 return r2.score - r1.score;
                             }
