@@ -690,10 +690,10 @@ define(function(require, exports, module) {
         });
 
         command.define("Cursor:Multiple:Align cursors", {
-           doc: "Align all cursors and text to the same vertical position",
-           exec: function(editor) {
-               editor.alignCursors();
-           },
+            doc: "Align all cursors and text to the same vertical position",
+            exec: function(editor) {
+                editor.alignCursors();
+            },
         });
 
         // SCROLL
@@ -794,32 +794,32 @@ define(function(require, exports, module) {
         });
 
         command.define("Edit:Copy Lines Up", {
-            doc: "Copy the currently selected lines above the current selection. " +
-            "The current line is used if there is no selection.",
+            doc: "Copy the currently selected lines above the current selection. " + "The current line is used if there is no selection.",
             exec: function(editor) {
                 editor.copyLinesUp();
-            }
+            },
+            multiSelectAction: "forEach"
         });
         command.define("Edit:Move Lines Up", {
-            doc: "Move the currently selected lines up one line. " +
-            "The current line is used if there is no selection.",
+            doc: "Move the currently selected lines up one line. " + "The current line is used if there is no selection.",
             exec: function(editor) {
                 editor.moveLinesUp();
-            }
+            },
+            multiSelectAction: "forEach"
         });
         command.define("Edit:Copy Lines Down", {
-            doc: "Copy the currently selected lines below the current selection. " +
-            "The current line is used if there is no selection.",
+            doc: "Copy the currently selected lines below the current selection. " + "The current line is used if there is no selection.",
             exec: function(editor) {
                 editor.copyLinesDown();
-            }
+            },
+            multiSelectAction: "forEach"
         });
         command.define("Edit:Move Lines Down", {
-            doc: "Move the currently selected lines down one line. " +
-            "The current line is used if there is no selection.",
+            doc: "Move the currently selected lines down one line. " + "The current line is used if there is no selection.",
             exec: function(editor) {
                 editor.moveLinesDown();
-            }
+            },
+            multiSelectAction: "forEach"
         });
         command.define("Edit:Delete", {
             doc: "Deletes one character to the right.",
@@ -893,9 +893,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Edit:Transpose Letters", {
-            doc: "Swaps the character before the cursor with the character after " +
-            "the cursor. Multiple invocations will have the effect of moving the " +
-            "character before the cursor forward through the file.",
+            doc: "Swaps the character before the cursor with the character after " + "the cursor. Multiple invocations will have the effect of moving the " + "character before the cursor forward through the file.",
             exec: function(editor) {
                 editor.transposeLetters();
             },
@@ -937,8 +935,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Edit:Overwrite Mode", {
-            doc: "Toggle overwrite mode, which causes each character typed to " +
-            "replace the one at right of the cursor instead of being inserted before it.",
+            doc: "Toggle overwrite mode, which causes each character typed to " + "replace the one at right of the cursor instead of being inserted before it.",
             exec: function(editor) {
                 editor.toggleOverwrite();
             }
@@ -997,8 +994,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Find:All", {
-            doc: "Select all instances of the search term (or current word) and " +
-            "place a cursor at each one.",
+            doc: "Select all instances of the search term (or current word) and " + "place a cursor at each one.",
             exec: function(edit) {
                 var phrase;
                 if (edit.selection.isEmpty()) {
