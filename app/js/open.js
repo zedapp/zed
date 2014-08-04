@@ -62,7 +62,7 @@ define(function(require, exports, module) {
             if (openProject) {
                 openProject.focus();
             } else {
-                win.create(editorHtml + '?url=' + url + "&title=" + title + (filename ? "&filename=" + filename : ""), 'none', 720, 400).then(function(win) {
+                win.create(editorHtml + '?url=' + encodeURIComponent(url) + "&title=" + encodeURIComponent(title) + (filename ? "&filename=" + encodeURIComponent(filename) : ""), 'none', 720, 400).then(function(win) {
                     if (url !== "dropbox:" && url !== "local:") {
                         openProjects[url] = win;
                         win.addCloseListener(function() {
