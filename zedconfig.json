@@ -37,7 +37,8 @@
                             ace: true,
                             Promise: true,
                             sandboxRequest: true,
-                            JSON5: true
+                            JSON5: true,
+                            chrome: true
                         }
                     }
                 },

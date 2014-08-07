@@ -45,7 +45,7 @@ define(function(require, exports, module) {
                 if(window.isNodeWebkit) {
                     previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><iframe id='preview'>").hide();
                 } else {
-                    previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><webview nwdisable nwfaketop id='preview'>").hide();
+                    previewWrapperEl = $("<div id='preview-wrapper' class='preview-vsplit2-right'><webview id='preview'>").hide();
                 }
                 $("#editor-wrapper").append(previewWrapperEl);
                 previewEl = $("#preview");

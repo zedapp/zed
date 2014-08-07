@@ -1,10 +1,15 @@
 /*global chrome, define*/
 define(function(require, exports, module) {
+    plugin.consumes = ["eventbus"];
     plugin.provides = ["window"];
     return plugin;
 
     function plugin(options, imports, register) {
         var win = chrome.app.window.current();
+
+        var eventbus = imports.eventbus;
+
+        eventbus.declare("windowclose");
 
         var closeHandler = null;
 
@@ -13,6 +18,7 @@ define(function(require, exports, module) {
                 if(force || !closeHandler) {
                     win.close();
                 } else {
+                    eventbus.emit("windowclose");
                     closeHandler();
                 }
             },

@@ -13,7 +13,7 @@
         "fontFamily": "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
         "fontSize": 12,
         "globalAutoRevert": false,
-        "gotoExclude": ["/.git/*", "*/.zedstate", "/.DS_Store"],
+        "gotoExclude": ["*/.git/*", "*/.zedstate", "/.DS_Store"],
         "highlightActiveLine": true,
         "highlightGutterLine": true,
         "highlightSelectedWord": true,
