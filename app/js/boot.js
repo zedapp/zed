@@ -48,7 +48,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
     if (window.isNodeWebkit) {
         modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw");
     } else {
-        modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome");
+        modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome");
     }
 
     fsPicker().then(function(fsConfig) {

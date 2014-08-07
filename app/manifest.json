@@ -19,6 +19,7 @@
         "syncFileSystem",
         "unlimitedStorage",
         {"fileSystem": ["write", "retainEntries", "directory"]},
+        {"socket":["tcp-connect", "tcp-listen"]},
         "http://*/",
         "https://*/",
         "*://*/*"
