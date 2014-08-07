@@ -5,6 +5,7 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var poll_watcher = require("./poll_watcher");
+        var fsUtil = require("./util");
         var namespace = options.namespace;
 
         namespace = namespace + "|";
@@ -66,7 +67,7 @@ define(function(require, exports, module) {
                         readDirEntriesUntilEmpty();
                     });
                 },
-                readFile: function(path) {
+                readFile: function(path, binary) {
                     return new Promise(function(resolve, reject) {
                         var encodedPath = encodePath(path);
                         root.getFile(encodedPath, {}, function(f) {
@@ -75,13 +76,17 @@ define(function(require, exports, module) {
                                 resolve(e.target.result);
                             };
                             f.file(function(file) {
-                                fileReader.readAsText(file);
+                                if(binary) {
+                                    fileReader.readAsBinaryString(file);
+                                } else {
+                                    fileReader.readAsText(file);
+                                }
                                 watcher.setCacheTag(path, "" + file.lastModifiedDate);
                             });
                         }, reject);
                     });
                 },
-                writeFile: function(path, content) {
+                writeFile: function(path, content, binary) {
                     var encodedPath = encodePath(path);
                     watcher.lockFile(path);
                     return (new Promise(function(resolve, reject) {
@@ -104,7 +109,7 @@ define(function(require, exports, module) {
                                             reject(e.toString());
                                         };
 
-                                        var blob = new Blob([content]);
+                                        var blob = binary ? new Blob([fsUtil.binaryStringAsUint8Array(content)]) : new Blob([content]);
                                         fileWriter.write(blob);
                                     }, function(err) {
                                         reject(err);
@@ -119,6 +124,14 @@ define(function(require, exports, module) {
                         watcher.unlockFile(path);
                         throw err;
                     });
+
+                    function contentAsUint8Array() {
+                        var buf = new Uint8Array(content.length);
+                        for(var i = 0; i < content.length; i++) {
+                            buf[i] = content.charCodeAt(i);
+                        }
+                        return buf;
+                    }
                 },
                 deleteFile: function(path) {
                     var encodedPath = encodePath(path);

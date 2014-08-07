@@ -1,9 +1,9 @@
 module.exports = {
-    readFile: function(path) {
-        return sandboxRequest("zed/fs", "readFile", [path]);
+    readFile: function(path, binary) {
+        return sandboxRequest("zed/fs", "readFile", [path, binary]);
     },
-    writeFile: function(path, text) {
-        return sandboxRequest("zed/fs", "writeFile", [path, text]);
+    writeFile: function(path, text, binary) {
+        return sandboxRequest("zed/fs", "writeFile", [path, text, binary]);
     },
     listFiles: function() {
         return sandboxRequest("zed/fs", "listFiles", []);

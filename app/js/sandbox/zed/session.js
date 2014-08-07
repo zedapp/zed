@@ -174,10 +174,14 @@ define(function(require, exports, module) {
         getModeName: function(path) {
             return Promise.resolve(getSession(path).mode.language);
         },
+        flashClearId: null,
         flashMessage: function(path, message, length) {
+            if(this.flashClearId) {
+                clearTimeout(this.flashClearId);
+            }
             var session = getSession(path);
             zed.getService("eventbus").emit("sessionactivitystarted", session, message);
-            setTimeout(function() {
+            this.flashClearId = setTimeout(function() {
                 zed.getService("eventbus").emit("sessionactivitycompleted", session);
             }, length);
             return Promise.resolve();

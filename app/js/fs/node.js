@@ -104,7 +104,7 @@ define(function(require, exports, module) {
                 });
 
             },
-            readFile: function(path) {
+            readFile: function(path, binary) {
                 if (path === "/.zedstate" && filename) {
                     return Promise.resolve(JSON.stringify({
                         "session.current": ["/" + filename]
@@ -113,7 +113,7 @@ define(function(require, exports, module) {
                 var fullPath = addRoot(path);
                 return new Promise(function(resolve, reject) {
                     nodeFs.readFile(fullPath, {
-                        encoding: 'utf8'
+                        encoding: binary ? 'binary' : 'utf8'
                     }, function(err, contents) {
                         if (err) {
                             return reject(err);
@@ -128,7 +128,7 @@ define(function(require, exports, module) {
                     });
                 });
             },
-            writeFile: function(path, content) {
+            writeFile: function(path, content, binary) {
                 if (path === "/.zedstate" && filename) {
                     return Promise.resolve();
                 }
@@ -136,7 +136,9 @@ define(function(require, exports, module) {
                 // First ensure parent dir exists
                 return mkdirs(dirname(fullPath)).then(function() {
                     return new Promise(function(resolve, reject) {
-                        nodeFs.writeFile(fullPath, content, function(err) {
+                        nodeFs.writeFile(fullPath, content, {
+                            encoding: binary ? 'binary' : 'utf8'
+                        }, function(err) {
                             if (err) {
                                 return reject(err);
                             }
@@ -152,7 +154,7 @@ define(function(require, exports, module) {
                 var fullPath = addRoot(path);
                 return new Promise(function(resolve, reject) {
                     nodeFs.unlink(fullPath, function(err) {
-                        if(err) {
+                        if (err) {
                             reject(err);
                         } else {
                             resolve();

@@ -3,11 +3,11 @@ module.exports = {
     listFiles: function() {
         return sandboxRequest("zed/configfs", "listFiles", []);
     },
-    readFile: function(path) {
-        return sandboxRequest("zed/configfs", "readFile", [path]);
+    readFile: function(path, binary) {
+        return sandboxRequest("zed/configfs", "readFile", [path, binary]);
     },
-    writeFile: function(path, content) {
-        return sandboxRequest("zed/configfs", "writeFile", [path, content]);
+    writeFile: function(path, content, binary) {
+        return sandboxRequest("zed/configfs", "writeFile", [path, content, binary]);
     },
     deleteFile: function(path) {
         return sandboxRequest("zed/configfs", "deleteFile", [path]);

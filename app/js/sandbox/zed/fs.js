@@ -2,8 +2,8 @@
 define(function(require, exports, module) {
     var options = require("../../lib/options");
     return {
-        readFile: function(path) {
-            return zed.getService("fs").readFile(path).
+        readFile: function(path, binary) {
+            return zed.getService("fs").readFile(path, binary).
             catch (function(err) {
                 if (err.message) {
                     return Promise.reject(err.message);
@@ -12,8 +12,8 @@ define(function(require, exports, module) {
                 }
             });
         },
-        writeFile: function(path, text) {
-            return zed.getService("fs").writeFile(path, text).then(function() {
+        writeFile: function(path, text, binary) {
+            return zed.getService("fs").writeFile(path, text, binary).then(function() {
                 // TODO: perhaps replace with different event?
                 zed.getService("eventbus").emit("newfilecreated", path);
             }).

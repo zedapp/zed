@@ -12,6 +12,7 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var async = require("../lib/async");
         var poll_watcher = require("./poll_watcher");
+        var fsUtil = require("./util");
 
         var history = imports.history;
 
@@ -86,7 +87,7 @@ define(function(require, exports, module) {
                     });
                 });
             },
-            readFile: function(path) {
+            readFile: function(path, binary) {
                 return new Promise(function(resolve, reject) {
                     root.getFile(addRoot(path), {}, function(f) {
                         var fileReader = new FileReader();
@@ -94,13 +95,17 @@ define(function(require, exports, module) {
                             resolve(e.target.result);
                         };
                         f.file(function(file) {
-                            fileReader.readAsText(file);
+                            if(binary) {
+                                fileReader.readAsBinaryString(file);
+                            } else {
+                                fileReader.readAsText(file);
+                            }
                             watcher.setCacheTag(path, "" + file.lastModifiedDate);
                         });
                     }, reject);
                 });
             },
-            writeFile: function(path, content) {
+            writeFile: function(path, content, binary) {
                 return new Promise(function(resolve, reject) {
                     watcher.lockFile(path);
                     var fullPath = addRoot(path);
@@ -126,7 +131,7 @@ define(function(require, exports, module) {
                                             reject(e.toString());
                                         };
 
-                                        var blob = new Blob([content]);
+                                        var blob = binary ? new Blob([fsUtil.binaryStringAsUint8Array(content)]) : new Blob([content]);
                                         fileWriter.write(blob);
                                     }, function(err) {
                                         watcher.unlockFile(path);

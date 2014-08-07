@@ -109,7 +109,7 @@ define(function(require, exports, module) {
                         if (edit.getSession() === session) {
                             var infoEl = edit.pathBarEl.find(".info");
                             infoEl.html(description);
-                            infoEl.fadeIn();
+                            infoEl.show();
                         }
                     });
                 });
