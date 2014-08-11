@@ -103,6 +103,36 @@ define(function(require, exports, module) {
         },
         del: function(url, options) {
             return request('DELETE', url, options);
+        },
+
+        startServer: function(id, requestHandlerCommand) {
+            var edit = zed.getService("editor").getActiveEditor();
+            var session = edit.session;
+            var command = zed.getService("command");
+            return zed.getService("webservers").startServer(id, function(req, res) {
+                session.$cmdInfo = {
+                    request: {
+                        method: req.method,
+                        headers: req.headers,
+                        query: req.query,
+                        body: req.body,
+                    }
+                };
+
+                command.exec(requestHandlerCommand, edit, session).then(function(resp) {
+                    res.status(resp.status || 200);
+                    _.each(resp.headers || {}, function(val, name) {
+                        res.set(name, val);
+                    });
+                    res.send(resp.body || "");
+                }).catch(function(err) {
+                    console.error("Something went wrong while handling request:", err);
+                });
+            });
+        },
+
+        stopServer: function(id) {
+            return zed.getService("webservers").stopServer(id);
         }
     };
 });

@@ -43,10 +43,11 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./window_commands",
         "./analytics",
         "./menu",
-        "./db"];
+        "./db",
+        "./webservers"];
 
     if (window.isNodeWebkit) {
-        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw");
+        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw");
     } else {
         modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome");
     }
