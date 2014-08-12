@@ -11,10 +11,6 @@ define(function(require, exports, module) {
         var bodyParser = nodeRequire("body-parser");
         var http = nodeRequire("http");
 
-        var gui = nodeRequire("nw.gui");
-
-        gui.Window.get().showDevTools();
-
         function HttpServer(host, port, requestHandler) {
             this.host = host;
             this.port = port;

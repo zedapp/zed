@@ -55,7 +55,10 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
             }, {
                 name: "Manual",
                 url: "manual:"
-            }]
+            }, {
+                 name: "Github test",
+                 url: "gh:zefhemel/testrepo"
+             }]
         });
     }
 

@@ -113,6 +113,7 @@ define(function(require, exports, module) {
                 session.$cmdInfo = {
                     request: {
                         method: req.method,
+                        path: req.path,
                         headers: req.headers,
                         query: req.query,
                         body: req.body,
