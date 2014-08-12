@@ -44,12 +44,13 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./analytics",
         "./menu",
         "./db",
-        "./webservers"];
+        "./webservers",
+        "./version_control"];
 
     if (window.isNodeWebkit) {
-        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw");
+        modules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw", "./token_store.nw");
     } else {
-        modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome");
+        modules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome", "./token_store.chrome");
     }
 
     fsPicker().then(function(fsConfig) {

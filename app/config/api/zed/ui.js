@@ -8,5 +8,8 @@ module.exports = {
     },
     unblockUI: function() {
         return sandboxRequest("zed/ui", "unblockUI", []);
+    },
+    openUrl: function(url) {
+        return sandboxRequest("zed/ui", "openUrl", [url]);
     }
 };

@@ -17,5 +17,17 @@ define(function(require, exports, module) {
             zed.getService("ui").unblockUI();
             return Promise.resolve();
         },
+        openUrl: function(url) {
+            if (window.isNodeWebkit) {
+                var gui = nodeRequire('nw.gui');
+                gui.Shell.openExternal(url);
+            } else {
+                var a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.click();
+            }
+            return Promise.resolve();
+        }
     };
 });

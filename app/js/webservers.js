@@ -37,6 +37,7 @@ define(function(require, exports, module) {
                 if (servers[id]) {
                     servers[id].stop();
                 }
+                return Promise.resolve();
             }
         };
 

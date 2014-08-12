@@ -119,6 +119,16 @@ define(function(require, exports, module) {
                 text: text,
                 id: options.get("id")
             });
+        } else if(url.indexOf("gh:") === 0) {
+            var repoBranch = url.substring("gh:".length);
+            var parts = repoBranch.split(":");
+            var repo = parts[0];
+            var branch = parts[1] || "master";
+            return Promise.resolve({
+                packagePath: "./fs/github",
+                repo: repo,
+                branch: branch
+            });
         } else {
             return Promise.resolve({
                 packagePath: "./fs/web",

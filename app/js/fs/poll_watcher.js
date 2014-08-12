@@ -61,6 +61,9 @@ define(function(require, exports, module) {
             setCacheTag: function(path, tag) {
                 tagCache[path] = tag;
             },
+            clearTagCache: function() {
+                tagCache = {};
+            },
             lockFile: function(path) {
                 fileLocks[path] = Date.now();
             },

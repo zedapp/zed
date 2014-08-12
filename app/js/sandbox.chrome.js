@@ -40,7 +40,7 @@ define(function(require, exports, module) {
             execCommand: function(name, spec, session) {
                 return new Promise(function(resolve, reject) {
                     if (session.$cmdInfo) {
-                        spec = _.extend(spec, session.$cmdInfo);
+                        spec = _.extend({}, spec, session.$cmdInfo);
                         session.$cmdInfo = null;
                     }
                     id++;

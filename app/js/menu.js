@@ -198,6 +198,12 @@ define(function(require, exports, module) {
                 name: "Document Stats",
                 command: "Tools:Document Statistics"
             }, {}, {
+                name: "Commit Changes",
+                command: "Version Control:Commit"
+            }, {
+                name: "Reset Changes",
+                command: "Version Control:Reset"
+            }, {
                 name: "Package Manager",
                 command: "Tools:Zpm:Installed Packages"
             }, {
