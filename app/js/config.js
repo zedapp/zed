@@ -1,7 +1,7 @@
 /*global define, _, chrome, zed */
 define(function(require, exports, module) {
     "use strict";
-    plugin.consumes = ["eventbus", "command", "sandbox", "configfs"];
+    plugin.consumes = ["eventbus", "command", "sandbox", "configfs", "token_store"];
     plugin.provides = ["config"];
     return plugin;
 
@@ -12,6 +12,7 @@ define(function(require, exports, module) {
         var command = imports.command;
         var sandbox = imports.sandbox;
         var configfs = imports.configfs;
+        var tokenStore = imports.token_store;
 
         eventbus.declare("configchanged");
         eventbus.declare("configneedsreloading");
@@ -381,9 +382,35 @@ define(function(require, exports, module) {
 
         command.define("Configuration:Zedrem:Get User Key", {
             exec: function() {
+                tokenStore.get("zedremUserKey").then(function(userKey) {
+                    zed.getService("ui").prompt({
+                        message: "Your user key:",
+                        input: userKey
+                    });
+                });
+            },
+            readOnly: true
+        });
+
+        command.define("Configuration:Zedrem:Generate New User Key", {
+            exec: function() {
+                function createUUID() {
+                    var s = [];
+                    var hexDigits = "0123456789ABCDEF";
+                    for (var i = 0; i < 32; i++) {
+                        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+                    }
+                    s[12] = "4";
+                    s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);
+
+                    var uuid = s.join("");
+                    return uuid;
+                }
+                var userKey = createUUID();
+                tokenStore.set("zedremUserKey", userKey);
                 zed.getService("ui").prompt({
-                    message: "Your user key: ",
-                    input: api.getPreference("zedrem").userKey
+                    message: "Your new user key (restart for it to take effect):",
+                    input: userKey
                 });
             },
             readOnly: true

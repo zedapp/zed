@@ -41,6 +41,6 @@
         "wordWrap": false,
         "wordWrapColumn": null,
         "wrapBehaviorsEnabled": false,
-
+        "zedremServer": "wss://remote.zedapp.org:443"
     }
 }

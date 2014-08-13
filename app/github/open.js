@@ -25,10 +25,27 @@ require(["../js/lib/filter_list", "../js/lib/url_extractor"], function(filterLis
         });
     }
 
-    function presentRepos() {
-        githubCall("GET", "/user/repos", {
+    function fetchAllRepos() {
+        var userRepos;
+        return Promise.all([githubCall("GET", "/user/repos", {
             sort: "updated"
-        }).then(function(userRepos) {
+        }), githubCall("GET", "/user/orgs", {})]).then(function(results) {
+            userRepos = results[0];
+            var userOrgs = results[1];
+            return Promise.all(userOrgs.map(function(org) {
+                return githubCall("GET", "/orgs/" + org.login + "/repos", {});
+            }));
+        }).then(function(orgRepos) {
+            var allRepos = userRepos;
+            orgRepos.forEach(function(orgRepos) {
+                allRepos = allRepos.concat(orgRepos);
+            });
+            return allRepos;
+        });
+    }
+
+    function presentRepos() {
+        fetchAllRepos().then(function(userRepos) {
             var repos = userRepos.map(function(repo) {
                 return {
                     name: repo.full_name,
@@ -42,11 +59,11 @@ require(["../js/lib/filter_list", "../js/lib/url_extractor"], function(filterLis
                 onSelect: function(r) {
                     if (r.notInList) {
                         var data = urlExtractor.extractRepoBranchFromUrl(r.name);
-                        if(!data) {
+                        if (!data) {
                             $("#phrase").val("Invalid URL");
                             presentRepos();
                         } else {
-                            if(data.branch) {
+                            if (data.branch) {
                                 window.opener.openProject(data.user + "/" + data.repo + " [" + data.branch + "]", "gh:" + data.user + "/" + data.repo + ":" + data.branch);
                                 window.close();
                             } else {
@@ -83,7 +100,7 @@ require(["../js/lib/filter_list", "../js/lib/url_extractor"], function(filterLis
             phraseEl.focus();
             filterList({
                 inputEl: $("#phrase"),
-                resultsEl: $("#item-list"),
+                resultsEl: listEl,
                 list: branches,
                 onSelect: function(b) {
                     window.opener.openProject(repo + " [" + b.name + "]", "gh:" + repo + ":" + b.name);

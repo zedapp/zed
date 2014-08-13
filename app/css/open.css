@@ -98,8 +98,22 @@ input[type=submit] {
     padding: 8px;
 }
 
+
+#zedrem-status:before {
+    content: "[zedrem] ";
+}
+
+#zedrem-status {
+    text-align: center;
+    font-size: 10px;
+    color: #555;
+    border-top: 1px dotted #000;
+    padding-top: 10px;
+}
+
 #zed-version {
     text-align: center;
     margin-top: 10px;
     font-size: 10px;
+    color: #555;
 }
