@@ -122,6 +122,20 @@ define(function(require, exports, module) {
                     };
                 }
             }).then(function(treeInfo) {
+                // Create blobs for all update files
+                var createBlobPromises = [];
+                _.each(toUpdate, function(file) {
+                    createBlobPromises.push(githubCall("POST", "/repos/" + repo + "/git/blobs", {}, {
+                        encoding: "base64",
+                        content: file.content
+                    }).then(function(blobInfo) {
+                        file.sha = blobInfo.sha;
+                    }));
+                });
+                return Promise.all(createBlobPromises).then(function() {
+                    return treeInfo;
+                });
+            }).then(function(treeInfo) {
                 var tree = treeInfo.tree;
                 var seenPaths = {};
                 for (var i = 0; i < tree.length; i++) {
@@ -134,13 +148,11 @@ define(function(require, exports, module) {
                         madeChanges = true;
                     } else if (toUpdate[treeItem.path]) {
                         var obj = toUpdate[treeItem.path];
-                        delete treeItem.sha;
-                        treeItem.content = base64Decode(obj.content);
+                        treeItem.sha = obj.sha;
                         // Delete from object to know which ones were updates and which were new blobs
                         delete toUpdate[treeItem.path];
                         madeChanges = true;
                     } else if (treeItem.type === "tree" && treeObj[fullTreeItemPath].sha !== treeItem.sha) {
-                        console.log("Subdir updated", fullTreeItemPath);
                         madeChanges = true;
                         if (treeObj[fullTreeItemPath].sha === null) { // delete tree
                             tree.splice(i, 1);
@@ -169,9 +181,10 @@ define(function(require, exports, module) {
                         path: pathUtil.filename(obj.id),
                         mode: "100644",
                         type: "blob",
-                        content: base64Decode(obj.content)
+                        sha: obj.sha
                     });
                 });
+
                 if (tree.length === 0) {
                     return null;
                 }
@@ -368,7 +381,6 @@ define(function(require, exports, module) {
                     allFiles = allFiles_.filter(function(obj) {
                         return obj.id !== "/.zedstate";
                     });
-                    console.log("All files", allFiles);
                     if (allFiles.length === 0) {
                         console.log("No changes, not committing anything");
                         throw new Error("no-changes");
