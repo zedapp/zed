@@ -475,6 +475,18 @@ define(function(require, exports, module) {
                         deleted: deleted
                     };
                 });
+            },
+            createBranch: function(name) {
+                return githubCall("POST", "/repos/" + repo + "/git/refs", {}, {
+                    ref: "refs/heads/" + name,
+                    sha: lastCommit
+                }).then(function() {
+                    return {
+                        id: "gh:" + repo + ":" + name,
+                        repo: repo,
+                        branch: name
+                    };
+                });
             }
         };
 

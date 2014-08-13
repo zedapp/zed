@@ -16,7 +16,7 @@ define(function(require, exports, module) {
                 exec: function(edit, session) {
                     preCommitSession = session;
                     return fs.getLocalChanges().then(function(changes) {
-                        if(changes.added.length === 0 && changes.modified.length === 0 && changes.deleted.length === 0) {
+                        if (changes.added.length === 0 && changes.modified.length === 0 && changes.deleted.length === 0) {
                             return ui.prompt({
                                 message: "No changes to commit"
                             });
@@ -107,6 +107,23 @@ define(function(require, exports, module) {
                         }
                         return fs.reset().then(function() {
                             return zed.getService("goto").fetchFileList();
+                        });
+                    });
+                },
+                readOnly: true
+            });
+
+            command.define("Version Control:Create Branch", {
+                exec: function() {
+                    ui.prompt({
+                        message: "Branch name:",
+                        input: ""
+                    }).then(function(name) {
+                        if (!name) {
+                            return;
+                        }
+                        return fs.createBranch(name).then(function(info) {
+                            window.opener.openProject(info.repo + " [" + name + "]", info.id);
                         });
                     });
                 },
