@@ -25,6 +25,10 @@ define(function(require, exports, module) {
             githubToken = token;
         });
 
+        function base64Decode(s) {
+            return atob(s.replace(/\n/g, ""));
+        }
+
         function githubCall(method, url, args, bodyJson) {
             args.access_token = githubToken;
 
@@ -130,7 +134,7 @@ define(function(require, exports, module) {
                     } else if (toUpdate[treeItem.path]) {
                         var obj = toUpdate[treeItem.path];
                         delete treeItem.sha;
-                        treeItem.content = atob(obj.content);
+                        treeItem.content = base64Decode(obj.content);
                         // Delete from object to know which ones were updates and which were new blobs
                         delete toUpdate[treeItem.path];
                         madeChanges = true;
@@ -164,7 +168,7 @@ define(function(require, exports, module) {
                         path: pathUtil.filename(obj.id),
                         mode: "100644",
                         type: "blob",
-                        content: atob(obj.content)
+                        content: base64Decode(obj.content)
                     });
                 });
                 if (tree.length === 0) {
@@ -283,7 +287,7 @@ define(function(require, exports, module) {
                 return db.readStore("files").get(path).then(function(obj) {
                     if (obj) {
                         watcher.setCacheTag(path, obj.date);
-                        return atob(obj.content);
+                        return base64Decode(obj.content);
                     } else {
                         var entry;
                         // If not, let's look up the sha hash of the fle
@@ -298,7 +302,7 @@ define(function(require, exports, module) {
                         }).then(function(obj) {
                             if (obj) {
                                 watcher.setCacheTag(path, obj.id);
-                                return atob(obj.content);
+                                return base64Decode(obj.content);
                             } else {
                                 // Let's fetch the blob from github
                                 return githubCall("GET", "/repos/" + repo + "/git/blobs/" + entry.sha, {}).then(function(blobInfo) {
@@ -306,7 +310,7 @@ define(function(require, exports, module) {
                                     if (blobInfo.encoding === "utf-8") {
                                         content = blobInfo.content;
                                     } else { // base64
-                                        content = atob(blobInfo.content);
+                                        content = base64Decode(blobInfo.content);
                                     }
                                     // Cache the blob with sha as key to the local db asynchronously
                                     watcher.setCacheTag(path, blobInfo.sha);
