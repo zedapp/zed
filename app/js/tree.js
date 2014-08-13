@@ -67,6 +67,17 @@ define(function(require, exports, module) {
             var elements = [];
             _.each(obj, function(entry, filename) {
                 var fullPath = path + sep + filename;
+                if (entry !== true) {
+                    elements.push({
+                        title: filename,
+                        key: fullPath,
+                        isFolder: true,
+                        children: objToDynaTree(entry, sep, fullPath)
+                    });
+                }
+            });
+            _.each(obj, function(entry, filename) {
+                var fullPath = path + sep + filename;
                 if (fullPath.indexOf("zed::") !== -1) {
                     fullPath = fullPath.substring(1);
                 }
@@ -74,13 +85,6 @@ define(function(require, exports, module) {
                     elements.push({
                         title: filename,
                         key: fullPath
-                    });
-                } else {
-                    elements.push({
-                        title: filename,
-                        key: fullPath,
-                        isFolder: true,
-                        children: objToDynaTree(entry, sep, fullPath)
                     });
                 }
             });
