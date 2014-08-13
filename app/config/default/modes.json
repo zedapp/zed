@@ -4,6 +4,7 @@
         "./mode/clojure.json",
         "./mode/coffee.json",
         "./mode/command-reference.json",
+        "./mode/commit.json",
         "./mode/csharp.json",
         "./mode/dart.json",
         "./mode/erlang.json",

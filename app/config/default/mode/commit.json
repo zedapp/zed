@@ -1,0 +1,19 @@
+{
+    modes: {
+        commit: {
+            name: "Commit",
+            extensions: ["commit"],
+            highlighter: "mode/commit",
+
+            preferences: {
+                showGutter: false,
+                wordWrap: true
+            },
+
+            keys: {
+                "Version Control:Finalize Commit": "Ctrl-Shift-C",
+                "Version Control:Cancel Commit": "Esc"
+            }
+        }
+    }
+}
