@@ -28,7 +28,7 @@ Welcome to Zed's configuration system, which is the easiest way to customize you
                 }
             }
         },
-    
+
     This may seem confusing, but if you look at the default JavaScript mode definition, you'll see that the above code exactly mirrors part of the default JavaScript mode definition and the import system merges the two on the fly.
 * `keys` is where you add/override command name to keyboard shortcut settings. For instance, to add a keyboard shortcut for the `Navigate:Reload Filelist` command:
 

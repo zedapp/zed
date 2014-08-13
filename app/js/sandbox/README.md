@@ -2,11 +2,11 @@ Sandbox APIs
 ============
 
 These are APIs that can be called from Zed custom commands. They are available
-as require.js modules as follows:
+as CommonJS modules as follows:
 
     var session = require("zed/session");
-    
-    session.getText("/somefile", function(err, text) {
+
+    session.getText("/somefile").then(function(text) {
         // do something with the text
     });
 
