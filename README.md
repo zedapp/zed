@@ -70,6 +70,7 @@ Technology
 * The excellent [ACE](http://github.com/ajaxorg/ace) editor
 * [Architect](https://github.com/c9/architect)
 * [jQuery](http://jquery.com)
+* [Underscore.js](http://underscorejs.org)
 * [Require.js](http://requirejs.org)
 
 Support
