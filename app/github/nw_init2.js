@@ -1,0 +1,1 @@
+require.nodeRequire = window.nodeRequire;
