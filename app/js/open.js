@@ -388,7 +388,7 @@ define(function(require, exports, module) {
             editorSocketConn = new WebSocket(zedremConfig.server + '/editorsocket');
             editorSocketConn.onopen = function() {
                 console.log("Connected to zedrem server!");
-                zedremStatusEl.text("Connected to " + zedremConfig.server + "!");
+                zedremStatusEl.text("Connected to " + zedremConfig.server);
                 editorSocketConn.send(JSON.stringify({
                     version: "1",
                     UUID: zedremConfig.userKey
@@ -440,7 +440,7 @@ define(function(require, exports, module) {
                 reconnectTimeout = setTimeout(function() {
                     editorSocket(zedremConfig);
                 }, timeOut);
-            }
+            };
         }
     }
 
