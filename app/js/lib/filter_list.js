@@ -132,11 +132,19 @@ define(function(require, exports, module) {
         function cleanup() {
             $("body").off("keydown", keyHandler);
             resultsEl.off("click", "a", clickHandler);
+            resultsEl.off("mouseover", "a", mouseOverHandler);
             inputEl.off("keyup", keyUpHandler);
+        }
+
+        function mouseOverHandler(event) {
+            var idx = $(event.target).data("idx");
+            selectIdx = idx;
+            updateSelection();
         }
 
         inputEl.keyup(keyUpHandler);
         resultsEl.on("click", "a", clickHandler);
+        resultsEl.on("mouseover", "a", mouseOverHandler);
         $("body").keydown(keyHandler);
 
         update();
