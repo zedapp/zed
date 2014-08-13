@@ -40,7 +40,42 @@ define(function(require, exports, module) {
                         if(!yes) {
                             return;
                         }
-                        return fs.reset();
+                        return fs.reset().then(function() {
+                            return zed.getService("goto").fetchFileList();
+                        });
+                    });
+                },
+                readOnly: true
+            });
+
+            command.define("Version Control:Show Locally Changed Files", {
+                exec: function(edit, session) {
+                    return fs.getLocalChanges().then(function(changes) {
+                        return zed.getService("session_manager").go("zed::vc::changes.md", edit, session).then(function(session) {
+                            console.log("Session", session);
+                            var text = "Local changes since last commit\n===============================\nRun the `Version Control:Commit` command to commit the changes below, or `Version Control:Reset` to reset everything.\n\n";
+
+                            var change = false;
+
+                            changes.added.forEach(function(path) {
+                                text += "A " + path + "\n";
+                                change = true;
+                            });
+                            changes.modified.forEach(function(path) {
+                                text += "M " + path + "\n";
+                                change = true;
+                            });
+                            changes.deleted.forEach(function(path) {
+                                text += "D " + path + "\n";
+                                change = true;
+                            });
+                            if(!change) {
+                                text += "No changes";
+                            }
+                            session.setValue(text);
+                        }).catch(function(err) {
+                            console.error("Error", err);
+                        });
                     });
                 },
                 readOnly: true

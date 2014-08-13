@@ -20,16 +20,17 @@ define(function(require, exports, module) {
         var treeCache, lastCommit;
         var githubToken;
 
-
         tokenStore.get("githubToken").then(function(token) {
             githubToken = token;
         });
 
+        // Same as atob, but strips out newlines first (which Github puts in for some reason)
         function base64Decode(s) {
             return atob(s.replace(/\n/g, ""));
         }
 
         function githubCall(method, url, args, bodyJson) {
+            args = args || {};
             args.access_token = githubToken;
 
             return new Promise(function(resolve, reject) {
@@ -109,7 +110,7 @@ define(function(require, exports, module) {
                         }
                     });
                     // Let's first fetch the base tree for this dir
-                    return githubCall("GET", "/repos/" + repo + "/git/trees/" + baseTree, {});
+                    return githubCall("GET", "/repos/" + repo + "/git/trees/" + baseTree);
                 } else { // New directory
                     _.each(root, function(val, name) {
                         if (val.file) { // It's a file
@@ -172,12 +173,6 @@ define(function(require, exports, module) {
                     });
                 });
                 if (tree.length === 0) {
-                    // tree.push({
-                    //     "path": ".emtpydir",
-                    //     "mode": "100644",
-                    //     "type": "blob",
-                    //     "content": ""
-                    // });
                     return null;
                 }
                 if (madeChanges) {
@@ -219,9 +214,9 @@ define(function(require, exports, module) {
 
 
         function cacheFileTree() {
-            return githubCall("GET", "/repos/" + repo + "/git/refs/heads/" + branch, {}).then(function(refInfo) {
+            return githubCall("GET", "/repos/" + repo + "/git/refs/heads/" + branch).then(function(refInfo) {
                 lastCommit = refInfo.object.sha;
-                return githubCall("GET", "/repos/" + repo + "/git/commits/" + refInfo.object.sha, {});
+                return githubCall("GET", "/repos/" + repo + "/git/commits/" + refInfo.object.sha);
             }).then(function(commitInfo) {
                 return githubCall("GET", "/repos/" + repo + "/git/trees/" + commitInfo.tree.sha, {
                     recursive: 1
@@ -305,7 +300,7 @@ define(function(require, exports, module) {
                                 return base64Decode(obj.content);
                             } else {
                                 // Let's fetch the blob from github
-                                return githubCall("GET", "/repos/" + repo + "/git/blobs/" + entry.sha, {}).then(function(blobInfo) {
+                                return githubCall("GET", "/repos/" + repo + "/git/blobs/" + entry.sha).then(function(blobInfo) {
                                     var content;
                                     if (blobInfo.encoding === "utf-8") {
                                         content = blobInfo.content;
@@ -336,10 +331,14 @@ define(function(require, exports, module) {
                 });
             },
             deleteFile: function(path) {
-                return db.writeStore("files").put({
-                    id: path,
-                    status: 'deleted'
-                });
+                if (!treeCache.files[path]) { // Never commited, just remove
+                    return db.writeStore("files").delete(path);
+                } else { // explicitly mark as deleted
+                    return db.writeStore("files").put({
+                        id: path,
+                        status: 'deleted'
+                    });
+                }
             },
             getCacheTag: function(path) {
                 return db.readStore("files").get(path).then(function(file) {
@@ -349,14 +348,11 @@ define(function(require, exports, module) {
                         }
                         return file.date;
                     }
-                    if(treeCache.files[path]) {
+                    if (treeCache.files[path]) {
                         return treeCache.files[path].sha;
                     } else {
                         return Promise.reject(404);
                     }
-                }).catch(function(err) {
-                    console.error("Cachtag error", path, err);
-                    throw err;
                 });
             },
             watchFile: function(path, callback) {
@@ -430,7 +426,7 @@ define(function(require, exports, module) {
                 });
             },
             reset: function() {
-                // Flush all locally changed files etc.
+                // Flush all locally changed files and cached blobs
                 db.readStore("files").getAll().then(function(allObjects) {
                     var writeStore = db.writeStore("files");
                     return Promise.all(allObjects.map(function(obj) {
@@ -442,6 +438,30 @@ define(function(require, exports, module) {
                     return api.listFiles();
                 }).then(function() {
                     return;
+                });
+            },
+            getLocalChanges: function() {
+                return db.readStore("files").query(">=", "/", "<=", "/~").then(function(allChangedFiles) {
+                    var added = [];
+                    var modified = [];
+                    var deleted = [];
+                    allChangedFiles.forEach(function(file) {
+                        if (file.id === "/.zedstate") {
+                            return;
+                        }
+                        if (file.status === "deleted") {
+                            deleted.push(file.id);
+                        } else if (treeCache.files[file.id]) {
+                            modified.push(file.id);
+                        } else {
+                            added.push(file.id);
+                        }
+                    });
+                    return {
+                        added: added,
+                        modified: modified,
+                        deleted: deleted
+                    };
                 });
             }
         };
