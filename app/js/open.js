@@ -243,17 +243,16 @@ define(function(require, exports, module) {
                 var enable = config.getPreference("enableAnalytics");
                 var showMenus = config.getPreference("showMenus");
                 if (enable === undefined || showMenus === undefined) {
-                    win.create("firstrun.html", 'chrome', 800, 600);
+                    win.create("firstrun.html", 'chrome', 800, 800);
                 }
             });
         }
 
         function showGithubTokenWindow() {
-            win.create('github/set_token.html', 'chrome', 600, 400);
+            win.create('github/set_token.html', 'chrome', 600, 600);
         }
 
         function openGithubPicker(token) {
-            console.log("TOken", token);
             win.create("github/open.html?token=" + token, 'chrome', 600, 400);
         }
 
