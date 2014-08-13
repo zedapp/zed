@@ -57,10 +57,10 @@ define(function(require, exports, module) {
                 fileReader.onload = function(e) {
                     var content = e.target.result;
                     console.log(entry.fullPath);
-                    fs.writeFile(rootPath + entry.fullPath, content).then(resolve, reject);
+                    fs.writeFile(rootPath + entry.fullPath, content, true).then(resolve, reject);
                 };
                 entry.file(function(file) {
-                    fileReader.readAsText(file);
+                    fileReader.readAsBinaryString(file);
                 });
             });
         }
