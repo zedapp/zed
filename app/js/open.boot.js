@@ -47,13 +47,13 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
                 name: "Open Local Folder",
                 url: "local:"
             }, {
-                id: "dropbox-open",
-                name: "Open Dropbox Folder",
-                url: "dropbox:"
-            }, {
                 id: "github-open",
                 name: "Open Github Repository",
                 url: "gh:"
+            }, {
+                id: "dropbox-open",
+                name: "Open Dropbox Folder",
+                url: "dropbox:"
             }, {
                 name: "Notes",
                 url: "syncfs:",
