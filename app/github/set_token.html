@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Open Github Repo</title>
+        <script src="../dep/require.js"></script>
+        <script src="../dep/underscore-min.js"></script>
+        <script src="../dep/jquery.js"></script>
+        <script src="set_token.js"></script>
+        <style>
+            body {
+                overflow: hidden;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 14px;
+                font-weight: bold;
+                margin: 8px;
+            }
+        </style>
+    </head>
+    <body>
+         <h1>Create a Github token</h1>
+
+        <p>In order to use Github with Zed, you first need to create a new token. You can do so by
+            <a href="https://github.com/settings/tokens/new" target="_blank">visiting "Create token" page on Github</a>. After doing that, please copy and paste the token into the input field below:</p>
+        <form id="token-form">
+            <input type="text" id="token" title="Paste Github token here" />
+            <input type="submit">
+        </form>
+    </body>
+</html>

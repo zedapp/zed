@@ -12,7 +12,12 @@ define(function(require, exports, module) {
                 return Promise.resolve();
             },
             get: function(key) {
-                return Promise.resolve(JSON.parse(localStorage[key]));
+                var val = localStorage[key];
+                if(!val) {
+                    return Promise.resolve(val);
+                } else {
+                    return Promise.resolve(JSON.parse(val));
+                }
             },
             delete: function(key) {
                 delete localStorage[key];

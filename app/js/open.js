@@ -1,6 +1,6 @@
 /*global define, $, chrome, _*/
 define(function(require, exports, module) {
-    plugin.consumes = ["history", "window", "windows", "config", "eventbus", "analytics_tracker"];
+    plugin.consumes = ["history", "window", "windows", "config", "eventbus", "analytics_tracker", "token_store"];
     plugin.provides = ["open"];
     return plugin;
 
@@ -19,6 +19,7 @@ define(function(require, exports, module) {
         var config = imports.config;
         var analytics_tracker = imports.analytics_tracker;
         var eventbus = imports.eventbus;
+        var tokenStore = imports.token_store;
 
         var builtinProjects = options.builtinProjects;
         var editorHtml = options.editorHtml;
@@ -247,6 +248,15 @@ define(function(require, exports, module) {
             });
         }
 
+        function showGithubTokenWindow() {
+            win.create('github/set_token.html', 'chrome', 600, 400);
+        }
+
+        function openGithubPicker(token) {
+            console.log("TOken", token);
+            win.create("github/open.html?token=" + token, 'chrome', 600, 400);
+        }
+
         window.setPreference = function(name, val) {
             config.setPreference(name, val);
         };
@@ -255,11 +265,29 @@ define(function(require, exports, module) {
             open("manual:", "Manual");
         };
 
+        window.openProject = function(title, url) {
+            open(url, title);
+        };
+
+        window.setToken = function(name, value) {
+            tokenStore.set(name, value).then(function() {
+                openGithubPicker(value);
+            });
+        }
+
         $("#projects").on("click", ".projects a", function(event) {
             var url = $(event.target).data("url");
             var title = $(event.target).data("title");
             if (url === "dropbox:") {
                 win.create('dropbox/open.html', 'chrome', 600, 400);
+            } else if(url === "gh:") {
+                tokenStore.get("githubToken").then(function(val) {
+                    if(!val) {
+                        showGithubTokenWindow();
+                    } else {
+                        openGithubPicker(val);
+                    }
+                })
             } else if (url) {
                 open(url, title);
             }

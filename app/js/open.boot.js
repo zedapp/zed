@@ -19,13 +19,17 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
         "./keys"];
 
     if (window.isNodeWebkit) {
-        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw", "./cli.nw", "./windows.nw", "./auto_update.nw", "./analytics_tracker.nw");
+        modules.push("./history.nw", "./configfs.nw", "./window.nw", "./sandbox.nw", "./cli.nw", "./windows.nw", "./auto_update.nw", "./analytics_tracker.nw", "./token_store.nw");
         modules.push({
             packagePath: "./open",
             editorHtml: "editor.nw.html",
             builtinProjects: [{
                 name: "Open Local Folder",
                 url: "node:"
+            }, {
+                id: "github-open",
+                name: "Open Github Repository",
+                url: "gh:"
             }, {
                 name: "Configuration",
                 url: "nwconfig:"
@@ -35,7 +39,7 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
             }]
         });
     } else {
-        modules.push("./history.chrome", "./configfs.chrome", "./window.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome");
+        modules.push("./history.chrome", "./configfs.chrome", "./window.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./token_store.chrome");
         modules.push({
             packagePath: "./open",
             editorHtml: "editor.html",
@@ -47,6 +51,10 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
                 name: "Open Dropbox Folder",
                 url: "dropbox:"
             }, {
+                id: "github-open",
+                name: "Open Github Repository",
+                url: "gh:"
+            }, {
                 name: "Notes",
                 url: "syncfs:",
             }, {
@@ -55,10 +63,7 @@ require(["../dep/architect", "zedb"], function(architect, zedb) {
             }, {
                 name: "Manual",
                 url: "manual:"
-            }, {
-                 name: "Github test",
-                 url: "gh:zefhemel/testrepo"
-             }]
+            }]
         });
     }
 
