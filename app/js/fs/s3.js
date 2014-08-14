@@ -8,17 +8,19 @@ define(function(require, exports, module) {
         var tokenStore = imports.token_store;
         var history = imports.history;
         var poll_watcher = require("./poll_watcher");
-
-        var bucket = options.bucket;
-
         var AWS = require("../lib/aws-sdk.min");
         var fsUtil = require("./util");
+        var mimeTypes = require("../lib/mime_types");
+        var pathUtil = require("../lib/path");
+
+        var bucket = options.bucket;
 
         var s3;
 
         Promise.all([tokenStore.get("awsAccessKey"), tokenStore.get("awsSecretKey")]).then(function(keys) {
             if (!keys[0] || !keys[1]) {
-                return console.error("Tokens not set: awsAccessKey and awsSecretKey");
+                console.error("Tokens not set: awsAccessKey and awsSecretKey");
+                return register(new Error("Tokens not set"));
             }
 
             AWS.config.update({
@@ -67,6 +69,8 @@ define(function(require, exports, module) {
             writeFile: function(path, content, binary) {
                 return new Promise(function(resolve, reject) {
                     var body;
+                    var ext = pathUtil.ext(path);
+                    var contentType = mimeTypes[ext] || "application/octet-stream";
                     if (binary) {
                         body = fsUtil.binaryStringAsUint8Array(content);
                     } else {
@@ -74,6 +78,7 @@ define(function(require, exports, module) {
                     }
                     s3.putObject({
                         Bucket: bucket,
+                        ContentType: contentType,
                         Key: path.substring(1),
                         Body: body
                     }, function(err, result) {
