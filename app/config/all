@@ -43,8 +43,10 @@
 /default/mode/coffee/preview.js
 /default/mode/command-reference.json
 /default/mode/command-reference/invoke.js
+/default/mode/commit.json
 /default/mode/csharp.json
 /default/mode/dart.json
+/default/mode/dockerfile.json
 /default/mode/erlang.json
 /default/mode/gherkin.json
 /default/mode/glsl.json
@@ -185,6 +187,11 @@
 /packages/gh/zedapp/snippets/config.json
 /packages/gh/zedapp/snippets/package.json
 /packages/gh/zedapp/snippets/snippets.js
+/packages/gh/zedapp/staticserver/README.md
+/packages/gh/zedapp/staticserver/config.json
+/packages/gh/zedapp/staticserver/mime_types.js
+/packages/gh/zedapp/staticserver/package.json
+/packages/gh/zedapp/staticserver/server.js
 /user.css
 /user.json
 /zedconfig.json

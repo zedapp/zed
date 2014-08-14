@@ -104,6 +104,8 @@ define(function(require, exports, module) {
             },
             $onAccept: function(acceptInfo) {
                 this.$readFromSocket(acceptInfo.socketId);
+                // Immediately accept next request
+                chrome.socket.accept(this.$socketInfo.socketId, this.$$onAccept);
             },
             $readFromSocket: function(socketId) {
                 var server = this;
@@ -194,7 +196,6 @@ define(function(require, exports, module) {
                 chrome.socket.write(response.socketId, outputBuffer, function(writeInfo) {
                     // console.log("WRITE", writeInfo);
                     chrome.socket.destroy(response.socketId);
-                    chrome.socket.accept(response.$server.$socketInfo.socketId, response.$server.$$onAccept);
                 });
             }
         };

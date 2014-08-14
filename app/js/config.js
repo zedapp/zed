@@ -380,7 +380,7 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
-        command.define("Configuration:Zedrem:Get User Key", {
+        command.define("Zedrem:Get User Key", {
             exec: function() {
                 tokenStore.get("zedremUserKey").then(function(userKey) {
                     zed.getService("ui").prompt({
@@ -392,7 +392,7 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
-        command.define("Configuration:Zedrem:Generate New User Key", {
+        command.define("Zedrem:Generate New User Key", {
             exec: function() {
                 function createUUID() {
                     var s = [];
