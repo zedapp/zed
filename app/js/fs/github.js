@@ -16,7 +16,7 @@
  * - Commit involves scanning the DB for changed files, building up a new tree, posting changed files as blobs etc.
  */
 define(function(require, exports, module) {
-    plugin.consumes = ["history", "token_store"]
+    plugin.consumes = ["history", "token_store"];
     plugin.provides = ["fs"];
     return plugin;
 

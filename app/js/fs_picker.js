@@ -129,6 +129,12 @@ define(function(require, exports, module) {
                 repo: repo,
                 branch: branch
             });
+        } else if(url.indexOf("s3:") === 0) {
+            var bucket = url.substring("s3:".length);
+            return Promise.resolve({
+                packagePath: "./fs/s3",
+                bucket: bucket
+            });
         } else {
             return Promise.resolve({
                 packagePath: "./fs/web",
