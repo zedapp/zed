@@ -12,7 +12,7 @@
         "displayIndentGuides": true,
         "fontFamily": "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
         "fontSize": 12,
-        "globalAutoRevert": false,
+        "globalAutoRevert": true,
         "gotoExclude": ["*/.git/*", "*/.zedstate", "*/.DS_Store"],
         "highlightActiveLine": true,
         "highlightGutterLine": true,
