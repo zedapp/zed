@@ -7,6 +7,7 @@
         "./mode/commit.json",
         "./mode/csharp.json",
         "./mode/dart.json",
+        "./mode/dockerfile.json",
         "./mode/erlang.json",
         "./mode/gherkin.json",
         "./mode/glsl.json",

@@ -1,0 +1,9 @@
+{
+    modes: {
+        dockerfile: {
+            name: "Dockerfile",
+            filenames: ["Dockerfile"],
+            highlighter: "ace/mode/dockerfile"
+        }
+    }
+}
