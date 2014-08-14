@@ -229,17 +229,12 @@ define(function(require, exports, module) {
                         var editors = editor.getEditors();
 
                         // Filter out paths currently open in an editor
-                        resultList = resultList.filter(function(result) {
-                            // Filter out files starting with . (TODO: do this properly)
-                            // if (result.path[1] === ".") {
-                            //     return false;
-                            // }
+                        resultList.forEach(function(result) {
                             for (var i = 0; i < editors.length; i++) {
                                 if (editors[i].getSession().filename === result.path) {
-                                    return false;
+                                    result.score = 0;
                                 }
                             }
-                            return true;
                         });
 
                         resultList.sort(function(r1, r2) {
