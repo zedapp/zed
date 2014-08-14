@@ -12,6 +12,7 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var icons = require("lib/icons");
         var keyCode = require("lib/key_code");
+        var urlExtractor = require("lib/url_extractor");
 
         var history = imports.history;
         var win = imports.window;
@@ -248,8 +249,8 @@ define(function(require, exports, module) {
             });
         }
 
-        function showGithubTokenWindow() {
-            win.create('github/set_token.html', 'chrome', 600, 600);
+        function showGithubTokenWindow(currentToken) {
+            win.create('github/set_token.html?token=' + (currentToken || ""), 'chrome', 600, 600);
         }
 
         function openGithubPicker(token) {
@@ -270,9 +271,18 @@ define(function(require, exports, module) {
 
         window.setToken = function(name, value) {
             tokenStore.set(name, value).then(function() {
-                openGithubPicker(value);
+                if(value) {
+                    openGithubPicker(value);
+                }
             });
-        }
+        };
+
+        window.openGithubUrl = function(url) {
+            var result = urlExtractor.extractRepoBranchFromUrl(url);
+            if(result) {
+                open("gh:" + result.user + "/" + result.repo + ":" + (result.branch || "master"), result.user + "/" + result.repo + " [" + (result.branch || "master") + "]");
+            }
+        };
 
         $("#projects").on("click", ".projects a", function(event) {
             var url = $(event.target).data("url");

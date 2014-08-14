@@ -1,4 +1,20 @@
 /*global define, _, nodeRequire */
+/**
+ * This module implements the Github file system.
+ * IndexedDB is used for caching blobs and storing the contents of changed files.
+ *
+ * Here's how it works:
+ *
+ * - Listing files happens by using Github's API to recursively fetch the tree, this tree is
+ *   cached in memory and used for future operations. The file list is ammended to include
+ *   local changes, such as new files and locally deleted files.
+ * - Reading a file involves first checking if there's a locally changed version
+ *   (reading from the DB). If there is, return that. If there isn't, look up the hash in the tree.
+ *   When found, first see if there's a cached version in the local DB, if not, fetch from github and cache in DB.
+ * - Writing a file writes it to the local DB.
+ * - Deleting a file writes a {status: "deleted"} entry to the DB
+ * - Commit involves scanning the DB for changed files, building up a new tree, posting changed files as blobs etc.
+ */
 define(function(require, exports, module) {
     plugin.consumes = ["history", "token_store"]
     plugin.provides = ["fs"];
@@ -47,7 +63,14 @@ define(function(require, exports, module) {
                     success: function(resp) {
                         resolve(resp);
                     },
-                    error: function(err) {
+                    error: function(err, type, message) {
+                        if(message === "Unauthorized") {
+                            zed.getService("window").create('github/set_token.html?token=' + githubToken, 'chrome', 600, 600);
+                            window.setToken = function(name, value) {
+                                tokenStore.set(name, value);
+                                window.close();
+                            };
+                        }
                         reject(err);
                     }
                 });
@@ -56,13 +79,13 @@ define(function(require, exports, module) {
 
 
         function recursivelyUpdateTreeAux(allFiles) {
-            var treeObj = {
+            var changeTree = {
                 fullPath: ""
             };
             for (var i = 0; i < allFiles.length; i++) {
                 var file = allFiles[i];
                 var pathParts = file.id.slice(1).split("/");
-                var root = treeObj;
+                var root = changeTree;
                 for (var j = 0; j < pathParts.length - 1; j++) {
                     var part = pathParts[j];
                     if (!root[part]) {
@@ -77,12 +100,23 @@ define(function(require, exports, module) {
                     file: file
                 };
             }
-            return recursiveUpdateTree(treeCache.files, treeObj);
+            return recursiveUpdateTree(treeCache.files, changeTree);
         }
 
+        /**
+         * This function recursively recreates the tree structure bottom-up
+         * It's kind of convoluted and probably needs to be cleaned up,
+         * it seems to work just fine, though.
+         *
+         * @param treeObj treeCache.files, that is: a /full/file/path -> info map
+         * @param root the current subdirectory to hande in the change tree (as pulled out the db)
+         */
         function recursiveUpdateTree(treeObj, root) {
             var recurPromises = [];
-            var toRemove = {}, toUpdate = {}; // fileObjs
+            var toRemove = {}, toUpdate = {}, treeInfo;
+
+            // We will first recur into sub-directories of root, then we'll handle
+            // files
             _.each(root, function(val) {
                 if (!val.file && val.fullPath) { // It's a dir
                     recurPromises.push(recursiveUpdateTree(treeObj, val));
@@ -91,16 +125,20 @@ define(function(require, exports, module) {
             var madeChanges = false;
             var fullPath = "/" + root.fullPath;
             return Promise.all(recurPromises).then(function(recurResults) {
+                // At this point all sub-directories trees have been recreated,
+                // let's see if that changed anything
                 recurResults.forEach(function(r) {
                     if (r.madeChanges) {
                         madeChanges = true;
                     }
                 });
-                // At this time all sub-trees have been updated in treeObj
-                // so let's now rebuild based on locally changed files
+                // Let's now rebuild based on locally changed files
+                // Did this directory exist before (last commit)?
                 if (treeObj[fullPath]) {
+                    // Lookup the sha of the old tree
                     var baseTree = treeObj[fullPath].sha;
-                    _.each(root, function(val, name) {
+                    // Let's iterate over all files in our change set
+                    _.each(root, function(val) {
                         if (val.file) { // It's a file
                             if (val.file.status === "deleted") { // to delete
                                 toRemove[pathUtil.filename(val.file.id)] = val.file;
@@ -111,50 +149,59 @@ define(function(require, exports, module) {
                     });
                     // Let's first fetch the base tree for this dir
                     return githubCall("GET", "/repos/" + repo + "/git/trees/" + baseTree);
-                } else { // New directory
-                    _.each(root, function(val, name) {
+                } else {
+                    // New directory, so we can add all files to the toUpdate object
+                    _.each(root, function(val) {
                         if (val.file) { // It's a file
                             toUpdate[pathUtil.filename(val.file.id)] = val.file;
                         }
                     });
+                    // and the previous version of this tree (which didn't exist) is empty
                     return {
                         tree: []
                     };
                 }
-            }).then(function(treeInfo) {
-                // Create blobs for all update files
+            }).then(function(treeInfo_) {
+                treeInfo = treeInfo_;
+
+                // Post blobs for all updated files to Github
                 var createBlobPromises = [];
                 _.each(toUpdate, function(file) {
                     createBlobPromises.push(githubCall("POST", "/repos/" + repo + "/git/blobs", {}, {
                         encoding: "base64",
                         content: file.content
                     }).then(function(blobInfo) {
+                        // Let's store the new sha in the file for convenience
                         file.sha = blobInfo.sha;
                     }));
                 });
-                return Promise.all(createBlobPromises).then(function() {
-                    return treeInfo;
-                });
-            }).then(function(treeInfo) {
+                return Promise.all(createBlobPromises);
+            }).then(function() {
                 var tree = treeInfo.tree;
                 var seenPaths = {};
+
+                // Now we add, change and remove from the old version of the tree (that we fetched from github)
                 for (var i = 0; i < tree.length; i++) {
                     var treeItem = tree[i];
                     var fullTreeItemPath = "/" + (root.fullPath ? root.fullPath + "/" : "") + treeItem.path;
                     seenPaths[fullTreeItemPath] = true;
                     if (toRemove[treeItem.path]) {
+                        // File got removed, let's remove it from the tree
                         tree.splice(i, 1);
                         i--;
                         madeChanges = true;
                     } else if (toUpdate[treeItem.path]) {
+                        // File was changed, let's update its hash to the new blob hash
                         var obj = toUpdate[treeItem.path];
                         treeItem.sha = obj.sha;
                         // Delete from object to know which ones were updates and which were new blobs
                         delete toUpdate[treeItem.path];
                         madeChanges = true;
                     } else if (treeItem.type === "tree" && treeObj[fullTreeItemPath].sha !== treeItem.sha) {
+                        // A subtree (sub-directory) was changed, let's update the hash in the tree
                         madeChanges = true;
-                        if (treeObj[fullTreeItemPath].sha === null) { // delete tree
+                        if (treeObj[fullTreeItemPath].sha === null) {
+                            // in fact, the tree was removed alltogether, so let's remove it from the tree
                             tree.splice(i, 1);
                             i--;
                         } else {
@@ -173,8 +220,9 @@ define(function(require, exports, module) {
                         });
                     }
                 });
-                // done
 
+                // Finally, let's add all newly defined files to the tree
+                // only newly defined files are left, because updated ones were removed earlier
                 _.each(toUpdate, function(obj) {
                     madeChanges = true;
                     tree.push({
@@ -189,11 +237,13 @@ define(function(require, exports, module) {
                     return null;
                 }
                 if (madeChanges) {
+                    // Something changed so let's actually create the new tree
                     console.log("Making a new tree:", fullPath);
                     return githubCall("POST", "/repos/" + repo + "/git/trees", {}, {
                         tree: tree
                     });
                 } else {
+                    // No changes made, let's use the old tree
                     return treeInfo;
                 }
             }).then(function(newTreeInfo) {
@@ -239,6 +289,9 @@ define(function(require, exports, module) {
             });
         }
 
+        /**
+         * Turns Github's tree format into a map for path -> treeEntry lookup
+         */
         function cleanupTree(treeInfo) {
             var files = {};
             treeInfo.tree.forEach(function(entry) {
@@ -270,6 +323,7 @@ define(function(require, exports, module) {
 
         var api = {
             listFiles: function() {
+                // Query all DB entries starting with / (to exclude blob IDs)
                 return Promise.all([cacheFileTree(), db.readStore("files").query(">=", "/", "<=", "/~")]).then(function(results) {
                     var localFiles = results[1];
                     var filenames = [];
@@ -378,6 +432,7 @@ define(function(require, exports, module) {
                 var newTree, allFiles;
                 // First fetch all locally changed files
                 return db.readStore("files").query(">=", "/", "<=", "/~").then(function(allFiles_) {
+                    // We're never going to commit .zedstate
                     allFiles = allFiles_.filter(function(obj) {
                         return obj.id !== "/.zedstate";
                     });
@@ -392,13 +447,11 @@ define(function(require, exports, module) {
                         recursive: 1
                     });
                 }).then(function(updatedTree) {
-                    var currentTree = cleanupTree(updatedTree);
                     // Now we have to update trees where files were removed
                     allFiles.forEach(function(obj) {
                         if (obj.status !== "deleted") {
                             return;
                         }
-                        var parentTree = currentTree.files[pathUtil.dirname(obj.id)];
                     });
                     newTree = updatedTree;
                     // Next, create a commit from the new tree
@@ -427,13 +480,13 @@ define(function(require, exports, module) {
                         return writeStore.delete(file.id);
                     }));
                 }).then(function() {
-                    console.log("All files locally deleted");
+                    console.log("Done.");
                 }).
                 catch (function(err) {
                     if (err.message === "no-changes") {
                         return;
                     }
-                    console.error("Error", err);
+                    console.error("Error while committing", err);
                     throw err;
                 });
             },

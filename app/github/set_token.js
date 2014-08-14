@@ -1,4 +1,7 @@
 $(function() {
+    var githubToken = /token=(.*)$/.exec(location)[1];
+
+    $("#token").val(githubToken);
 
     function verifyToken(token) {
         $.ajax({

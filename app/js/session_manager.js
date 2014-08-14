@@ -250,6 +250,7 @@ define(function(require, exports, module) {
                 return Promise.reject("No path");
             }
 
+
             if (api.specialDocs[path]) {
                 var session = api.specialDocs[path];
                 show(session);
@@ -264,6 +265,17 @@ define(function(require, exports, module) {
                     path = '/' + path;
                 }
             }
+
+            // See if this session is open in another editor, if so: swap 'em
+            // This is to ensure you only have a file open in one editor at a time
+            editor.getEditors(true).forEach(function(otherEdit) {
+                if(edit === otherEdit) {
+                    return;
+                }
+                if(otherEdit.session.filename === path) {
+                    editor.switchSession(edit.session, otherEdit);
+                }
+            });
 
             // Check if somebody is not trying to create a file ending with '/'
             if (path[path.length - 1] === '/') {

@@ -18,8 +18,11 @@ require(["../js/lib/filter_list", "../js/lib/url_extractor"], function(filterLis
                 success: function(resp) {
                     resolve(resp);
                 },
-                error: function(err) {
-                    reject(err);
+                error: function(err, type, message) {
+                    if(message === "Unauthorized") {
+                        window.opener.setToken("githubToken", null);
+                        window.close();
+                    }
                 }
             });
         });
