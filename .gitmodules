@@ -31,3 +31,6 @@
 [submodule "app/config/packages/gh/zedapp/snippets"]
 	path = app/config/packages/gh/zedapp/snippets
 	url = https://github.com/zedapp/snippets.git
+[submodule "app/config/packages/gh/zedapp/staticserver"]
+	path = app/config/packages/gh/zedapp/staticserver
+	url = https://github.com/zedapp/staticserver.git
