@@ -408,27 +408,27 @@ body.dark .dynatree-focused a:link {
     bottom: 5px;
     right: 5px;
 }
-body.non_mac ::-webkit-scrollbar {
+body.custom-scroll ::-webkit-scrollbar {
     background: none;
 }
-body.non_mac ::-webkit-scrollbar-track-piece {
+body.custom-scroll ::-webkit-scrollbar-track-piece {
     margin: 4px;
 }
-body.non_mac ::-webkit-scrollbar-thumb {
+body.custom-scroll ::-webkit-scrollbar-thumb {
     border: solid 0 transparent;
     border-right-width: 4px;
     border-left-width: 4px;
     -webkit-border-radius: 9px 4px;
     -webkit-box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.2), inset 0 0 0 4px rgba(128, 128, 128, 0.2);
 }
-body.non_mac ::-webkit-scrollbar-thumb:horizontal {
+body.custom-scroll ::-webkit-scrollbar-thumb:horizontal {
     border-right-width: 0;
     border-left-width: 0;
     border-top-width: 4px;
     border-bottom-width: 4px;
     -webkit-border-radius: 4px 9px;
 }
-body.non_mac ::-webkit-scrollbar-thumb:hover {
+body.custom-scroll ::-webkit-scrollbar-thumb:hover {
     -webkit-box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.9), inset 0 0 0 4px rgba(128, 128, 128, 0.9);
 }
 body.mac.dark .ace_content {
