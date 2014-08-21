@@ -55,8 +55,10 @@ define(function(require, exports, module) {
                 $("body").attr("class", theme.cssClass + (theme.dark ? " dark ace_dark" : " ") + (!useragent.isMac ? " non_mac" : " mac") + customScroll);
                 // hack to force scrollbars to refresh
                 // found here: http://stackoverflow.com/a/15603340
-                $('.ace_scrollbar').css('overflow', 'hidden').height();
-                $('.ace_scrollbar').css('overflow', 'auto');
+                $('.ace_scrollbar-v').css('overflow-y', 'hidden').height();
+                $('.ace_scrollbar-v').css('overflow-y', 'scroll');
+                $('.ace_scrollbar-h').css('overflow-x', 'hidden').height();
+                $('.ace_scrollbar-h').css('overflow-x', 'scroll');
             });
         }
 
