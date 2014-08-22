@@ -20,10 +20,6 @@ body {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: #fff;
-}
-body.dark #editor-wrapper {
-    background-color: #333;
 }
 #sandbox {
     z-index: 500;
@@ -202,9 +198,6 @@ div.preview-vsplit2-right-2 {
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
 }
-body.dark #goto {
-    background: #222;
-}
 #goto input {
     font-size: 12px;
     width: 100%;
@@ -217,10 +210,6 @@ body.dark #goto {
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     background-color: #aaa;
     color: #000;
-}
-body.dark #goto input {
-    background-color: #000;
-    color: #fff;
 }
 #gotohint {
     border-right: solid 1px #888;
@@ -250,12 +239,6 @@ body.dark #goto input {
     text-align: center;
     color: #555;
 }
-body.dark .pathbar {
-    color: #ccc;
-}
-body.dark .pathbar.active {
-    color: #fff;
-}
 .pathbar.active {
     color: #000;
 }
@@ -270,9 +253,6 @@ body.dark .pathbar.active {
     border-top-left-radius: 5px;
     background-color: #aaa;
     /*-webkit-app-region: no-drag;*/
-}
-body.dark .pathbar .path {
-    background-color: #000;
 }
 .pathbar .info {
     position: absolute;
@@ -291,42 +271,17 @@ body.dark .pathbar .path {
 .ace_editor.ace_autocomplete {
     width: 400px !important;
 }
-body.dark .ace_autocomplete {
-    background-color: #888;
-    color: #ccc;
-    border-top: 0;
-    border-top: 1px dotted #888;
-    border-right: 1px solid #888;
-    border-left: 1px solid #888;
-    border-bottom: 1px solid #888;
-}
-body.dark .ace_rightAlignedText {
-    color: #bbb;
-}
-body.dark .insert-mode .ace_cursor {
-    opacity: 1;
-    border-left: 2px solid #eee;
-}
 .ace_autocomplete .ace_completion-highlight {
     text-decoration: underline;
     text-shadow: none !important;
     color: #333 !important;
 }
-body.dark .ace_autocomplete .ace_completion-highlight {
-    color: #fff !important;
-}
 .ace_line-hover {
     border: 0 !important;
     background: #eee !important;
 }
-body.dark .ace_line-hover {
-    background: #555 !important;
-}
 .ace_autocomplete .ace_active-line {
     background-color: #eee !important;
-}
-body.dark .ace_autocomplete .ace_active-line {
-    background-color: #555 !important;
 }
 body .ace_autocomplete .ace_line {
     margin-left: 16px;
@@ -350,15 +305,6 @@ body .ace_autocomplete .ace_line {
 .dynatree-container {
     border: none !important;
     background-color: #fff;
-}
-body.dark .dynatree-container {
-    background-color: #222;
-}
-body.dark .dynatree-container a {
-    color: #bbb;
-}
-body.dark .dynatree-focused a:link {
-    background-color: #333;
 }
 #blockui {
     position: absolute;
@@ -431,9 +377,6 @@ body.custom-scroll ::-webkit-scrollbar-thumb:horizontal {
 body.custom-scroll ::-webkit-scrollbar-thumb:hover {
     -webkit-box-shadow: inset 0 0 0 1px rgba(128, 128, 128, 0.9), inset 0 0 0 4px rgba(128, 128, 128, 0.9);
 }
-body.mac.dark .ace_content {
-    cursor: default;
-}
 /* Markers */
  .marker-highlight-warning {
     position: absolute;
@@ -450,11 +393,6 @@ body.mac.dark .ace_content {
     border-bottom: solid 1px blue;
     z-index: 1000;
 }
-.dark .marker-highlight-info {
-    position: absolute;
-    border-bottom: solid 1px #9191FF;
-    z-index: 1000;
-}
 #titlebar {
     position: absolute;
     top: 0;
@@ -469,10 +407,6 @@ body.mac.dark .ace_content {
     -webkit-user-select: none;
     background-color: #ccc;
     color: #fff;
-}
-body.dark #titlebar {
-    background-color: #222;
-    color: #000;
 }
 #titlebar .windowbuttons {
     position: absolute;
@@ -493,10 +427,6 @@ body.dark #titlebar {
     background-color: #ccc;
     color: #fff;
     border-bottom: 1px solid #aaa;
-}
-body.dark #pathbar-wrapper {
-    border-bottom: 1px solid #111;
-    background-color: #222;
 }
 body.mac #titlebar .windowbuttons {
     top: 7px;
@@ -548,24 +478,6 @@ body.non_mac .windowbuttons .minimize {
     height: 16px;
     background: url("../img/win-buttons-light.png") 35px 0;
 }
-body.non_mac.dark .windowbuttons .close {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background: url("../img/win-buttons.png") 20px 0;
-}
-body.non_mac.dark .windowbuttons .maximize {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background: url("../img/win-buttons.png") 0 0;
-}
-body.non_mac.dark .windowbuttons .minimize {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background: url("../img/win-buttons.png") 35px 0;
-}
 #titlebar .fullscreen {
     position: absolute;
     right: 5px;
@@ -575,10 +487,6 @@ body.non_mac.dark .windowbuttons .minimize {
     background: url("../img/light-fullscreen.png");
     background-size: 20px 20px;
     -webkit-app-region: no-drag;
-}
-body.dark #titlebar .fullscreen {
-    background: url("../img/dark-fullscreen.png");
-    background-size: 20px 20px;
 }
 body.non_mac #titlebar .fullscreen {
     position: absolute;
@@ -595,9 +503,6 @@ body.non_mac #titlebar .fullscreen {
     right: 60px;
     text-align: center;
     color: #000;
-}
-body.dark #titlebar .title {
-    color: #fff;
 }
 #titlebar .title img {
     vertical-align: top;
@@ -622,9 +527,6 @@ body.dark #titlebar .title {
     font-family:'Tahoma';
     font-size: 13px;
     background-color: #ccc;
-}
-body.dark #main-menu {
-    background-color: #222;
 }
 #main-menu > ul > li > ul > li > ul {
     position: absolute;
@@ -679,9 +581,6 @@ body.dark #main-menu {
 }
 #main-menu > ul > li > a {
     color: #333;
-}
-body.dark #main-menu > ul > li > a {
-    color: #8D8D8D;
 }
 #main-menu > ul > li:hover {
     background: #444;

@@ -1,5 +1,6 @@
 {
     "preferences": {
+        "aceTheme": "zed_dark",
         "animatedScroll": true,
         "autoIndentOnPaste": true,
         "behaviorsEnabled": true,
@@ -35,10 +36,10 @@
         "showPrintMargin": true,
         "spellCheck": false,
         "tabSize": 4,
-        "theme": "zed_dark",
         "trimEmptyLines": true,
         "trimWhitespaceOnSave": false,
         "useSoftTabs": true,
+        "windowTheme": "zed_dark",
         "wordWrap": false,
         "wordWrapColumn": null,
         "wrapBehaviorsEnabled": false,

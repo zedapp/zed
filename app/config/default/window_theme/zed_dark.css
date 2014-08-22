@@ -1,0 +1,100 @@
+body #editor-wrapper {
+    background-color: #333;
+}
+body #goto {
+    background: #222;
+}
+body #goto input {
+    background-color: #000;
+    color: #fff;
+}
+body .pathbar {
+    color: #ccc;
+}
+body .pathbar.active {
+    color: #fff;
+}
+body .pathbar .path {
+    background-color: #000;
+}
+body .ace_editor.ace_autocomplete {
+    background-color: #888;
+    color: #ccc;
+    border-top: 0;
+    border-top: 1px dotted #888;
+    border-right: 1px solid #888;
+    border-left: 1px solid #888;
+    border-bottom: 1px solid #888;
+}
+body .ace_rightAlignedText {
+    color: #bbb;
+}
+body .insert-mode .ace_cursor {
+    opacity: 1;
+    border-left: 2px solid #eee;
+}
+body .ace_editor.ace_autocomplete .ace_completion-highlight {
+    color: #fff !important;
+}
+body .ace_line-hover {
+    background: #555 !important;
+}
+body .ace_editor.ace_autocomplete .ace_active-line {
+    background-color: #555 !important;
+}
+body .dynatree-container {
+    background-color: #222;
+}
+body .dynatree-container a {
+    color: #bbb;
+}
+body .dynatree-focused a:link {
+    background-color: #333;
+}
+body.mac .ace_content {
+    cursor: default;
+}
+body .marker-highlight-info {
+    position: absolute;
+    border-bottom: solid 1px #9191FF;
+    z-index: 1000;
+}
+body #titlebar {
+    background-color: #222;
+    color: #000;
+}
+body #pathbar-wrapper {
+    border-bottom: 1px solid #111;
+    background-color: #222;
+}
+body.non_mac .windowbuttons .close {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons.png") 20px 0;
+}
+body.non_mac .windowbuttons .maximize {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons.png") 0 0;
+}
+body.non_mac .windowbuttons .minimize {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/win-buttons.png") 35px 0;
+}
+body #titlebar .fullscreen {
+    background: url("../img/dark-fullscreen.png");
+    background-size: 20px 20px;
+}
+body #titlebar .title {
+    color: #fff;
+}
+body #main-menu {
+    background-color: #222;
+}
+body #main-menu > ul > li > a {
+    color: #8D8D8D;
+}

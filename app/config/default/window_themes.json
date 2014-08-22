@@ -1,0 +1,12 @@
+{
+    "window_themes": {
+        "zed_dark": {
+            "name": "Zed Dark",
+            "css": "/default/window_theme/zed_dark.css"
+        },
+        "zed_light": {
+            "name": "Zed Light",
+            "css": "/default/window_theme/zed_light.css"
+        }
+    }
+}

@@ -6,7 +6,8 @@
         "/default/databases.json",
         "/default/commands.json",
         "/default/handlers.json",
-        "/default/themes.json",
+        "/default/window_themes.json",
+        "/default/ace_themes.json",
         "/default/zpm/zpm.json"
     ],
     packages: [
