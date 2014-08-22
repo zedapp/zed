@@ -20,6 +20,7 @@
         "hygienicMode": false,
         "hygienicModeRemote": true,
         "keybinding": "zed",
+        "nativeScrollBars": false,
         "persistentTree": false,
         "previewDelay": 500,
         "printMarginColumn": 80,

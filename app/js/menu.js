@@ -243,6 +243,9 @@ define(function(require, exports, module) {
                 name: "Toggle Menus",
                 command: "Configuration:Preferences:Toggle Menus"
             }, {
+                name: "Toggle Native Scroll Bars",
+                command: "Configuration:Preferences:Toggle Native Scroll Bars"
+            },{
                 name: "KeyBinding",
                 items: [{
                     name: "Zed",

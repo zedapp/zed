@@ -200,6 +200,12 @@
             "preference": "scrollPastEnd",
             "readOnly": true
         },
+        "Configuration:Preferences:Toggle Native Scroll Bars": {
+            "doc": "Toggle whether or not to use native scroll bars.",
+            "scriptUrl": "./command/toggle.js",
+            "preference": "nativeScrollBars",
+            "readOnly": true
+        },
         "Configuration:Preferences:KeyBinding:Zed": {
             "doc": "Set keybinding to Zed keybindings.",
             "scriptUrl": "./command/set_preference.js",
