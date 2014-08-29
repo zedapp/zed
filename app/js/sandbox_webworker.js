@@ -14,6 +14,24 @@ define("configfs", [], {
     }
 });
 
+function absPath(abs, rel) {
+    var absParts = abs.split('/');
+    var relParts = rel.split('/');
+    absParts.pop(); // dir
+    for(var i = 0; i < relParts.length; i++) {
+        if(relParts[i] === '.') {
+            continue;
+        }
+        if(relParts[i] === '..') {
+            absParts.pop();
+            continue;
+        }
+        absParts = absParts.concat(relParts.slice(i));
+        break;
+    }
+    return absParts.join('/');
+}
+
 /**
  * This rewrites extension code in two minor ways:
  * - requires are rewritten to all point to configfs!
@@ -27,7 +45,7 @@ function amdTransformer(source) {
             if (mod.indexOf("zed/") === 0) {
                 newMod = "configfs!/api/" + mod;
             } else if (mod.indexOf(".") === 0) {
-                newMod = "configfs!" + mod;
+                newMod = "configfs!" + absPath(moduleAbsPath, mod);
             } else {
                 return all;
             }

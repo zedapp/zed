@@ -30,7 +30,6 @@
         "./mode/perl.json",
         "./mode/plist.json",
         "./mode/protobuf.json",
-        "./mode/python.json",
         "./mode/rhtml.json",
         "./mode/ruby.json",
         "./mode/rust.json",
