@@ -36,11 +36,9 @@ define(function(require, exports, module) {
                     console.log("Going to start server now");
                     server.$server = http.createServer(server.app);
                     server.$server.on('error', function(err) {
-                        console.log("SERVER START FAIL", err);
                         reject(err);
                     });
                     server.$server.listen(server.port, server.host, function() {
-                        console.log("SERVER STARTEDDDDD");
                         resolve();
                     });
                 });

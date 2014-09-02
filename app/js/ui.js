@@ -13,6 +13,7 @@ define(function(require, exports, module) {
         var eventbus = imports.eventbus;
 
         var blockedEl = null;
+        var webviewEl = null;
 
         var api = {
             /**
@@ -376,6 +377,27 @@ define(function(require, exports, module) {
                     blockedEl.remove();
                     // });
                     blockedEl = null;
+                }
+            },
+            showWebview: function(url) {
+                if(webviewEl) {
+                    webviewEl.remove();
+                }
+                if(window.isNodeWebkit) {
+                    webviewEl = $("<div class='webview-wrapper'><iframe nwdisable nwfaketop class='webview'>");
+                } else {
+                    webviewEl = $("<div class='webview-wrapper'><webview class='webview'>");
+                }
+                webviewEl.find(".webview").attr("src", url);
+                $("#editor-wrapper").append(webviewEl);
+                webviewEl.find(".webview")[0].addEventListener("loadstop", function() {
+                    webviewEl.find(".webview").focus();
+                });
+            },
+            hideWebview: function() {
+                if(webviewEl) {
+                    webviewEl.remove();
+                    zed.getService("editor").getActiveEditor().focus();
                 }
             }
         };

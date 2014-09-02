@@ -44,6 +44,7 @@
 /default/command/text_completer.js
 /default/command/text_completer_length.js
 /default/command/toggle.js
+/default/command/web_router.js
 /default/commands.json
 /default/databases.json
 /default/handlers.json

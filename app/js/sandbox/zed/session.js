@@ -35,8 +35,12 @@ define(function(require, exports, module) {
         getSelectionText: useInputable("selectionText"),
         getText: useInputable("text"),
         isInsertingSnippet: useInputable("isInsertingSnippet"),
-        callCommand: function(path, command) {
-            return zed.getService("command").exec(command,  zed.getService("editor").getActiveEditor(), getSession(path));
+        callCommand: function(path, command, info) {
+            var session = getSession(path);
+            if(info) {
+                session.$cmdInfo = info;
+            }
+            return zed.getService("command").exec(command,  zed.getService("editor").getActiveEditor(), session);
         },
         goto: function(path) {
             var edit = zed.getService("editor").getActiveEditor();
