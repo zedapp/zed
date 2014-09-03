@@ -213,6 +213,9 @@ define(function(require, exports, module) {
         }, {
             name: "Configuration",
             items: [{
+                name: "Preferences",
+                command: "Configuration:Preferences"
+            }, {
                 name: "Snippets",
                 command: "Snippets:List"
             }, {
@@ -245,7 +248,7 @@ define(function(require, exports, module) {
             }, {
                 name: "Toggle Native Scroll Bars",
                 command: "Configuration:Preferences:Toggle Native Scroll Bars"
-            },{
+            }, {
                 name: "KeyBinding",
                 items: [{
                     name: "Zed",

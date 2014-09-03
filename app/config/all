@@ -166,6 +166,13 @@
 /packages/gh/zedapp/bracket-check/check.js
 /packages/gh/zedapp/bracket-check/config.json
 /packages/gh/zedapp/bracket-check/package.json
+/packages/gh/zedapp/config-ui/config.json
+/packages/gh/zedapp/config-ui/html/config.js
+/packages/gh/zedapp/config-ui/html/index.html
+/packages/gh/zedapp/config-ui/html/zed-logo.png
+/packages/gh/zedapp/config-ui/package.json
+/packages/gh/zedapp/config-ui/show.js
+/packages/gh/zedapp/config-ui/web.js
 /packages/gh/zedapp/css-mode/beautify-css.js
 /packages/gh/zedapp/css-mode/beautify.js
 /packages/gh/zedapp/css-mode/check.js

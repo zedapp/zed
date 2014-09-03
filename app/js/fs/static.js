@@ -9,6 +9,7 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var http_cache = require("../lib/http_cache");
+        var fsUtil = require("./util");
         var root = options.url;
         var readOnlyFn = options.readOnlyFn;
 
@@ -25,20 +26,31 @@ define(function(require, exports, module) {
                     return items;
                 });
             },
-            readFile: function(path) {
-                return http_cache.fetchUrl(root + path, {}).then(function(text) {
-                    if(!window.readOnlyFiles) {
-                        window.readOnlyFiles = {};
-                    }
-                    if (readOnlyFn && readOnlyFn(path)) {
-                        window.readOnlyFiles[path] = true;
-                        return text;
-                    } else {
-                        return text;
-                    }
+            readFile: function(path, binary) {
+                return new Promise(function(resolve, reject) {
+                    $.ajax({
+                        type: "GET",
+                        url: root + path,
+                        error: function(xhr) {
+                            reject(xhr.status);
+                        },
+                        success: function(res) {
+                            if(!window.readOnlyFiles) {
+                                window.readOnlyFiles = {};
+                            }
+                            if (readOnlyFn && readOnlyFn(path)) {
+                                window.readOnlyFiles[path] = true;
+                            }
+                            if(binary) {
+                                res = fsUtil.uint8ArrayToBinaryString(new Uint8Array(res));
+                            }
+                            resolve(res);
+                        },
+                        dataType: binary ? "arraybuffer" : "text"
+                    });
                 });
             },
-            writeFile: function(path, content) {
+            writeFile: function(path, content, binary) {
                 return Promise.reject(405); // Method not allowed
             },
             deleteFile: function(path) {

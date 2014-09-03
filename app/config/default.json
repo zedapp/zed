@@ -20,6 +20,7 @@
         "gh:zedapp/follow-complete",
         "gh:zedapp/bracket-check",
         "gh:zedapp/snippets",
-        "gh:zedapp/staticserver"
+        "gh:zedapp/staticserver",
+        "gh:zedapp/config-ui"
     ]
 }
