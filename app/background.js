@@ -1,13 +1,11 @@
 /*global chrome*/
 
-var projectsWin;
-
 function showProjects() {
-    chrome.app.window.create('open.chrome.html', {
-        width: 400,
-        height: 180
+    chrome.app.window.create('editor.html?url=&title=Zed', {
+        frame: 'none',
+        width: 800,
+        height: 500
     }, function(win) {
-        projectsWin = win;
         win.focus();
     });
 }

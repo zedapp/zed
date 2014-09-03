@@ -84,7 +84,7 @@ define(function(require, exports, module) {
                     // });
                     sandboxEl.remove();
                 }
-                $("body").append('<webview id="sandbox" partition="persist:sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
+                $("body").append('<webview id="sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
                 sandboxEl = $("#sandbox");
                 var sandbox = sandboxEl[0];
                 sandbox.addEventListener('permissionrequest', function(e) {
@@ -135,7 +135,7 @@ define(function(require, exports, module) {
             });
         }
 
-        window.addEventListener('message', function(event) {
+        window.onmessage = function(event) {
             var data = event.data;
             var replyTo = data.replyTo;
             if (data.type === "request") {
@@ -152,7 +152,7 @@ define(function(require, exports, module) {
             } else {
                 console.error("Got response to unknown message id:", replyTo);
             }
-        });
+        };
 
 
         window.execSandboxApi = function(api, args) {

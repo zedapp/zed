@@ -362,8 +362,9 @@ define(function(require, exports, module) {
 
             },
             blockUI: function(message, noSpin) {
+                $("#blockui").remove();
                 if (blockedEl) {
-                    return;
+                    blockedEl.remove();
                 }
                 console.log("Blocking UI");
                 blockedEl = $("<div id='blockui'>");

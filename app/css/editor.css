@@ -738,3 +738,67 @@ body.dark #main-menu > ul > li > a {
     height: 2px !important;
     border-bottom: 1px solid #444 !important;
 }
+/* PROJECT PICKER */
+ div.modal-view {
+    position: absolute;
+    border: solid 1px #000;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 14px;
+    padding: 10px;
+    left: 10%;
+    top: 10%;
+    right: 10%;
+    bottom: 10%;
+    z-index: 1000;
+    overflow: hidden;
+    color: #eee;
+    background-color: #333;
+}
+div.modal-view h1 {
+    margin: 10px;
+    font-size: 23px;
+}
+div.modal-view input[type=text] {
+    font-size: 14px;
+    font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+    -webkit-box-sizing: border-box;
+    outline-width: 0;
+    border: 0;
+    color: #eee;
+    background-color: #000;
+}
+div.modal-view #item-list {
+    position: absolute;
+    top: 95px;
+    overflow-y: scroll;
+    left: 15px;
+    right: 0;
+    bottom: 0;
+}
+div.modal-view #item-list a {
+    display: block;
+    position: relative;
+    text-decoration: none;
+    background-color: #444;
+    color: #CBC9C9;
+    font-size: 13px;
+    padding: 8px;
+    overflow: hidden;
+    text-align: left;
+    white-space: nowrap;
+    padding-left: 35px;
+}
+div.modal-view #item-list a img {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 18px;
+    height: 18px;
+    -webkit-filter: invert(100%);
+}
+div.modal-view #item-list a.active {
+    background-color: #666;
+}

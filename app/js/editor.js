@@ -43,6 +43,8 @@ define(function(require, exports, module) {
                         }
                     });
                 });
+
+                $("body").append('<div id="editor-wrapper-wrapper"><div id="editor-wrapper"></div></div>');
             },
             setEditorConfiguration: function(edit) {
                 var session = edit.getSession();
