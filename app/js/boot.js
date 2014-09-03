@@ -57,32 +57,38 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
     if (options.get("url")) {
         openUrl(options.get("url"));
     } else {
+        projectPicker();
+    }
+
+    function projectPicker() {
         var modules = baseModules.slice();
         modules.push("./fs/empty");
         modules.push("./open_ui");
         boot(modules).then(function(app) {
             var eventbus = app.getService("eventbus");
             eventbus.once("urlchanged", function() {
-                $("div").remove();
-                $("span").remove();
-                $("webview").remove();
-                app.getService("ui").blockUI("Loading...");
                 openUrl(options.get("url"));
             });
         });
     }
 
+    window.projectPicker = projectPicker;
+
     function openUrl(url) {
         fsPicker(url).then(function(fsConfig) {
             var modules = baseModules.slice();
             modules.push(fsConfig);
-            console.log(modules);
             boot(modules);
         });
     }
 
 
     function boot(modules) {
+        $("div").remove();
+        $("span").remove();
+        $("webview").remove();
+        $("body").append("<img src='/Icon.png' id='wait-logo'>");
+        // return;
         return new Promise(function(resolve, reject) {
             architect.resolveConfig(modules, function(err, config) {
                 if (err) {
@@ -91,11 +97,11 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                 }
                 console.log("Architect resolved");
                 var app = architect.createApp(config, function(err, app) {
-                    console.log("Second run, here");
                     if (err) {
                         window.err = err;
                         return console.error("Architect createApp error", err, err.stack);
                     }
+                    $("#wait-logo").remove();
                     try {
                         window.zed = app;
 

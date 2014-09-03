@@ -15,6 +15,8 @@ define(function(require, exports, module) {
                 return "img/config.png";
             case "gh":
                 return "img/github.png";
+            case "zedrem":
+                return "img/remote.png";
             case "http":
                 return "img/remote.png";
             case "https":

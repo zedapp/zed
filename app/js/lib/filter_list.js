@@ -20,31 +20,56 @@ define(function(require, exports, module) {
         var onCancel = options.onCancel;
         var onDelete = options.onDelete;
 
-        var lastFilterPhrase;
+        var lastFilterPhrase = inputEl.val();
 
         var selectIdx = 0;
 
         function getFilteredList() {
             var filterPhrase = inputEl.val().toLowerCase();
             return list.filter(function(p) {
+                if(p.section) {
+                    return true;
+                }
                 return p.name.toLowerCase().indexOf(filterPhrase) !== -1;
             });
+        }
+
+        function getFilteredListLength() {
+            var count = 0;
+            var filterPhrase = inputEl.val().toLowerCase();
+            list.forEach(function(p) {
+                if(p.section) {
+                    return;
+                }
+                if(p.name.toLowerCase().indexOf(filterPhrase) !== -1) {
+                    count++;
+                }
+            });
+            return count;
         }
 
         function update() {
             var filtered = getFilteredList();
 
             resultsEl.empty();
-
-            filtered.forEach(function(item, idx) {
-                var el = $("<a href='#'>");
-                el.data("info", item);
-                el.html(item.html);
-                el.data("idx", idx);
-                if (idx === selectIdx) {
-                    el.addClass("active");
+            var idx = 0;
+            filtered.forEach(function(item) {
+                var el;
+                if(item.section) {
+                    el = $("<div class='section'>");
+                    el.text(item.section);
+                    resultsEl.append(el);
+                } else {
+                    el = $("<a href='#'>");
+                    el.data("info", item);
+                    el.html(item.html);
+                    el.data("idx", idx);
+                    if (idx === selectIdx) {
+                        el.addClass("active");
+                    }
+                    resultsEl.append(el);
+                    idx++;
                 }
-                resultsEl.append(el);
             });
 
             onUpdate && onUpdate();
@@ -92,10 +117,10 @@ define(function(require, exports, module) {
                     selectIdx = Math.max(0, selectIdx - 1);
                     break;
                 case keyCode('Down'):
-                    selectIdx = Math.min(getFilteredList().length - 1, selectIdx + 1);
+                    selectIdx = Math.min(getFilteredListLength() - 1, selectIdx + 1);
                     break;
                 case keyCode('PgDown'):
-                    selectIdx = Math.min(getFilteredList().length - 1, selectIdx + 10);
+                    selectIdx = Math.min(getFilteredListLength() - 1, selectIdx + 10);
                     break;
                 case keyCode('Tab'):
                     if (event.shiftKey) {

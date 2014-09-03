@@ -4,7 +4,7 @@ function showProjects() {
     chrome.app.window.create('editor.html?url=&title=Zed', {
         frame: 'none',
         width: 800,
-        height: 500
+        height: 600
     }, function(win) {
         win.focus();
     });

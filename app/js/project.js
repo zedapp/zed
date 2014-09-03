@@ -19,12 +19,7 @@ define(function(require, exports, module) {
         command.define("Project:Open Project Picker", {
             doc: "Open the initial Zed window that allows you to switch between projects.",
             exec: function() {
-                var w = windows.getOpenWindow();
-                if(w) {
-                    w.focus();
-                } else {
-                    win.create(window.isNodeWebkit ? "open.nw.html" : "open.chrome.html", "chrome", 400, 300);
-                }
+                window.projectPicker();
             },
             readOnly: true
         });

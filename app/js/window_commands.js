@@ -39,6 +39,14 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
+        command.define("Window:New", {
+            doc: "Opens a new Zed window.",
+            exec: function() {
+                win.create("editor.html?url=&title=Zed", "none", 800, 600);
+            },
+            readOnly: true
+        })
+
         register();
     }
 });

@@ -307,6 +307,10 @@
             "mac": "Command-Shift-O",
             "win": "Ctrl-Shift-O"
         },
+        "Window:New": {
+            "mac": "Command-Shift-N",
+            "win": "Ctrl-Shift-N"
+        },
         "Window:Close": {
             "mac": "Command-W",
             "win": "Alt-F4|Ctrl-W"

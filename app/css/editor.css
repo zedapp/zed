@@ -3,6 +3,16 @@ body {
     overflow: hidden;
     background-color: #fff;
 }
+
+#wait-logo {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
 #editor-wrapper-wrapper {
     position: absolute;
     top: 25px;
@@ -753,10 +763,15 @@ body.dark #main-menu > ul > li > a {
     overflow: hidden;
     color: #eee;
     background-color: #333;
+    box-shadow: #000 0 0 30px;
+}
+div.modal-view img.logo {
+    position: absolute;
 }
 div.modal-view h1 {
-    margin: 10px;
-    font-size: 23px;
+    margin-left: 44px;
+    font-size: 20px;
+    margin-top: 1px;
 }
 div.modal-view input[type=text] {
     font-size: 14px;
@@ -772,9 +787,9 @@ div.modal-view input[type=text] {
 }
 div.modal-view #item-list {
     position: absolute;
-    top: 95px;
     overflow-y: scroll;
-    left: 15px;
+    top: 86px;
+    left: 5px;
     right: 0;
     bottom: 0;
 }
@@ -782,7 +797,7 @@ div.modal-view #item-list a {
     display: block;
     position: relative;
     text-decoration: none;
-    background-color: #444;
+    /*background-color: #444;*/
     color: #CBC9C9;
     font-size: 13px;
     padding: 8px;
@@ -799,6 +814,23 @@ div.modal-view #item-list a img {
     height: 18px;
     -webkit-filter: invert(100%);
 }
+div.modal-view #item-list div.section {
+    padding: 8px;
+    background-color: #222;
+}
 div.modal-view #item-list a.active {
     background-color: #666;
+}
+#dropbox-tree {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    top: 90px;
+}
+div.modal-view #logout {
+    position: absolute;
+    top: 14px;
+    font-size: 14px;
+    right: 15px;
 }
