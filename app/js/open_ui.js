@@ -37,25 +37,25 @@ define(function(require, exports, module) {
             }];
         } else {
             builtinProjects = [{
-                name: "Open Local Folder",
+                name: "Edit Local Folder",
                 url: "local:"
             }, {
-                name: "Open Zedrem Folder",
+                name: "Edit Remote Folder",
                 url: "zedrem:"
             }, {
-                name: "Open Github Repository",
+                name: "Edit Github Repository",
                 url: "gh:"
             }, {
-                name: "Open Dropbox Folder",
+                name: "Edit Dropbox Folder",
                 url: "dropbox:"
             }, {
-                name: "Notes",
+                name: "Edit Notes",
                 url: "syncfs:",
             }, {
-                name: "Configuration",
+                name: "Edit Configuration",
                 url: "config:"
             }, {
-                name: "Manual",
+                name: "View Manual",
                 url: "manual:"
             }];
         }
@@ -69,14 +69,18 @@ define(function(require, exports, module) {
                 headerEl = el.find("h1");
                 phraseEl = el.find("#phrase");
                 listEl = el.find("#item-list");
+                eventbus.once("editorloaded", function() {
+                    $(".ace_editor").css("opacity", 0.3);
+                    $(".pathbar").css("opacity", 0.3);
+                });
                 api.projectList();
             },
             projectList: function() {
-                headerEl.text("Projects");
+                headerEl.text("Zed");
                 history.getProjects().then(function(projects) {
                     if (projects.length > 0) {
                         projects.splice(0, 0, {
-                            section: "Recent"
+                            section: "Recently Opened Projects"
                         });
                     }
                     projects = builtinProjects.concat(projects);
@@ -86,7 +90,8 @@ define(function(require, exports, module) {
                             return project;
                         }
                         return {
-                            name: project.url,
+                            name: project.name,
+                            url: project.url,
                             title: project.name,
                             html: "<img src='" + icons.protocolIcon(project.url) + "'/>" + project.name
                         };
@@ -99,33 +104,45 @@ define(function(require, exports, module) {
                         resultsEl: listEl,
                         list: items,
                         onSelect: function(b) {
-                            console.log("Pick", b);
-                            if (b.name === "gh:") {
-                                api.github().then(function(repo) {
-                                    if (repo) {
-                                        open(repo.repo + " [" + repo.branch + "]", "gh:" + repo.repo + ":" + repo.branch);
-                                    } else {
-                                        api.projectList();
-                                    }
-                                });
-                            } else if (b.name === "dropbox:") {
-                                api.dropbox().then(function(url) {
-                                    if (url) {
-                                        open(url.slice("dropbox:".length), url);
-                                    } else {
-                                        api.projectList();
-                                    }
-                                });
-                            } else if (b.name === "local:") {
-                                api.localChrome().then(function(data) {
-                                    if (data) {
-                                        open(data.title, data.url);
-                                    } else {
-                                        api.projectList();
-                                    }
-                                });
-                            } else {
-                                open(b.title, b.name);
+                            switch(b.url) {
+                                case "gh:":
+                                    api.github().then(function(repo) {
+                                        if (repo) {
+                                            open(repo.repo + " [" + repo.branch + "]", "gh:" + repo.repo + ":" + repo.branch);
+                                        } else {
+                                            api.projectList();
+                                        }
+                                    });
+                                    break;
+                                case "dropbox:":
+                                    api.dropbox().then(function(url) {
+                                        if (url) {
+                                            open(url.slice("dropbox:".length), url);
+                                        } else {
+                                            api.projectList();
+                                        }
+                                    });
+                                    break;
+                                case "local:":
+                                    api.localChrome().then(function(data) {
+                                        if (data) {
+                                            open(data.title, data.url);
+                                        } else {
+                                            api.projectList();
+                                        }
+                                    });
+                                    break;
+                                case "zedrem:":
+                                    api.zedrem().then(function(url) {
+                                        if(url) {
+                                            open("Zedrem Project", url);
+                                        } else {
+                                            api.projectList();
+                                        }
+                                    });
+                                    break;
+                                default:
+                                    open(b.title, b.name);
                             }
 
                             function open(title, url) {
@@ -133,9 +150,6 @@ define(function(require, exports, module) {
                                 options.set("url", url);
                                 eventbus.emit("urlchanged");
                             }
-                        },
-                        onCancel: function() {
-                            window.close();
                         },
                         onDelete: function(b) {
                             items.splice(items.indexOf(b), 1);
@@ -303,6 +317,57 @@ define(function(require, exports, module) {
                     });
                 });
             },
+            zedrem: function() {
+                return new Promise(function(resolve, reject) {
+                    var el = $("<div class='modal-view'></div>");
+                    $("body").append(el);
+                    $.get("/open/zedrem.html", function(html) {
+                        el.html(html);
+                        $("#zedrem-url").focus();
+                        $("#cancel").click(function() {
+                            close();
+                            resolve();
+                        });
+
+                        $("#zedrem-form").submit(function(event) {
+                            var url = $("#zedrem-url").val();
+                            check(url).then(function() {
+                                resolve(url);
+                            }, function() {
+                                $("#hint").text("Invalid Zedrem URL");
+                            });
+                            event.preventDefault();
+                        });
+                    });
+
+                    function close() {
+                        el.remove();
+                    }
+
+                    function check(url) {
+                        return new Promise(function(resolve, reject) {
+                            // Only check http(s) links
+                            if (url.indexOf("http") !== 0) {
+                                return reject();
+                            }
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                data: {
+                                    action: 'version'
+                                },
+                                success: function() {
+                                    resolve();
+                                },
+                                error: function() {
+                                    reject();
+                                },
+                                dataType: "text"
+                            });
+                        });
+                    }
+                });
+            }
         };
 
         register(null, {
