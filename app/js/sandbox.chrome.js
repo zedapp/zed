@@ -11,17 +11,22 @@
  */
 /*global define, $, _ */
 define(function(require, exports, module) {
-    plugin.consumes = ["command"];
+    plugin.consumes = ["command", "eventbus"];
     plugin.provides = ["sandbox"];
     return plugin;
 
     function plugin(options, imports, register) {
         var command = imports.command;
+        var eventbus = imports.eventbus;
+
+        var async = require("./lib/async");
 
         var sandboxEl;
         var id;
         var waitingForReply;
         var inputables = {};
+
+        eventbus.declare("sandboxready");
 
         var api = {
             defineInputable: function(name, fn) {
@@ -37,7 +42,7 @@ define(function(require, exports, module) {
              * Any other arguments added in spec are passed along as the first argument to the
              * module which is executed as a function.
              */
-            execCommand: function(name, spec, session) {
+            execCommand: async.queueUntilEvent(eventbus, "sandboxready", function(name, spec, session) {
                 return new Promise(function(resolve, reject) {
                     if (session.$cmdInfo) {
                         spec = _.extend({}, spec, session.$cmdInfo);
@@ -70,7 +75,7 @@ define(function(require, exports, module) {
                     }, '*');
 
                 });
-            }
+            })
         };
 
         /**
@@ -80,8 +85,6 @@ define(function(require, exports, module) {
         function resetSandbox() {
             return new Promise(function(resolve) {
                 if (sandboxEl) {
-                    // sandboxEl[0].clearData({}, {cache: true}, function() {
-                    // });
                     sandboxEl.remove();
                 }
                 $("body").append('<webview id="sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
@@ -95,7 +98,7 @@ define(function(require, exports, module) {
                     sandbox.executeScript({
                         code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js") + require("text!../dep/json5.js") + require("text!../dep/zedb.js")
                     });
-                    resolve();
+                    eventbus.emit("sandboxready");
                 });
                 sandbox.addEventListener('consolemessage', function(e) {
                     console.log('[Sandbox]: ' + e.message + ' (line: ' + e.line + ')');
@@ -185,10 +188,10 @@ define(function(require, exports, module) {
             }
         });
 
-        resetSandbox().then(function() {
-            register(null, {
-                sandbox: api
-            });
+        resetSandbox();
+
+        register(null, {
+            sandbox: api
         });
 
     }

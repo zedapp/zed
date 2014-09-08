@@ -1,12 +1,13 @@
 {
     "name": "zed",
     "version": "1.0.0",
-    "main": "app://./open.nw.html",
+    "main": "app://./editor.html?url=&title=Zed",
+    "node-main": "background.nw.js",
     "window": {
         "title": "Zed",
         "toolbar": false,
-        "width": 400,
-        "height": 200,
+        "width": 800,
+        "height": 600,
         "show": true,
         "frame": true,
         "icon": "Icon.png"

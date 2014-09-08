@@ -5,6 +5,7 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var api = {
+            isEmpty: true,
             listFiles: function() {
                 return Promise.resolve([]);
             },

@@ -41,9 +41,12 @@ define(function(require, exports, module) {
         var api = {
             specialDocs: {}, // {content: ..., mode: ..., readonly: true}
             hook: function() {
+                async.waitForEvents(eventbus, ["loadedfilelist"], function() {
+                    ui.unblockUI();
+                });
                 async.waitForEvents(eventbus, ["loadedfilelist", "stateloaded", "configchanged"], function() {
                     eventbus.emit("inited");
-                    ui.unblockUI();
+                    // ui.unblockUI();
                 });
 
                 // Modes have been loaded, let's iterate over all to setup the right one

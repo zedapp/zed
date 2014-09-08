@@ -47,11 +47,38 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./webservers",
         "./version_control"];
 
+    // if (!options.get("url")) {
+    //     baseModules = [
+    //         "./eventbus",
+    //         "./ui",
+    //         "./title_bar",
+    //         "./config",
+    //         "./theme",
+    //         "./window_commands",
+    //         "./analytics", {
+    //         provides: ["editor", "command", "session_manager"],
+    //         consumes: [],
+    //         setup: function(options, imports, register) {
+    //             register(null, {
+    //                 editor: {},
+    //                 command: {
+    //                     define: function() {}
+    //                 },
+    //                 session_manager: {}
+    //             });
+    //         }
+    //     }];
+    // }
     if (window.isNodeWebkit) {
-        baseModules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw", "./token_store.nw");
+        baseModules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw", "./token_store.nw", "./background.nw");
     } else {
-        baseModules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome", "./token_store.chrome");
+        baseModules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome", "./token_store.chrome", "./background.chrome");
     }
+
+    // require("ace/editor").Editor.prototype.focus = function() {
+    //     console.log("Asked to focus editor!");
+    //     console.trace();
+    // }
 
 
     if (options.get("url")) {
@@ -64,12 +91,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         var modules = baseModules.slice();
         modules.push("./fs/empty");
         modules.push("./open_ui");
-        boot(modules).then(function(app) {
-            var eventbus = app.getService("eventbus");
-            eventbus.once("urlchanged", function() {
-                openUrl(options.get("url"));
-            });
-        });
+        boot(modules, false);
     }
 
     window.projectPicker = projectPicker;
@@ -78,12 +100,12 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         fsPicker(url).then(function(fsConfig) {
             var modules = baseModules.slice();
             modules.push(fsConfig);
-            boot(modules);
+            boot(modules, true);
         });
     }
 
 
-    function boot(modules) {
+    function boot(modules, bootEditor) {
         $("div").remove();
         $("span").remove();
         $("webview").remove();
@@ -118,10 +140,17 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                             }
                         });
 
-                        app.getService("analytics_tracker").trackEvent("Editor", "FsTypeOpened", options.get("url").split(":")[0]);
+                        if (bootEditor) {
+                            app.getService("analytics_tracker").trackEvent("Editor", "FsTypeOpened", options.get("url").split(":")[0]);
 
-                        setupBuiltinDoc("zed::start", introText);
-                        setupBuiltinDoc("zed::log", "Zed Log\n===========\n");
+                            setupBuiltinDoc("zed::start", introText);
+                            setupBuiltinDoc("zed::log", "Zed Log\n===========\n");
+
+                        } else {
+                            app.getService("eventbus").on("urlchanged", function() {
+                                openUrl(options.get("url"));
+                            });
+                        }
 
                         console.log("App started");
                         resolve(app);

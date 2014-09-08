@@ -20,11 +20,19 @@ body {
     left: 0;
     right: 0;
 }
+
+body.native-chrome #editor-wrapper-wrapper {
+    top: 0;
+}
+
 #editor-wrapper-wrapper.left-tree {
     left: 300px;
 }
 #editor-wrapper-wrapper.top-menu {
     top: 50px;
+}
+body.native-chrome #editor-wrapper-wrapper.top-menu {
+    top: 25px;
 }
 #editor-wrapper {
     position: relative;
@@ -404,6 +412,10 @@ body.dark .dynatree-focused a:link {
     color: #000;
     z-index: 9999;
 }
+body.native-chrome #blockui {
+    top: 0;
+}
+
 #blockui img {
 }
 #dialog {

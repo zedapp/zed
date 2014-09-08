@@ -1,6 +1,6 @@
 /* global $, _*/
 define(function(require, exports, module) {
-    plugin.consumes = ["config", "command", "eventbus", "configfs"];
+    plugin.consumes = ["config", "command", "eventbus", "configfs", "window"];
     plugin.provides = ["theme"];
     return plugin;
 
@@ -11,6 +11,7 @@ define(function(require, exports, module) {
         var command = imports.command;
         var eventbus = imports.eventbus;
         var configfs = imports.configfs;
+        var win = imports.window;
 
         var defaultTheme = 'zed_dark';
 
@@ -52,7 +53,7 @@ define(function(require, exports, module) {
             }
 
             loadCss(theme.css, true).then(function() {
-                $("body").attr("class", theme.cssClass + (theme.dark ? " dark ace_dark" : " ") + (!useragent.isMac ? " non_mac" : " mac") + customScroll);
+                $("body").attr("class", theme.cssClass + (theme.dark ? " dark ace_dark" : " ") + (win.useNativeFrame() ? " native-chrome" : " ") + (!useragent.isMac ? " non_mac" : " mac") + customScroll);
                 // hack to force scrollbars to refresh
                 // found here: http://stackoverflow.com/a/15603340
                 $('.ace_scrollbar-v').css('overflow-y', 'hidden').height();

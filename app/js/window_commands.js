@@ -42,7 +42,7 @@ define(function(require, exports, module) {
         command.define("Window:New", {
             doc: "Opens a new Zed window.",
             exec: function() {
-                win.create("editor.html?url=&title=Zed", "none", 800, 600);
+                win.create("editor.html?url=&title=Zed", 800, 600);
             },
             readOnly: true
         })

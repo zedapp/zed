@@ -17,9 +17,9 @@ define(function(require, exports, module) {
         window.console.error = log("error", oldError);
         window.console.info = log("info", oldInfo);
 
-        window.addEventListener("error", function(err) {
+        window.onerror = function(err) {
             log("exception", noop)(err.message, err.stack);
-        });
+        };
 
         function log(level, oldFn) {
             return function() {

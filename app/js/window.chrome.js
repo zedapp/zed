@@ -7,6 +7,8 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var win = chrome.app.window.current();
 
+        var userAgent = require("ace/lib/useragent");
+
         var eventbus = imports.eventbus;
 
         eventbus.declare("windowclose");
@@ -25,10 +27,13 @@ define(function(require, exports, module) {
             setCloseHandler: function(handler) {
                 closeHandler = handler;
             },
-            create: function(url, frameStyle, width, height) {
+            useNativeFrame: function() {
+                return userAgent.isLinux;
+            },
+            create: function(url, width, height) {
                 return new Promise(function(resolve) {
                     chrome.app.window.create(url, {
-                        frame: frameStyle,
+                        frame: api.useNativeFrame() ? "chrome" : "none",
                         width: width,
                         height: height,
                     }, function(win) {

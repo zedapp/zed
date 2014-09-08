@@ -103,7 +103,9 @@ define(function(require, exports, module) {
 
         function hideTree() {
             $("#file-tree").hide();
-            editor.getActiveEditor().focus();
+            if (!zed.services.open_ui) {
+                editor.getActiveEditor().focus();
+            }
             treeVisible = false;
             $("#editor-wrapper-wrapper").removeClass("left-tree");
             editor.resizeEditors();

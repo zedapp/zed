@@ -134,6 +134,7 @@ define(function(require, exports, module) {
                     });
                 });
                 api.setActiveEditor(editors[0]);
+                // return;
                 eventbus.emit("editorloaded", api);
             },
             createSession: function(path, content) {
@@ -165,7 +166,9 @@ define(function(require, exports, module) {
             },
             setActiveEditor: function(editor) {
                 activeEditor = editor;
-                activeEditor.focus();
+                if(!zed.services.open_ui) {
+                    activeEditor.focus();
+                }
             },
             getEditors: function(all) {
                 if (all) {
