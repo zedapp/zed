@@ -148,6 +148,9 @@ define(function(require, exports, module) {
                 zed.getService("ui").filterBox({
                     placeholder: "Enter command",
                     filter: filter,
+                    hint: function() {
+                        return "Press <tt>Enter</tt> to run the selected command.";
+                    },
                     text: prefix || "",
                     onSelect: function(cmd) {
                         recentCommands[cmd] = Date.now();

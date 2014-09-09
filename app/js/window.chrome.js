@@ -29,6 +29,7 @@ define(function(require, exports, module) {
             },
             useNativeFrame: function() {
                 return userAgent.isLinux;
+                // return false;
             },
             create: function(url, width, height) {
                 return new Promise(function(resolve) {

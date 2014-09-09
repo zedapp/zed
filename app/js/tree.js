@@ -185,7 +185,7 @@ define(function(require, exports, module) {
                 treeEl.show();
                 focusTree();
             }
-            treeEl.css("top", (editorEl.offset().top - 21) + "px");
+            treeEl.css("top", (editorEl.offset().top - 22) + "px");
         }
 
         command.define("Navigate:File Tree", {

@@ -1,6 +1,7 @@
 /*global chrome*/
 
 var isLinux = !!/linux/i.exec(navigator.platform);
+// var isLinux = false;
 
 function openEditor(title, url) {
     return new Promise(function(resolve, reject) {
@@ -28,7 +29,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
     ongoingTextAreaEdits[id] = port;
     port.onMessage.addListener(function(req) {
         if (req.text !== undefined) {
-            openEditor("Edit Text Area", "textarea:" + req.text).then(function() {
+            openEditor("Edit Text Area", "textarea:" + req.text).then(function(win) {
                 win.onClosed.addListener(function() {
                     port.disconnect();
                     delete ongoingTextAreaEdits[id];
