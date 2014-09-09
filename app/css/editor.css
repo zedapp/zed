@@ -235,7 +235,7 @@ div.preview-vsplit2-right-2 {
     z-index: 1000;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
-    top: 5px;
+    top: 4px;
     background: #aaa;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
@@ -410,9 +410,13 @@ body.dark .dynatree-focused a:link {
     bottom: 0;
     text-align: center;
     padding-top: 100px;
-    background-color: #eee;
-    color: #000;
     z-index: 9999;
+    background-color: #fff;
+    color: #333;
+}
+body.dark #blockui {
+    background-color: #333;
+    color: #eee;
 }
 body.native-chrome #blockui {
     top: 0;
@@ -667,6 +671,9 @@ body.dark #titlebar .title {
     font-size: 13px;
     background-color: #ccc;
 }
+body.native-chrome #main-menu {
+    top: 0;
+}
 body.dark #main-menu {
     background-color: #222;
 }
@@ -765,7 +772,7 @@ body.dark #main-menu > ul > li > a {
 /* PROJECT PICKER */
  div.modal-view {
     position: absolute;
-    border: solid 1px #000;
+    border: solid 1px #fff;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
     padding: 10px;
@@ -775,9 +782,15 @@ body.dark #main-menu > ul > li > a {
     bottom: 10%;
     z-index: 1000;
     overflow: hidden;
-    color: #eee;
-    background-color: #333;
+    color: #000;
     box-shadow: #000 0 0 30px;
+    background-color: #eee;
+}
+body.dark div.modal-view {
+    background-color: #333;
+    border: solid 1px #000;
+    color: #eee;
+
 }
 div.modal-view img.logo {
     position: absolute;
@@ -796,6 +809,10 @@ div.modal-view input[type=text] {
     -webkit-box-sizing: border-box;
     outline-width: 0;
     border: 0;
+    color: #333;
+    background-color: #fff;
+}
+body.dark div.modal-view input[type=text] {
     color: #eee;
     background-color: #000;
 }
@@ -811,8 +828,7 @@ div.modal-view #item-list a {
     display: block;
     position: relative;
     text-decoration: none;
-    /*background-color: #444;*/
-    color: #CBC9C9;
+    color: #444;
     font-size: 13px;
     padding: 8px;
     overflow: hidden;
@@ -820,19 +836,30 @@ div.modal-view #item-list a {
     white-space: nowrap;
     padding-left: 35px;
 }
+body.dark div.modal-view #item-list a {
+    color: #CBC9C9;
+}
 div.modal-view #item-list a img {
     position: absolute;
     left: 8px;
     top: 8px;
     width: 18px;
     height: 18px;
+}
+body.dark div.modal-view #item-list a img {
     -webkit-filter: invert(100%);
 }
 div.modal-view #item-list div.section {
     padding: 8px;
+    background-color: #eee;
+}
+body.dark div.modal-view #item-list div.section {
     background-color: #222;
 }
 div.modal-view #item-list a.active {
+    background-color: #ccc;
+}
+body.dark div.modal-view #item-list a.active {
     background-color: #666;
 }
 #dropbox-tree {

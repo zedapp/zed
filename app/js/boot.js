@@ -50,7 +50,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
     // if (!options.get("url")) {
     //     baseModules = [
     //         "./eventbus",
-    //         "./ui",
+    //         // "./ui",
     //         "./title_bar",
     //         "./config",
     //         "./theme",

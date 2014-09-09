@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "history", "token_store", "fs", "editor", "config"];
+    plugin.consumes = ["eventbus", "history", "token_store", "fs", "editor", "config", "window"];
     plugin.provides = ["open_ui"];
     return plugin;
 
@@ -10,6 +10,7 @@ define(function(require, exports, module) {
         var fs = imports.fs;
         var editor = imports.editor;
         var config = imports.config;
+        var win = imports.window;
 
         var options = require("./lib/options");
         var icons = require("./lib/icons");
@@ -67,8 +68,8 @@ define(function(require, exports, module) {
 
         var api = {
             init: function() {
-                api.showOpenUi();
                 config.loadConfiguration().then(function() {
+                    api.showOpenUi();
                     var enable = config.getPreference("enableAnalytics");
                     var showMenus = config.getPreference("showMenus");
                     if (enable === undefined || showMenus === undefined) {
@@ -162,6 +163,12 @@ define(function(require, exports, module) {
                                         }
                                     });
                                     break;
+                                case "manual:":
+                                    win.create("editor.html?title=Manual&url=manual%3A", 800, 600).then(function(win) {
+                                        win.focus();
+                                    });
+                                    api.projectList();
+                                    break;
                                 default:
                                     open(b.name, b.url);
                             }
@@ -247,13 +254,14 @@ define(function(require, exports, module) {
                         });
                         $("#cancel").click(function() {
                             close();
-                            reject();
+                            resolve();
                         });
 
                         $("#token").val(githubToken);
 
                         function close() {
                             el.remove();
+                            resolve();
                         }
 
                         function verifyToken(token) {
@@ -263,8 +271,8 @@ define(function(require, exports, module) {
                                 dataType: "json",
                                 processData: false,
                                 success: function() {
-                                    tokenStore.set("githubToken", $("#token").val());
-                                    resolve($("#token").val());
+                                    tokenStore.set("githubToken", token);
+                                    resolve(token);
                                     close();
                                 },
                                 error: function() {

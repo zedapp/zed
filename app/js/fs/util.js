@@ -44,9 +44,9 @@ define(function(require, exports, module) {
             }
             return {
                 resolve: function(fs) {
-                    console.log("Flushin'", queued);
+                    // console.log("Flushin'", queued);
                     queued.forEach(function(item) {
-                        console.log("calling", item.name, "on", item.args);
+                        // console.log("calling", item.name, "on", item.args);
                         var prom = fs[item.name].apply(fs, item.args);
                         if(prom && prom.then) {
                             prom.then(item.resolve, item.reject);

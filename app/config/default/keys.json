@@ -299,10 +299,6 @@
             "mac": "Command-P",
             "win": "Ctrl-P"
         },
-        "Project:Open Project Picker": {
-            "mac": "Command-Shift-O",
-            "win": "Ctrl-Shift-O"
-        },
         "Window:New": {
             "mac": "Command-Shift-N",
             "win": "Ctrl-Shift-N"

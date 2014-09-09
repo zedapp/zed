@@ -64,7 +64,9 @@ define(function(require, exports, module) {
             var command = zed.getService("command");
             var c = command.lookup(cmd);
             if (!c) {
-                return console.warn("Failed to bind keys to command", cmd, ", maybe not yet defined?");
+                // Command not yet available, maybe sandbox hasn't booted up yet
+                return;
+                // return console.warn("Failed to bind keys to command", cmd, ", maybe not yet defined?");
             }
             commands.push({
                 name: cmd,
