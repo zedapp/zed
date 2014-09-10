@@ -157,7 +157,7 @@ define(function(require, exports, module) {
         function cleanup() {
             $("body").off("keydown", keyHandler);
             resultsEl.off("click", "a", clickHandler);
-            resultsEl.off("mouseover", "a", mouseOverHandler);
+            // resultsEl.off("mouseover", "a", mouseOverHandler);
             inputEl.off("keyup", keyUpHandler);
         }
 
@@ -169,7 +169,7 @@ define(function(require, exports, module) {
 
         inputEl.keyup(keyUpHandler);
         resultsEl.on("click", "a", clickHandler);
-        resultsEl.on("mouseover", "a", mouseOverHandler);
+        // resultsEl.on("mouseover", "a", mouseOverHandler);
         $("body").keydown(keyHandler);
 
         update();

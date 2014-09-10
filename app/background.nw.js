@@ -162,5 +162,5 @@ exports.configZedrem = function(newServer) {
 
 
 process.on('uncaughtException', function(err) {
-    console.error('Caught exception: ' + err);
+    process.stdout.write('Caught exception: ' + err);
 });

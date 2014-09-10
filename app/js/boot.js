@@ -47,39 +47,11 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./webservers",
         "./version_control"];
 
-    // if (!options.get("url")) {
-    //     baseModules = [
-    //         "./eventbus",
-    //         // "./ui",
-    //         "./title_bar",
-    //         "./config",
-    //         "./theme",
-    //         "./window_commands",
-    //         "./analytics", {
-    //         provides: ["editor", "command", "session_manager"],
-    //         consumes: [],
-    //         setup: function(options, imports, register) {
-    //             register(null, {
-    //                 editor: {},
-    //                 command: {
-    //                     define: function() {}
-    //                 },
-    //                 session_manager: {}
-    //             });
-    //         }
-    //     }];
-    // }
     if (window.isNodeWebkit) {
-        baseModules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw", "./token_store.nw", "./background.nw");
+        baseModules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw", "./token_store.nw", "./background.nw", "./cli.nw");
     } else {
         baseModules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome", "./token_store.chrome", "./background.chrome");
     }
-
-    // require("ace/editor").Editor.prototype.focus = function() {
-    //     console.log("Asked to focus editor!");
-    //     console.trace();
-    // }
-
 
     if (options.get("url")) {
         openUrl(options.get("url"));
@@ -100,7 +72,21 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         fsPicker(url).then(function(fsConfig) {
             var modules = baseModules.slice();
             modules.push(fsConfig);
-            boot(modules, true);
+            modules.push({
+                provides: ["open_ui"],
+                consumes: [],
+                setup: function(options, imports, register) {
+                    register(null, {
+                        open_ui: {
+                            ignore: true
+                        }
+                    });
+                }
+            });
+            return boot(modules, true);
+        }).
+        catch (function(err) {
+            console.log("Error", err);
         });
     }
 
@@ -117,70 +103,80 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                     console.error("Architect resolve error", err);
                     return reject(err);
                 }
-                console.log("Architect resolved");
-                var app = architect.createApp(config, function(err, app) {
-                    if (err) {
-                        window.err = err;
-                        return console.error("Architect createApp error", err, err.stack);
-                    }
-                    $("#wait-logo").remove();
-                    try {
-                        window.zed = app;
+                console.log("Architect resolved", config);
+                try {
+                    var app = architect.createApp(config, function(err, app) {
+                        if (err) {
+                            window.err = err;
+                            return console.error("Architect createApp error", err, err.stack);
+                        }
+                        $("#wait-logo").remove();
+                        try {
+                            window.zed = app;
 
-                        // Run hook on each service (if exposed)
-                        _.each(app.services, function(service) {
-                            if (service.hook) {
-                                service.hook();
-                            }
-                        });
-                        // Run init on each service (if exposed)
-                        _.each(app.services, function(service) {
-                            if (service.init) {
-                                service.init();
-                            }
-                        });
-
-                        if (bootEditor) {
-                            app.getService("analytics_tracker").trackEvent("Editor", "FsTypeOpened", options.get("url").split(":")[0]);
-
-                            setupBuiltinDoc("zed::start", introText);
-                            setupBuiltinDoc("zed::log", "Zed Log\n===========\n");
-
-                        } else {
-                            app.getService("eventbus").on("urlchanged", function() {
-                                openUrl(options.get("url"));
+                            // Run hook on each service (if exposed)
+                            _.each(app.services, function(service) {
+                                if (service.hook) {
+                                    service.hook();
+                                }
                             });
+                            // Run init on each service (if exposed)
+                            _.each(app.services, function(service) {
+                                if (service.init) {
+                                    service.init();
+                                }
+                            });
+
+                            if (bootEditor) {
+                                app.getService("analytics_tracker").trackEvent("Editor", "FsTypeOpened", options.get("url").split(":")[0]);
+
+                                setupBuiltinDoc("zed::start", introText);
+                                setupBuiltinDoc("zed::log", "Zed Log\n===========\n");
+
+                            } else {
+                                app.getService("eventbus").on("urlchanged", function() {
+                                    openUrl(options.get("url"));
+                                });
+                            }
+
+                            console.log("App started");
+                            resolve(app);
+                        } catch (e) {
+                            console.error("Error booting", e);
+                            reject(e);
                         }
 
-                        console.log("App started");
-                        resolve(app);
-                    } catch (e) {
-                        console.error("Error booting", e);
-                        reject(e);
-                    }
+                        function setupBuiltinDoc(path, text) {
+                            var session_manager = app.getService("session_manager");
+                            var editor = app.getService("editor");
+                            var eventbus = app.getService("eventbus");
 
-                    function setupBuiltinDoc(path, text) {
-                        var session_manager = app.getService("session_manager");
-                        var editor = app.getService("editor");
-                        var eventbus = app.getService("eventbus");
+                            var session = editor.createSession(path, text);
+                            session.readOnly = true;
 
-                        var session = editor.createSession(path, text);
-                        session.readOnly = true;
+                            eventbus.on("modesloaded", function modesLoaded(modes) {
+                                if (modes.get("markdown")) {
+                                    modes.setSessionMode(session, "markdown");
+                                    eventbus.removeListener("modesloaded", modesLoaded);
+                                }
+                            });
 
-                        eventbus.on("modesloaded", function modesLoaded(modes) {
-                            if (modes.get("markdown")) {
-                                modes.setSessionMode(session, "markdown");
-                                eventbus.removeListener("modesloaded", modesLoaded);
-                            }
-                        });
+                            session_manager.specialDocs[path] = session;
+                        }
+                    });
 
-                        session_manager.specialDocs[path] = session;
-                    }
-                });
+                    app.on("service", function(name) {
+                        console.log("Loaded " + name);
+                    });
+                    app.on("error", function(err) {
+                        console.error("Error", err);
+                    })
 
-                app.on("service", function(name) {
-                    console.log("Loaded " + name);
-                });
+                    window.zed_app = app;
+                } catch (err) {
+                    console.error("Exception while creating architect app", err);
+                    reject(err);
+                }
             });
         });
     }

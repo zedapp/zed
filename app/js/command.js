@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     return plugin;
 
     function plugin(options, imports, register) {
+        console.log("HERERERERERER");
         var useragent = require("ace/lib/useragent");
         var fuzzyfind = require("./lib/fuzzyfind");
 

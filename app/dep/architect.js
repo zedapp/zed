@@ -464,6 +464,7 @@ define(["lib/emitter"], function(events) {
             if (!p) {
                 return callback();
             }
+            app.emit("registering", p);
             app.registerPlugin(p, next);
         }
         next();

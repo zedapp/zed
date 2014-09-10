@@ -24,13 +24,13 @@ define(function(require, exports, module) {
 
         if (window.isNodeWebkit) {
             builtinProjects = [{
-                name: "Open Local Folder",
+                name: "Local Folder",
                 url: "node:"
             }, {
-                name: "Open Zedrem Folder",
+                name: "Remote Zedrem Folder",
                 url: "zedrem:"
             }, {
-                name: "Open Github Repository",
+                name: "Github Repository",
                 url: "gh:"
             }, {
                 name: "Configuration",
@@ -41,34 +41,39 @@ define(function(require, exports, module) {
             }];
         } else {
             builtinProjects = [{
-                name: "Edit Local Folder",
+                name: "Local Folder",
                 url: "local:"
             }, {
-                name: "Edit Remote Folder",
+                name: "Remote Zedrem Folder",
                 url: "zedrem:"
             }, {
-                name: "Edit Github Repository",
+                name: "Github Repository",
                 url: "gh:"
             }, {
-                name: "Edit Dropbox Folder",
+                name: "Dropbox Folder",
                 url: "dropbox:"
             }, {
-                name: "Edit Notes",
+                name: "Notes",
                 url: "syncfs:",
             }, {
-                name: "Edit Configuration",
+                name: "Configuration",
                 url: "config:"
             }, {
-                name: "View Manual",
+                name: "Manual",
                 url: "manual:"
             }];
         }
 
         var viewEl, headerEl, phraseEl, listEl;
 
+        var closed = false;
+
         var api = {
             init: function() {
                 config.loadConfiguration().then(function() {
+                    if(closed) {
+                        return;
+                    }
                     api.showOpenUi();
                     var enable = config.getPreference("enableAnalytics");
                     var showMenus = config.getPreference("showMenus");
@@ -89,6 +94,10 @@ define(function(require, exports, module) {
                 });
                 api.projectList();
             },
+            close: function() {
+                closed = true;
+                api.fadeInBackground();
+            },
             fadeOutBackground: function() {
                 $(".ace_editor").css("opacity", 0.3);
                 $(".pathbar").css("opacity", 0.3);
@@ -98,7 +107,7 @@ define(function(require, exports, module) {
                 $(".pathbar").css("opacity", "");
             },
             projectList: function() {
-                headerEl.text("Zed");
+                headerEl.text("Open in Zed");
                 history.getProjects().then(function(projects) {
                     if (projects.length > 0) {
                         projects.splice(0, 0, {
@@ -125,11 +134,11 @@ define(function(require, exports, module) {
                         resultsEl: listEl,
                         list: items,
                         onSelect: function(b) {
-                            switch(b.url) {
+                            switch (b.url) {
                                 case "gh:":
                                     api.github().then(function(repo) {
                                         if (repo) {
-                                            open(repo.repo + " [" + repo.branch + "]", "gh:" + repo.repo + ":" + repo.branch);
+                                            api.open(repo.repo + " [" + repo.branch + "]", "gh:" + repo.repo + ":" + repo.branch);
                                         } else {
                                             api.projectList();
                                         }
@@ -138,7 +147,7 @@ define(function(require, exports, module) {
                                 case "dropbox:":
                                     api.dropbox().then(function(url) {
                                         if (url) {
-                                            open(url.slice("dropbox:".length), url);
+                                            api.open(url.slice("dropbox:".length), url);
                                         } else {
                                             api.projectList();
                                         }
@@ -148,7 +157,7 @@ define(function(require, exports, module) {
                                     api.localChrome().then(function(data) {
                                         console.log("Picked a folder", data);
                                         if (data) {
-                                            open(data.title, data.url);
+                                            api.open(data.title, data.url);
                                         } else {
                                             api.projectList();
                                         }
@@ -156,8 +165,8 @@ define(function(require, exports, module) {
                                     break;
                                 case "zedrem:":
                                     api.zedrem().then(function(url) {
-                                        if(url) {
-                                            open("Zedrem Project", url);
+                                        if (url) {
+                                            api.open("Zedrem Project", url);
                                         } else {
                                             api.projectList();
                                         }
@@ -170,17 +179,11 @@ define(function(require, exports, module) {
                                     api.projectList();
                                     break;
                                 default:
-                                    open(b.name, b.url);
-                            }
-
-                            function open(title, url) {
-                                options.set("title", title);
-                                options.set("url", url);
-                                eventbus.emit("urlchanged");
+                                    api.open(b.name, b.url);
                             }
                         },
                         onCancel: function() {
-                            if(!fs.isEmpty) {
+                            if (!fs.isEmpty) {
                                 viewEl.remove();
                                 api.fadeInBackground();
                                 editor.getActiveEditor().focus();
@@ -195,6 +198,11 @@ define(function(require, exports, module) {
                 catch (function(err) {
                     console.error("Error", err);
                 });
+            },
+            open: function(title, url) {
+                options.set("title", title);
+                options.set("url", url);
+                eventbus.emit("urlchanged");
             },
             firstRun: function() {
                 return new Promise(function(resolve, reject) {
@@ -220,7 +228,7 @@ define(function(require, exports, module) {
                             $(target).addClass("selected");
                             var mode = target.data("mode");
                             console.log("Mode selected", mode);
-                            switch(mode) {
+                            switch (mode) {
                                 case "traditional":
                                     config.setPreference("showMenus", true);
                                     config.setPreference("persistentTree", true);
