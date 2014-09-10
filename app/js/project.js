@@ -4,30 +4,25 @@
  */
 /*global define, $, zed */
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "command", "windows", "window"];
+    plugin.consumes = ["eventbus", "command", "window"];
     return plugin;
 
     function plugin(options, imports, register) {
         var opts = require("./lib/options");
         var command = imports.command;
         var eventbus = imports.eventbus;
-        var windows = imports.windows;
         var win = imports.window;
 
-        $("title").text(opts.get("title") + " [ Zed ]");
+        $("title").text(opts.get("title"));
 
-        command.define("Project:Open Project Picker", {
-            doc: "Open the initial Zed window that allows you to switch between projects.",
-            exec: function() {
-                var w = windows.getOpenWindow();
-                if(w) {
-                    w.focus();
-                } else {
-                    win.create(window.isNodeWebkit ? "open.nw.html" : "open.chrome.html", "chrome", 400, 300);
-                }
-            },
-            readOnly: true
-        });
+        // command.define("Project:Open Project Picker", {
+        //     doc: "Open the initial Zed window that allows you to switch between projects.",
+        //     exec: function() {
+        //         //openUi.showOpenUi();
+        //         win.create("editor.html?url=&title=Zed", "none", 800, 600);
+        //     },
+        //     readOnly: true
+        // });
 
         command.define("Project:Rename", {
             doc: "Rename the current project on disk.",

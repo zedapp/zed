@@ -8,6 +8,11 @@ define(function(require, exports, module) {
     function plugin(options, imports, register) {
         var folderPicker = require("./lib/folderpicker.nw");
         var command = imports.command;
+
+        var fsUtil = require("./fs/util");
+
+        var queueFs = fsUtil.queuedFilesystem();
+
         // Let's instaiate a new architect app with a configfs and the re-expose
         // that service as configfs
         architect.resolveConfig([{
@@ -21,10 +26,19 @@ define(function(require, exports, module) {
                 if (err) {
                     return register(err);
                 }
-                register(null, {
-                    configfs: app.getService("fs")
-                });
+                //register(null, {
+                //     configfs: app.getService("fs")
+                // });
+                try {
+                    queueFs.resolve(app.getService("fs"));
+                } catch (e) {
+                    console.error("Couldn't resolve fs", e);
+                }
             });
+        });
+
+        register(null, {
+            configfs: queueFs
         });
 
         command.define("Configuration:Set Configuration Directory", {

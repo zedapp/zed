@@ -7,6 +7,10 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var command = imports.command;
+        var fsUtil = require("./fs/util");
+
+        var queueFs = fsUtil.queuedFilesystem();
+
         // Let's instaiate a new architect app with a configfs and the re-expose
         // that service as configfs
         architect.resolveConfig([{
@@ -20,15 +24,23 @@ define(function(require, exports, module) {
                 if (err) {
                     return register(err);
                 }
-                register(null, {
-                    configfs: app.getService("fs")
-                });
+                // register(null, {
+                //     configfs: app.getService("fs")
+                // });
+                try {
+                    queueFs.resolve(app.getService("fs"));
+                } catch (e) {
+                    console.error("Couldn't resolve fs", e);
+                }
             });
         });
 
+        register(null, {
+            configfs: queueFs
+        });
+
         command.define("Configuration:Store in Local Folder", {
-            doc: "Prompt for a local folder in which to store your Zed config. " +
-            "Zed must restart for this to take effect.",
+            doc: "Prompt for a local folder in which to store your Zed config. " + "Zed must restart for this to take effect.",
             exec: function() {
                 chrome.fileSystem.chooseEntry({
                     type: "openDirectory"
@@ -52,8 +64,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Configuration:Store in Google Drive", {
-            doc: "Begin syncing your Zed config with Google Drive. " +
-            "Zed must restart for this to take effect.",
+            doc: "Begin syncing your Zed config with Google Drive. " + "Zed must restart for this to take effect.",
             exec: function() {
                 chrome.storage.local.remove("configDir", function() {
                     zed.getService("ui").prompt({

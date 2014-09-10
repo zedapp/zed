@@ -1,9 +1,7 @@
 /*global define, chrome */
 define(function(require, exports, module) {
     var options = require("./lib/options");
-    return function() {
-        var url = options.get("url");
-
+    return function(url) {
         // TODO: Generalize this
         if (url.indexOf("config:") === 0) {
             return Promise.resolve("./fs/config.chrome");

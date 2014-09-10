@@ -1,0 +1,55 @@
+<style>
+    #container {
+        position: absolute;
+        left: 0;
+        top: 40px;
+        right: 0;
+        bottom: 0;
+        overflow-y: scroll;
+        margin: 10px;
+    }
+    form {
+        margin: 10px;
+    }
+
+    input[type=text] {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    button {
+        position: absolute;
+        top: 24px;
+        right: 16px;
+        font-size: 14px;
+    }
+
+    #container a {
+        color: #555;
+    }
+
+    body.dark #container a {
+        color: #BFCFF2;
+    }
+
+    #hint {
+        color: red;
+    }
+</style>
+<img src="/img/zed-small.png" class="logo">
+<h1>Set Github token</h1>
+<button id="cancel">Cancel</button>
+
+<div id="container">
+    <p>In order to use Github with Zed, you first need to create a new authentication token. You can do so by
+        <a href="https://github.com/settings/tokens/new" target="_blank">visiting the "Create token" page on Github</a>(it's under your settings page &gt; Applications &gt; Personal access token &gt; "Generate new token").</p>
+    <form id="token-form">
+        <div id="hint"></div>
+        <input type="text" id="token" placeholder="Paste Github token here" />
+        <br/>
+        <input type="submit" value="Verify and save">
+    </form>
+    <p>When creating the token, make sure at least the following scopes are enabled:</p>
+    <img src="../img/new-github-token.png" style="max-width: 80%;">
+    <p>After you hit "Generate token", copy and paste copy and paste the token into the input field at the top of this screen and hit "Verify and save".</p>
+</div>

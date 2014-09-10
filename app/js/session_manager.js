@@ -41,9 +41,11 @@ define(function(require, exports, module) {
         var api = {
             specialDocs: {}, // {content: ..., mode: ..., readonly: true}
             hook: function() {
+                // async.waitForEvents(eventbus, ["loadedfilelist", "stateloaded"], function() {
+                // });
                 async.waitForEvents(eventbus, ["loadedfilelist", "stateloaded", "configchanged"], function() {
-                    eventbus.emit("inited");
                     ui.unblockUI();
+                    eventbus.emit("inited");
                 });
 
                 // Modes have been loaded, let's iterate over all to setup the right one
@@ -379,7 +381,7 @@ define(function(require, exports, module) {
             setInterval(updateState, 2500);
         });
 
-        ui.blockUI("Loading project and file list. One moment please...");
+        ui.blockUI("Loading. One moment please...");
 
         command.define("File:Reload", {
             doc: "Re-read this file from disk, reverting any unsaved changes.",

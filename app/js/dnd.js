@@ -12,14 +12,6 @@ define(function(require, exports, module) {
         var api = {
             init: function() {
                 var el = document.querySelector("body");
-                var overCount = 0;
-
-                function dragenter(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    overCount++;
-                    ui.blockUI("Drop your files or directories to upload to project...", true);
-                }
 
                 function dragover(e) {
                     e.stopPropagation();
@@ -29,22 +21,19 @@ define(function(require, exports, module) {
                 function dragleave(e) {
                     e.stopPropagation();
                     e.preventDefault();
-                    if (--overCount <= 0) {
-                        ui.unblockUI();
-                        overCount = 0;
-                    }
                 }
 
                 function drop(e) {
+                    console.log("Dropped");
                     e.stopPropagation();
                     e.preventDefault();
 
                     ui.unblockUI();
 
+
                     filesDropped(e.dataTransfer);
                 }
 
-                el.addEventListener('dragenter', dragenter, false);
                 el.addEventListener('dragover', dragover, false);
                 el.addEventListener('dragleave', dragleave, false);
                 el.addEventListener('drop', drop, false);

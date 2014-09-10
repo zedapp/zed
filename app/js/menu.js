@@ -122,9 +122,6 @@ define(function(require, exports, module) {
             }, {
                 name: "Lookup Symbol Under Cursor",
                 command: "Navigate:Lookup Symbol Under Cursor"
-            }, {}, {
-                name: "Project Picker",
-                command: "Project:Open Project Picker"
             }]
         }, {
             name: "Find",
@@ -263,6 +260,24 @@ define(function(require, exports, module) {
             }, {
                 name: "Reload",
                 command: "Configuration:Reload"
+            }]
+        }, {
+            name: "Window",
+            items: [{
+                name: "New",
+                command: "Window:New"
+            }, {
+                name: "Close",
+                command: "Window:Close"
+            }, {
+                name: "Maximize",
+                command: "Window:Maximize"
+            }, {
+                name: "Full Screen",
+                command: "Window:Fullscreen"
+            }, {
+                name: "Minimize",
+                command: "Window:Minimize"
             }]
         }, {
             name: "Help",

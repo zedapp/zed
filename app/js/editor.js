@@ -43,6 +43,8 @@ define(function(require, exports, module) {
                         }
                     });
                 });
+
+                $("body").append('<div id="editor-wrapper-wrapper"><div id="editor-wrapper"></div></div>');
             },
             setEditorConfiguration: function(edit) {
                 var session = edit.getSession();
@@ -132,6 +134,7 @@ define(function(require, exports, module) {
                     });
                 });
                 api.setActiveEditor(editors[0]);
+                // return;
                 eventbus.emit("editorloaded", api);
             },
             createSession: function(path, content) {
@@ -163,7 +166,9 @@ define(function(require, exports, module) {
             },
             setActiveEditor: function(editor) {
                 activeEditor = editor;
-                activeEditor.focus();
+                if(zed.services.open_ui.ignore) {
+                    activeEditor.focus();
+                }
             },
             getEditors: function(all) {
                 if (all) {
@@ -396,6 +401,14 @@ define(function(require, exports, module) {
             doc: "Select entire document.",
             exec: function(editor) {
                 editor.selectAll();
+            },
+            readOnly: true
+        });
+
+        command.define("Select:None", {
+            doc: "Select entire document.",
+            exec: function(editor) {
+                editor.clearSelection();
             },
             readOnly: true
         });

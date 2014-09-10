@@ -362,22 +362,13 @@ define(function(require, exports, module) {
 
             },
             blockUI: function(message, noSpin) {
-                if (blockedEl) {
-                    return;
-                }
-                console.log("Blocking UI");
+                $("#blockui").remove();
                 blockedEl = $("<div id='blockui'>");
                 $("body").append(blockedEl);
-                blockedEl.html(message + (!noSpin ? " <img src='img/loader.gif'/>" : ""));
+                blockedEl.html(message + (!noSpin ? " <img src='/Icon.png' id='wait-logo'/>" : ""));
             },
             unblockUI: function() {
-                if (blockedEl) {
-                    console.log("Unblocking UI again");
-                    // blockedEl.fadeOut(function() {
-                    blockedEl.remove();
-                    // });
-                    blockedEl = null;
-                }
+                $("#blockui").remove();
             },
             showWebview: function(url) {
                 if(webviewEl) {

@@ -1,4 +1,4 @@
-if (typeof require !== "undefined") {
+if(typeof require !== "undefined") {
     window.nodeRequire = require;
     require = null;
 }

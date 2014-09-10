@@ -25,6 +25,9 @@ define(function(require, exports, module) {
                 closeHandler = handler;
                 win.on("close", handler);
             },
+            useNativeFrame: function() {
+                return true;
+            },
             create: function(url, frameStyle, width, height) {
                 var frame = true;
                 if (frameStyle == "none") {

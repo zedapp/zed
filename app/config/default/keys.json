@@ -16,7 +16,8 @@
             "win": "Ctrl-A",
             "mac": "Command-A"
         },
-        "Select:Up": "Shift-Up",
+        "Select:None": "Esc",
+        "Select:Up": "Shift-Up|Alt-Shift-K",
         "Select:To File Start": {
             "mac": "Command-Shift-Up",
             "win": "Ctrl-Shift-Home"
@@ -26,20 +27,20 @@
             "win": "Ctrl-Shift-End"
         },
         "Select:Word Right": {
-            "mac": "Option-Shift-Right",
-            "win": "Ctrl-Shift-Right"
+            "mac": "Option-Shift-Right|Alt-Shift-W",
+            "win": "Ctrl-Shift-Right|Alt-Shift-W"
         },
         "Select:Word Left": {
-            "mac": "Option-Shift-Left",
-            "win": "Ctrl-Shift-Left"
+            "mac": "Option-Shift-Left|Alt-Shift-B",
+            "win": "Ctrl-Shift-Left|Alt-Shift-B"
         },
         "Select:To Line Start": {
             "mac": "Command-Shift-Left|Shift-Home",
             "win": "Alt-Shift-Left|Shift-Home"
         },
-        "Select:Down": "Shift-Down",
-        "Select:Left": "Shift-Left",
-        "Select:Right": "Shift-Right",
+        "Select:Down": "Shift-Down|Alt-Shift-J",
+        "Select:Left": "Shift-Left|Alt-Shift-H",
+        "Select:Right": "Shift-Right|Alt-Shift-L",
         "Select:Page Down": "Shift-PageDown",
         "Select:Page Up": "Shift-PageUp",
         "Select:To Matching Brace": "Ctrl-Shift-5",
@@ -73,22 +74,6 @@
             "win": "Ctrl-L",
             "mac": "Command-L"
         },
-        "Fold:Fold": {
-            "win": "Alt-L",
-            "mac": "Command-Alt-L"
-        },
-        "Fold:Unfold": {
-            "win": "Alt-Shift-L",
-            "mac": "Command-Alt-Shift-L"
-        },
-        "Fold:Fold All": {
-            "win": "Alt-0",
-            "mac": "Command-Option-0"
-        },
-        "Fold:Unfold All": {
-            "win": "Alt-Shift-0",
-            "mac": "Command-Option-Shift-0"
-        },
         "Help:Commands": "F1",
         "Edit:Overwrite Mode": "Insert",
         "Edit:Remove Word Left": {
@@ -96,7 +81,7 @@
             "mac": "Alt-Backspace"
         },
         "Edit:Remove Word Right": {
-            "win": "Ctrl-Delete",
+            "win": "Ctrl-Delete|Alt-D",
             "mac": "Alt-D|Alt-Delete"
         },
         "Cursor:File Start": {
@@ -104,34 +89,40 @@
             "win": "Ctrl-Home"
         },
         "Cursor:File End": {
-            "mac": "Command-Down",
-            "win": "Ctrl-End"
+            "mac": "Command-Down|Alt-Shift-G",
+            "win": "Ctrl-End|Alt-Shift-G"
         },
-        "Cursor:Up": "Up|Ctrl-P",
-        "Cursor:Down": "Down|Ctrl-N",
+        "Cursor:Up": {
+            "mac": "Up|Ctrl-P|Alt-K",
+            "win": "Up|Alt-K"
+        },
+        "Cursor:Down": {
+            "mac": "Down|Ctrl-N|Alt-J",
+            "win": "Down|Alt-J"
+        },
         "Cursor:Word Right": {
-            "mac": "Option-Right|Alt-F",
-            "win": "Ctrl-Right|Alt-F"
+            "mac": "Option-Right|Alt-F|Alt-W",
+            "win": "Ctrl-Right|Alt-W"
         },
         "Cursor:Word Left": {
             "mac": "Option-Left|Alt-B",
-            "win": "Ctrl-Left"
+            "win": "Ctrl-Left|Alt-B"
         },
         "Cursor:Line Start": {
-            "mac": "Command-Left|Home|Ctrl-A",
-            "win": "Alt-Left|Home"
+            "mac": "Command-Left|Home|Ctrl-A|Alt-0|Alt-Shift-6",
+            "win": "Alt-Left|Home|Alt-0|Alt-Shift-6"
         },
         "Cursor:Left": {
-            "mac": "Left|Ctrl-B",
-            "win": "Left"
+            "mac": "Left|Ctrl-B|Alt-H",
+            "win": "Left|Alt-H"
         },
         "Cursor:Line End": {
-            "win": "Alt-Right|End",
-            "mac": "Command-Right|End|Ctrl-E"
+            "win": "Alt-Right|End|Alt-Shift-4",
+            "mac": "Command-Right|End|Ctrl-E|Alt-Shift-4"
         },
         "Cursor:Right": {
-            "win": "Right",
-            "mac": "Right|Ctrl-F"
+            "win": "Right|Alt-L",
+            "mac": "Right|Ctrl-F|Alt-L"
         },
         "Cursor:Page Down": {
             "win": "PageDown",
@@ -144,13 +135,24 @@
         "Cursor:Center": {
             "mac": "Ctrl-L"
         },
-
-        "Cursor:Multiple:Add Above": "Ctrl-Alt-Up",
-        "Cursor:Multiple:Add Below": "Ctrl-Alt-Down",
+        "Cursor:Multiple:Add Above": {
+            "win": "Ctrl-Shift-Up",
+            "mac": "Ctrl-Alt-Up"
+        },
+        "Cursor:Multiple:Add Below": {
+            "win": "Ctrl-Shift-Down",
+            "mac": "Ctrl-Alt-Down"
+        },
         "Cursor:Multiple:Add Above Skip Current": "Ctrl-Alt-Shift-Up",
         "Cursor:Multiple:Add Below Skip Current": "Ctrl-Alt-Shift-Down",
-        "Cursor:Multiple:Add At Next Instance Of Identifier": "Ctrl-Alt-Right",
-        "Cursor:Multiple:Add At Previous Instance Of Identifier": "Ctrl-Alt-Left",
+        "Cursor:Multiple:Add At Next Instance Of Identifier": {
+            "win": "Ctrl-Shift-]",
+            "mac": "Command-Shift-]"
+        },
+        "Cursor:Multiple:Add At Previous Instance Of Identifier": {
+            "win": "Ctrl-Shift-[",
+            "mac": "Command-Shift-["
+        },
         "Scroll:Page Up": "Option-PageUp",
         "Scroll:Page Down": "Option-PageDown",
         "Scroll:Up": {
@@ -190,14 +192,6 @@
         "Edit:Toggle Comment": {
             "win": "Ctrl-/",
             "mac": "Command-/"
-        },
-        "Edit:Number:Increase": {
-            "win": "Ctrl-Shift-Up",
-            "mac": "Alt-Shift-Up"
-        },
-        "Edit:Number:Decrease": {
-            "win": "Ctrl-Shift-Down",
-            "mac": "Alt-Shift-Down"
         },
         "Edit:Undo": {
             "win": "Ctrl-Z",
@@ -254,10 +248,6 @@
             "mac": "Command-.",
             "win": "Ctrl-."
         },
-        // "Command:Command Tree": {
-        //     "mac": "Command-Shift-.",
-        //     "win": "Ctrl-Shift-."
-        // },
         "Split:One": {
             "mac": "Command-1",
             "win": "Ctrl-1"
@@ -303,9 +293,9 @@
             "mac": "Command-P",
             "win": "Ctrl-P"
         },
-        "Project:Open Project Picker": {
-            "mac": "Command-Shift-O",
-            "win": "Ctrl-Shift-O"
+        "Window:New": {
+            "mac": "Command-Shift-N",
+            "win": "Ctrl-Shift-N"
         },
         "Window:Close": {
             "mac": "Command-W",
@@ -322,6 +312,10 @@
         "Configuration:Preferences:Decrease Font Size": {
             "mac": "Command--",
             "win": "Ctrl--"
+        },
+        "Configuration:Open Configuration Project": {
+            "mac": "Command-Shift-,",
+            "win": "Ctrl-Shift-,"
         }
     }
 }
