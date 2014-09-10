@@ -145,8 +145,14 @@
         },
         "Cursor:Multiple:Add Above Skip Current": "Ctrl-Alt-Shift-Up",
         "Cursor:Multiple:Add Below Skip Current": "Ctrl-Alt-Shift-Down",
-        "Cursor:Multiple:Add At Next Instance Of Identifier": "Ctrl-Shift-]",
-        "Cursor:Multiple:Add At Previous Instance Of Identifier": "Ctrl-Shift-[",
+        "Cursor:Multiple:Add At Next Instance Of Identifier": {
+            "win": "Ctrl-Shift-]",
+            "mac": "Command-Shift-]"
+        },
+        "Cursor:Multiple:Add At Previous Instance Of Identifier": {
+            "win": "Ctrl-Shift-[",
+            "mac": "Command-Shift-["
+        },
         "Scroll:Page Up": "Option-PageUp",
         "Scroll:Page Down": "Option-PageDown",
         "Scroll:Up": {
