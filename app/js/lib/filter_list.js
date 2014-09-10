@@ -27,7 +27,7 @@ define(function(require, exports, module) {
         function getFilteredList() {
             var filterPhrase = inputEl.val().toLowerCase();
             return list.filter(function(p) {
-                if(p.section) {
+                if (p.section) {
                     return true;
                 }
                 return p.name.toLowerCase().indexOf(filterPhrase) !== -1;
@@ -38,10 +38,10 @@ define(function(require, exports, module) {
             var count = 0;
             var filterPhrase = inputEl.val().toLowerCase();
             list.forEach(function(p) {
-                if(p.section) {
+                if (p.section) {
                     return;
                 }
-                if(p.name.toLowerCase().indexOf(filterPhrase) !== -1) {
+                if (p.name.toLowerCase().indexOf(filterPhrase) !== -1) {
                     count++;
                 }
             });
@@ -55,7 +55,7 @@ define(function(require, exports, module) {
             var idx = 0;
             filtered.forEach(function(item) {
                 var el;
-                if(item.section) {
+                if (item.section) {
                     el = $("<div class='section'>");
                     el.text(item.section);
                     resultsEl.append(el);
@@ -75,13 +75,15 @@ define(function(require, exports, module) {
             onUpdate && onUpdate();
         }
 
-        function updateSelection() {
+        function updateSelection(noScroll) {
             var els = resultsEl.find("a");
             els.removeClass("active");
             var selectedEl = els.eq(selectIdx);
             if (selectedEl.length > 0) {
                 selectedEl.addClass("active");
-                selectedEl[0].scrollIntoView(false);
+                if (!noScroll) {
+                    selectedEl[0].scrollIntoView(false);
+                }
             }
         }
 
@@ -157,19 +159,19 @@ define(function(require, exports, module) {
         function cleanup() {
             $("body").off("keydown", keyHandler);
             resultsEl.off("click", "a", clickHandler);
-            // resultsEl.off("mouseover", "a", mouseOverHandler);
+            resultsEl.off("mouseover", "a", mouseOverHandler);
             inputEl.off("keyup", keyUpHandler);
         }
 
         function mouseOverHandler(event) {
             var idx = $(event.target).data("idx");
             selectIdx = idx;
-            updateSelection();
+            updateSelection(true);
         }
 
         inputEl.keyup(keyUpHandler);
         resultsEl.on("click", "a", clickHandler);
-        // resultsEl.on("mouseover", "a", mouseOverHandler);
+        resultsEl.on("mouseover", "a", mouseOverHandler);
         $("body").keydown(keyHandler);
 
         update();

@@ -103,7 +103,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                     console.error("Architect resolve error", err);
                     return reject(err);
                 }
-                console.log("Architect resolved", config);
+                console.log("Architect resolved");
                 try {
                     var app = architect.createApp(config, function(err, app) {
                         if (err) {

@@ -12,7 +12,7 @@ define(function(require, exports, module) {
         var fsUtil = require("./fs/util");
 
         var queueFs = fsUtil.queuedFilesystem();
-        
+
         // Let's instaiate a new architect app with a configfs and the re-expose
         // that service as configfs
         architect.resolveConfig([{

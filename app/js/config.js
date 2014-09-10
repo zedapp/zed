@@ -386,6 +386,15 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
+        command.define("Configuration:Open Configuration Project", {
+            doc: "Open a Zed window with the Configuration project",
+            exec: function() {
+                var url = window.isNodeWebkit ? encodeURIComponent("nwconfig:") : encodeURIComponent("config:");
+                zed.getService("window").create("editor.html?url=" + url + "&title=Configuration", 800, 600);
+            },
+            readOnly: true
+        });
+
         command.define("Zedrem:Get User Key", {
             exec: function() {
                 tokenStore.get("zedremUserKey").then(function(userKey) {
