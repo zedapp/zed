@@ -166,7 +166,7 @@ define(function(require, exports, module) {
             },
             setActiveEditor: function(editor) {
                 activeEditor = editor;
-                if(!zed.services.open_ui) {
+                if(zed.services.open_ui.ignore) {
                     activeEditor.focus();
                 }
             },
@@ -401,6 +401,14 @@ define(function(require, exports, module) {
             doc: "Select entire document.",
             exec: function(editor) {
                 editor.selectAll();
+            },
+            readOnly: true
+        });
+
+        command.define("Select:None", {
+            doc: "Select entire document.",
+            exec: function(editor) {
+                editor.clearSelection();
             },
             readOnly: true
         });
