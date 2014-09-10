@@ -96,7 +96,6 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         $("span").remove();
         $("webview").remove();
         $("body").append("<img src='/Icon.png' id='wait-logo'>");
-        // return;
         return new Promise(function(resolve, reject) {
             architect.resolveConfig(modules, function(err, config) {
                 if (err) {

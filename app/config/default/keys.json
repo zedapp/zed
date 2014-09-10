@@ -135,8 +135,14 @@
         "Cursor:Center": {
             "mac": "Ctrl-L"
         },
-        "Cursor:Multiple:Add Above": "Ctrl-Shift-Up",
-        "Cursor:Multiple:Add Below": "Ctrl-Shift-Down",
+        "Cursor:Multiple:Add Above": {
+            "win": "Ctrl-Shift-Up",
+            "mac": "Ctrl-Alt-Up"
+        },
+        "Cursor:Multiple:Add Below": {
+            "win": "Ctrl-Shift-Down",
+            "mac": "Ctrl-Alt-Down"
+        },
         "Cursor:Multiple:Add Above Skip Current": "Ctrl-Alt-Shift-Up",
         "Cursor:Multiple:Add Below Skip Current": "Ctrl-Alt-Shift-Down",
         "Cursor:Multiple:Add At Next Instance Of Identifier": "Ctrl-Shift-]",
