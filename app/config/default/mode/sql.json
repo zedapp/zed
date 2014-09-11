@@ -1,0 +1,11 @@
+{
+    modes: {
+        sql: {
+            name: "SQL",
+            highlighter: "ace/mode/sql",
+            extensions: [
+                "sql"
+            ]
+        }
+    }
+}

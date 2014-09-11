@@ -1,0 +1,11 @@
+{
+    modes: {
+        assembly_x86: {
+            name: "Assembly x86",
+            highlighter: "ace/mode/assembly_x86",
+            extensions: [
+                "asm"
+            ]
+        }
+    }
+}

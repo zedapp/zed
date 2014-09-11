@@ -1,0 +1,11 @@
+{
+    modes: {
+        golang: {
+            name: "Go",
+            highlighter: "ace/mode/golang",
+            extensions: [
+                "go"
+            ]
+        }
+    }
+}

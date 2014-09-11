@@ -1,0 +1,11 @@
+{
+    modes: {
+        jade: {
+            name: "Jade",
+            highlighter: "ace/mode/jade",
+            extensions: [
+                "jade"
+            ]
+        }
+    }
+}

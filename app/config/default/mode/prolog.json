@@ -1,0 +1,12 @@
+{
+    modes: {
+        prolog: {
+            name: "Prolog",
+            highlighter: "ace/mode/prolog",
+            extensions: [
+                "plg",
+                "prolog"
+            ]
+        }
+    }
+}

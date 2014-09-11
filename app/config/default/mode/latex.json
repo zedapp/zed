@@ -1,0 +1,14 @@
+{
+    modes: {
+        latex: {
+            name: "LaTeX",
+            highlighter: "ace/mode/latex",
+            extensions: [
+                "tex",
+                "latex",
+                "ltx",
+                "bib"
+            ]
+        }
+    }
+}

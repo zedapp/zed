@@ -1,0 +1,12 @@
+{
+    modes: {
+        vbscript: {
+            name: "VBScript",
+            highlighter: "ace/mode/vbscript",
+            extensions: [
+                "vbs",
+                "vb"
+            ]
+        }
+    }
+}

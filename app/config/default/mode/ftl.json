@@ -1,0 +1,11 @@
+{
+    modes: {
+        ftl: {
+            name: "FreeMarker",
+            highlighter: "ace/mode/ftl",
+            extensions: [
+                "ftl"
+            ]
+        }
+    }
+}

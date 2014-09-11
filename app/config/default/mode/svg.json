@@ -1,0 +1,11 @@
+{
+    modes: {
+        svg: {
+            name: "SVG",
+            highlighter: "ace/mode/svg",
+            extensions: [
+                "svg"
+            ]
+        }
+    }
+}

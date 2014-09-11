@@ -1,0 +1,12 @@
+{
+    modes: {
+        cobol: {
+            name: "Cobol",
+            highlighter: "ace/mode/cobol",
+            extensions: [
+                "CBL",
+                "COB"
+            ]
+        }
+    }
+}

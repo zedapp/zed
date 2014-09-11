@@ -1,0 +1,13 @@
+{
+    modes: {
+        typescript: {
+            name: "Typescript",
+            highlighter: "ace/mode/typescript",
+            extensions: [
+                "ts",
+                "typescript",
+                "str"
+            ]
+        }
+    }
+}

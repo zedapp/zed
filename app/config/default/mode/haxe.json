@@ -1,0 +1,11 @@
+{
+    modes: {
+        haxe: {
+            name: "haXe",
+            highlighter: "ace/mode/haxe",
+            extensions: [
+                "hx"
+            ]
+        }
+    }
+}

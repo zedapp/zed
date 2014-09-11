@@ -1,0 +1,11 @@
+{
+    modes: {
+        liquid: {
+            name: "Liquid",
+            highlighter: "ace/mode/liquid",
+            extensions: [
+                "liquid"
+            ]
+        }
+    }
+}

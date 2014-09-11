@@ -1,0 +1,13 @@
+{
+    modes: {
+        html_ruby: {
+            name: "HTML (Ruby)",
+            highlighter: "ace/mode/html_ruby",
+            extensions: [
+                "erb",
+                "rhtml",
+                "html.erb"
+            ]
+        }
+    }
+}

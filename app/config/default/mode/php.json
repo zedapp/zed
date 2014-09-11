@@ -1,0 +1,12 @@
+{
+    modes: {
+        php: {
+            name: "PHP",
+            highlighter: "ace/mode/php",
+            extensions: [
+                "php",
+                "phtml"
+            ]
+        }
+    }
+}

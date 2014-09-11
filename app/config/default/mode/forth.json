@@ -1,0 +1,13 @@
+{
+    modes: {
+        forth: {
+            name: "Forth",
+            highlighter: "ace/mode/forth",
+            extensions: [
+                "frt",
+                "fs",
+                "ldr"
+            ]
+        }
+    }
+}

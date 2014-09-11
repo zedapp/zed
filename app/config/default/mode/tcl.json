@@ -1,0 +1,11 @@
+{
+    modes: {
+        tcl: {
+            name: "Tcl",
+            highlighter: "ace/mode/tcl",
+            extensions: [
+                "tcl"
+            ]
+        }
+    }
+}

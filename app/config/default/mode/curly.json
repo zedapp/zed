@@ -1,0 +1,11 @@
+{
+    modes: {
+        curly: {
+            name: "Curly",
+            highlighter: "ace/mode/curly",
+            extensions: [
+                "curly"
+            ]
+        }
+    }
+}

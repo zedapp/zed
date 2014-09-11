@@ -1,0 +1,14 @@
+{
+    modes: {
+        verilog: {
+            name: "Verilog",
+            highlighter: "ace/mode/verilog",
+            extensions: [
+                "v",
+                "vh",
+                "sv",
+                "svh"
+            ]
+        }
+    }
+}
