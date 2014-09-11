@@ -34,7 +34,6 @@
         "./mode/gitignore.json",
         "./mode/glsl.json",
         "./mode/go.json",
-        "./mode/golang.json",
         "./mode/groovy.json",
         "./mode/haml.json",
         "./mode/handlebars.json",

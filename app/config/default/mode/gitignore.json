@@ -3,8 +3,8 @@
         gitignore: {
             name: "Gitignore",
             highlighter: "ace/mode/gitignore",
-            extensions: [
-                "^.gitignore"
+            filenames: [
+                ".gitignore"
             ]
         }
     }

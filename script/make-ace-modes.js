@@ -15,7 +15,7 @@ require('app/ace/ext-modelist.js');
 
 var modesJson = require('app/config/default/modes.json');
 
-var blacklist = ['c_cpp', 'css', 'javascript', 'json', 'plain_text'];
+var blacklist = ['c_cpp', 'css', 'golang', 'javascript', 'json', 'plain_text'];
 
 for(var i = 0; i < modelist.modes.length; i++) {
     var mode = modelist.modes[i];
@@ -30,9 +30,15 @@ for(var i = 0; i < modelist.modes.length; i++) {
     }
 
     var extensions = mode.extensions.split('|'),
-        extensions_pretty = [];
-    for(var ei = 0; ei < extensions.length; ei++)
-        extensions_pretty.push('                "' + extensions[ei] + '"');
+        extensions_pretty = [],
+        filenames_pretty = [];
+    for(var ei = 0; ei < extensions.length; ei++) {
+        var ext = extensions[ei];
+        if(ext[0] === '^')
+            filenames_pretty.push('                "' + ext.substr(1) + '"');
+        else
+            extensions_pretty.push('                "' + ext + '"');
+    }
 
     fs.writeFileSync(
         jsonName,
@@ -41,9 +47,18 @@ for(var i = 0; i < modelist.modes.length; i++) {
         '        ' + mode.name + ': {\n' +
         '            name: "' + mode.caption + '",\n' +
         '            highlighter: "' + mode.mode + '",\n' +
-        '            extensions: [\n' +
-        extensions_pretty.join(',\n') + '\n' +
-        '            ]\n' +
+        (filenames_pretty.length ?
+            '            filenames: [\n' +
+            filenames_pretty.join(',\n') + '\n' +
+            (extensions_pretty.length ?
+                '            ],\n'
+                : '            ]\n')
+            : '') +
+        (extensions_pretty.length ?
+            '            extensions: [\n' +
+            extensions_pretty.join(',\n') + '\n' +
+            '            ]\n'
+            : '') +
         '        }\n' +
         '    }\n' +
         '}\n',
