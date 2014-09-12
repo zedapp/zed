@@ -17,6 +17,8 @@ define(function(require, exports, module) {
 
         var closeHandler = null;
 
+        var isMaximized = false;
+
         var api = {
             close: function(force) {
                 if(force) {
@@ -80,7 +82,8 @@ define(function(require, exports, module) {
                     width: win.width,
                     height: win.height,
                     top: win.y,
-                    left: win.x
+                    left: win.x,
+                    isMaximized: isMaximized
                 };
             },
             setBounds: function(bounds) {
@@ -88,13 +91,25 @@ define(function(require, exports, module) {
                 win.height = bounds.height;
                 win.y = bounds.top;
                 win.x = bounds.left;
+                if(bounds.isMaximized) {
+                    win.maximize();
+                }
             },
             addResizeListener: function(listener) {
                 win.on("resize", function() {
+                    isMaximized = false;
                     listener();
                 });
                 win.on("move", function() {
+                    isMaximized = false;
                     listener();
+                });
+                win.on("maximize", function() {
+                    // Give other events time to trigger (resize, move), then override
+                    setTimeout(function() {
+                        isMaximized = true;
+                        listener();
+                    }, 1000);
                 });
             },
             focus: function() {
