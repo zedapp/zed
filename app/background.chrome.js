@@ -21,7 +21,7 @@ function showWindow() {
     openEditor("Zed", "");
 }
 
-chrome.app.runtime.onLaunched.addListener(showWindow);
+chrome.app.runtime.onLaunched.addListener(restoreOpenWindows);
 
 var ongoingTextAreaEdits = {};
 
@@ -174,7 +174,7 @@ window.configZedrem = function(zedremConfig) {
     }
 };
 
-var openProjects = {};
+var openProjects = {}, ignoreClose = false;
 
 window.openProject = function(title, url) {
     console.log("Going to open", title, url);
@@ -196,15 +196,50 @@ window.registerWindow = function(title, url, win) {
         title: title
     };
     win.onClosed.addListener(function() {
-        console.log("Closed a window!", url);
         delete openProjects[url];
+        saveOpenWindows();
     });
+    saveOpenWindows();
 };
 
 window.getOpenWindows = function() {
     var wins = [];
     Object.keys(openProjects).forEach(function(url) {
-        wins.push({title: openProjects[url].title, url: url});
+        wins.push({
+            title: openProjects[url].title,
+            url: url
+        });
     });
     return wins;
 };
+
+window.closeAllWindows = function() {
+    ignoreClose = true;
+    for (var url in openProjects) {
+        openProjects[url].win.close();
+    }
+};
+
+function saveOpenWindows() {
+    if (!ignoreClose) {
+        chrome.storage.local.set({
+            openWindows: window.getOpenWindows()
+        });
+    }
+}
+
+function restoreOpenWindows() {
+    ignoreClose = false;
+    chrome.storage.local.get("openWindows", function(result) {
+        var openWindows = result.openWindows;
+        if (!openWindows || openWindows.length === 0) {
+            openWindows = [{
+                title: "",
+                url: ""
+            }];
+        }
+        openWindows.forEach(function(win) {
+            openEditor(win.title, win.url);
+        });
+    });
+}

@@ -19,6 +19,14 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
+        command.define("Zed:Quit", {
+            doc: "Closes all Zed windows.",
+            exec: function() {
+                background.closeAllWindows();
+            },
+            readOnly: true
+        });
+
         command.define("Window:Fullscreen", {
             doc: "Toggles between windowed and fullscreen for the current window.",
             exec: function() {

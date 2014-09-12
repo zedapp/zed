@@ -8,7 +8,7 @@ var pingInterval = null;
 var pongTimeout = null;
 var editorSocketConn;
 var currentSocketOptions = {};
-var openProjects = {};
+var openProjects = {}, ignoreClose = false;
 
 function init() {
     if (inited) {
@@ -21,6 +21,9 @@ function init() {
     var WebSocket = nodeRequire("ws");
     inited = true;
 
+    if(gui.App.argv.length === 0) {
+        restoreOpenWindows();
+    }
 
     function openEditor(title, url) {
         var w = gui.Window.open('editor.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title), {
@@ -183,7 +186,9 @@ function init() {
         win.on("close", function() {
             process.stdout.write("Closed a window: " + url);
             delete openProjects[url];
+            saveOpenWindows();
         });
+        saveOpenWindows();
     };
 
     exports.getOpenWindows = function() {
@@ -196,6 +201,38 @@ function init() {
         });
         return wins;
     };
+
+    exports.closeAllWindows = function() {
+        ignoreClose = true;
+        for (var url in openProjects) {
+            openProjects[url].win.close();
+        }
+    };
+
+    function saveOpenWindows() {
+        if (!ignoreClose) {
+            window.localStorage.openWindows = JSON.stringify(exports.getOpenWindows());
+        }
+    }
+
+    function restoreOpenWindows() {
+        ignoreClose = false;
+        var openWindows = window.localStorage.openWindows;
+        if (openWindows) {
+            openWindows = JSON.parse(openWindows);
+        } else {
+            openWindows = [];
+        }
+        var first = true;
+        openWindows.forEach(function(win) {
+            if(first) {
+                window.location = "editor.html?title=" + encodeURIComponent(win.title) + "&url=" + encodeURIComponent(win.url);
+                first = false;
+                return;
+            }
+            openEditor(win.title, win.url);
+        });
+    }
 
     // SELF UPDATE
 

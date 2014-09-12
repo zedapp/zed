@@ -1,5 +1,9 @@
 {
     "keys": {
+        "Zed:Quit": {
+            "mac": "Command-Q",
+            "win": "Ctrl-Q"
+        },
         "File:New": {
             "mac": "Command-N",
             "win": "Ctrl-N"

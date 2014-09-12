@@ -318,7 +318,7 @@ body.dark .pathbar .path {
 .pathbar .info {
     position: absolute;
     right: 10px;
-    top: 0;
+    top: 6px;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 12px;
     color: #777;
