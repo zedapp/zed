@@ -74,18 +74,24 @@ function init() {
 
 
     function closeSocket() {
+        console.log("Here 1");
         if (editorSocketConn) {
+        console.log("Here 2");
             if (reconnectTimeout) {
                 clearTimeout(reconnectTimeout);
             }
+        console.log("Here 3");
             if (pingInterval) {
                 clearInterval(pingInterval);
             }
+        console.log("Here 4");
             if (pongTimeout) {
                 clearTimeout(pongTimeout);
             }
+        console.log("Here 5");
             editorSocketConn.onclose = function() {};
             editorSocketConn.close();
+        console.log("Here 6");
         }
     }
 
@@ -157,19 +163,34 @@ function init() {
     exports.openProject = function(title, url) {
         console.log("Going to open", title, url, Object.keys(openProjects));
         if (openProjects[url]) {
-            openProjects[url].focus();
+            var win = openProjects[url].win;
+            win.focus();
+            win.window.zed.services.editor.getActiveEditor().focus();
         } else {
             openEditor(title, url);
         }
     };
 
-    exports.registerWindow = function(url, win) {
-        console.log("Registered", url, win);
-        openProjects[url] = win;
+    exports.registerWindow = function(title, url, win) {
+        if(!url) {
+            return;
+        }
+        openProjects[url] = {
+            win: win,
+            title: title
+        };
         win.on("close", function() {
             process.stdout.write("Closed a window: " + url);
             delete openProjects[url];
         });
+    };
+
+    exports.getOpenWindows = function() {
+        var wins = [];
+        Object.keys(openProjects).forEach(function(url) {
+            wins.push({title: openProjects[url].title, url: url});
+        });
+        return wins;
     };
 
     // SELF UPDATE

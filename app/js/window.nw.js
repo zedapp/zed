@@ -13,7 +13,7 @@ define(function(require, exports, module) {
 
         var win = gui.Window.get();
 
-        background.registerWindow(opts.get("url"), win);
+        background.registerWindow(opts.get("title"), opts.get("url"), win);
 
         var closeHandler = null;
 
@@ -32,36 +32,36 @@ define(function(require, exports, module) {
             useNativeFrame: function() {
                 return true;
             },
-            create: function(url, width, height) {
-                width = width || 800;
-                height = height || 600;
-                var frame = true;
-                var w = gui.Window.open(url, {
-                    position: 'center',
-                    width: width,
-                    height: height,
-                    frame: frame,
-                    toolbar: false,
-                    icon: "Icon.png"
-                });
-                return new Promise(function(resolve) {
-                    w.once("loaded", function() {
-                        w.focus();
-                        w.window.opener = window;
-                        resolve({
-                            addCloseListener: function(listener) {
-                                w.on("closed", function() {
-                                    listener();
-                                });
-                            },
-                            window: w.window,
-                            focus: function() {
-                                w.focus();
-                            }
-                        });
-                    });
-                });
-            },
+            // create: function(url, width, height) {
+            //     width = width || 800;
+            //     height = height || 600;
+            //     var frame = true;
+            //     var w = gui.Window.open(url, {
+            //         position: 'center',
+            //         width: width,
+            //         height: height,
+            //         frame: frame,
+            //         toolbar: false,
+            //         icon: "Icon.png"
+            //     });
+            //     return new Promise(function(resolve) {
+            //         w.once("loaded", function() {
+            //             w.focus();
+            //             w.window.opener = window;
+            //             resolve({
+            //                 addCloseListener: function(listener) {
+            //                     w.on("closed", function() {
+            //                         listener();
+            //                     });
+            //                 },
+            //                 window: w.window,
+            //                 focus: function() {
+            //                     w.focus();
+            //                 }
+            //             });
+            //         });
+            //     });
+            // },
             fullScreen: function() {
                 if (win.isFullscreen) {
                     win.leaveFullscreen();

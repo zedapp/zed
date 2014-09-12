@@ -17,7 +17,7 @@ define(function(require, exports, module) {
 
         var closeHandler = null;
 
-        background.registerWindow(opts.get("url"), win);
+        background.registerWindow(opts.get("title"), opts.get("url"), win);
 
         var api = {
             close: function(force) {
@@ -35,27 +35,27 @@ define(function(require, exports, module) {
                 return userAgent.isLinux;
                 // return false;
             },
-            create: function(url, width, height) {
-                width = width || 800;
-                height = height || 600;
-                return new Promise(function(resolve) {
-                    chrome.app.window.create(url, {
-                        frame: api.useNativeFrame() ? "chrome" : "none",
-                        width: width,
-                        height: height,
-                    }, function(win) {
-                        resolve({
-                            addCloseListener: function(listener) {
-                                win.onClosed.addListener(listener);
-                            },
-                            window: win.contentWindow,
-                            focus: function() {
-                                win.focus();
-                            }
-                        });
-                    });
-                });
-            },
+            // create: function(url, width, height) {
+            //     width = width || 800;
+            //     height = height || 600;
+            //     return new Promise(function(resolve) {
+            //         chrome.app.window.create(url, {
+            //             frame: api.useNativeFrame() ? "chrome" : "none",
+            //             width: width,
+            //             height: height,
+            //         }, function(win) {
+            //             resolve({
+            //                 addCloseListener: function(listener) {
+            //                     win.onClosed.addListener(listener);
+            //                 },
+            //                 window: win.contentWindow,
+            //                 focus: function() {
+            //                     win.focus();
+            //                 }
+            //             });
+            //         });
+            //     });
+            // },
             fullScreen: function() {
                 if (win.isFullscreen()) {
                     win.restore();

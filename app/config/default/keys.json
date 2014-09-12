@@ -301,6 +301,10 @@
             "mac": "Command-W",
             "win": "Alt-F4|Ctrl-W"
         },
+        "Window:List": {
+            "mac": "Command-Shift-P",
+            "win": "Ctrl-Shift-P"
+        },
         "Window:Fullscreen": {
           "mac": "Command+Ctrl+F",
           "win": "F11"

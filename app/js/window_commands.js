@@ -1,11 +1,15 @@
 /*global chrome, define*/
 define(function(require, exports, module) {
-    plugin.consumes = ["window", "command"];
+    plugin.consumes = ["window", "command", "ui", "background"];
     return plugin;
 
     function plugin(options, imports, register) {
         var command = imports.command;
         var win = imports.window;
+        var ui = imports.ui;
+        var background = imports.background;
+
+        var opts = require("./lib/options");
 
         command.define("Window:Close", {
             doc: "Closes the current window.",
@@ -42,10 +46,42 @@ define(function(require, exports, module) {
         command.define("Window:New", {
             doc: "Opens a new Zed window.",
             exec: function() {
-                win.create("editor.html?url=&title=Zed");
+                background.openProject("", "");
             },
             readOnly: true
-        })
+        });
+
+        command.define("Window:List", {
+            exec: function() {
+                var wins = background.getOpenWindows();
+                ui.filterBox({
+                    placeholder: "Filter window list",
+                    text: "",
+                    filter: function(phrase) {
+                        var lcPhrase = phrase.toLowerCase();
+                        return Promise.resolve(wins.filter(function(win) {
+                            if(win.url === opts.get("url")) {
+                                return false;
+                            }
+                            return win.title.toLowerCase().indexOf(lcPhrase) !== -1;
+                        }).map(function(win) {
+                            return {
+                                name: win.title,
+                                path: win.url,
+                                icon: "action"
+                            };
+                        }));
+                    },
+                    hint: function() {
+                        return "Press <tt>Enter</tt> to switch to the selected window.";
+                    },
+                    onSelect: function(url) {
+                        background.openProject(null, url);
+                    }
+                });
+            },
+            readOnly: true
+        });
 
         register();
     }

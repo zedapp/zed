@@ -178,16 +178,32 @@ var openProjects = {};
 window.openProject = function(title, url) {
     console.log("Going to open", title, url);
     if (openProjects[url]) {
-        openProjects[url].focus();
+        var win = openProjects[url].win;
+        win.focus();
+        win.contentWindow.zed.services.editor.getActiveEditor().focus();
     } else {
         openEditor(title, url);
     }
 };
 
-window.registerWindow = function(url, win) {
-    openProjects[url] = win;
+window.registerWindow = function(title, url, win) {
+    if(!url) {
+        return;
+    }
+    openProjects[url] = {
+        win: win,
+        title: title
+    };
     win.onClosed.addListener(function() {
         console.log("Closed a window!", url);
         delete openProjects[url];
     });
+};
+
+window.getOpenWindows = function() {
+    var wins = [];
+    Object.keys(openProjects).forEach(function(url) {
+        wins.push({title: openProjects[url].title, url: url});
+    });
+    return wins;
 };
