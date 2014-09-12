@@ -1,0 +1,11 @@
+{
+    modes: {
+        velocity: {
+            name: "Velocity",
+            highlighter: "ace/mode/velocity",
+            extensions: [
+                "vm"
+            ]
+        }
+    }
+}

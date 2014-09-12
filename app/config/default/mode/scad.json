@@ -1,0 +1,11 @@
+{
+    modes: {
+        scad: {
+            name: "SCAD",
+            highlighter: "ace/mode/scad",
+            extensions: [
+                "scad"
+            ]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    modes: {
+        asciidoc: {
+            name: "AsciiDoc",
+            highlighter: "ace/mode/asciidoc",
+            extensions: [
+                "asciidoc"
+            ]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    modes: {
+        lucene: {
+            name: "Lucene",
+            highlighter: "ace/mode/lucene",
+            extensions: [
+                "lucene"
+            ]
+        }
+    }
+}

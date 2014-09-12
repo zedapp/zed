@@ -1,0 +1,12 @@
+{
+    modes: {
+        mushcode: {
+            name: "MUSHCode",
+            highlighter: "ace/mode/mushcode",
+            extensions: [
+                "mc",
+                "mush"
+            ]
+        }
+    }
+}

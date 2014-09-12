@@ -1,0 +1,11 @@
+{
+    modes: {
+        jsp: {
+            name: "JSP",
+            highlighter: "ace/mode/jsp",
+            extensions: [
+                "jsp"
+            ]
+        }
+    }
+}

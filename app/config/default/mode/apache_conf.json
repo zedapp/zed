@@ -1,0 +1,19 @@
+{
+    modes: {
+        apache_conf: {
+            name: "Apache Conf",
+            highlighter: "ace/mode/apache_conf",
+            filenames: [
+                "htaccess",
+                "htgroups",
+                "htpasswd",
+                "conf"
+            ],
+            extensions: [
+                "htaccess",
+                "htgroups",
+                "htpasswd"
+            ]
+        }
+    }
+}

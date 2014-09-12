@@ -1,0 +1,12 @@
+{
+    modes: {
+        smarty: {
+            name: "Smarty",
+            highlighter: "ace/mode/smarty",
+            extensions: [
+                "smarty",
+                "tpl"
+            ]
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    modes: {
+        ocaml: {
+            name: "OCaml",
+            highlighter: "ace/mode/ocaml",
+            extensions: [
+                "ml",
+                "mli"
+            ]
+        }
+    }
+}

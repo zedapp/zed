@@ -1,0 +1,11 @@
+{
+    modes: {
+        properties: {
+            name: "Properties",
+            highlighter: "ace/mode/properties",
+            extensions: [
+                "properties"
+            ]
+        }
+    }
+}

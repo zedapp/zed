@@ -1,0 +1,11 @@
+{
+    modes: {
+        lsl: {
+            name: "LSL",
+            highlighter: "ace/mode/lsl",
+            extensions: [
+                "lsl"
+            ]
+        }
+    }
+}

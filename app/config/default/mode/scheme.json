@@ -1,0 +1,12 @@
+{
+    modes: {
+        scheme: {
+            name: "Scheme",
+            highlighter: "ace/mode/scheme",
+            extensions: [
+                "scm",
+                "rkt"
+            ]
+        }
+    }
+}

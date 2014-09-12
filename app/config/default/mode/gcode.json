@@ -1,0 +1,11 @@
+{
+    modes: {
+        gcode: {
+            name: "Gcode",
+            highlighter: "ace/mode/gcode",
+            extensions: [
+                "gcode"
+            ]
+        }
+    }
+}

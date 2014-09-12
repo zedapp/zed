@@ -1,0 +1,11 @@
+{
+    modes: {
+        luapage: {
+            name: "LuaPage",
+            highlighter: "ace/mode/luapage",
+            extensions: [
+                "lp"
+            ]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    modes: {
+        mel: {
+            name: "MEL",
+            highlighter: "ace/mode/mel",
+            extensions: [
+                "mel"
+            ]
+        }
+    }
+}

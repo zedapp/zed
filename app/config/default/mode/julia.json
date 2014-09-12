@@ -1,0 +1,11 @@
+{
+    modes: {
+        julia: {
+            name: "Julia",
+            highlighter: "ace/mode/julia",
+            extensions: [
+                "jl"
+            ]
+        }
+    }
+}

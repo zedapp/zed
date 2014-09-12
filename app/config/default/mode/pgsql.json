@@ -1,0 +1,11 @@
+{
+    modes: {
+        pgsql: {
+            name: "pgSQL",
+            highlighter: "ace/mode/pgsql",
+            extensions: [
+                "pgsql"
+            ]
+        }
+    }
+}

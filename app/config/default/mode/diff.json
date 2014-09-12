@@ -1,0 +1,12 @@
+{
+    modes: {
+        diff: {
+            name: "Diff",
+            highlighter: "ace/mode/diff",
+            extensions: [
+                "diff",
+                "patch"
+            ]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    modes: {
+        space: {
+            name: "Space",
+            highlighter: "ace/mode/space",
+            extensions: [
+                "space"
+            ]
+        }
+    }
+}

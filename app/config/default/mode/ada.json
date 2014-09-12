@@ -1,0 +1,12 @@
+{
+    modes: {
+        ada: {
+            name: "ADA",
+            highlighter: "ace/mode/ada",
+            extensions: [
+                "ada",
+                "adb"
+            ]
+        }
+    }
+}

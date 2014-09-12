@@ -1,0 +1,11 @@
+{
+    modes: {
+        coldfusion: {
+            name: "ColdFusion",
+            highlighter: "ace/mode/coldfusion",
+            extensions: [
+                "cfm"
+            ]
+        }
+    }
+}
