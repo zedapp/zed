@@ -4,25 +4,26 @@
  */
 /*global define, $, zed */
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "command", "window"];
+    plugin.consumes = ["eventbus", "command", "open_ui", "background"];
     return plugin;
 
     function plugin(options, imports, register) {
         var opts = require("./lib/options");
         var command = imports.command;
         var eventbus = imports.eventbus;
-        var win = imports.window;
+        var openUi = imports.open_ui;
+        var background = imports.background;
 
         $("title").text(opts.get("title"));
 
-        // command.define("Project:Open Project Picker", {
-        //     doc: "Open the initial Zed window that allows you to switch between projects.",
-        //     exec: function() {
-        //         //openUi.showOpenUi();
-        //         win.create("editor.html?url=&title=Zed", "none", 800, 600);
-        //     },
-        //     readOnly: true
-        // });
+        command.define("Project:Open Project Picker", {
+            doc: "Open the initial Zed window that allows you to switch between projects.",
+            exec: function() {
+                openUi.openInNewWindow = true;
+                openUi.showOpenUi();
+            },
+            readOnly: true
+        });
 
         command.define("Project:Rename", {
             doc: "Rename the current project on disk.",

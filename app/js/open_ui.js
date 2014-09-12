@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "history", "token_store", "fs", "editor", "config", "window"];
+    plugin.consumes = ["eventbus", "history", "token_store", "fs", "editor", "config", "window", "background"];
     plugin.provides = ["open_ui"];
     return plugin;
 
@@ -11,6 +11,7 @@ define(function(require, exports, module) {
         var editor = imports.editor;
         var config = imports.config;
         var win = imports.window;
+        var background = imports.background;
 
         var options = require("./lib/options");
         var icons = require("./lib/icons");
@@ -69,9 +70,10 @@ define(function(require, exports, module) {
         var closed = false;
 
         var api = {
-            init: function() {
+            openInNewWindow: false,
+            boot: function() {
                 config.loadConfiguration().then(function() {
-                    if(closed) {
+                    if (closed) {
                         return;
                     }
                     api.showOpenUi();
@@ -97,6 +99,7 @@ define(function(require, exports, module) {
             close: function() {
                 closed = true;
                 api.fadeInBackground();
+                viewEl && viewEl.remove();
             },
             fadeOutBackground: function() {
                 $(".ace_editor").css("opacity", 0.3);
@@ -173,14 +176,13 @@ define(function(require, exports, module) {
                                     });
                                     break;
                                 case "manual:":
-                                    win.create("editor.html?title=Manual&url=manual%3A", 800, 600).then(function(win) {
-                                        win.focus();
-                                    });
-                                    api.projectList();
-                                    break;
+                                    background.openProject("Manual", "manual:");
+                                    // Using return instead of break to avoid closing
+                                    return api.projectList();
                                 default:
                                     api.open(b.name, b.url);
                             }
+                            api.close();
                         },
                         onCancel: function() {
                             if (!fs.isEmpty) {
@@ -191,7 +193,7 @@ define(function(require, exports, module) {
                         },
                         onDelete: function(b) {
                             items.splice(items.indexOf(b), 1);
-                            history.removeProject(b.name);
+                            history.removeProject(b.url);
                         }
                     });
                 }).
@@ -200,9 +202,13 @@ define(function(require, exports, module) {
                 });
             },
             open: function(title, url) {
-                options.set("title", title);
-                options.set("url", url);
-                eventbus.emit("urlchanged");
+                if (api.openInNewWindow) {
+                    background.openProject(title, url);
+                } else {
+                    options.set("title", title);
+                    options.set("url", url);
+                    eventbus.emit("urlchanged");
+                }
             },
             firstRun: function() {
                 return new Promise(function(resolve, reject) {

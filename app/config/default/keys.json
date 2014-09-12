@@ -136,22 +136,22 @@
             "mac": "Ctrl-L"
         },
         "Cursor:Multiple:Add Above": {
-            "win": "Ctrl-Shift-Up",
-            "mac": "Ctrl-Alt-Up"
+            "win": "Ctrl-Shift-Up|Ctrl-Alt-K",
+            "mac": "Ctrl-Alt-Up|Ctrl-Alt-K"
         },
         "Cursor:Multiple:Add Below": {
-            "win": "Ctrl-Shift-Down",
-            "mac": "Ctrl-Alt-Down"
+            "win": "Ctrl-Shift-Down|Ctrl-Alt-J",
+            "mac": "Ctrl-Alt-Down|Ctrl-Alt-J"
         },
         "Cursor:Multiple:Add Above Skip Current": "Ctrl-Alt-Shift-Up",
         "Cursor:Multiple:Add Below Skip Current": "Ctrl-Alt-Shift-Down",
         "Cursor:Multiple:Add At Next Instance Of Identifier": {
-            "win": "Ctrl-Shift-]",
-            "mac": "Command-Shift-]"
+            "win": "Ctrl-Shift-]|Ctrl-Alt-L",
+            "mac": "Command-Shift-]|Ctrl-Alt-L"
         },
         "Cursor:Multiple:Add At Previous Instance Of Identifier": {
-            "win": "Ctrl-Shift-[",
-            "mac": "Command-Shift-["
+            "win": "Ctrl-Shift-[|Ctrl-Alt-H",
+            "mac": "Command-Shift-[|Ctrl-Alt-H"
         },
         "Scroll:Page Up": "Option-PageUp",
         "Scroll:Page Down": "Option-PageDown",
@@ -316,6 +316,10 @@
         "Configuration:Open Configuration Project": {
             "mac": "Command-Shift-,",
             "win": "Ctrl-Shift-,"
+        },
+        "Project:Open Project Picker": {
+            "mac": "Command-Shift-O",
+            "win": "Ctrl-Shift-O"
         }
     }
 }

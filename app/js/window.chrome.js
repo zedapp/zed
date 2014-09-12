@@ -1,6 +1,6 @@
 /*global chrome, define*/
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus"];
+    plugin.consumes = ["eventbus", "background"];
     plugin.provides = ["window"];
     return plugin;
 
@@ -8,12 +8,16 @@ define(function(require, exports, module) {
         var win = chrome.app.window.current();
 
         var userAgent = require("ace/lib/useragent");
+        var opts = require("./lib/options");
 
         var eventbus = imports.eventbus;
+        var background = imports.background;
 
         eventbus.declare("windowclose");
 
         var closeHandler = null;
+
+        background.registerWindow(opts.get("url"), win);
 
         var api = {
             close: function(force) {
@@ -32,6 +36,8 @@ define(function(require, exports, module) {
                 // return false;
             },
             create: function(url, width, height) {
+                width = width || 800;
+                height = height || 600;
                 return new Promise(function(resolve) {
                     chrome.app.window.create(url, {
                         frame: api.useNativeFrame() ? "chrome" : "none",

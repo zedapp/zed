@@ -45,10 +45,12 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./menu",
         "./db",
         "./webservers",
-        "./version_control"];
+        "./version_control",
+        "./open_ui"];
 
     if (window.isNodeWebkit) {
         baseModules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw", "./token_store.nw", "./background.nw", "./cli.nw");
+        process.mainModule.exports.init();
     } else {
         baseModules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome", "./token_store.chrome", "./background.chrome");
     }
@@ -62,8 +64,9 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
     function projectPicker() {
         var modules = baseModules.slice();
         modules.push("./fs/empty");
-        modules.push("./open_ui");
-        boot(modules, false);
+        return boot(modules, false).then(function(app) {
+            app.getService("open_ui").boot();
+        });
     }
 
     window.projectPicker = projectPicker;
@@ -72,17 +75,6 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         fsPicker(url).then(function(fsConfig) {
             var modules = baseModules.slice();
             modules.push(fsConfig);
-            modules.push({
-                provides: ["open_ui"],
-                consumes: [],
-                setup: function(options, imports, register) {
-                    register(null, {
-                        open_ui: {
-                            ignore: true
-                        }
-                    });
-                }
-            });
             return boot(modules, true);
         }).
         catch (function(err) {

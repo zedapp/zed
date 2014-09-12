@@ -1,6 +1,6 @@
 /*global chrome*/
 
-var isLinux = !!/linux/i.exec(navigator.platform);
+var isLinux = !! /linux/i.exec(navigator.platform);
 // var isLinux = false;
 
 function openEditor(title, url) {
@@ -76,7 +76,9 @@ function initEditorSocket(server) {
         var userKey = results.zedremUserKey;
         if (!userKey) {
             userKey = createUUID();
-            chrome.storage.sync.set({zedremUserKey: userKey});
+            chrome.storage.sync.set({
+                zedremUserKey: userKey
+            });
         }
         currentSocketOptions = {
             server: server,
@@ -166,7 +168,26 @@ function editorSocket(zedremConfig) {
 }
 
 window.configZedrem = function(zedremConfig) {
-    if(JSON.stringify(currentSocketOptions) !== JSON.stringify(zedremConfig)) {
+    if (JSON.stringify(currentSocketOptions) !== JSON.stringify(zedremConfig)) {
         initEditorSocket(zedremConfig.server);
     }
+};
+
+var openProjects = {};
+
+window.openProject = function(title, url) {
+    console.log("Going to open", title, url);
+    if (openProjects[url]) {
+        openProjects[url].focus();
+    } else {
+        openEditor(title, url);
+    }
+};
+
+window.registerWindow = function(url, win) {
+    openProjects[url] = win;
+    win.onClosed.addListener(function() {
+        console.log("Closed a window!", url);
+        delete openProjects[url];
+    });
 };

@@ -8,12 +8,14 @@ var pingInterval = null;
 var pongTimeout = null;
 var editorSocketConn;
 var currentSocketOptions = {};
+var openProjects = {};
 
 function init() {
     var require = window.require;
     var nodeRequire = window.nodeRequire;
     var gui = require("nw.gui");
     inited = true;
+    var Promise = window.Promise;
 
 
     function openEditor(title, url) {
@@ -21,7 +23,7 @@ function init() {
             position: 'center',
             width: 800,
             height: 600,
-            frame: false,
+            frame: true,
             toolbar: false,
             icon: "Icon.png"
         });
@@ -150,15 +152,36 @@ function init() {
     }
 
     exports.initEditorSocket = initEditorSocket;
+
+    // OPEN PROJECTS
+    exports.openProject = function(title, url) {
+        console.log("Going to open", title, url, Object.keys(openProjects));
+        if (openProjects[url]) {
+            openProjects[url].focus();
+        } else {
+            openEditor(title, url);
+        }
+    };
+
+    exports.registerWindow = function(url, win) {
+        console.log("Registered", url, win);
+        openProjects[url] = win;
+        win.on("close", function() {
+            process.stdout.write("Closed a window: " + url);
+            delete openProjects[url];
+        });
+    };
+
+    // SELF UPDATE
+
     try {
-    update();
-    } catch(e) {
+        update();
+    } catch (e) {
         console.error("Error", e.message);
     }
 
     function update() {
         var downloadUrl = "http://download.zedapp.org/";
-        var Promise = window.Promise;
         var $ = window.$;
 
         var path = nodeRequire("path");
@@ -411,6 +434,8 @@ function init() {
     }
 
 }
+
+exports.init = init;
 
 exports.configZedrem = function(newServer) {
     if (!inited) {

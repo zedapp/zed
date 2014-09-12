@@ -152,8 +152,8 @@ define(function(require, exports, module) {
 
         function clickHandler(event) {
             var info = $(event.target).data("info");
-            onSelect(info);
             cleanup();
+            onSelect(info);
         }
 
         function cleanup() {

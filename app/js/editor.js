@@ -166,7 +166,7 @@ define(function(require, exports, module) {
             },
             setActiveEditor: function(editor) {
                 activeEditor = editor;
-                if(zed.services.open_ui.ignore) {
+                if(!zed.services.fs.isEmpty) {
                     activeEditor.focus();
                 }
             },

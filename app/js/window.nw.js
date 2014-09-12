@@ -1,15 +1,19 @@
 /*global chrome, define, nodeRequire*/
 define(function(require, exports, module) {
-    plugin.consumes = ["command"];
+    plugin.consumes = ["command", "background"];
     plugin.provides = ["window"];
     return plugin;
 
     function plugin(options, imports, register) {
         var gui = nodeRequire("nw.gui");
+        var opts = require("./lib/options");
 
         var command = imports.command;
+        var background = imports.background;
 
         var win = gui.Window.get();
+
+        background.registerWindow(opts.get("url"), win);
 
         var closeHandler = null;
 
@@ -28,11 +32,10 @@ define(function(require, exports, module) {
             useNativeFrame: function() {
                 return true;
             },
-            create: function(url, frameStyle, width, height) {
+            create: function(url, width, height) {
+                width = width || 800;
+                height = height || 600;
                 var frame = true;
-                if (frameStyle == "none") {
-                    frame = false;
-                }
                 var w = gui.Window.open(url, {
                     position: 'center',
                     width: width,

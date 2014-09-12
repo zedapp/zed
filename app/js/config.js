@@ -389,8 +389,7 @@ define(function(require, exports, module) {
         command.define("Configuration:Open Configuration Project", {
             doc: "Open a Zed window with the Configuration project",
             exec: function() {
-                var url = window.isNodeWebkit ? encodeURIComponent("nwconfig:") : encodeURIComponent("config:");
-                zed.getService("window").create("editor.html?url=" + url + "&title=Configuration", 800, 600);
+                background.openProject("Configuration", window.isNodeWebkit ? "nwconfig:" : "config:");
             },
             readOnly: true
         });
