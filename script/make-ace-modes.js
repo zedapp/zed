@@ -15,7 +15,8 @@ require('app/ace/ext-modelist.js');
 
 var modesJson = require('app/config/default/modes.json');
 
-var blacklist = ['c_cpp', 'css', 'golang', 'javascript', 'json', 'plain_text'];
+var blacklist = ['c_cpp', 'css', 'golang', 'javascript', 'json', 'plain_text',
+                 'c9search', 'jsx', 'php', 'snippets'];
 
 for(var i = 0; i < modelist.modes.length; i++) {
     var mode = modelist.modes[i];
