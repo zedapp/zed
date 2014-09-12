@@ -67,7 +67,7 @@ endif
 nw/download-all: nw/download/node-webkit-$(NW_VERSION)-linux-x64 nw/download/node-webkit-$(NW_VERSION)-linux-ia32 nw/download/node-webkit-$(NW_VERSION)-osx-ia32 nw/download/node-webkit-$(NW_VERSION)-win-ia32
 
 apps-npm: app/node_modules
-app/node_modules:
+app/node_modules: app/package.json
 	cd app; npm install
 
 apps-mac: release/zed-mac-v$(ZED_VERSION).tar.gz
