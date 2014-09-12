@@ -3,9 +3,10 @@
 var isLinux = !! /linux/i.exec(navigator.platform);
 // var isLinux = false;
 
-function openEditor(title, url) {
+function openEditor(title, url, urlPostfix) {
+    urlPostfix = urlPostfix || "";
     return new Promise(function(resolve, reject) {
-        chrome.app.window.create('editor.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title), {
+        chrome.app.window.create('editor.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title) + urlPostfix, {
             frame: isLinux ? 'chrome' : 'none',
             width: 800,
             height: 600
@@ -29,7 +30,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
     ongoingTextAreaEdits[id] = port;
     port.onMessage.addListener(function(req) {
         if (req.text !== undefined) {
-            openEditor("Edit Text Area", "textarea:" + req.text).then(function(win) {
+            openEditor("Edit Text Area", "textarea:" + req.text, "&id=" + id).then(function(win) {
                 win.onClosed.addListener(function() {
                     port.disconnect();
                     delete ongoingTextAreaEdits[id];
