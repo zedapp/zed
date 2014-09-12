@@ -267,6 +267,9 @@ define(function(require, exports, module) {
                 name: "New",
                 command: "Window:New"
             }, {
+                name: "List",
+                command: "Window:List"
+            }, {}, {
                 name: "Close",
                 command: "Window:Close"
             }, {
@@ -307,7 +310,7 @@ define(function(require, exports, module) {
                         try {
                             api.updateMenu(editor.getActiveSession());
                         } catch (e) {
-                            console.error("ERrror", e);
+                            console.error("Error", e);
                         }
                         api.showMenu();
                     } else {

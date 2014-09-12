@@ -47,7 +47,7 @@ define(function(require, exports, module) {
                 listeners[i].apply(this, args);
             }
         } catch (e) {
-            console.error("Error while emitting", type, e);
+            console.error("Error while emitting", type, e.message, e.stack);
             throw e;
         }
         return listeners.length > 0;

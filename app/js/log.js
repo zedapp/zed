@@ -7,6 +7,8 @@ define(function(require, exports, module) {
         // zed::log document is set up in `boot.js`
         var session_manager = imports.session_manager;
 
+        // return register();
+
         var oldLog = console.log;
         var oldWarn = console.warn;
         var oldError = console.info;

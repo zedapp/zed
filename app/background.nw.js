@@ -11,11 +11,15 @@ var currentSocketOptions = {};
 var openProjects = {};
 
 function init() {
+    if (inited) {
+        return;
+    }
     var require = window.require;
     var nodeRequire = window.nodeRequire;
     var gui = require("nw.gui");
-    inited = true;
     var Promise = window.Promise;
+    var WebSocket = nodeRequire("ws");
+    inited = true;
 
 
     function openEditor(title, url) {
@@ -74,24 +78,18 @@ function init() {
 
 
     function closeSocket() {
-        console.log("Here 1");
         if (editorSocketConn) {
-        console.log("Here 2");
             if (reconnectTimeout) {
                 clearTimeout(reconnectTimeout);
             }
-        console.log("Here 3");
             if (pingInterval) {
                 clearInterval(pingInterval);
             }
-        console.log("Here 4");
             if (pongTimeout) {
                 clearTimeout(pongTimeout);
             }
-        console.log("Here 5");
             editorSocketConn.onclose = function() {};
             editorSocketConn.close();
-        console.log("Here 6");
         }
     }
 
@@ -101,8 +99,11 @@ function init() {
             return;
         }
         console.log("Attempting to connect to", zedremConfig.server + "/editorsocket");
-        editorSocketConn = new window.WebSocket(zedremConfig.server + '/editorsocket');
-        editorSocketConn.onopen = function() {
+        editorSocketConn = new WebSocket(zedremConfig.server + '/editorsocket', {
+            origin: zedremConfig.server,
+            rejectUnauthorized: false
+        });
+        editorSocketConn.on("open", function() {
             console.log("Connected to zedrem server!");
             editorSocketConn.send(JSON.stringify({
                 version: "1",
@@ -120,12 +121,12 @@ function init() {
                     initEditorSocket(zedremConfig.server);
                 }, 3000);
             }, 5000);
-        };
-        editorSocketConn.onerror = function(err) {
-            console.error("Socket error", err);
-        };
-        editorSocketConn.onmessage = function(e) {
-            var message = e.data;
+        });
+        editorSocketConn.on("error", function(err) {
+            console.error("Socket error", err.message);
+        });
+        editorSocketConn.on("message", function(message) {
+            // console.log("Got message", message)
             try {
                 message = JSON.parse(message);
                 switch (message.type) {
@@ -143,9 +144,9 @@ function init() {
             } catch (e) {
                 console.error("Couldn't deserialize:", message, e);
             }
-        };
-        editorSocketConn.onclose = function(e) {
-            // console.log("Close", e);
+        });
+        editorSocketConn.on("close", function(e) {
+            console.log("Close", e);
             if (timeOut < 5 * 60 * 1000) { // 5 minutes max
                 timeOut *= 2;
             }
@@ -154,7 +155,7 @@ function init() {
             reconnectTimeout = setTimeout(function() {
                 editorSocket(zedremConfig);
             }, timeOut);
-        };
+        });
     }
 
     exports.initEditorSocket = initEditorSocket;
@@ -172,7 +173,7 @@ function init() {
     };
 
     exports.registerWindow = function(title, url, win) {
-        if(!url) {
+        if (!url) {
             return;
         }
         openProjects[url] = {
@@ -188,7 +189,10 @@ function init() {
     exports.getOpenWindows = function() {
         var wins = [];
         Object.keys(openProjects).forEach(function(url) {
-            wins.push({title: openProjects[url].title, url: url});
+            wins.push({
+                title: openProjects[url].title,
+                url: url
+            });
         });
         return wins;
     };
