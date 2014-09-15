@@ -164,14 +164,17 @@ function init() {
     exports.initEditorSocket = initEditorSocket;
 
     // OPEN PROJECTS
+    // Returns true if an editor needs to be opened, returns false is not (and focus has been handled already)
     exports.openProject = function(title, url) {
         console.log("Going to open", title, url, Object.keys(openProjects));
         if (openProjects[url]) {
             var win = openProjects[url].win;
             win.focus();
             win.window.zed.services.editor.getActiveEditor().focus();
+            return false;
         } else {
-            openEditor(title, url);
+            // openEditor(title, url);
+            return true;
         }
     };
 
@@ -211,7 +214,11 @@ function init() {
 
     function saveOpenWindows() {
         if (!ignoreClose) {
-            window.localStorage.openWindows = JSON.stringify(exports.getOpenWindows());
+            try {
+                window.localStorage.openWindows = JSON.stringify(exports.getOpenWindows());
+            } catch(e) {
+                console.error("Could save open windows");
+            }
         }
     }
 

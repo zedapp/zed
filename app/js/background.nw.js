@@ -3,28 +3,29 @@ define(function(require, exports, module) {
     return plugin;
 
     function plugin(opts, imports, register) {
-        var exp = process.mainModule.exports;
-        // var win = nodeRequire("nw.gui").Window.get();
+        var gui = nodeRequire("nw.gui");
+
+        var exp = Object.create(process.mainModule.exports);
+        exp.openProject = function(title, url) {
+            var shouldOpen = process.mainModule.exports.openProject(title, url);
+            if(shouldOpen) {
+                var w = gui.Window.open('editor.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title), {
+                    position: 'center',
+                    width: 800,
+                    height: 600,
+                    frame: true,
+                    toolbar: false,
+                    icon: "Icon.png"
+                });
+
+                w.once("loaded", function() {
+                    w.focus();
+                });
+            }
+        };
+
         register(null, {
             background: exp
-            // background: {
-            //     init: function() {
-            //         exp.init();
-            //     },
-            //     configZedrem: function(newServer) {
-            //         exp.configZedrem(newServer);
-            //     },
-            //     getOpenWindows: function() {
-            //         return exp.getOpenWindows();
-            //     },
-            //     registerWindow: function(title, url, win) {
-            //         return exp.registerWindow(title, url, win);
-            //     },
-            //     // this one passes window object
-            //     openProject: function(title, url) {
-            //         exp.openProject(title, url, win);
-            //     }
-            // }
         });
     }
 });
