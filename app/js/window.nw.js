@@ -34,36 +34,6 @@ define(function(require, exports, module) {
             useNativeFrame: function() {
                 return true;
             },
-            // create: function(url, width, height) {
-            //     width = width || 800;
-            //     height = height || 600;
-            //     var frame = true;
-            //     var w = gui.Window.open(url, {
-            //         position: 'center',
-            //         width: width,
-            //         height: height,
-            //         frame: frame,
-            //         toolbar: false,
-            //         icon: "Icon.png"
-            //     });
-            //     return new Promise(function(resolve) {
-            //         w.once("loaded", function() {
-            //             w.focus();
-            //             w.window.opener = window;
-            //             resolve({
-            //                 addCloseListener: function(listener) {
-            //                     w.on("closed", function() {
-            //                         listener();
-            //                     });
-            //                 },
-            //                 window: w.window,
-            //                 focus: function() {
-            //                     w.focus();
-            //                 }
-            //             });
-            //         });
-            //     });
-            // },
             fullScreen: function() {
                 if (win.isFullscreen) {
                     win.leaveFullscreen();
@@ -94,6 +64,15 @@ define(function(require, exports, module) {
                 if(bounds.isMaximized) {
                     win.maximize();
                 }
+
+                setTimeout(function() {
+                    if(win.width < 300) {
+                        win.width = 300;
+                    }
+                    if(win.height < 300) {
+                        win.height = 300;
+                    }
+                }, 1000);
             },
             addResizeListener: function(listener) {
                 win.on("resize", function() {
