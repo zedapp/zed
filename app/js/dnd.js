@@ -13,23 +13,31 @@ define(function(require, exports, module) {
             init: function() {
                 var el = document.querySelector("body");
 
+                function isFile(e) {
+                    var types = e.dataTransfer.types;
+                    if (types && Array.prototype.indexOf.call(types, "Files") !== -1)
+                        return true;
+                }
+
                 function dragover(e) {
+                    if (!isFile(e)) return;
                     e.stopPropagation();
                     e.preventDefault();
                 }
 
                 function dragleave(e) {
+                    if (!isFile(e)) return;
                     e.stopPropagation();
                     e.preventDefault();
                 }
 
                 function drop(e) {
+                    if (!isFile(e)) return;
                     console.log("Dropped");
                     e.stopPropagation();
                     e.preventDefault();
 
                     ui.unblockUI();
-
 
                     filesDropped(e.dataTransfer);
                 }

@@ -310,6 +310,9 @@ define(function(require, exports, module) {
                         eventbus.emit("goto", phrase);
                     },
                     onCancel: function() {
+                        // do not cancel if user have clicked on the editor
+                        if (edit.isFocused() && edit.$mouseHandler.isMousePressed)
+                            return;
                         editor.switchSession(session, edit);
                         edit.moveCursorToPosition(currentPos);
                         edit.clearSelection();
