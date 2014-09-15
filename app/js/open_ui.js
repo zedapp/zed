@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "history", "token_store", "fs", "editor", "config", "window", "background"];
+    plugin.consumes = ["eventbus", "history", "token_store", "fs", "editor", "config", "background", "menu"];
     plugin.provides = ["open_ui"];
     return plugin;
 
@@ -10,8 +10,8 @@ define(function(require, exports, module) {
         var fs = imports.fs;
         var editor = imports.editor;
         var config = imports.config;
-        var win = imports.window;
         var background = imports.background;
+        var menu = imports.menu;
 
         var options = require("./lib/options");
         var icons = require("./lib/icons");
@@ -85,6 +85,7 @@ define(function(require, exports, module) {
                 });
             },
             showOpenUi: function() {
+                menu.disabled = true;
                 viewEl = $("<div class='modal-view'><img src='/img/zed-small.png' class='logo'><h1></h1><input type='text' id='phrase' placeholder='Filter list'><div id='item-list'></div></div>");
                 $("body").append(viewEl);
                 headerEl = viewEl.find("h1");
@@ -97,6 +98,7 @@ define(function(require, exports, module) {
                 api.projectList();
             },
             close: function() {
+                menu.disabled = false;
                 closed = true;
                 api.fadeInBackground();
                 viewEl && viewEl.remove();

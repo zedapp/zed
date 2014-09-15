@@ -297,6 +297,7 @@ define(function(require, exports, module) {
         }];
 
         var api = {
+            disabled: false,
             hook: function() {
                 eventbus.on("switchsession", function(edit, newSession) {
                     if (config.getPreference("showMenus")) {
@@ -322,6 +323,9 @@ define(function(require, exports, module) {
                 menuEl = $("<div id='main-menu'>");
                 $("body").append(menuEl);
                 menuEl.on("click", "> ul > li > a", function() {
+                    if(api.disabled) {
+                        return;
+                    }
                     menuEl.find("> ul > li > ul").removeClass("hidden");
                 });
                 menuEl.click(function(event) {
