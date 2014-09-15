@@ -844,7 +844,7 @@ body.dark div.modal-view #item-list a {
 div.modal-view #item-list a img {
     position: absolute;
     left: 8px;
-    top: 8px;
+    top: 6px;
     width: 18px;
     height: 18px;
 }

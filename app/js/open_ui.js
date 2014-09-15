@@ -114,10 +114,13 @@ define(function(require, exports, module) {
                 history.getProjects().then(function(projects) {
                     if (projects.length > 0) {
                         projects.splice(0, 0, {
-                            section: "Recently Opened Projects"
+                            section: "Recently Opened"
                         });
                     }
-                    projects = builtinProjects.concat(projects);
+                    projects.push({
+                        section: "Other"
+                    });
+                    projects = projects.concat(builtinProjects);
 
                     var items = projects.map(function(project) {
                         if (project.section) {
@@ -143,7 +146,7 @@ define(function(require, exports, module) {
                                         if (repo) {
                                             api.open(repo.repo + " [" + repo.branch + "]", "gh:" + repo.repo + ":" + repo.branch);
                                         } else {
-                                            api.projectList();
+                                            api.showOpenUi();
                                         }
                                     });
                                     break;
@@ -152,7 +155,7 @@ define(function(require, exports, module) {
                                         if (url) {
                                             api.open(url.slice("dropbox:".length), url);
                                         } else {
-                                            api.projectList();
+                                            api.showOpenUi();
                                         }
                                     });
                                     break;
@@ -162,7 +165,7 @@ define(function(require, exports, module) {
                                         if (data) {
                                             api.open(data.title, data.url);
                                         } else {
-                                            api.projectList();
+                                            api.showOpenUi();
                                         }
                                     });
                                     break;
@@ -171,7 +174,7 @@ define(function(require, exports, module) {
                                         if (url) {
                                             api.open("Zedrem Project", url);
                                         } else {
-                                            api.projectList();
+                                            api.showOpenUi();
                                         }
                                     });
                                     break;
@@ -305,6 +308,7 @@ define(function(require, exports, module) {
                             if (githubToken) {
                                 return pick(githubToken);
                             } else {
+                                console.log("Shoing project list again");
                                 api.projectList();
                                 return;
                             }
