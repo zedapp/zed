@@ -92,6 +92,8 @@ var Autocomplete = function() {
             pos.left += renderer.$gutterLayer.gutterWidth;
 
             this.popup.show(pos, lineHeight);
+        } else if(keepPopupPosition && !prefix) {
+            this.detach();
         }
     };
 
