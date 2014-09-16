@@ -41,8 +41,6 @@ define(function(require, exports, module) {
         var api = {
             specialDocs: {}, // {content: ..., mode: ..., readonly: true}
             hook: function() {
-                // async.waitForEvents(eventbus, ["loadedfilelist", "stateloaded"], function() {
-                // });
                 async.waitForEvents(eventbus, ["loadedfilelist", "stateloaded", "configchanged"], function() {
                     ui.unblockUI();
                     eventbus.emit("inited");
@@ -97,6 +95,7 @@ define(function(require, exports, module) {
                     clearTimeout(saveTimer);
                 }
                 session.dirty = true;
+
                 var saveTimeout = config.getPreference("saveTimeout");
                 if (saveTimeout > 0) {
                     saveTimer = setTimeout(function() {
@@ -251,7 +250,6 @@ define(function(require, exports, module) {
             if (!path) {
                 return Promise.reject("No path");
             }
-
 
             if (api.specialDocs[path]) {
                 var session = api.specialDocs[path];
