@@ -65,7 +65,7 @@ define(function(require, exports, module) {
                 setTimeout(function() {
                     win.y = bounds.top;
                     win.height = bounds.height;
-                }, 500);
+                }, 10);
                 
                 if(bounds.isMaximized) {
                     win.maximize();
