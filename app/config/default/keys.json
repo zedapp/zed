@@ -16,6 +16,7 @@
             "win": "Ctrl-J",
             "mac": "Command-J"
         },
+        "Navigate:Last Edit Point": "Alt-Shift-E",
         "Select:All": {
             "win": "Ctrl-A",
             "mac": "Command-A"
