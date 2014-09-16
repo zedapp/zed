@@ -24,9 +24,6 @@ define(function(require, exports, module) {
                 if (err) {
                     return register(err);
                 }
-                // register(null, {
-                //     configfs: app.getService("fs")
-                // });
                 try {
                     queueFs.resolve(app.getService("fs"));
                 } catch (e) {
@@ -35,6 +32,37 @@ define(function(require, exports, module) {
             });
         });
 
+        queueFs.storeLocalFolder = function() {
+            return zed.getService("ui").prompt({
+                message: "Do you want to pick a folder to store Zed's configuration in?"
+            }).then(function(yes) {
+                if (yes) {
+                    return new Promise(function(resolve) {
+                        chrome.fileSystem.chooseEntry({
+                            type: "openDirectory"
+                        }, function(dir) {
+                            if (!dir) {
+                                return resolve();
+                            }
+                            var id = chrome.fileSystem.retainEntry(dir);
+                            chrome.storage.local.set({
+                                configDir: id
+                            }, function() {
+                                console.log("Got here");
+                                zed.getService("ui").prompt({
+                                    message: "Configuration location set, will now restart Zed for changes to take effect."
+                                }).then(function() {
+                                    chrome.runtime.reload();
+                                });
+                            });
+                        });
+                    });
+                } else {
+                    return Promise.resolve();
+                }
+            });
+        };
+
         register(null, {
             configfs: queueFs
         });
@@ -42,23 +70,7 @@ define(function(require, exports, module) {
         command.define("Configuration:Store in Local Folder", {
             doc: "Prompt for a local folder in which to store your Zed config. " + "Zed must restart for this to take effect.",
             exec: function() {
-                chrome.fileSystem.chooseEntry({
-                    type: "openDirectory"
-                }, function(dir) {
-                    if (!dir) {
-                        return;
-                    }
-                    var id = chrome.fileSystem.retainEntry(dir);
-                    chrome.storage.local.set({
-                        configDir: id
-                    }, function() {
-                        zed.getService("ui").prompt({
-                            message: "Configuration location set, will now restart Zed for changes to take effect."
-                        }).then(function() {
-                            chrome.runtime.reload();
-                        });
-                    });
-                });
+                queueFs.storeLocalFolder();
             },
             readOnly: true
         });

@@ -6,8 +6,8 @@
   "window": {
     "title": "Zed",
     "toolbar": false,
-    "width": 800,
-    "height": 600,
+    "width": 1024,
+    "height": 768,
     "show": true,
     "frame": true,
     "icon": "Icon.png"

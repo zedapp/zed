@@ -26,9 +26,6 @@ define(function(require, exports, module) {
                 if (err) {
                     return register(err);
                 }
-                //register(null, {
-                //     configfs: app.getService("fs")
-                // });
                 try {
                     queueFs.resolve(app.getService("fs"));
                 } catch (e) {
@@ -37,6 +34,24 @@ define(function(require, exports, module) {
             });
         });
 
+        queueFs.storeLocalFolder = function() {
+            return zed.getService("ui").prompt({
+                message: "Do you want to pick a folder to store Zed's configuration in?"
+            }).then(function(yes) {
+                if (yes) {
+                    return folderPicker().then(function(path) {
+                        localStorage.configDir = path;
+                        return zed.getService("ui").prompt({
+                            message: "Configuration location set, will now exit Zed. Please restart for the changes to take effect."
+                        }).then(function() {
+                            var gui = nodeRequire('nw.gui');
+                            gui.App.quit();
+                        });
+                    });
+                }
+            });
+        };
+
         register(null, {
             configfs: queueFs
         });
@@ -44,15 +59,7 @@ define(function(require, exports, module) {
         command.define("Configuration:Set Configuration Directory", {
             doc: "Choose which directory Zed should store it's configuration in.",
             exec: function() {
-                folderPicker().then(function(path) {
-                    localStorage.configDir = path;
-                    zed.getService("ui").prompt({
-                        message: "Configuration location set, will now exit Zed. Please restart for the changes to take effect."
-                    }).then(function() {
-                        var gui = nodeRequire('nw.gui');
-                        gui.App.quit();
-                    });
-                });
+                queueFs.storeLocalFolder();
             },
             readOnly: true
         });

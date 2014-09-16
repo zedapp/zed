@@ -35,7 +35,8 @@ define(function(require, exports, module) {
                 url: "gh:"
             }, {
                 name: "Configuration",
-                url: "nwconfig:"
+                html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
+                url: "config:"
             }, {
                 name: "Manual",
                 url: "manual:"
@@ -58,6 +59,7 @@ define(function(require, exports, module) {
                 url: "syncfs:",
             }, {
                 name: "Configuration",
+                html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
                 url: "config:"
             }, {
                 name: "Manual",
@@ -131,7 +133,7 @@ define(function(require, exports, module) {
                         return {
                             name: project.name,
                             url: project.url,
-                            html: "<img src='" + icons.protocolIcon(project.url) + "'/>" + project.name
+                            html: "<img src='" + icons.protocolIcon(project.url) + "'/>" + (project.html ? project.html : project.name)
                         };
                     });
 
@@ -142,6 +144,13 @@ define(function(require, exports, module) {
                         resultsEl: listEl,
                         list: items,
                         onSelect: function(b) {
+                            if (b === "set-config-dir") {
+                                api.close();
+                                zed.getService("configfs").storeLocalFolder().then(function() {
+                                    api.showOpenUi();
+                                });
+                                return;
+                            }
                             switch (b.url) {
                                 case "gh:":
                                     api.github().then(function(repo) {
@@ -231,6 +240,7 @@ define(function(require, exports, module) {
 
                         $("#done").click(function() {
                             el.remove();
+                            resolve();
                         });
 
                         $("td").click(function(event) {

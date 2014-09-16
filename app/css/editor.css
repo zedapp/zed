@@ -772,16 +772,16 @@ body.dark #main-menu > ul > li > a {
     border-bottom: 1px solid #444 !important;
 }
 /* PROJECT PICKER */
- div.modal-view {
+div.modal-view {
     position: absolute;
     border: solid 1px #fff;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
     padding: 10px;
-    left: 10%;
-    top: 10%;
-    right: 10%;
-    bottom: 10%;
+    left: 5%;
+    top: 5%;
+    right: 5%;
+    bottom: 5%;
     z-index: 1000;
     overflow: hidden;
     color: #000;
@@ -800,7 +800,7 @@ div.modal-view img.logo {
 div.modal-view h1 {
     margin-left: 44px;
     font-size: 20px;
-    margin-top: 1px;
+    margin-top: 5px;
 }
 div.modal-view input[type=text] {
     font-size: 14px;
@@ -851,6 +851,19 @@ div.modal-view #item-list a img {
 body.dark div.modal-view #item-list a img {
     -webkit-filter: invert(100%);
 }
+
+div.modal-view #item-list a img.tool {
+    position: initial;
+    margin-left: 5px;
+    width: 10px;
+    height: 10px;
+    opacity: 0.7;
+}
+
+div.modal-view #item-list a img.tool:hover {
+    opacity: 1;
+}
+
 div.modal-view #item-list div.section {
     padding: 8px;
     background-color: #eee;
