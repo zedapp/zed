@@ -3,6 +3,10 @@
 SHELL = /bin/bash
 ZED_DIR = /Users/zef/Dropbox/zed
 INDEX_COMMAND = find app/config -name '*.*' -not -path '*/.git/*' -not -path '*/.git' | sort | sed 's:^app/config::' > app/config/all
+# To build the windows version you need resource hacker installed
+# http://www.angusj.com/resourcehacker/
+# I run it using wine, adapt as required
+RESOURCEHACKER_CMD = wine 'C:/Program Files (x86)/Resource Hacker/ResHacker.exe'
 NW_VERSION=v0.9.2
 ZED_VERSION=$(shell cat app/manifest.json | grep '"version"' | cut -f 4 -d '"')
 LBITS := $(shell getconf LONG_BIT)
@@ -96,6 +100,8 @@ release/zed-win-v$(ZED_VERSION).tar.gz: nw/download nw/app.nw
 	mkdir -p nw/build/zed
 	cat nw/download/node-webkit-$(NW_VERSION)-win-ia32/nw.exe nw/app.nw > nw/build/zed/zed.exe
 	cp nw/download/node-webkit-$(NW_VERSION)-win-ia32/{nw.pak,icudt.dll} nw/build/zed/
+	$(RESOURCEHACKER_CMD) -addoverwrite $(PWD)/nw/build/zed/zed.exe, $(PWD)/nw/build/zed/zed.exe, $(PWD)/nw/Icon.ico, ICONGROUP, IDR_MAINFRAME,
+
 	rm -f release/zed-win.zip
 	rm -f release/zed-win.tar.gz
 	cd nw/build; zip -r ../../release/zed-win-v$(ZED_VERSION).zip *
