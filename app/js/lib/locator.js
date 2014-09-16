@@ -27,10 +27,10 @@ define(function(require, exports, module) {
             var parts = selectedItem.split(":");
             return exports.jump(parts[1], selectionRange);
         } else {
-            try {
-                var lineNo = parseInt(locator, 10);
+            var lineNo = parseInt(locator, 10);
+            if (!isNaN(lineNo)) {
                 edit.gotoLine(lineNo);
-            } catch (e) {}
+            }
         }
     };
 });

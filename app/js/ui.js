@@ -158,8 +158,7 @@ define(function(require, exports, module) {
                     }
                 });
                 input.focus();
-                updateResults();
-                triggerOnChange();
+                updateResults().then(triggerOnChange);
                 eventbus.on("splitswitched", cancel);
 
 
@@ -237,7 +236,7 @@ define(function(require, exports, module) {
 
                 function updateResults() {
                     var phrase = input.val();
-                    filter(phrase).then(function(results_) {
+                    return filter(phrase).then(function(results_) {
                         results = results_.slice(0, 500);
                         if (results.length > 0) {
                             _.each(results, function(result) {
