@@ -10,6 +10,19 @@ var editorSocketConn;
 var currentSocketOptions = {};
 var openProjects = {}, ignoreClose = false;
 
+function log() {
+    for (var i = 0; i < arguments.length; i++) {
+        var arg = arguments[i];
+        if (typeof arg === "string") {
+            process.stdout.write(arg);
+        } else {
+            process.stdout.write(JSON.stringify(arg));
+        }
+        process.stdout.write(' ');
+    }
+    process.stdout.write("\n");
+}
+
 function init() {
     if (inited) {
         return;
@@ -21,7 +34,7 @@ function init() {
     var WebSocket = nodeRequire("ws");
     inited = true;
 
-    if(gui.App.argv.length === 0) {
+    if (gui.App.argv.length === 0) {
         restoreOpenWindows();
     }
 
@@ -101,60 +114,59 @@ function init() {
             // You can disable connecting to zedrem by setting server to null or false
             return;
         }
-        console.log("Attempting to connect to", zedremConfig.server + "/editorsocket");
+        log("Attempting to connect to", zedremConfig.server + "/editorsocket");
         editorSocketConn = new WebSocket(zedremConfig.server + '/editorsocket', {
             origin: zedremConfig.server,
             rejectUnauthorized: false
         });
         editorSocketConn.on("open", function() {
-            console.log("Connected to zedrem server!");
+            log("Connected to zedrem server!");
             editorSocketConn.send(JSON.stringify({
                 version: "1",
                 UUID: zedremConfig.userKey
             }));
             timeOut = 2000;
             pingInterval = setInterval(function() {
-                console.log("Ping");
+                log("Ping");
                 editorSocketConn.send(JSON.stringify({
                     type: "ping"
                 }));
                 pongTimeout = setTimeout(function() {
-                    console.log("Ping timed out, reconnecting...");
+                    log("Ping timed out, reconnecting...");
                     closeSocket();
                     initEditorSocket(zedremConfig.server);
                 }, 3000);
             }, 5000);
         });
         editorSocketConn.on("error", function(err) {
-            console.error("Socket error", err.message);
+            log("Socket error", err.message);
         });
         editorSocketConn.on("message", function(message) {
-            // console.log("Got message", message)
             try {
                 message = JSON.parse(message);
                 switch (message.type) {
                     case 'pong':
                         clearTimeout(pongTimeout);
                         pongTimeout = null;
-                        console.log("Got pong");
+                        log("Got pong");
                         break;
                     case 'open':
                         var url = zedremConfig.server.replace("ws://", "http://").replace("wss://", "https://") + "/fs/" + message.url;
-                        console.log("Now have ot open URL:", url);
+                        log("Now have ot open URL:", url);
                         openEditor("Remote", url);
                         break;
                 }
             } catch (e) {
-                console.error("Couldn't deserialize:", message, e);
+                log("Couldn't deserialize:", message, e);
             }
         });
         editorSocketConn.on("close", function(e) {
-            console.log("Close", e);
+            log("Close", e);
             if (timeOut < 5 * 60 * 1000) { // 5 minutes max
                 timeOut *= 2;
             }
             closeSocket();
-            console.log("Socket closed, retrying in", timeOut / 1000, "seconds");
+            log("Socket closed, retrying in", timeOut / 1000, "seconds");
             reconnectTimeout = setTimeout(function() {
                 editorSocket(zedremConfig);
             }, timeOut);
@@ -166,7 +178,7 @@ function init() {
     // OPEN PROJECTS
     // Returns true if an editor needs to be opened, returns false is not (and focus has been handled already)
     exports.openProject = function(title, url) {
-        console.log("Going to open", title, url, Object.keys(openProjects));
+        log("Going to open", title, url);
         if (openProjects[url]) {
             var win = openProjects[url].win;
             win.focus();
@@ -216,8 +228,8 @@ function init() {
         if (!ignoreClose) {
             try {
                 window.localStorage.openWindows = JSON.stringify(exports.getOpenWindows());
-            } catch(e) {
-                console.error("Could save open windows");
+            } catch (e) {
+                log("Could save open windows");
             }
         }
     }
@@ -232,7 +244,7 @@ function init() {
         }
         var first = true;
         openWindows.forEach(function(win) {
-            if(first) {
+            if (first) {
                 window.location = "editor.html?title=" + encodeURIComponent(win.title) + "&url=" + encodeURIComponent(win.url);
                 first = false;
                 return;
@@ -246,7 +258,7 @@ function init() {
     try {
         update();
     } catch (e) {
-        console.error("Error", e.message);
+        lo("Error", e.message);
     }
 
     function update() {
@@ -285,12 +297,12 @@ function init() {
                 return;
             }
             var currentVersion;
-            console.log("Checking for update");
+            log("Checking for update");
             getCurrentVersion().then(function(currentVersion_) {
                 currentVersion = currentVersion_;
                 return getNewVersion();
             }).then(function(newVersion) {
-                console.log("Current version", currentVersion, "new version", newVersion);
+                log("Current version", currentVersion, "new version", newVersion);
                 // currentVersion = "0.0"; // Force upgrade
                 if (versionCompare(newVersion, currentVersion) > 0) {
                     return upgrade(newVersion).then(function() {
@@ -300,7 +312,7 @@ function init() {
                         return showUpdateError(typeof err === "string" ? err : err.message);
                     });
                 } else {
-                    console.log("No upgrade required");
+                    log("No upgrade required");
                 }
             }).
             catch (function(err) {
@@ -309,7 +321,7 @@ function init() {
         }
 
         function showUpdateError(message) {
-            console.error("Update error", message);
+            log("Update error", message);
         }
 
         function getCurrentVersion() {
@@ -358,7 +370,7 @@ function init() {
                 fs.mkdirSync(newAppDir);
             } catch (e) {
                 if (e.errno === -17) {
-                    console.log("Directory already exists, that's ok.");
+                    log("Directory already exists, that's ok.");
                 } else {
                     return Promise.reject(e);
                 }
@@ -383,9 +395,8 @@ function init() {
         }
 
         function upgrade(version) {
-            console.log("Upgrading...");
+            log("Upgrading...");
             return downloadVersion(version).then(function(outDir) {
-                console.log("Downloaded");
                 var win = gui.Window.get();
                 var dirName = outDir + "/zed";
                 if (process.platform === "darwin") {
@@ -421,7 +432,7 @@ function init() {
                             deleteFolderRecursive(applicationPath + ".prev");
                             this.close(true);
                         } catch (e) {
-                            console.error("Failed to rename", e);
+                            log("Failed to rename", e);
                         }
                     }
                 });
