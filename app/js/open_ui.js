@@ -19,6 +19,8 @@ define(function(require, exports, module) {
         var dropbox = require("./lib/dropbox");
         var githubUi = require("./open/github");
 
+        var defaultConfig = JSON.parse(require("text!../config/default/preferences.json"));
+
         eventbus.declare("urlchanged");
 
         var builtinProjects;
@@ -36,7 +38,7 @@ define(function(require, exports, module) {
             }, {
                 name: "Configuration",
                 html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
-                url: "config:"
+                url: "nwconfig:"
             }, {
                 name: "Manual",
                 url: "manual:"
@@ -431,6 +433,7 @@ define(function(require, exports, module) {
             },
             zedrem: function() {
                 return new Promise(function(resolve, reject) {
+                    var sockOptions = background.getSocketOptions();
                     var el = $("<div class='modal-view'></div>");
                     $("body").append(el);
                     $.get("/open/zedrem.html", function(html) {
@@ -450,6 +453,11 @@ define(function(require, exports, module) {
                             });
                             event.preventDefault();
                         });
+
+                        if (sockOptions.status === "connected") {
+                            $("#zedrem-command").text("$ ./zedrem -key " + sockOptions.userKey + (sockOptions.server !== defaultConfig.preferences.zedremServer ? (" -u " + sockOptions.server) : "") + " .");
+                            $("#zedrem-explanation").text("After running this command, a Zed window should automatically pop up with your project loaded.");
+                        }
                     });
 
                     function close() {

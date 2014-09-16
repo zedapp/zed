@@ -59,14 +59,14 @@ define(function(require, exports, module) {
             setBounds: function(bounds) {
                 win.x = bounds.left;
                 win.width = bounds.width;
-                
-                // hack to get restoring window position and size to work in 
+
+                // hack to get restoring window position and size to work in
                 // linux
                 setTimeout(function() {
                     win.y = bounds.top;
                     win.height = bounds.height;
                 }, 10);
-                
+
                 if(bounds.isMaximized) {
                     win.maximize();
                 }

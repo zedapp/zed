@@ -17,7 +17,7 @@ pre {
 <img src="/img/zed-small.png" class="logo">
 <h1>Open Zedrem Folder</h1>
 
-<button id="cancel">Cancel</button>
+<button id="cancel">Back</button>
 <div id="container">
     <form id="zedrem-form">
         <div id="hint"></div>
@@ -25,13 +25,13 @@ pre {
         <br/>
         <input type="submit" value="Open">
     </form>
-    <p>Zedrem enables easy editing of files on remote servers. To use it, simply log in to your server (e.g. using SSH) and install the <tt>zedrem</tt> command line tool:</p>
+    <p>Zedrem enables easy editing of files on remote servers. To use it, simply log in to your server (e.g. using SSH) and install the "zedrem" command line tool:</p>
 
     <pre>$ curl http://get.zedapp.org | bash</pre>
 
-    <p>Then, run it on the directory you want to edit (or omit the directory to edit the current directory):</p>
+    <p>Then, run the following command passing in the directory to edit as the last argument (or omit the directory to edit the current directory):</p>
 
-    <pre>$ ./zedrem</pre>
+    <pre id="zedrem-command">$ ./zedrem </pre>
 
-    <p>This will give you a URL you can copy and paste in the input field above.</p>
+    <p id="zedrem-explanation">This will give you a URL you can copy and paste in the input field above.</p>
 </div>

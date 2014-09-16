@@ -92,6 +92,7 @@ function initEditorSocket(server) {
 
 function closeSocket() {
     if (editorSocketConn) {
+        currentSocketOptions.status = 'disconnected';
         if (reconnectTimeout) {
             clearTimeout(reconnectTimeout);
         }
@@ -115,6 +116,7 @@ function editorSocket(zedremConfig) {
     editorSocketConn = new WebSocket(zedremConfig.server + '/editorsocket');
     editorSocketConn.onopen = function() {
         console.log("Connected to zedrem server!");
+        currentSocketOptions.status = 'connected';
         editorSocketConn.send(JSON.stringify({
             version: "1",
             UUID: zedremConfig.userKey
@@ -168,9 +170,9 @@ function editorSocket(zedremConfig) {
     };
 }
 
-window.configZedrem = function(zedremConfig) {
-    if (JSON.stringify(currentSocketOptions) !== JSON.stringify(zedremConfig)) {
-        initEditorSocket(zedremConfig.server);
+window.configZedrem = function(newServer) {
+    if (currentSocketOptions.server !== newServer) {
+        initEditorSocket(newServer);
     }
 };
 
@@ -218,6 +220,10 @@ window.closeAllWindows = function() {
     for (var url in openProjects) {
         openProjects[url].win.close();
     }
+};
+
+window.getSocketOptions = function() {
+    return currentSocketOptions;
 };
 
 function saveOpenWindows() {

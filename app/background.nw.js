@@ -95,6 +95,7 @@ function init() {
 
     function closeSocket() {
         if (editorSocketConn) {
+            currentSocketOptions.status = 'disconnected';
             if (reconnectTimeout) {
                 clearTimeout(reconnectTimeout);
             }
@@ -121,6 +122,7 @@ function init() {
         });
         editorSocketConn.on("open", function() {
             log("Connected to zedrem server!");
+            currentSocketOptions.status = 'connected';
             editorSocketConn.send(JSON.stringify({
                 version: "1",
                 UUID: zedremConfig.userKey
@@ -526,6 +528,9 @@ exports.configZedrem = function(newServer) {
     }
 };
 
+exports.getSocketOptions = function() {
+    return currentSocketOptions;
+};
 
 process.on('uncaughtException', function(err) {
     process.stdout.write('Caught exception: ' + err);
