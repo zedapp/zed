@@ -30,7 +30,7 @@ define(function(require, exports, module) {
                 name: "Local Folder",
                 url: "node:"
             }, {
-                name: "Remote Zedrem Folder",
+                name: "Remote Folder",
                 url: "zedrem:"
             }, {
                 name: "Github Repository",
@@ -48,7 +48,7 @@ define(function(require, exports, module) {
                 name: "Local Folder",
                 url: "local:"
             }, {
-                name: "Remote Zedrem Folder",
+                name: "Remote Folder",
                 url: "zedrem:"
             }, {
                 name: "Github Repository",
