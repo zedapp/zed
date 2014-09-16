@@ -41,8 +41,8 @@ function init() {
     function openEditor(title, url) {
         var w = gui.Window.open('editor.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title), {
             position: 'center',
-            width: 800,
-            height: 600,
+            width: 1024,
+            height: 768,
             frame: true,
             toolbar: false,
             icon: "Icon.png"

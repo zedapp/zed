@@ -8,8 +8,8 @@ function openEditor(title, url, urlPostfix) {
     return new Promise(function(resolve, reject) {
         chrome.app.window.create('editor.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title) + urlPostfix, {
             frame: isLinux ? 'chrome' : 'none',
-            width: 800,
-            height: 600
+            width: 1024,
+            height: 768
         }, function(win) {
             win.focus();
             resolve(win);
