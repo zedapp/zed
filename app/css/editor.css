@@ -821,8 +821,8 @@ body.dark div.modal-view input[type=text] {
 div.modal-view #item-list {
     position: absolute;
     overflow-y: scroll;
-    top: 86px;
-    left: 5px;
+    top: 95px;
+    left: 10px;
     right: 0;
     bottom: 0;
 }
