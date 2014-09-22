@@ -162,6 +162,7 @@ define(function(require, exports, module) {
                                     api.github().then(function(repo) {
                                         if (repo) {
                                             api.open(repo.repo + " [" + repo.branch + "]", "gh:" + repo.repo + ":" + repo.branch);
+                                            api.close();
                                         } else {
                                             api.showOpenUi();
                                         }

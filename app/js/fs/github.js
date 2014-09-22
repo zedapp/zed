@@ -61,13 +61,21 @@ define(function(require, exports, module) {
                     },
                     error: function(err, type, message) {
                         if (message === "Unauthorized") {
-                            zed.getService("window").create('github/set_token.html?token=' + githubToken, 'chrome', 600, 600);
-                            window.setToken = function(name, value) {
-                                tokenStore.set(name, value);
-                                window.close();
-                            };
+                            var openUi = zed.getService("open_ui");
+                            // openUi.showOpenUi();
+                            zed.getService("ui").unblockUI();
+                            openUi.githubAuth().then(function(token) {
+                                if (token) {
+                                    // openUi.close();
+                                    githubToken = token;
+                                    githubCall(method, url, args, bodyJson).then(resolve, reject);
+                                } else {
+                                    window.close();
+                                }
+                            });
+                        } else {
+                            reject(err);
                         }
-                        reject(err);
                     }
                 });
             });
