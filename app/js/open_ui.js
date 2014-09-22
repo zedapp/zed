@@ -56,9 +56,9 @@ define(function(require, exports, module) {
             }, {
                 name: "Dropbox Folder",
                 url: "dropbox:"
-            }, {
-                name: "Notes",
-                url: "syncfs:",
+            // }, {
+            //     name: "Notes",
+            //     url: "syncfs:",
             }, {
                 name: "Configuration",
                 html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
@@ -152,6 +152,10 @@ define(function(require, exports, module) {
                                     api.showOpenUi();
                                 });
                                 return;
+                            }
+                            if(b.notInList) {
+                                api.open(b.name, b.name);
+                                return api.close();
                             }
                             switch (b.url) {
                                 case "gh:":

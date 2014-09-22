@@ -142,6 +142,7 @@ function init() {
         });
         editorSocketConn.on("error", function(err) {
             log("Socket error", err.message);
+            close(err);
         });
         editorSocketConn.on("message", function(message) {
             try {
@@ -162,7 +163,9 @@ function init() {
                 log("Couldn't deserialize:", message, e);
             }
         });
-        editorSocketConn.on("close", function(e) {
+        editorSocketConn.on("close", close);
+
+        function close(e) {
             log("Close", e);
             if (timeOut < 5 * 60 * 1000) { // 5 minutes max
                 timeOut *= 2;
@@ -172,7 +175,7 @@ function init() {
             reconnectTimeout = setTimeout(function() {
                 editorSocket(zedremConfig);
             }, timeOut);
-        });
+        }
     }
 
     exports.initEditorSocket = initEditorSocket;

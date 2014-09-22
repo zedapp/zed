@@ -98,9 +98,9 @@ define(function(require, exports, module) {
         function keyHandler(event) {
             switch (event.keyCode) {
                 case keyCode('Return'):
-                    var filtered = getFilteredList();
-                    if (filtered.length > 0) {
-                        resultsEl.find("a").eq(selectIdx).click();
+                    var selectedEl = resultsEl.find("a").eq(selectIdx);
+                    if (selectedEl.length > 0) {
+                        selectedEl.click();
                         inputEl.val("");
                         update();
                         event.preventDefault();
