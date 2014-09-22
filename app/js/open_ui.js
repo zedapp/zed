@@ -166,7 +166,7 @@ define(function(require, exports, module) {
                                             api.showOpenUi();
                                         }
                                     });
-                                    break;
+                                    return; // Don't close the UI
                                 case "dropbox:":
                                     api.dropbox().then(function(url) {
                                         if (url) {
