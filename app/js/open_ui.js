@@ -210,6 +210,9 @@ define(function(require, exports, module) {
                                 viewEl.remove();
                                 api.fadeInBackground();
                                 editor.getActiveEditor().focus();
+                            } else {
+                                // Otherwise: cancel not allowed!
+                                api.projectList();
                             }
                         },
                         onDelete: function(b) {
