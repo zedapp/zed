@@ -105,7 +105,7 @@ define(function(require, exports, module) {
                             }
                         })).then(function() {
                             resolve(projects);
-                        });
+                        }, reject);
                     });
                 });
             },

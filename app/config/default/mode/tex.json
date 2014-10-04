@@ -1,0 +1,8 @@
+{
+    modes: {
+        tex: {
+            name: "Tex",
+            highlighter: "ace/mode/tex"
+        }
+    }
+}

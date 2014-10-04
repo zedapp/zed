@@ -12,30 +12,28 @@ define(function(require, exports, module) {
         var api = {
             init: function() {
                 var el = document.querySelector("body");
-                var overCount = 0;
 
-                function dragenter(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    overCount++;
-                    ui.blockUI("Drop your files or directories to upload to project...", true);
+                function isFile(e) {
+                    var types = e.dataTransfer.types;
+                    if (types && Array.prototype.indexOf.call(types, "Files") !== -1)
+                        return true;
                 }
 
                 function dragover(e) {
+                    if (!isFile(e)) return;
                     e.stopPropagation();
                     e.preventDefault();
                 }
 
                 function dragleave(e) {
+                    if (!isFile(e)) return;
                     e.stopPropagation();
                     e.preventDefault();
-                    if (--overCount <= 0) {
-                        ui.unblockUI();
-                        overCount = 0;
-                    }
                 }
 
                 function drop(e) {
+                    if (!isFile(e)) return;
+                    console.log("Dropped");
                     e.stopPropagation();
                     e.preventDefault();
 
@@ -44,7 +42,6 @@ define(function(require, exports, module) {
                     filesDropped(e.dataTransfer);
                 }
 
-                el.addEventListener('dragenter', dragenter, false);
                 el.addEventListener('dragover', dragover, false);
                 el.addEventListener('dragleave', dragleave, false);
                 el.addEventListener('drop', drop, false);

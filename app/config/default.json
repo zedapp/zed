@@ -15,11 +15,13 @@
         "gh:zedapp/json-mode",
         "gh:zedapp/json5-mode",
         "gh:zedapp/php-mode",
+        "gh:zedapp/python-mode",
         "gh:zedapp/css-mode",
         "gh:zedapp/jsx-mode",
         "gh:zedapp/follow-complete",
         "gh:zedapp/bracket-check",
         "gh:zedapp/snippets",
-        "gh:zedapp/staticserver"
+        "gh:zedapp/staticserver",
+        "gh:zedapp/config-ui"
     ]
 }

@@ -36,10 +36,6 @@ define(function(require, exports, module) {
         var treeCache, lastCommit;
         var githubToken;
 
-        tokenStore.get("githubToken").then(function(token) {
-            githubToken = token;
-        });
-
         // Same as atob, but strips out newlines first (which Github puts in for some reason)
         function base64Decode(s) {
             return atob(s.replace(/\n/g, ""));
@@ -64,14 +60,22 @@ define(function(require, exports, module) {
                         resolve(resp);
                     },
                     error: function(err, type, message) {
-                        if(message === "Unauthorized") {
-                            zed.getService("window").create('github/set_token.html?token=' + githubToken, 'chrome', 600, 600);
-                            window.setToken = function(name, value) {
-                                tokenStore.set(name, value);
-                                window.close();
-                            };
+                        if (message === "Unauthorized") {
+                            var openUi = zed.getService("open_ui");
+                            // openUi.showOpenUi();
+                            zed.getService("ui").unblockUI();
+                            openUi.githubAuth().then(function(token) {
+                                if (token) {
+                                    // openUi.close();
+                                    githubToken = token;
+                                    githubCall(method, url, args, bodyJson).then(resolve, reject);
+                                } else {
+                                    window.close();
+                                }
+                            });
+                        } else {
+                            reject(err);
                         }
-                        reject(err);
                     }
                 });
             });
@@ -319,8 +323,6 @@ define(function(require, exports, module) {
             });
         }
 
-        initDatabase();
-
         var api = {
             listFiles: function() {
                 // Query all DB entries starting with / (to exclude blob IDs)
@@ -547,8 +549,14 @@ define(function(require, exports, module) {
 
         history.pushProject(repo + " [" + branch + "]", "gh:" + repo + ":" + branch);
 
-        register(null, {
-            fs: api
+        initDatabase().then(function() {
+            tokenStore.get("githubToken").then(function(token) {
+                githubToken = token;
+                register(null, {
+                    fs: api
+                });
+            });
         });
+
     }
 });

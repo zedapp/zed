@@ -34,7 +34,7 @@ define(function(require, exports, module) {
                     runSessionHandler(session, "save");
                 });
                 eventbus.on("sessionchanged", function(session) {
-                    analyze(session);
+                    analyze(session, null, true);
                 });
                 eventbus.on("modeset", function(session) {
                     analyze(session);
@@ -172,9 +172,14 @@ define(function(require, exports, module) {
 
         /**
          * Analyzes session and sets findings as annotations
+         * @param session session object
+         * @param instant perform handler instantly
+         * @param isInit is set to true when this handler is called only initially (i.e. not after a change)
          */
-        function analyze(session, instant) {
-            runSessionHandler(session, "change", 1000);
+        function analyze(session, instant, isChange) {
+            if(isChange) {
+                runSessionHandler(session, "change", 1000);
+            }
             runSessionHandler(session, "index", instant ? null : api.getHandlerTimeout("index", session.filename, 1000));
             runSessionHandler(session, "check", instant ? null : api.getHandlerTimeout("check", session.filename, 2000)).then(function(annos) {
                 setAnnotations(session, annos);

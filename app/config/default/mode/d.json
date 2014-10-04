@@ -1,0 +1,12 @@
+{
+    modes: {
+        d: {
+            name: "D",
+            highlighter: "ace/mode/d",
+            extensions: [
+                "d",
+                "di"
+            ]
+        }
+    }
+}

@@ -11,5 +11,11 @@ module.exports = {
     },
     openUrl: function(url) {
         return sandboxRequest("zed/ui", "openUrl", [url]);
+    },
+    showWebview: function(url) {
+        return sandboxRequest("zed/ui", "showWebview", [url]);
+    },
+    hideWebview: function() {
+        return sandboxRequest("zed/ui", "hideWebview", []);
     }
 };

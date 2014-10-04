@@ -1,100 +1,79 @@
-<html>
-    <head>
-        <title>Welcome to Zed</title>
-        <style>
-            body {
-                font-family: 'Open Sans', sans-serif;
-                font-size: 16px;
-            }
+<style>
+    #container {
+        position: absolute;
+        left: 0;
+        top: 40px;
+        right: 0;
+        bottom: 0;
+        overflow-y: scroll;
+        margin: 10px;
+        font-family: Arial;
+    }
+    button#done {
+        position: absolute;
+        top: 15px;
+        right: 16px;
+        font-size: 14px;
+    }
+    td {
+        cursor: pointer;
+        padding-bottom: 20px;
+    }
 
-            #container {
-                position: absolute;
-                left: 0;
-                top: 40px;
-                right: 0;
-                bottom: 50px;
-                overflow-y: scroll;
-                margin: 10px;
-            }
+    h1 {
+        font-size: 23px;
+    }
 
-            td {
-                cursor: pointer;
-                padding-bottom: 20px;
-            }
+    div.description {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
 
-            h1 {
-                font-size: 23px;
-            }
+    div.description h2 {
+        font-size: 20px;
+        margin-top: -10px;
+        margin-bottom: 0;
+    }
 
-            div.description {
-                margin-left: 50px;
-                margin-right: 50px;
-            }
+    .selected {
+        background-color: #555;
+    }
+</style>
+<img src="/img/zed-small.png" class="logo">
+<h1>Welcome to Zed</h1>
+<button id="done">Start using Zed</button>
 
-            div.description h2 {
-                font-size: 20px;
-                margin-top: -10px;
-                margin-bottom: 0;
-            }
+<div id="container">
+    <p>Pick an editor layout:</p>
+    <table border="0">
+        <tr>
+            <td valign="top" class="selected" data-mode="chromeless">
+                <img src="img/zed-chromeless-screen.png" style="max-width: 100%;" />
+                <div class="description">
+                     <h2>Chromeless</h2>
 
-            .selected {
-                background-color: #C2E4FF;
-            }
+                    <p>If you're a minimalist and want to work in an environment as clutter-free as possible, this is the option for you. There is no menu bar visible, nor a file tree constantly taking up space.</p>
+                    <p>If you like this mode, but want the menu bar as well:</p>
+                    <label>
+                        <input type="checkbox" id="menubar">Enable menu bar</label>
+                </div>
+            </td>
+            <td valign="top" width="50%" data-mode="traditional">
+                <img src="img/zed-traditional-screen.png" style="max-width: 100%;" />
+                <div class="description">
+                     <h2>Traditional</h2>
 
-            a.start-button {
-                display: block;
-                position: absolute;
-                bottom: 5px;
-                left: 5px;
-                right: 5px;
-                margin: 10px;
-                text-align: center;
-                text-decoration: none;
-                background: #ccc;
-                padding: 10px;
-                border: 1px solid #555;
-                color: #000;
-            }
-            a.start-button:hover {
-               background: #bbb;
-            }
-        </style>
-    </head>
-    <body>
-         <h1><img src="img/zed-small.png" style="vertical-align: top;"> <span>Welcome to Zed</span></h1>
-
-        <div id="container">
-            <p>Pick an editor layout:</p>
-            <table border="0">
-                <tr>
-                    <td valign="top" class="selected" data-mode="chromeless">
-                        <img src="img/zed-chromeless-screen.png" style="max-width: 100%;" />
-                        <div class="description">
-                             <h2>Chromeless</h2>
-
-                            <p>If you're a minimalist and want to work in an environment as clutter-free as possible, this is the option for you. There is no menu bar visible, nor a file tree constantly taking up space.</p>
-                            <p>If you like this mode, but want the menu bar as well:</p>
-                            <label><input type="checkbox" id="menubar">Enable menu bar</label></div>
-                    </td>
-                    <td valign="top" width="50%" data-mode="traditional">
-                        <img src="img/zed-traditional-screen.png" style="max-width: 100%;" />
-                        <div class="description">
-                             <h2>Traditional</h2>
-
-                            <p>If you're used to editors like Sublime and Textmate with a file tree on the left and menu bar along the top -- you'll feel right at home with this "traditional" configuration.</p>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <p>In addition, in order to know what Zed features to improve, we would like to collect <em>anonymous</em> information on what features of Zed you use. Since Zed is a 100% open source project, the findings of this research will be shared on
-                <a href="http://zedapp.org"
-                target="_blank">the Zed website</a>.</p>
-            <p>If, for whatever reason, you feel uncomfortable with this, you can disable this feature below. But we hope you don't, as this data really helps us. You can change this setting at any time in the Configuration project, the preference name is <tt>enableAnalytics</tt>.</p>
-            <p>
-                <label><input type="checkbox" id="enable" checked>Sure, I'll help out by allowing automatic collection of <em>anonymous</em> usage data.</label></p>
-        </div>
-        <a href="#" class="start-button">Start using Zed</a>
-        <script src="dep/jquery.js"></script>
-        <script src="js/firstrun.js"></script>
-    </body>
-</html>
+                    <p>If you're used to editors like Sublime and Textmate with a file tree on the left and menu bar along the top -- you'll feel right at home with this "traditional" configuration.</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <p>In addition, in order to know what Zed features to improve, we would like to collect <em>anonymous</em> information on what features of Zed you use. Since Zed is a 100% open source project, the findings of this research will be shared on
+        <a href="http://zedapp.org"
+        target="_blank">the Zed website</a>.</p>
+    <p>If, for whatever reason, you feel uncomfortable with this, you can disable this feature below. But we hope you don't, as this data really helps us. You can change this setting at any time in the Configuration project, the preference name is <tt>enableAnalytics</tt>.</p>
+    <p>
+        <label>
+            <input type="checkbox" id="enable" checked>Sure, I'll help out by allowing automatic collection of <em>anonymous</em> usage data.</label>
+    </p>
+</div>

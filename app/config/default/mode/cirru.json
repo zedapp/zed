@@ -1,0 +1,12 @@
+{
+    modes: {
+        cirru: {
+            name: "Cirru",
+            highlighter: "ace/mode/cirru",
+            extensions: [
+                "cirru",
+                "cr"
+            ]
+        }
+    }
+}

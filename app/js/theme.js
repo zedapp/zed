@@ -1,6 +1,6 @@
 /* global $, _*/
 define(function(require, exports, module) {
-    plugin.consumes = ["config", "command", "eventbus", "configfs"];
+    plugin.consumes = ["config", "command", "eventbus", "configfs", "window"];
     plugin.provides = ["theme"];
     return plugin;
 
@@ -11,6 +11,7 @@ define(function(require, exports, module) {
         var command = imports.command;
         var eventbus = imports.eventbus;
         var configfs = imports.configfs;
+        var win = imports.window;
 
         var defaultAceTheme = 'zed_dark';
         var defaultWindowTheme = 'zed_dark';
@@ -76,7 +77,7 @@ define(function(require, exports, module) {
             }
 
             return loadAceCss(theme.css, true).then(function() {
-                $("body").attr("class", theme.cssClass + (!useragent.isMac ? " non_mac" : " mac") + customScroll);
+                $("body").attr("class", theme.cssClass + (theme.dark ? " dark ace_dark" : " ") + (win.useNativeFrame() ? " native-chrome" : " ") + (!useragent.isMac ? " non_mac" : " mac") + customScroll);
             });
         }
         

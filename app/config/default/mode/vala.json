@@ -1,0 +1,11 @@
+{
+    modes: {
+        vala: {
+            name: "Vala",
+            highlighter: "ace/mode/vala",
+            extensions: [
+                "vala"
+            ]
+        }
+    }
+}

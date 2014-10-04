@@ -1,0 +1,11 @@
+{
+    modes: {
+        autohotkey: {
+            name: "AutoHotKey",
+            highlighter: "ace/mode/autohotkey",
+            extensions: [
+                "ahk"
+            ]
+        }
+    }
+}

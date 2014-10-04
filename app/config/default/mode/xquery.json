@@ -1,0 +1,11 @@
+{
+    modes: {
+        xquery: {
+            name: "XQuery",
+            highlighter: "ace/mode/xquery",
+            extensions: [
+                "xq"
+            ]
+        }
+    }
+}

@@ -122,9 +122,6 @@ define(function(require, exports, module) {
             }, {
                 name: "Lookup Symbol Under Cursor",
                 command: "Navigate:Lookup Symbol Under Cursor"
-            }, {}, {
-                name: "Project Picker",
-                command: "Project:Open Project Picker"
             }]
         }, {
             name: "Find",
@@ -213,6 +210,9 @@ define(function(require, exports, module) {
         }, {
             name: "Configuration",
             items: [{
+                name: "Preferences",
+                command: "Configuration:Preferences"
+            }, {
                 name: "Snippets",
                 command: "Snippets:List"
             }, {
@@ -245,7 +245,7 @@ define(function(require, exports, module) {
             }, {
                 name: "Toggle Native Scroll Bars",
                 command: "Configuration:Preferences:Toggle Native Scroll Bars"
-            },{
+            }, {
                 name: "KeyBinding",
                 items: [{
                     name: "Zed",
@@ -262,6 +262,27 @@ define(function(require, exports, module) {
                 command: "Configuration:Reload"
             }]
         }, {
+            name: "Window",
+            items: [{
+                name: "New",
+                command: "Window:New"
+            }, {
+                name: "List",
+                command: "Window:List"
+            }, {}, {
+                name: "Close",
+                command: "Window:Close"
+            }, {
+                name: "Maximize",
+                command: "Window:Maximize"
+            }, {
+                name: "Full Screen",
+                command: "Window:Fullscreen"
+            }, {
+                name: "Minimize",
+                command: "Window:Minimize"
+            }]
+        }, {
             name: "Help",
             items: [{
                 name: "Introduction",
@@ -276,6 +297,7 @@ define(function(require, exports, module) {
         }];
 
         var api = {
+            disabled: false,
             hook: function() {
                 eventbus.on("switchsession", function(edit, newSession) {
                     if (config.getPreference("showMenus")) {
@@ -289,7 +311,7 @@ define(function(require, exports, module) {
                         try {
                             api.updateMenu(editor.getActiveSession());
                         } catch (e) {
-                            console.error("ERrror", e);
+                            console.error("Error", e);
                         }
                         api.showMenu();
                     } else {
@@ -301,6 +323,9 @@ define(function(require, exports, module) {
                 menuEl = $("<div id='main-menu'>");
                 $("body").append(menuEl);
                 menuEl.on("click", "> ul > li > a", function() {
+                    if(api.disabled) {
+                        return;
+                    }
                     menuEl.find("> ul > li > ul").removeClass("hidden");
                 });
                 menuEl.click(function(event) {

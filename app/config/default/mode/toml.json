@@ -1,0 +1,11 @@
+{
+    modes: {
+        toml: {
+            name: "Toml",
+            highlighter: "ace/mode/toml",
+            extensions: [
+                "toml"
+            ]
+        }
+    }
+}

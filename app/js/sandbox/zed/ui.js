@@ -28,6 +28,14 @@ define(function(require, exports, module) {
                 a.click();
             }
             return Promise.resolve();
+        },
+        showWebview: function(url) {
+            zed.getService("ui").showWebview(url);
+            return Promise.resolve();
+        },
+        hideWebview: function() {
+            zed.getService("ui").hideWebview();
+            return Promise.resolve();
         }
     };
 });

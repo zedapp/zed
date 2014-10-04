@@ -1,0 +1,11 @@
+{
+    modes: {
+        jsoniq: {
+            name: "JSONiq",
+            highlighter: "ace/mode/jsoniq",
+            extensions: [
+                "jq"
+            ]
+        }
+    }
+}

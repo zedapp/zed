@@ -1,0 +1,11 @@
+{
+    modes: {
+        mysql: {
+            name: "MySQL",
+            highlighter: "ace/mode/mysql",
+            extensions: [
+                "mysql"
+            ]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    modes: {
+        r: {
+            name: "R",
+            highlighter: "ace/mode/r",
+            extensions: [
+                "r"
+            ]
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    modes: {
+        batchfile: {
+            name: "BatchFile",
+            highlighter: "ace/mode/batchfile",
+            extensions: [
+                "bat",
+                "cmd"
+            ]
+        }
+    }
+}

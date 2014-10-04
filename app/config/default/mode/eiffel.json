@@ -1,0 +1,11 @@
+{
+    modes: {
+        eiffel: {
+            name: "Eiffel",
+            highlighter: "ace/mode/eiffel",
+            extensions: [
+                "e"
+            ]
+        }
+    }
+}

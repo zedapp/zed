@@ -1,0 +1,11 @@
+{
+    modes: {
+        sjs: {
+            name: "SJS",
+            highlighter: "ace/mode/sjs",
+            extensions: [
+                "sjs"
+            ]
+        }
+    }
+}

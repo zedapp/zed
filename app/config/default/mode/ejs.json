@@ -1,0 +1,11 @@
+{
+    modes: {
+        ejs: {
+            name: "EJS",
+            highlighter: "ace/mode/ejs",
+            extensions: [
+                "ejs"
+            ]
+        }
+    }
+}

@@ -34,3 +34,9 @@
 [submodule "app/config/packages/gh/zedapp/staticserver"]
 	path = app/config/packages/gh/zedapp/staticserver
 	url = https://github.com/zedapp/staticserver.git
+[submodule "app/config/packages/gh/zedapp/python-mode"]
+	path = app/config/packages/gh/zedapp/python-mode
+	url = https://github.com/zedapp/python-mode.git
+[submodule "app/config/packages/gh/zedapp/config-ui"]
+	path = app/config/packages/gh/zedapp/config-ui
+	url = https://github.com/zedapp/config-ui.git

@@ -1,0 +1,11 @@
+{
+    modes: {
+        soy_template: {
+            name: "Soy Template",
+            highlighter: "ace/mode/soy_template",
+            extensions: [
+                "soy"
+            ]
+        }
+    }
+}

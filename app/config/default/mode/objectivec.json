@@ -1,0 +1,12 @@
+{
+    modes: {
+        objectivec: {
+            name: "Objective-C",
+            highlighter: "ace/mode/objectivec",
+            extensions: [
+                "m",
+                "mm"
+            ]
+        }
+    }
+}

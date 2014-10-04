@@ -1,0 +1,11 @@
+{
+    modes: {
+        twig: {
+            name: "Twig",
+            highlighter: "ace/mode/twig",
+            extensions: [
+                "twig"
+            ]
+        }
+    }
+}

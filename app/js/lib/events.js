@@ -42,8 +42,13 @@ define(function(require, exports, module) {
         var args = Array.prototype.slice.call(arguments, 1);
 
         var listeners = handler.slice();
-        for (var i = 0, l = listeners.length; i < l; i++) {
-            listeners[i].apply(this, args);
+        try {
+            for (var i = 0, l = listeners.length; i < l; i++) {
+                listeners[i].apply(this, args);
+            }
+        } catch (e) {
+            console.error("Error while emitting", type, e.message, e.stack);
+            throw e;
         }
         return listeners.length > 0;
     };

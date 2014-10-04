@@ -1,0 +1,11 @@
+{
+    modes: {
+        textile: {
+            name: "Textile",
+            highlighter: "ace/mode/textile",
+            extensions: [
+                "textile"
+            ]
+        }
+    }
+}

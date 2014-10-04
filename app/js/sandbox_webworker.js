@@ -7,19 +7,37 @@ self.window = self;
 define("configfs", [], {
     load: function(name, req, onload, config) {
         sandboxRequest("zed/configfs", "readFile", [name]).then(function(text) {
-            onload.fromText(amdTransformer(text));
+            onload.fromText(amdTransformer(name, text));
         }, function(err) {
             return console.error("Error while loading file", name, err);
         });
     }
 });
 
+function absPath(abs, rel) {
+    var absParts = abs.split('/');
+    var relParts = rel.split('/');
+    absParts.pop(); // dir
+    for(var i = 0; i < relParts.length; i++) {
+        if(relParts[i] === '.') {
+            continue;
+        }
+        if(relParts[i] === '..') {
+            absParts.pop();
+            continue;
+        }
+        absParts = absParts.concat(relParts.slice(i));
+        break;
+    }
+    return absParts.join('/');
+}
+
 /**
  * This rewrites extension code in two minor ways:
  * - requires are rewritten to all point to configfs!
  * - AMD wrappers are added if they're not already there'
  */
-function amdTransformer(source) {
+function amdTransformer(moduleAbsPath, source) {
     // If this source file is not doing funky stuff like overriding require
     if (!/require\s*=/.exec(source)) {
         source = source.replace(/require\s*\((["'])(.+)["']\)/g, function(all, q, mod) {
@@ -27,7 +45,7 @@ function amdTransformer(source) {
             if (mod.indexOf("zed/") === 0) {
                 newMod = "configfs!/api/" + mod;
             } else if (mod.indexOf(".") === 0) {
-                newMod = "configfs!" + mod;
+                newMod = "configfs!" + absPath(moduleAbsPath, mod);
             } else {
                 return all;
             }

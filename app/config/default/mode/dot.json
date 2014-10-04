@@ -1,0 +1,11 @@
+{
+    modes: {
+        dot: {
+            name: "Dot",
+            highlighter: "ace/mode/dot",
+            extensions: [
+                "dot"
+            ]
+        }
+    }
+}

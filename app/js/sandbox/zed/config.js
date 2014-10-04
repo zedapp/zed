@@ -5,6 +5,9 @@ define(function(require, exports, module) {
         getPreference: function(preference) {
             return Promise.resolve(zed.getService("config").getPreference(preference, zed.getService("editor").getActiveSession()));
         },
+        getPreferences: function() {
+            return Promise.resolve(zed.getService("config").getPreferences());
+        },
         setPreference: function(preference, value) {
             return Promise.resolve(zed.getService("config").setPreference(preference, value));
         },

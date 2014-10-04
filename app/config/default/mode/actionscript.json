@@ -1,0 +1,11 @@
+{
+    modes: {
+        actionscript: {
+            name: "ActionScript",
+            highlighter: "ace/mode/actionscript",
+            extensions: [
+                "as"
+            ]
+        }
+    }
+}

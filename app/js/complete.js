@@ -167,7 +167,7 @@ define(function(require, exports, module) {
                 edit.completer = new Autocomplete();
                 edit.completers = [completer];
             }
-            edit.completer.autoInsert = !continuousCompletion;
+            edit.completer.autoInsert = false; //!continuousCompletion;
             edit.completer.showPopup(edit);
             if (edit.completer.popup) {
                 edit.completer.goTo("start");

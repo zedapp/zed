@@ -42,8 +42,8 @@ define(function(require, exports, module) {
             specialDocs: {}, // {content: ..., mode: ..., readonly: true}
             hook: function() {
                 async.waitForEvents(eventbus, ["loadedfilelist", "stateloaded", "configchanged"], function() {
-                    eventbus.emit("inited");
                     ui.unblockUI();
+                    eventbus.emit("inited");
                 });
 
                 // Modes have been loaded, let's iterate over all to setup the right one
@@ -95,6 +95,7 @@ define(function(require, exports, module) {
                     clearTimeout(saveTimer);
                 }
                 session.dirty = true;
+
                 var saveTimeout = config.getPreference("saveTimeout");
                 if (saveTimeout > 0) {
                     saveTimer = setTimeout(function() {
@@ -250,7 +251,6 @@ define(function(require, exports, module) {
                 return Promise.reject("No path");
             }
 
-
             if (api.specialDocs[path]) {
                 var session = api.specialDocs[path];
                 show(session);
@@ -379,7 +379,7 @@ define(function(require, exports, module) {
             setInterval(updateState, 2500);
         });
 
-        ui.blockUI("Loading project and file list. One moment please...");
+        ui.blockUI("Loading. One moment please...");
 
         command.define("File:Reload", {
             doc: "Re-read this file from disk, reverting any unsaved changes.",

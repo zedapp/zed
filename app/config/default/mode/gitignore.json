@@ -1,0 +1,11 @@
+{
+    modes: {
+        gitignore: {
+            name: "Gitignore",
+            highlighter: "ace/mode/gitignore",
+            filenames: [
+                ".gitignore"
+            ]
+        }
+    }
+}

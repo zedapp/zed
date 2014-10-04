@@ -1,8 +1,11 @@
 #!/usr/bin/make -f
 
 SHELL = /bin/bash
-ZED_DIR = /Users/zef/Dropbox/zed
 INDEX_COMMAND = find app/config -name '*.*' -not -path '*/.git/*' -not -path '*/.git' | sort | sed 's:^app/config::' > app/config/all
+# To build the windows version you need resource hacker installed
+# http://www.angusj.com/resourcehacker/
+# I run it using wine, adapt as required
+RESOURCEHACKER_CMD = wine 'C:/Program Files (x86)/Resource Hacker/ResHacker.exe'
 NW_VERSION=v0.9.2
 ZED_VERSION=$(shell cat app/manifest.json | grep '"version"' | cut -f 4 -d '"')
 LBITS := $(shell getconf LONG_BIT)
@@ -67,7 +70,7 @@ endif
 nw/download-all: nw/download/node-webkit-$(NW_VERSION)-linux-x64 nw/download/node-webkit-$(NW_VERSION)-linux-ia32 nw/download/node-webkit-$(NW_VERSION)-osx-ia32 nw/download/node-webkit-$(NW_VERSION)-win-ia32
 
 apps-npm: app/node_modules
-app/node_modules:
+app/node_modules: app/package.json
 	cd app; npm install
 
 apps-mac: release/zed-mac-v$(ZED_VERSION).tar.gz
@@ -96,6 +99,8 @@ release/zed-win-v$(ZED_VERSION).tar.gz: nw/download nw/app.nw
 	mkdir -p nw/build/zed
 	cat nw/download/node-webkit-$(NW_VERSION)-win-ia32/nw.exe nw/app.nw > nw/build/zed/zed.exe
 	cp nw/download/node-webkit-$(NW_VERSION)-win-ia32/{nw.pak,icudt.dll} nw/build/zed/
+	$(RESOURCEHACKER_CMD) -addoverwrite $(PWD)/nw/build/zed/zed.exe, $(PWD)/nw/build/zed/zed.exe, $(PWD)/nw/Icon.ico, ICONGROUP, IDR_MAINFRAME, 2> /dev/null || echo "Running resource hacker failed, so not replacing icon"
+
 	rm -f release/zed-win.zip
 	rm -f release/zed-win.tar.gz
 	cd nw/build; zip -r ../../release/zed-win-v$(ZED_VERSION).zip *

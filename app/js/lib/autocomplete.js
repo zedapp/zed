@@ -92,6 +92,8 @@ var Autocomplete = function() {
             pos.left += renderer.$gutterLayer.gutterWidth;
 
             this.popup.show(pos, lineHeight);
+        } else if(keepPopupPosition && !prefix) {
+            this.detach();
         }
     };
 
@@ -152,7 +154,7 @@ var Autocomplete = function() {
 
         switch(where) {
             case "up": row = row <= 0 ? max : row - 1; break;
-            case "down": row = row >= max ? -1 : row + 1; break;
+            case "down": row = row >= max ? 0 : row + 1; break;
             case "start": row = 0; break;
             case "end": row = max; break;
         }

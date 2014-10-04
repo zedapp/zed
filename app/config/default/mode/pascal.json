@@ -1,0 +1,12 @@
+{
+    modes: {
+        pascal: {
+            name: "Pascal",
+            highlighter: "ace/mode/pascal",
+            extensions: [
+                "pas",
+                "p"
+            ]
+        }
+    }
+}

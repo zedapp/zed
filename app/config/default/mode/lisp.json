@@ -1,0 +1,11 @@
+{
+    modes: {
+        lisp: {
+            name: "Lisp",
+            highlighter: "ace/mode/lisp",
+            extensions: [
+                "lisp"
+            ]
+        }
+    }
+}

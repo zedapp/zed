@@ -13,6 +13,7 @@ define(function(require, exports, module) {
         var eventbus = imports.eventbus;
 
         var blockedEl = null;
+        var webviewEl = null;
 
         var api = {
             /**
@@ -52,7 +53,6 @@ define(function(require, exports, module) {
 
                 gotoEl.css("left", (editorEl.offset().left - editorWrapperEl.offset().left + 40) + "px");
                 gotoEl.css("width", (editorEl.width() - 80) + "px");
-                // gotoEl.css("top", editorEl.offset().top + "px");
                 var popup = new AcePopup($("#results")[0]);
                 popup.on("click", function(e) {
                     select();
@@ -158,8 +158,7 @@ define(function(require, exports, module) {
                     }
                 });
                 input.focus();
-                updateResults();
-                triggerOnChange();
+                updateResults().then(triggerOnChange);
                 eventbus.on("splitswitched", cancel);
 
 
@@ -237,7 +236,7 @@ define(function(require, exports, module) {
 
                 function updateResults() {
                     var phrase = input.val();
-                    filter(phrase).then(function(results_) {
+                    return filter(phrase).then(function(results_) {
                         results = results_.slice(0, 500);
                         if (results.length > 0) {
                             _.each(results, function(result) {
@@ -361,21 +360,33 @@ define(function(require, exports, module) {
 
             },
             blockUI: function(message, noSpin) {
-                if (blockedEl) {
-                    return;
-                }
-                console.log("Blocking UI");
+                $("#blockui").remove();
                 blockedEl = $("<div id='blockui'>");
                 $("body").append(blockedEl);
-                blockedEl.html(message + (!noSpin ? " <img src='img/loader.gif'/>" : ""));
+                blockedEl.html(message + (!noSpin ? " <img src='/Icon.png' id='wait-logo'/>" : ""));
             },
             unblockUI: function() {
-                if (blockedEl) {
-                    console.log("Unblocking UI again");
-                    // blockedEl.fadeOut(function() {
-                    blockedEl.remove();
-                    // });
-                    blockedEl = null;
+                $("#blockui").remove();
+            },
+            showWebview: function(url) {
+                if(webviewEl) {
+                    webviewEl.remove();
+                }
+                if(window.isNodeWebkit) {
+                    webviewEl = $("<div class='webview-wrapper'><iframe nwdisable nwfaketop class='webview'>");
+                } else {
+                    webviewEl = $("<div class='webview-wrapper'><webview class='webview'>");
+                }
+                webviewEl.find(".webview").attr("src", url);
+                $("#editor-wrapper").append(webviewEl);
+                webviewEl.find(".webview")[0].addEventListener("loadstop", function() {
+                    webviewEl.find(".webview").focus();
+                });
+            },
+            hideWebview: function() {
+                if(webviewEl) {
+                    webviewEl.remove();
+                    zed.getService("editor").getActiveEditor().focus();
                 }
             }
         };

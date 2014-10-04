@@ -17,6 +17,7 @@ define(function(require, exports, module) {
 
         var fileCache = [];
         var filteredFileCache = [];
+        var globalLastEditPoint;
 
         eventbus.declare("loadedfilelist");
         eventbus.declare("goto");
@@ -38,6 +39,15 @@ define(function(require, exports, module) {
                 });
                 eventbus.on("configchanged", function() {
                     updateFilteredFileCache();
+                });
+                eventbus.on("sessionchanged", function(session) {
+                    // set timeout so that the edit has been appplied already
+                    setTimeout(function() {
+                        globalLastEditPoint = {
+                            session: session,
+                            cursor: session.selection.getCursor()
+                        };
+                    });
                 });
             },
             init: function() {
@@ -310,6 +320,9 @@ define(function(require, exports, module) {
                         eventbus.emit("goto", phrase);
                     },
                     onCancel: function() {
+                        // do not cancel if user have clicked on the editor
+                        if (edit.isFocused() && edit.$mouseHandler.isMousePressed)
+                            return;
                         editor.switchSession(session, edit);
                         edit.moveCursorToPosition(currentPos);
                         edit.clearSelection();
@@ -322,6 +335,18 @@ define(function(require, exports, module) {
         command.define("Navigate:Reload Filelist", {
             doc: "Scan the project tree for any new files that were created outside of Zed.",
             exec: fetchFileList,
+            readOnly: true
+        });
+
+        command.define("Navigate:Last Edit Point", {
+            exec: function(edit, session) {
+                if(globalLastEditPoint) {
+                    session_manager.go(globalLastEditPoint.session.filename, edit, session).then(function(session) {
+                        session.selection.moveCursorTo(globalLastEditPoint.cursor.row, globalLastEditPoint.cursor.column);
+                        session.selection.clearSelection();
+                    });
+                }
+            },
             readOnly: true
         });
 

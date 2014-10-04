@@ -1,17 +1,23 @@
 /*global chrome, define, nodeRequire*/
 define(function(require, exports, module) {
-    plugin.consumes = ["command"];
+    plugin.consumes = ["command", "background"];
     plugin.provides = ["window"];
     return plugin;
 
     function plugin(options, imports, register) {
         var gui = nodeRequire("nw.gui");
+        var opts = require("./lib/options");
 
         var command = imports.command;
+        var background = imports.background;
 
         var win = gui.Window.get();
 
+        background.registerWindow(opts.get("title"), opts.get("url"), win);
+
         var closeHandler = null;
+
+        var isMaximized = false;
 
         var api = {
             close: function(force) {
@@ -25,36 +31,8 @@ define(function(require, exports, module) {
                 closeHandler = handler;
                 win.on("close", handler);
             },
-            create: function(url, frameStyle, width, height) {
-                var frame = true;
-                if (frameStyle == "none") {
-                    frame = false;
-                }
-                var w = gui.Window.open(url, {
-                    position: 'center',
-                    width: width,
-                    height: height,
-                    frame: frame,
-                    toolbar: false,
-                    icon: "Icon.png"
-                });
-                return new Promise(function(resolve) {
-                    w.once("loaded", function() {
-                        w.focus();
-                        w.window.opener = window;
-                        resolve({
-                            addCloseListener: function(listener) {
-                                w.on("closed", function() {
-                                    listener();
-                                });
-                            },
-                            window: w.window,
-                            focus: function() {
-                                w.focus();
-                            }
-                        });
-                    });
-                });
+            useNativeFrame: function() {
+                return true;
             },
             fullScreen: function() {
                 if (win.isFullscreen) {
@@ -74,21 +52,49 @@ define(function(require, exports, module) {
                     width: win.width,
                     height: win.height,
                     top: win.y,
-                    left: win.x
+                    left: win.x,
+                    isMaximized: isMaximized
                 };
             },
             setBounds: function(bounds) {
-                win.width = bounds.width;
-                win.height = bounds.height;
-                win.y = bounds.top;
                 win.x = bounds.left;
+                win.width = bounds.width;
+
+                // hack to get restoring window position and size to work in
+                // linux
+                setTimeout(function() {
+                    win.y = bounds.top;
+                    win.height = bounds.height;
+                }, 10);
+
+                if(bounds.isMaximized) {
+                    win.maximize();
+                }
+
+                setTimeout(function() {
+                    if(win.width < 300) {
+                        win.width = 300;
+                    }
+                    if(win.height < 300) {
+                        win.height = 300;
+                    }
+                }, 1000);
             },
             addResizeListener: function(listener) {
                 win.on("resize", function() {
+                    isMaximized = false;
                     listener();
                 });
                 win.on("move", function() {
+                    isMaximized = false;
                     listener();
+                });
+                win.on("maximize", function() {
+                    // Give other events time to trigger (resize, move), then override
+                    setTimeout(function() {
+                        isMaximized = true;
+                        listener();
+                    }, 1000);
                 });
             },
             focus: function() {

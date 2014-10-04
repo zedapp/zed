@@ -1,7 +1,7 @@
 /*global define, _, chrome, zed */
 define(function(require, exports, module) {
     "use strict";
-    plugin.consumes = ["eventbus", "command", "sandbox", "configfs", "token_store"];
+    plugin.consumes = ["eventbus", "command", "sandbox", "configfs", "token_store", "background"];
     plugin.provides = ["config"];
     return plugin;
 
@@ -13,6 +13,7 @@ define(function(require, exports, module) {
         var sandbox = imports.sandbox;
         var configfs = imports.configfs;
         var tokenStore = imports.token_store;
+        var background = imports.background;
 
         eventbus.declare("configchanged");
         eventbus.declare("configneedsreloading");
@@ -45,6 +46,11 @@ define(function(require, exports, module) {
                     if (session.filename === "/zedconfig.json") {
                         loadConfiguration();
                     }
+                });
+
+                eventbus.on("configchanged", function() {
+                    console.log("Talk to the background page to reconnect to a zedrem server if necessary");
+                    background.configZedrem(api.getPreference("zedremServer"));
                 });
             },
             writeUserPrefs: writeUserPrefs,
@@ -389,6 +395,14 @@ define(function(require, exports, module) {
                     session.setMode("ace/mode/json");
                     session.setValue(JSON5.stringify(expandedConfiguration, null, 4));
                 });
+            },
+            readOnly: true
+        });
+
+        command.define("Configuration:Open Configuration Project", {
+            doc: "Open a Zed window with the Configuration project",
+            exec: function() {
+                background.openProject("Configuration", window.isNodeWebkit ? "nwconfig:" : "config:");
             },
             readOnly: true
         });

@@ -23,45 +23,47 @@ define(function(require, exports, module) {
 
         var api = {
             hook: function() {
-                if (useragent.isMac) {
-                    winButtons = "<div class='close'></div><div class='minimize'></div><div class='maximize'></div>";
-                } else {
-                    winButtons = "<div class='minimize'></div><div class='maximize'></div><div class='close'></div>";
+                if (!window.useNativeFrame()) {
+                    if (useragent.isMac) {
+                        winButtons = "<div class='close'></div><div class='minimize'></div><div class='maximize'></div>";
+                    } else {
+                        winButtons = "<div class='minimize'></div><div class='maximize'></div><div class='close'></div>";
+                    }
+                    barEl = $("<div id='titlebar'><div class='windowbuttons'>" + winButtons + "</div><div class='title'></div><div class='fullscreen'></div>");
+                    $("body").append(barEl);
+
+                    // TODO: Rework this to toggle CSS styles
+                    var buttonsEl = barEl.find(".windowbuttons");
+                    if (useragent.isMac) {
+                        buttonsEl.mousemove(function() {
+                            buttonsEl.find("div").css("background-position-y", '-16px');
+                        });
+                        buttonsEl.mouseout(function() {
+                            buttonsEl.find("div").css("background-position-y", '0');
+                        });
+                        $(window).blur(function() {
+                            buttonsEl.find("div").css("background-position-y", '-31px');
+                        });
+                        $(window).focus(function() {
+                            buttonsEl.find("div").css("background-position-y", '0');
+                        });
+                    }
+                    buttonsEl.find(".close").click(function() {
+                        window.close();
+                    });
+                    buttonsEl.find(".minimize").click(function() {
+                        window.minimize();
+                    });
+                    buttonsEl.find(".maximize").click(function() {
+                        window.maximize();
+                    });
+                    barEl.find(".fullscreen").click(function() {
+                        window.fullScreen();
+                    });
                 }
-                barEl = $("<div id='titlebar'><div class='windowbuttons'>" + winButtons + "</div><div class='title'></div><div class='fullscreen'></div>");
+
                 pathBarEl = $("<div id='pathbar-wrapper'>");
-                $("body").append(barEl);
                 $("#editor-wrapper").append(pathBarEl);
-
-                // TODO: Rework this to toggle CSS styles
-                var buttonsEl = barEl.find(".windowbuttons");
-                if (useragent.isMac) {
-                    buttonsEl.mousemove(function() {
-                        buttonsEl.find("div").css("background-position-y", '-16px');
-                    });
-                    buttonsEl.mouseout(function() {
-                        buttonsEl.find("div").css("background-position-y", '0');
-                    });
-                    $(window).blur(function() {
-                        buttonsEl.find("div").css("background-position-y", '-31px');
-                    });
-                    $(window).focus(function() {
-                        buttonsEl.find("div").css("background-position-y", '0');
-                    });
-                }
-                buttonsEl.find(".close").click(function() {
-                    window.close();
-                });
-                buttonsEl.find(".minimize").click(function() {
-                    window.minimize();
-                });
-                buttonsEl.find(".maximize").click(function() {
-                    window.maximize();
-                });
-                barEl.find(".fullscreen").click(function() {
-                    window.fullScreen();
-                });
-
                 eventbus.on("configchanged", update);
                 eventbus.on("projecttitlechanged", update);
 
@@ -151,9 +153,13 @@ define(function(require, exports, module) {
 
         function update() {
             var title = opts.get('title');
-            var titleEl = barEl.find(".title");
+            if (barEl) {
+                var titleEl = barEl.find(".title");
 
-            titleEl.html("<img src='img/zed-small.png'/>" + title + " ");
+                titleEl.html("<img src='img/zed-small.png'/>" + title + " ");
+            } else {
+                $("title").text(title);
+            }
         }
 
         function switchSession(edit, session) {

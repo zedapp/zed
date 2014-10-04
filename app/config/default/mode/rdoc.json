@@ -1,0 +1,11 @@
+{
+    modes: {
+        rdoc: {
+            name: "RDoc",
+            highlighter: "ace/mode/rdoc",
+            extensions: [
+                "Rd"
+            ]
+        }
+    }
+}

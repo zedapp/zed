@@ -6,8 +6,8 @@ module.exports = {
     deleteSession: function(path) {
         return sandboxRequest("zed/session", "deleteSession", [path]);
     },
-    callCommand: function(path, command) {
-        return sandboxRequest("zed/session", "callCommand", [path, command]);
+    callCommand: function(path, command, info) {
+        return sandboxRequest("zed/session", "callCommand", [path, command, info]);
     },
     setAnnotations: function(path, annos) {
         return sandboxRequest("zed/session", "setAnnotations", [path, annos]);

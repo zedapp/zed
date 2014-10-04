@@ -120,7 +120,9 @@ define(function(require, exports, module) {
                     }
                 };
 
+                console.log("Calling", requestHandlerCommand, "to handle http");
                 command.exec(requestHandlerCommand, edit, session).then(function(resp) {
+                    console.log("Got back from command", requestHandlerCommand, resp);
                     res.status(resp.status || 200);
                     _.each(resp.headers || {}, function(val, name) {
                         res.set(name, val);

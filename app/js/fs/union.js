@@ -54,16 +54,16 @@ define(function(require, exports, module) {
                     return files;
                 });
             },
-            readFile: function(path) {
-                return attempt("readFile", [path]).then(function(d) {
+            readFile: function(path, binary) {
+                return attempt("readFile", [path, binary]).then(function(d) {
                     api.getCacheTag(path).then(function(tag) {
                         watcher.setCacheTag(path, tag);
                     });
                     return d;
                 });
             },
-            writeFile: function(path, content) {
-                return attempt("writeFile", [path, content]).then(function() {
+            writeFile: function(path, content, binary) {
+                return attempt("writeFile", [path, content, binary]).then(function() {
                     if (!watchSelf) {
                         api.getCacheTag(path).then(function(tag) {
                             watcher.setCacheTag(path, tag);

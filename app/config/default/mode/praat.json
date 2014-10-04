@@ -1,0 +1,14 @@
+{
+    modes: {
+        praat: {
+            name: "Praat",
+            highlighter: "ace/mode/praat",
+            extensions: [
+                "praat",
+                "praatscript",
+                "psc",
+                "proc"
+            ]
+        }
+    }
+}
