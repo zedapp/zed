@@ -1,6 +1,3 @@
-body #editor-wrapper {
-    background-color: #333;
-}
 body #goto {
     background: #222;
 }
@@ -97,4 +94,33 @@ body #main-menu {
 }
 body #main-menu > ul > li > a {
     color: #8D8D8D;
+}
+
+body #blockui {
+    background-color: #333;
+    color: #eee;
+}
+body #main-menu {
+    background-color: #222;
+}
+body div.modal-view {
+    background-color: #333;
+    border: solid 1px #000;
+    color: #eee;
+}
+body div.modal-view input[type=text] {
+    color: #eee;
+    background-color: #000;
+}
+body div.modal-view #item-list a {
+    color: #CBC9C9;
+}
+body div.modal-view #item-list a img {
+    -webkit-filter: invert(100%);
+}
+body div.modal-view #item-list div.section {
+    background-color: #222;
+}
+body div.modal-view #item-list a.active {
+    background-color: #666;
 }
