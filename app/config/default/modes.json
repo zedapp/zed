@@ -26,6 +26,8 @@
         "./mode/eiffel.json",
         "./mode/ejs.json",
         "./mode/erlang.json",
+        "./mode/elm.json",
+        "./mode/elixir.json",
         "./mode/forth.json",
         "./mode/ftl.json",
         "./mode/gcode.json",

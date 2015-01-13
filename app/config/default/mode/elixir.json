@@ -1,0 +1,12 @@
+{
+    modes: {
+        elixir: {
+            name: "Elm",
+            highlighter: "ace/mode/elixir",
+            extensions: [
+                "exs"
+            ],
+            completionTriggers: ["."]
+        }
+    }
+}
