@@ -99,7 +99,8 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                     var app = architect.createApp(config, function(err, app) {
                         if (err) {
                             window.err = err;
-                            return console.error("Architect createApp error", err, err.stack);
+                            console.error("Architect createApp error", err, err.stack);
+                            return reject(err);
                         }
                         $("#wait-logo").remove();
                         try {
@@ -161,7 +162,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                     });
                     app.on("error", function(err) {
                         console.error("Error", err);
-                    })
+                    });
 
                     window.zed_app = app;
                 } catch (err) {
