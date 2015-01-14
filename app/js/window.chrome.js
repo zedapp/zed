@@ -74,10 +74,24 @@ define(function(require, exports, module) {
                 win.minimize();
             },
             getBounds: function() {
-                return win.getBounds();
+                var bounds = win.getBounds();
+                return {
+                    width: bounds.width,
+                    height: bounds.height,
+                    top: bounds.top,
+                    left: bounds.left,
+                    isMaximized: win.isMaximized()
+                };
             },
             setBounds: function(bounds) {
-                win.setBounds(bounds);
+                if(bounds.isMaximized) {
+                    win.maximize();
+                } else {
+                    bounds.width = Math.max(400, bounds.width);
+                    bounds.height = Math.max(400, bounds.height);
+                    delete bounds.isMaximized;
+                    win.setBounds(bounds);
+                }
             },
             addResizeListener: function(listener) {
                 win.onBoundsChanged.addListener(listener);

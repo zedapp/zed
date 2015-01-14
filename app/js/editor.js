@@ -112,6 +112,7 @@ define(function(require, exports, module) {
                 editors.push(ace.edit("editor2"));
 
                 editors.forEach(function(editor) {
+                    editor.$blockScrolling = Infinity;
                     editor.setShowPrintMargin(false);
                     // Disable ACE's built-in theming
                     editor.setTheme({
@@ -402,7 +403,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.selectAll();
             },
-            readOnly: true
+            readOnly: true,
+            scrollIntoView: false
         });
 
         command.define("Select:None", {
@@ -410,7 +412,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.clearSelection();
             },
-            readOnly: true
+            readOnly: true,
+            scrollIntoView: false
         });
 
         command.define("Select:To File End", {
@@ -552,7 +555,8 @@ define(function(require, exports, module) {
                 editor.navigateFileStart();
             },
             multiSelectAction: "forEach",
-            readOnly: true
+            readOnly: true,
+            scrollIntoView: "animate"
         });
 
         command.define("Cursor:File End", {
@@ -561,7 +565,8 @@ define(function(require, exports, module) {
                 editor.navigateFileEnd();
             },
             multiSelectAction: "forEach",
-            readOnly: true
+            readOnly: true,
+            scrollIntoView: "animate"
         });
 
         command.define("Cursor:Word Left", {
@@ -773,7 +778,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.toggleCommentLines();
             },
-            multiSelectAction: "forEach"
+            multiSelectAction: "forEach",
+            scrollIntoView: "selectionPart"
         });
 
         command.define("Edit:Number:Increase", {
@@ -878,7 +884,7 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.indent();
             },
-            multiSelectAction: "forEach"
+            multiSelectAction: "forEach",
         });
 
         command.define("Edit:Block Outdent", {
@@ -886,7 +892,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.blockOutdent();
             },
-            multiSelectAction: "forEach"
+            multiSelectAction: "forEach",
+            scrollIntoView: "selectionPart"
         });
 
         command.define("Edit:Block Indent", {
@@ -894,7 +901,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.blockIndent();
             },
-            multiSelectAction: "forEach"
+            multiSelectAction: "forEach",
+            scrollIntoView: "selectionPart"
         });
 
         command.define("Edit:Split Line", {
