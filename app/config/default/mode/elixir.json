@@ -1,7 +1,7 @@
 {
     modes: {
         elixir: {
-            name: "Elm",
+            name: "Elixir",
             highlighter: "ace/mode/elixir",
             extensions: [
                 "exs"
