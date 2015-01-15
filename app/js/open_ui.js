@@ -293,7 +293,6 @@ define(function(require, exports, module) {
                         });
                         $("#cancel").click(function() {
                             close();
-                            resolve();
                         });
 
                         $("#token").val(githubToken);

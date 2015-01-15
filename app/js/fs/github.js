@@ -41,6 +41,10 @@ define(function(require, exports, module) {
             return atob(s.replace(/\n/g, ""));
         }
 
+        function decodeUtf8(s) {
+          return decodeURIComponent(escape(s));
+        }
+
         function githubCall(method, url, args, bodyJson) {
             args = args || {};
             args.access_token = githubToken;
@@ -374,7 +378,7 @@ define(function(require, exports, module) {
                                     if (blobInfo.encoding === "utf-8") {
                                         content = blobInfo.content;
                                     } else { // base64
-                                        content = base64Decode(blobInfo.content);
+                                        content = decodeUtf8(base64Decode(blobInfo.content));
                                     }
                                     // Cache the blob with sha as key to the local db asynchronously
                                     watcher.setCacheTag(path, blobInfo.sha);
@@ -494,7 +498,7 @@ define(function(require, exports, module) {
             },
             reset: function() {
                 // Flush all locally changed files and cached blobs
-                db.readStore("files").getAll().then(function(allObjects) {
+                return db.readStore("files").getAll().then(function(allObjects) {
                     var writeStore = db.writeStore("files");
                     return Promise.all(allObjects.map(function(obj) {
                         return writeStore.delete(obj.id);
