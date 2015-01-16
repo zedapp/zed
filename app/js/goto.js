@@ -313,7 +313,7 @@ define(function(require, exports, module) {
                         }
                         // Actual jumping only needs to happen if it's non-local
                         // i.e. if we're not already there (as is the case with local locators)
-                        if ((phraseParts[0] || !loc) && ":@#".indexOf(phrase[0]) === -1) {
+                        if ((phraseParts[0] || !loc) && ":@#".indexOf(fileOnly[0]) === -1) {
                             file = fileOnly + (loc ? ':' + loc : '');
                             session_manager.go(file, edit, session);
                         }
