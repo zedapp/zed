@@ -43,6 +43,7 @@ exports.AcePopup = function() {
             tokens.push({type: "icon_" + data.icon, value: ""});
         }
 
+
         return tokens;
     };
 

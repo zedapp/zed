@@ -200,7 +200,7 @@ define(function(require, exports, module) {
                             }
                         });
                         var resultList = [];
-                        if (fileCache.indexOf(phrase) === -1) {
+                        if (fileCache.indexOf(phrase) === -1 && ":@#".indexOf(phrase[0]) === -1) {
                             resultList.push({
                                 path: phrase,
                                 name: "Create file '" + phrase + "'",
@@ -261,7 +261,7 @@ define(function(require, exports, module) {
                             }
                         });
 
-                        if (resultList.length === 0 && loc === undefined && phrase[0] !== "#") {
+                        if (resultList.length === 0 && loc === undefined && ":@#".indexOf(phrase[0]) === -1) {
                             resultList = [{
                                 path: phrase,
                                 name: "Create file '" + phrase + "'",
@@ -313,7 +313,7 @@ define(function(require, exports, module) {
                         }
                         // Actual jumping only needs to happen if it's non-local
                         // i.e. if we're not already there (as is the case with local locators)
-                        if (phraseParts[0] || !loc) {
+                        if ((phraseParts[0] || !loc) && ":@#".indexOf(phrase[0]) === -1) {
                             file = fileOnly + (loc ? ':' + loc : '');
                             session_manager.go(file, edit, session);
                         }

@@ -18,6 +18,7 @@ define(function(require, exports, module) {
         var filterList = require("./lib/filter_list");
         var dropbox = require("./lib/dropbox");
         var githubUi = require("./open/github");
+        var zedb = require("zedb");
 
         var defaultConfig = JSON.parse(require("text!../config/default/preferences.json"));
 
@@ -76,6 +77,7 @@ define(function(require, exports, module) {
         var api = {
             openInNewWindow: false,
             boot: function() {
+                    console.log("HERE", closed);
                 config.loadConfiguration().then(function() {
                     if (closed) {
                         return;
@@ -86,6 +88,8 @@ define(function(require, exports, module) {
                     if (enable === undefined || showMenus === undefined) {
                         api.firstRun();
                     }
+                }).catch(function(err) {
+                    console.error("Error booting", err);
                 });
             },
             showOpenUi: function() {
@@ -100,6 +104,7 @@ define(function(require, exports, module) {
                     api.fadeOutBackground();
                 });
                 api.projectList();
+                zedb.garbageCollect();
             },
             close: function() {
                 menu.disabled = false;
