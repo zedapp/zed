@@ -87,8 +87,10 @@ define(function(require, exports, module) {
                 if(bounds.isMaximized) {
                     win.maximize();
                 } else {
-                    bounds.width = Math.max(400, bounds.width);
-                    bounds.height = Math.max(400, bounds.height);
+                    if(bounds.width < 200 || bounds.height < 200) {
+                        // Bounds messed up, let's just ignore and use defaults
+                        return;
+                    }
                     delete bounds.isMaximized;
                     win.setBounds(bounds);
                 }
