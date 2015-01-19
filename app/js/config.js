@@ -18,6 +18,8 @@ define(function(require, exports, module) {
         eventbus.declare("configchanged");
         eventbus.declare("configneedsreloading");
 
+        require("lib/vim_patch");
+
         var minimumConfiguration = {
             imports: [
                 "/default.json"],
