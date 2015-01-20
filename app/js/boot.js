@@ -10,7 +10,7 @@ require.config({
     },
 });
 
-window.isNodeWebkit = typeof window.chrome === "undefined";
+window.isNodeWebkit = typeof process !== "undefined";
 
 /* global ace, $, _ */
 require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/intro.md"], function(architect, options, fsPicker, introText) {

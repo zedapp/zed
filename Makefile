@@ -6,7 +6,7 @@ INDEX_COMMAND = find app/config -name '*.*' -not -path '*/.git/*' -not -path '*/
 # http://www.angusj.com/resourcehacker/
 # I run it using wine, adapt as required
 RESOURCEHACKER_CMD = wine 'C:/Program Files (x86)/Resource Hacker/ResHacker.exe'
-NW_VERSION=v0.9.2
+NW_VERSION=v0.12.0-alpha2
 ZED_VERSION=$(shell cat app/manifest.json | grep '"version"' | cut -f 4 -d '"')
 LBITS := $(shell getconf LONG_BIT)
 PREFIX=/usr/local
@@ -37,37 +37,37 @@ index-manual:
 index-config:
 	$(INDEX_COMMAND)
 
-nw/download/node-webkit-$(NW_VERSION)-linux-x64:
+nw/download/nwjs-$(NW_VERSION)-linux-x64:
 	mkdir -p nw/download
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-x64.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-x64.tar.gz
+	cd nw/download && curl -O http://dl.nwjs.io/$(NW_VERSION)/nwjs-$(NW_VERSION)-linux-x64.tar.gz && tar xzf nwjs-$(NW_VERSION)-linux-x64.tar.gz
 
-nw/download/node-webkit-$(NW_VERSION)-linux-ia32:
+nw/download/nwjs-$(NW_VERSION)-linux-ia32:
 	mkdir -p nw/download
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-ia32.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-ia32.tar.gz
+	cd nw/download && curl -O http://dl.nwjs.io/$(NW_VERSION)/nwjs-$(NW_VERSION)-linux-ia32.tar.gz && tar xzf nwjs-$(NW_VERSION)-linux-ia32.tar.gz
 
-nw/download/node-webkit-$(NW_VERSION)-osx-ia32:
+nw/download/nwjs-$(NW_VERSION)-osx-ia32:
 	mkdir -p nw/download
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-osx-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-osx-ia32 node-webkit-$(NW_VERSION)-osx-ia32.zip
+	cd nw/download && curl -O http://dl.nwjs.io/$(NW_VERSION)/nwjs-$(NW_VERSION)-osx-ia32.zip && unzip nwjs-$(NW_VERSION)-osx-ia32.zip
 
-nw/download/node-webkit-$(NW_VERSION)-win-ia32:
+nw/download/nwjs-$(NW_VERSION)-win-ia32:
 	mkdir -p nw/download
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-win-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-win-ia32 node-webkit-$(NW_VERSION)-win-ia32.zip
+	cd nw/download && curl -O http://dl.nwjs.io/$(NW_VERSION)/nwjs-$(NW_VERSION)-win-ia32.zip && unzip nwjs-$(NW_VERSION)-win-ia32.zip
 
 ifeq ($(PLATFORM),linux)
 ifeq ($(LBITS),64)
-nw/download: nw/download/node-webkit-$(NW_VERSION)-linux-x64
+nw/download: nw/download/nwjs-$(NW_VERSION)-linux-x64
 else
-nw/download: nw/download/node-webkit-$(NW_VERSION)-linux-ia32
+nw/download: nw/download/nwjs-$(NW_VERSION)-linux-ia32
 endif
 else
 ifeq ($(PLATFORM),mac)
-nw/download: nw/download/node-webkit-$(NW_VERSION)-osx-ia32
+nw/download: nw/download/nwjs-$(NW_VERSION)-osx-ia32
 else
-nw/download: nw/download/node-webkit-$(NW_VERSION)-win-ia32
+nw/download: nw/download/nwjs-$(NW_VERSION)-win-ia32
 endif
 endif
 
-nw/download-all: nw/download/node-webkit-$(NW_VERSION)-linux-x64 nw/download/node-webkit-$(NW_VERSION)-linux-ia32 nw/download/node-webkit-$(NW_VERSION)-osx-ia32 nw/download/node-webkit-$(NW_VERSION)-win-ia32
+nw/download-all: nw/download/nwjs-$(NW_VERSION)-linux-x64 nw/download/nwjs-$(NW_VERSION)-linux-ia32 nw/download/nwjs-$(NW_VERSION)-osx-ia32 nw/download/nwjs-$(NW_VERSION)-win-ia32
 
 apps-npm: app/node_modules
 app/node_modules: app/package.json
@@ -77,7 +77,7 @@ apps-mac: release/zed-mac-v$(ZED_VERSION).tar.gz
 release/zed-mac-v$(ZED_VERSION).tar.gz: nw/download apps-npm app/* app/*/* app/*/*/*
 	rm -rf nw/build
 	mkdir -p nw/build
-	cp -r nw/download/node-webkit-$(NW_VERSION)-osx-ia32/node-webkit.app nw/build/Zed.app
+	cp -r nw/download/nwjs-$(NW_VERSION)-osx-ia32/nwjs.app nw/build/Zed.app
 	cp nw/nw.icns nw/build/Zed.app/Contents/Resources/nw.icns
 	cp nw/Info.plist nw/build/Zed.app/Contents/Info.plist
 	cp -r app nw/build/Zed.app/Contents/Resources/app.nw
@@ -97,8 +97,8 @@ apps-win: release/zed-win-v$(ZED_VERSION).tar.gz
 release/zed-win-v$(ZED_VERSION).tar.gz: nw/download nw/app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
-	cat nw/download/node-webkit-$(NW_VERSION)-win-ia32/nw.exe nw/app.nw > nw/build/zed/zed.exe
-	cp nw/download/node-webkit-$(NW_VERSION)-win-ia32/{nw.pak,icudt.dll} nw/build/zed/
+	cat nw/download/nwjs-$(NW_VERSION)-win-ia32/nw.exe nw/app.nw > nw/build/zed/zed.exe
+	cp nw/download/nwjs-$(NW_VERSION)-win-ia32/{nw.pak,icudtl.dat} nw/build/zed/
 	$(RESOURCEHACKER_CMD) -addoverwrite $(PWD)/nw/build/zed/zed.exe, $(PWD)/nw/build/zed/zed.exe, $(PWD)/nw/Icon.ico, ICONGROUP, IDR_MAINFRAME, 2> /dev/null || echo "Running resource hacker failed, so not replacing icon"
 
 	rm -f release/zed-win.zip
@@ -110,8 +110,8 @@ apps-linux64: release/zed-linux64-v$(ZED_VERSION).tar.gz
 release/zed-linux64-v$(ZED_VERSION).tar.gz: nw/download nw/app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
-	cat nw/download/node-webkit-$(NW_VERSION)-linux-x64/nw nw/app.nw > nw/build/zed/zed-bin
-	cp nw/download/node-webkit-$(NW_VERSION)-linux-x64/nw.pak nw/build/zed/
+	cat nw/download/nwjs-$(NW_VERSION)-linux-x64/nw nw/app.nw > nw/build/zed/zed-bin
+	cp nw/download/nwjs-$(NW_VERSION)-linux-x64/{nw.pak,icudtl.dat} nw/build/zed/
 	cp nw/zed-linux nw/build/zed/zed
 	chmod +x nw/build/zed/zed*
 	cp Zed.desktop.tmpl Zed.svg Zed.png nw/build/zed
@@ -122,8 +122,8 @@ apps-linux32: release/zed-linux32-v$(ZED_VERSION).tar.gz
 release/zed-linux32-v$(ZED_VERSION).tar.gz: nw/download nw/app.nw
 	rm -rf nw/build
 	mkdir -p nw/build/zed
-	cat nw/download/node-webkit-$(NW_VERSION)-linux-ia32/nw nw/app.nw > nw/build/zed/zed-bin
-	cp nw/download/node-webkit-$(NW_VERSION)-linux-ia32/nw.pak nw/build/zed/
+	cat nw/download/nwjs-$(NW_VERSION)-linux-ia32/nw nw/app.nw > nw/build/zed/zed-bin
+	cp nw/download/nwjs-$(NW_VERSION)-linux-ia32/nw.pak nw/build/zed/
 	cp nw/zed-linux nw/build/zed/zed
 	chmod +x nw/build/zed/zed*
 	cp Zed.desktop.tmpl Zed.svg Zed.png nw/build/zed
