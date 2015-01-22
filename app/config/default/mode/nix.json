@@ -13,14 +13,16 @@
                     inputs: {
                         text: true
                     },
-                    internal: true
+                    internal: true,
+                    sandbox: "index"
                 },
                 "Tools:Complete:Snippet": {
                     scriptUrl: "/default/command/snippet_completer.js",
                     snippets: {
                         mkDerivation: "mkDerivation {\n\tname = \"${1}\";\n\tsrc = ${2};\n}"
                     },
-                    internal: true
+                    internal: true,
+                    sandbox: "complete"
                 },
                 "Tools:Complete:Builtin": {
                     scriptUrl: "/default/command/builtin_completer.js",
@@ -182,7 +184,8 @@
                         "typeOf",
                         "unsafeDiscardOutputDependency"
                     ],
-                    internal: true
+                    internal: true,
+                    sandbox: "complete"
                 }
             },
             handlers: {

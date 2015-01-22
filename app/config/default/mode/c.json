@@ -33,7 +33,8 @@
                             symbolIndex: 1,
                             type: "type"
                         }
-                    ]
+                    ],
+                    sandbox: "index"
                 }
             },
 

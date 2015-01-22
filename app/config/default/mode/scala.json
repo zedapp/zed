@@ -21,7 +21,8 @@
                         regex: "(object|class|trait)\\s+([a-zA-Z0-9_\\$]+)\\s*(extends|implements|\\{|\\[)",
                         symbolIndex: 2,
                         type: "type"
-                    }]
+                    }],
+                    sandbox: "index"
                 }
             },
             handlers: {

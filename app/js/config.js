@@ -1,7 +1,7 @@
 /*global define, _, chrome, zed */
 define(function(require, exports, module) {
     "use strict";
-    plugin.consumes = ["eventbus", "command", "sandbox", "configfs", "token_store", "background"];
+    plugin.consumes = ["eventbus", "command", "sandboxes", "configfs", "token_store", "background"];
     plugin.provides = ["config"];
     return plugin;
 
@@ -10,7 +10,7 @@ define(function(require, exports, module) {
 
         var eventbus = imports.eventbus;
         var command = imports.command;
-        var sandbox = imports.sandbox;
+        var sandboxes = imports.sandboxes;
         var configfs = imports.configfs;
         var tokenStore = imports.token_store;
         var background = imports.background;
@@ -432,7 +432,7 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
-        sandbox.defineInputable("preferences", function() {
+        sandboxes.defineInputable("preferences", function() {
             return expandedConfiguration.preferences;
         });
 

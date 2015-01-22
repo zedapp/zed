@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     "use strict";
 
-    plugin.consumes = ["eventbus", "command", "config", "modes", "sandbox"];
+    plugin.consumes = ["eventbus", "command", "config", "modes", "sandboxes"];
     plugin.provides = ["editor"];
     return plugin;
 
@@ -13,7 +13,7 @@ define(function(require, exports, module) {
         var command = imports.command;
         var config = imports.config;
         var modes = imports.modes;
-        var sandbox = imports.sandbox;
+        var sandboxes = imports.sandboxes;
 
         var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
         var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-:]/;
@@ -1060,17 +1060,17 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
-        sandbox.defineInputable("cursor", function(session) {
+        sandboxes.defineInputable("cursor", function(session) {
             return session.selection.getCursor();
         });
 
-        sandbox.defineInputable("cursors", function(session) {
+        sandboxes.defineInputable("cursors", function(session) {
             return session.selection.getAllRanges().map(function(r) {
                 return r.cursor || r.end;
             });
         });
 
-        sandbox.defineInputable("cursorIndex", function(session) {
+        sandboxes.defineInputable("cursorIndex", function(session) {
             var cursor = session.selection.getCursor();
             var lines = session.getDocument().getAllLines();
             var index = cursor.column;
@@ -1081,38 +1081,38 @@ define(function(require, exports, module) {
             return index;
         });
 
-        sandbox.defineInputable("isInsertingSnippet", function() {
+        sandboxes.defineInputable("isInsertingSnippet", function() {
             return api.isInsertingSnippet();
         });
 
-        sandbox.defineInputable("lines", function(session) {
+        sandboxes.defineInputable("lines", function(session) {
             return session.getDocument().getAllLines();
         });
 
-        sandbox.defineInputable("scrollPosition", function(session) {
+        sandboxes.defineInputable("scrollPosition", function(session) {
             return {
                 scrollTop: session.getScrollTop(),
                 scrollLeft: session.getScrollLeft()
             };
         });
 
-        sandbox.defineInputable("selectionRange", function(session) {
+        sandboxes.defineInputable("selectionRange", function(session) {
             return session.selection.getRange();
         });
 
-        sandbox.defineInputable("selectionText", function(session) {
+        sandboxes.defineInputable("selectionText", function(session) {
             return session.getTextRange(session.selection.getRange());
         });
 
-        sandbox.defineInputable("text", function(session) {
+        sandboxes.defineInputable("text", function(session) {
             return session.getValue();
         });
 
-        sandbox.defineInputable("modeName", function(session) {
+        sandboxes.defineInputable("modeName", function(session) {
             return session.mode.language;
         });
 
-        sandbox.defineInputable("mode", function(session) {
+        sandboxes.defineInputable("mode", function(session) {
             return session.mode;
         });
 

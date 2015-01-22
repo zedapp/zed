@@ -28,7 +28,7 @@ define(function(require, exports, module) {
             api.defineConfig(name, {
                 doc: cmd.doc,
                 exec: function(edit, session) {
-                    return zed.getService("sandbox").execCommand(name, cmd, session).
+                    return zed.getService("sandboxes").execCommand(name, cmd, session).
                     catch (function(err) {
                         console.error("Command", name, "failed:", err);
                     });

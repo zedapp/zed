@@ -199,7 +199,7 @@ define(function(require, exports, module) {
                         exec: function(edit, session, callback) {
                             var cmd = commandSpec.modeCommand[session.mode.language];
                             if (cmd) {
-                                return zed.getService("sandbox").execCommand(name, cmd, session).
+                                return zed.getService("sandboxes").execCommand(name, cmd, session).
                                 catch (function(err) {
                                     console.error(err);
                                     return Promise.reject(err);

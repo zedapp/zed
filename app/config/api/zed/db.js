@@ -30,4 +30,5 @@ module.exports = {
     queryIndex: function(storeName, index, query) {
         return sandboxRequest("zed/db", "queryIndex", [storeName, index, query]);
     },
+    lastChar: String.fromCharCode(255)
 };
