@@ -28,7 +28,7 @@ define(function(require, exports, module) {
             });
         }
 
-        setInterval(cleanup, 1000);
+        setInterval(cleanup, 20000);
 
         var api = {
             defineInputable: function(name, fn) {
