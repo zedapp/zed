@@ -80,6 +80,17 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         }).
         catch (function(err) {
             console.log("Error", err);
+            var modules = baseModules.slice();
+            modules.push("./fs/empty");
+            boot(modules, false).then(function(zed) {
+                // Remove this project from history
+                zed.getService("history").removeProject(url);
+                zed.getService("ui").prompt({
+                    message: "Project not longer accessible by Zed. This window will now close."
+                }).then(function() {
+                    zed.getService("window").close();
+                });
+            });
         });
     }
 

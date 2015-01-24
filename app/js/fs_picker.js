@@ -16,30 +16,11 @@ define(function(require, exports, module) {
                 }
             });
         } else if (url.indexOf("syncfs:") === 0) {
+            // Deprecated
             return Promise.resolve({
                 packagePath: "./fs/sync",
                 namespace: "notes"
             });
-            // // In order to not confuse users, we'll prefill the project with a welcome.md file
-            // io.listFiles(function(err, files) {
-            //     if (err) {
-            //         return console.error("List file error", err);
-            //     }
-            //     if (files.length === 0) {
-            //         var finished = 0;
-
-            //         function doneCallback(err) {
-            //             finished++;
-            //             if (finished === 2) {
-            //                 setupMethods(io);
-            //             }
-            //         }
-            //         io.writeFile("/welcome.md", require("text!../../notes.md"), doneCallback);
-            //         io.writeFile("/.zedstate", '{"session.current": ["/welcome.md"]}', doneCallback);
-            //     } else {
-            //         setupMethods(io);
-            //     }
-            // });
         } else if (url.indexOf("dropbox:") === 0) {
             var path = url.substring("dropbox:".length);
             return Promise.resolve({
@@ -52,6 +33,9 @@ define(function(require, exports, module) {
             return new Promise(function(resolve, reject) {
                 if (id) {
                     chrome.fileSystem.restoreEntry(id, function(dir) {
+                        if(!dir) {
+                            return reject(new Error("Not accessible"));
+                        }
                         resolve({
                             packagePath: "./fs/local",
                             dir: dir,
