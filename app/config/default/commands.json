@@ -252,7 +252,8 @@
             "doc": "Recursively search all files within the entire project.",
             "scriptUrl": "./command/search.js",
             "readOnly": true,
-            "internal": true
+            "internal": true,
+            "sandbox": "find-in-project"
         },
         "Select:Sort Lines": {
             "doc": "Take the selected lines and sort them.",
@@ -287,11 +288,13 @@
         },
         "Tools:Complete:Symbol": {
             "doc": "Display auto-complete results based on symbol indexing.",
-            "scriptUrl": "./command/symbol_completer.js"
+            "scriptUrl": "./command/symbol_completer.js",
+            "sandbox": "complete"
         },
         "Tools:Complete:Text": {
             "doc": "Display auto-complete results based on simple text matches.",
-            "scriptUrl": "./command/text_completer.js"
+            "scriptUrl": "./command/text_completer.js",
+            "sandbox": "complete"
         }
     }
 }

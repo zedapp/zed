@@ -75,7 +75,8 @@ define(function(require, exports, module) {
                     return command.exec(cmd, edit, edit.getSession(), args);
                 },
                 multiSelectAction: c.multiSelectAction,
-                readOnly: c.readOnly
+                readOnly: c.readOnly,
+                scrollIntoView: c.scrollIntoView === undefined ? "cursor" : c.scrollIntoView
             });
         }
 
@@ -92,19 +93,22 @@ define(function(require, exports, module) {
                         editor.clearSelection();
                     }
                 },
-                multiSelectAction: "forEach"
+                multiSelectAction: "forEach",
+                scrollIntoView: "cursor"
             }, {
                 name: "insertstring",
                 exec: function(editor, str) {
                     editor.insert(str);
                 },
-                multiSelectAction: "forEach"
+                multiSelectAction: "forEach",
+                scrollIntoView: "cursor"
             }, {
                 name: "inserttext",
                 exec: function(editor, session, args) {
                     editor.insert(lang.stringRepeat(args.text || "", args.times || 1));
                 },
-                multiSelectAction: "forEach"
+                multiSelectAction: "forEach",
+                scrollIntoView: "cursor"
             }];
 
             _.each(keys, function(cmd, name) {

@@ -11,102 +11,95 @@
  */
 /*global define, $, _ */
 define(function(require, exports, module) {
-    plugin.consumes = ["command", "eventbus"];
+    plugin.consumes = ["command"];
     plugin.provides = ["sandbox"];
     return plugin;
 
     function plugin(options, imports, register) {
         var command = imports.command;
-        var eventbus = imports.eventbus;
 
         var async = require("./lib/async");
+        var events = require("./lib/events");
 
-        var sandboxEl;
-        var id;
-        var waitingForReply;
-        var inputables = {};
+        var id = 0; // global request counter
+        var waitingForReply = {}; // global waiting for message registry
 
-        eventbus.declare("sandboxready");
+        function Sandbox() {
+            this.sandboxEl = null;
+            events.EventEmitter.call(this, false);
+            this.execCommand = async.queueUntilEvent(this, "sandboxready", this.$execCommand.bind(this));
+            this.reset();
+        }
 
-        var api = {
-            defineInputable: function(name, fn) {
-                inputables[name] = fn;
-            },
-            getInputable: function(session, name) {
-                return inputables[name] && inputables[name](session);
-            },
-            /**
-             * Programmatically call a sandbox command, the spec argument has the following keys:
-             * - scriptUrl: the URL (http, https or relative local path) of the require.js module
-             *   that implements the command
-             * Any other arguments added in spec are passed along as the first argument to the
-             * module which is executed as a function.
-             */
-            execCommand: async.queueUntilEvent(eventbus, "sandboxready", function(name, spec, session) {
-                return new Promise(function(resolve, reject) {
-                    if (session.$cmdInfo) {
-                        spec = _.extend({}, spec, session.$cmdInfo);
-                        session.$cmdInfo = null;
-                    }
-                    id++;
-                    waitingForReply[id] = function(err, result) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(result);
-                        }
-                    };
-                    var scriptUrl = spec.scriptUrl;
-                    if (scriptUrl[0] === "/") {
-                        scriptUrl = "configfs!" + scriptUrl;
-                    }
-                    // This data can be requested as input in commands.json
-                    var inputs = {};
-                    for (var input in (spec.inputs || {})) {
-                        inputs[input] = api.getInputable(session, input);
-                    }
-                    sandboxEl[0].contentWindow.postMessage({
-                        url: scriptUrl,
-                        data: _.extend({}, spec, {
-                            path: session.filename,
-                            inputs: inputs
-                        }),
-                        id: id
-                    }, '*');
+        Sandbox.prototype = new events.EventEmitter();
 
-                });
-            })
-        };
-
-        /**
-         * If we would like to reset our sandbox (e.d. to reload code), we can
-         * simply delete and readd the iframe.
-         */
-        function resetSandbox() {
-            return new Promise(function(resolve) {
-                if (sandboxEl) {
-                    sandboxEl.remove();
+        Sandbox.prototype.$execCommand = function(name, spec, session) {
+            var sandbox = this;
+            return new Promise(function(resolve, reject) {
+                if (session.$cmdInfo) {
+                    spec = _.extend({}, spec, session.$cmdInfo);
+                    session.$cmdInfo = null;
                 }
-                $("body").append('<webview id="sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
-                sandboxEl = $("#sandbox");
-                var sandbox = sandboxEl[0];
-                sandbox.addEventListener('permissionrequest', function(e) {
-                    console.log("Got permission request", e);
-                });
+                id++;
+                waitingForReply[id] = function(err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                };
+                var scriptUrl = spec.scriptUrl;
+                if (scriptUrl[0] === "/") {
+                    scriptUrl = "configfs!" + scriptUrl;
+                }
+                // This data can be requested as input in commands.json
+                var inputs = {};
+                for (var input in (spec.inputs || {})) {
+                    inputs[input] = zed.getService("sandboxes").getInputable(session, input);
+                }
+                sandbox.sandboxEl[0].contentWindow.postMessage({
+                    url: scriptUrl,
+                    data: _.extend({}, spec, {
+                        path: session.filename,
+                        inputs: inputs
+                    }),
+                    id: id
+                }, '*');
+
+            });
+        };
+        Sandbox.prototype.reset = function() {
+            var sandbox = this;
+            return new Promise(function(resolve) {
+                sandbox.destroy();
+
+                var sandboxEl = $('<webview class="sandbox" src="data:text/html,<html><body>Right click and choose Inspect Element to open error console.</body></html>">');
+                sandbox.sandboxEl = sandboxEl;
+                $("body").append(sandboxEl);
+                var sb = sandboxEl[0];
                 sandboxEl.css("left", "-1000px");
-                sandbox.addEventListener("contentload", function() {
-                    sandbox.executeScript({
+                sb.addEventListener("contentload", function() {
+                    sb.executeScript({
                         code: require("text!../dep/require.js") + require("text!../dep/underscore-min.js") + require("text!./sandbox_webview.js") + require("text!../dep/json5.js") + require("text!../dep/zedb.js")
                     });
-                    eventbus.emit("sandboxready");
+                    sandbox.emit("sandboxready");
+                    resolve();
                 });
-                sandbox.addEventListener('consolemessage', function(e) {
+                sb.addEventListener('consolemessage', function(e) {
                     console.log('[Sandbox]: ' + e.message + ' (line: ' + e.line + ')');
                 });
-                waitingForReply = {};
-                id = 0;
             });
-        }
+        };
+
+        Sandbox.prototype.destroy = function() {
+            if (this.sandboxEl) {
+                this.sandboxEl.remove();
+            }
+        };
+
+        var api = {
+            Sandbox: Sandbox
+        };
 
         /**
          * Handle a request coming from within the sandbox, and send back a response
@@ -121,7 +114,7 @@ define(function(require, exports, module) {
                     }, "*");
                 }
                 var r = mod[data.call].apply(mod, data.args);
-                if(!r || !r.then) {
+                if (!r || !r.then) {
                     console.error("Got empty result from", mod, data.call);
                 }
                 r.then(function(result) {
@@ -157,7 +150,6 @@ define(function(require, exports, module) {
             }
         };
 
-
         window.execSandboxApi = function(api, args) {
             var parts = api.split('.');
             var mod = parts.slice(0, parts.length - 1).join('/');
@@ -171,24 +163,6 @@ define(function(require, exports, module) {
                 });
             });
         };
-
-        command.define("Sandbox:Reset", {
-            doc: "Reload all sandbox code. If you've made changes to a Zed " + "extension in your sandbox, you must run this for those changes " + "to take effect.",
-            exec: resetSandbox,
-            readOnly: true
-        });
-
-        command.define("Sandbox:Show", {
-            doc: "Inspect your sandbox contents.",
-            exec: function() {
-                sandboxEl.css("left", "50px");
-                setTimeout(function() {
-                    sandboxEl.css("left", "-1000px");
-                }, 5000);
-            }
-        });
-
-        resetSandbox();
 
         register(null, {
             sandbox: api

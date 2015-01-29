@@ -12,13 +12,15 @@
                     inputs: {
                         text: true
                     },
-                    internal: true
+                    internal: true,
+                    sandbox: "check"
                 },
                 "Tools:Index": {
                     scriptUrl: "/default/mode/coffee/index.js",
                     inputs: {
                         text: true
-                    }
+                    },
+                    sandbox: "index"
                 },
                 "Tools:Preview": {
                     scriptUrl: "/default/mode/coffee/preview.js",

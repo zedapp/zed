@@ -39,19 +39,19 @@ index-config:
 
 nw/download/node-webkit-$(NW_VERSION)-linux-x64:
 	mkdir -p nw/download
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-x64.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-x64.tar.gz
+	cd nw/download && curl -OL http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-x64.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-x64.tar.gz
 
 nw/download/node-webkit-$(NW_VERSION)-linux-ia32:
 	mkdir -p nw/download
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-ia32.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-ia32.tar.gz
+	cd nw/download && curl -OL http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-linux-ia32.tar.gz && tar xzf node-webkit-$(NW_VERSION)-linux-ia32.tar.gz
 
 nw/download/node-webkit-$(NW_VERSION)-osx-ia32:
 	mkdir -p nw/download
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-osx-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-osx-ia32 node-webkit-$(NW_VERSION)-osx-ia32.zip
+	cd nw/download && curl -OL http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-osx-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-osx-ia32 node-webkit-$(NW_VERSION)-osx-ia32.zip
 
 nw/download/node-webkit-$(NW_VERSION)-win-ia32:
 	mkdir -p nw/download
-	cd nw/download && curl -O http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-win-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-win-ia32 node-webkit-$(NW_VERSION)-win-ia32.zip
+	cd nw/download && curl -OL http://dl.node-webkit.org/$(NW_VERSION)/node-webkit-$(NW_VERSION)-win-ia32.zip && unzip -d node-webkit-$(NW_VERSION)-win-ia32 node-webkit-$(NW_VERSION)-win-ia32.zip
 
 ifeq ($(PLATFORM),linux)
 ifeq ($(LBITS),64)

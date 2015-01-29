@@ -12,13 +12,15 @@
                     scriptUrl: "/default/mode/logiql/index.js",
                     inputs: {
                         text: true
-                    }
+                    },
+                    sandbox: "index"
                 },
                 "Tools:Complete:Snippet": {
                     scriptUrl: "/default/command/snippet_completer.js",
                     snippets: {
                         module: "block(`${1:mymodule}) {\n\texport(`{\n\t\t\n\t}),\n\tclauses(`{\n\t\t${2}\n\t})\n} <-- ."
-                    }
+                    },
+                    sandbox: "complete"
                 }
             },
             preferences: {

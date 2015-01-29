@@ -15,7 +15,8 @@
                         regex: "\\(defn-?\\s*([A-Z-a-z0-9_\\-]+)",
                         symbolIndex: 1,
                         type: "function"
-                    }]
+                    }],
+                    sandbox: "index"
                 }
             },
             handlers: {
