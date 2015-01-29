@@ -78,6 +78,8 @@
 /default/mode/dot.json
 /default/mode/eiffel.json
 /default/mode/ejs.json
+/default/mode/elixir.json
+/default/mode/elm.json
 /default/mode/erlang.json
 /default/mode/forth.json
 /default/mode/ftl.json

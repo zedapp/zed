@@ -63,7 +63,7 @@ body.native-chrome #editor-wrapper-wrapper.top-menu {
 body.dark #editor-wrapper {
     background-color: #333;
 }
-#sandbox {
+.sandbox {
     z-index: 500;
     position: absolute;
     left: 50px;

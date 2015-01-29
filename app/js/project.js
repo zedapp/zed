@@ -4,7 +4,7 @@
  */
 /*global define, $, zed */
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "command", "open_ui", "background"];
+    plugin.consumes = ["eventbus", "command", "open_ui"];
     return plugin;
 
     function plugin(options, imports, register) {
@@ -12,7 +12,6 @@ define(function(require, exports, module) {
         var command = imports.command;
         var eventbus = imports.eventbus;
         var openUi = imports.open_ui;
-        var background = imports.background;
 
         $("title").text(opts.get("title"));
 

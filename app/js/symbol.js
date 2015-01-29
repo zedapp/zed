@@ -12,6 +12,8 @@ define(function(require, exports, module) {
 
         var async = require("./lib/async");
 
+        var LAST_CHAR = String.fromCharCode(255);
+
         var api = {
             updateSymbols: async.queueUntilEvent(eventbus, "dbavailable", function(path, symbolInfos) {
                 var db = dbP.get();
@@ -42,15 +44,15 @@ define(function(require, exports, module) {
                 }
                 var db = dbP.get();
                 if (opts.path && !opts.prefix) {
-                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, ""], "<=", [opts.path, "~"], {
+                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, ""], "<=", [opts.path, LAST_CHAR], {
                         limit: opts.limit
                     });
                 } else if (opts.prefix && !opts.path) {
-                    return db.readStore("symbols").query(">=", opts.prefix, "<=", opts.prefix + "~", {
+                    return db.readStore("symbols").query(">=", opts.prefix, "<=", opts.prefix + LAST_CHAR, {
                         limit: opts.limit
                     });
                 } else if (opts.prefix && opts.path) {
-                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, opts.prefix], "<=", [opts.path, opts.prefix + "~"], {
+                    return db.readStore("symbols").index("path_sym").query(">=", [opts.path, opts.prefix], "<=", [opts.path, opts.prefix + LAST_CHAR], {
                         limit: opts.limit
                     });
                 } else {

@@ -4,7 +4,8 @@
             name: "HTML",
             highlighter: "ace/mode/html",
             extensions: [
-                "html"
+                "html",
+                "htm"
             ],
             commands: {
                 "Tools:Beautify": {

@@ -46,6 +46,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./db",
         "./webservers",
         "./version_control",
+        "./sandboxes",
         "./open_ui"];
 
     if (window.isNodeWebkit) {
@@ -79,6 +80,17 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         }).
         catch (function(err) {
             console.log("Error", err);
+            var modules = baseModules.slice();
+            modules.push("./fs/empty");
+            boot(modules, false).then(function(zed) {
+                // Remove this project from history
+                zed.getService("history").removeProject(url);
+                zed.getService("ui").prompt({
+                    message: "Project not longer accessible by Zed. This window will now close."
+                }).then(function() {
+                    zed.getService("window").close();
+                });
+            });
         });
     }
 
@@ -99,7 +111,8 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                     var app = architect.createApp(config, function(err, app) {
                         if (err) {
                             window.err = err;
-                            return console.error("Architect createApp error", err, err.stack);
+                            console.error("Architect createApp error", err, err.stack);
+                            return reject(err);
                         }
                         $("#wait-logo").remove();
                         try {
@@ -161,7 +174,7 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                     });
                     app.on("error", function(err) {
                         console.error("Error", err);
-                    })
+                    });
 
                     window.zed_app = app;
                 } catch (err) {

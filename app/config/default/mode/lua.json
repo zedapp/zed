@@ -12,7 +12,8 @@
                     scriptUrl: "/default/mode/lua/check.js",
                     inputs: {
                         text: true
-                    }
+                    },
+                    sandbox: "check"
                 }
             },
             handlers: {

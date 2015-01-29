@@ -90,6 +90,9 @@ define(function(require, exports, module) {
                     }
                 }
             }).then(checkSchemaChange(schema)).then(function(db_) {
+                if(!db_) {
+                    console.error("Got empty db variable");
+                }
                 db = db_;
                 eventbus.emit("dbavailable", db);
                 return db;

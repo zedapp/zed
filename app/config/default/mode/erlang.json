@@ -4,7 +4,8 @@
             name: "Erlang",
             highlighter: "ace/mode/erlang",
             extensions: [
-                "erl"
+                "erl",
+                "hrl"
             ]
         }
     }

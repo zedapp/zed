@@ -8,7 +8,10 @@
             ],
             commands: {
                 "Tools:Beautify": {
-                    scriptUrl: "/default/mode/html/beautify.js"
+                    scriptUrl: "/default/mode/html/beautify.js",
+                    inputs: {
+                        preferences: true
+                    }
                 }
             }
         }

@@ -1,0 +1,11 @@
+{
+    modes: {
+        elm: {
+            name: "Elm",
+            highlighter: "ace/mode/elm",
+            extensions: [
+                "elm"
+            ]
+        }
+    }
+}

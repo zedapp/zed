@@ -35,27 +35,6 @@ define(function(require, exports, module) {
                 return userAgent.isLinux;
                 // return false;
             },
-            // create: function(url, width, height) {
-            //     width = width || 800;
-            //     height = height || 600;
-            //     return new Promise(function(resolve) {
-            //         chrome.app.window.create(url, {
-            //             frame: api.useNativeFrame() ? "chrome" : "none",
-            //             width: width,
-            //             height: height,
-            //         }, function(win) {
-            //             resolve({
-            //                 addCloseListener: function(listener) {
-            //                     win.onClosed.addListener(listener);
-            //                 },
-            //                 window: win.contentWindow,
-            //                 focus: function() {
-            //                     win.focus();
-            //                 }
-            //             });
-            //         });
-            //     });
-            // },
             fullScreen: function() {
                 if (win.isFullscreen()) {
                     win.restore();
@@ -74,10 +53,26 @@ define(function(require, exports, module) {
                 win.minimize();
             },
             getBounds: function() {
-                return win.getBounds();
+                var bounds = win.getBounds();
+                return {
+                    width: bounds.width,
+                    height: bounds.height,
+                    top: bounds.top,
+                    left: bounds.left,
+                    isMaximized: win.isMaximized()
+                };
             },
             setBounds: function(bounds) {
-                win.setBounds(bounds);
+                if(bounds.isMaximized) {
+                    win.maximize();
+                } else {
+                    if(bounds.width < 200 || bounds.height < 200) {
+                        // Bounds messed up, let's just ignore and use defaults
+                        return;
+                    }
+                    delete bounds.isMaximized;
+                    win.setBounds(bounds);
+                }
             },
             addResizeListener: function(listener) {
                 win.onBoundsChanged.addListener(listener);

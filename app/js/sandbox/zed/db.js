@@ -33,7 +33,7 @@ define(function(require, exports, module) {
             var store = db.readStore(storeName);
             return store.getAll(null, options);
         },
-        query: function(storeName, query, callback) {
+        query: function(storeName, query) {
             var db = zed.getService("db").get();
             if(!db) {
                 return Promise.reject("DB not available yet");

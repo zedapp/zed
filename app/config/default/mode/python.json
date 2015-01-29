@@ -25,6 +25,7 @@
                 },
                 "Tools:Complete:Snippet": {
                     scriptUrl: "/default/command/snippet_completer.js",
+                    sandbox: "complete",
                     snippets: {
                         "from": "from ${1} import ${2}",
                         "try": "try:\n\t${1}",

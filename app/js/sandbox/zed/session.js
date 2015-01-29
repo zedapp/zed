@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 
     function useInputable(inputableName) {
         return function(path) {
-            return Promise.resolve(zed.getService("sandbox").getInputable(getSession(path), inputableName));
+            return Promise.resolve(zed.getService("sandboxes").getInputable(getSession(path), inputableName));
         };
     }
 

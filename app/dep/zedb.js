@@ -246,6 +246,7 @@
 
         exports.garbageCollect = function(age) {
             age = age || 1000 * 60 * 60 * 24 * 14; // 2 weeks
+            console.log("Garbage collecting old databases...");
             promisifyRequest(indexedDB.webkitGetDatabaseNames()).then(function(dbNames) {
                 for (var i = 0; i < dbNames.length; i++) {
                     (function() {
@@ -256,10 +257,17 @@
                                     if (meta.lastUse < Date.now() - age) {
                                         console.log("Deleting", dbName, "since it is old");
                                         db.close();
-                                        exports.delete(dbName);
+                                        exports.delete(dbName).then(function() {
+                                            console.log("Deleted.");
+                                        }, function(err) {
+                                            console.error("Delete failed", err);
+                                        });
                                     }
                                 });
                             }
+                        }).
+                        catch (function(err) {
+                            console.error("Error", err);
                         });
                     })();
                 }

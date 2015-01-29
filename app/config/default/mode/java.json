@@ -21,7 +21,8 @@
                         regex: "class\\s+([a-zA-Z0-9_\\$]+)\\s*(extends|implements|\\{)",
                         symbolIndex: 1,
                         type: "type"
-                    }]
+                    }],
+                    sandbox: "index"
                 }
             },
 

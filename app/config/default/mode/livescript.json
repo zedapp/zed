@@ -14,13 +14,15 @@
                     inputs: {
                         text: true
                     },
-                    internal: true
+                    internal: true,
+                    sandbox: "check"
                 },
                 "Tools:Index": {
                     scriptUrl: "/default/mode/livescript/index.js",
                     inputs: {
                         text: true
-                    }
+                    },
+                    sandbox: "index"
                 },
                 "Tools:Preview": {
                     scriptUrl: "/default/mode/livescript/preview.js",

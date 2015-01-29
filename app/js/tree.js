@@ -127,9 +127,7 @@ define(function(require, exports, module) {
 
             function cancel() {
                 if (!config.getPreference("persistentTree")) {
-                    treeEl.hide();
-                    treeVisible = false;
-                    $("#editor-wrapper-wrapper").removeClass("left-tree");
+                    hideTree();
                 }
                 editor.getActiveEditor().focus();
             }

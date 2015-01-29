@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     "use strict";
 
-    plugin.consumes = ["eventbus", "command", "config", "modes", "sandbox"];
+    plugin.consumes = ["eventbus", "command", "config", "modes", "sandboxes"];
     plugin.provides = ["editor"];
     return plugin;
 
@@ -13,7 +13,7 @@ define(function(require, exports, module) {
         var command = imports.command;
         var config = imports.config;
         var modes = imports.modes;
-        var sandbox = imports.sandbox;
+        var sandboxes = imports.sandboxes;
 
         var IDENT_REGEX = /[a-zA-Z0-9_$\-]+/;
         var PATH_REGEX = /[\/\.a-zA-Z0-9_$\-:]/;
@@ -112,6 +112,7 @@ define(function(require, exports, module) {
                 editors.push(ace.edit("editor2"));
 
                 editors.forEach(function(editor) {
+                    editor.$blockScrolling = Infinity;
                     editor.setShowPrintMargin(false);
                     // Disable ACE's built-in theming
                     editor.setTheme({
@@ -402,7 +403,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.selectAll();
             },
-            readOnly: true
+            readOnly: true,
+            scrollIntoView: false
         });
 
         command.define("Select:None", {
@@ -410,7 +412,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.clearSelection();
             },
-            readOnly: true
+            readOnly: true,
+            scrollIntoView: false
         });
 
         command.define("Select:To File End", {
@@ -552,7 +555,8 @@ define(function(require, exports, module) {
                 editor.navigateFileStart();
             },
             multiSelectAction: "forEach",
-            readOnly: true
+            readOnly: true,
+            scrollIntoView: "animate"
         });
 
         command.define("Cursor:File End", {
@@ -561,7 +565,8 @@ define(function(require, exports, module) {
                 editor.navigateFileEnd();
             },
             multiSelectAction: "forEach",
-            readOnly: true
+            readOnly: true,
+            scrollIntoView: "animate"
         });
 
         command.define("Cursor:Word Left", {
@@ -773,7 +778,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.toggleCommentLines();
             },
-            multiSelectAction: "forEach"
+            multiSelectAction: "forEach",
+            scrollIntoView: "selectionPart"
         });
 
         command.define("Edit:Number:Increase", {
@@ -878,7 +884,7 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.indent();
             },
-            multiSelectAction: "forEach"
+            multiSelectAction: "forEach",
         });
 
         command.define("Edit:Block Outdent", {
@@ -886,7 +892,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.blockOutdent();
             },
-            multiSelectAction: "forEach"
+            multiSelectAction: "forEach",
+            scrollIntoView: "selectionPart"
         });
 
         command.define("Edit:Block Indent", {
@@ -894,7 +901,8 @@ define(function(require, exports, module) {
             exec: function(editor) {
                 editor.blockIndent();
             },
-            multiSelectAction: "forEach"
+            multiSelectAction: "forEach",
+            scrollIntoView: "selectionPart"
         });
 
         command.define("Edit:Split Line", {
@@ -1052,17 +1060,17 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
-        sandbox.defineInputable("cursor", function(session) {
+        sandboxes.defineInputable("cursor", function(session) {
             return session.selection.getCursor();
         });
 
-        sandbox.defineInputable("cursors", function(session) {
+        sandboxes.defineInputable("cursors", function(session) {
             return session.selection.getAllRanges().map(function(r) {
                 return r.cursor || r.end;
             });
         });
 
-        sandbox.defineInputable("cursorIndex", function(session) {
+        sandboxes.defineInputable("cursorIndex", function(session) {
             var cursor = session.selection.getCursor();
             var lines = session.getDocument().getAllLines();
             var index = cursor.column;
@@ -1073,38 +1081,38 @@ define(function(require, exports, module) {
             return index;
         });
 
-        sandbox.defineInputable("isInsertingSnippet", function() {
+        sandboxes.defineInputable("isInsertingSnippet", function() {
             return api.isInsertingSnippet();
         });
 
-        sandbox.defineInputable("lines", function(session) {
+        sandboxes.defineInputable("lines", function(session) {
             return session.getDocument().getAllLines();
         });
 
-        sandbox.defineInputable("scrollPosition", function(session) {
+        sandboxes.defineInputable("scrollPosition", function(session) {
             return {
                 scrollTop: session.getScrollTop(),
                 scrollLeft: session.getScrollLeft()
             };
         });
 
-        sandbox.defineInputable("selectionRange", function(session) {
+        sandboxes.defineInputable("selectionRange", function(session) {
             return session.selection.getRange();
         });
 
-        sandbox.defineInputable("selectionText", function(session) {
+        sandboxes.defineInputable("selectionText", function(session) {
             return session.getTextRange(session.selection.getRange());
         });
 
-        sandbox.defineInputable("text", function(session) {
+        sandboxes.defineInputable("text", function(session) {
             return session.getValue();
         });
 
-        sandbox.defineInputable("modeName", function(session) {
+        sandboxes.defineInputable("modeName", function(session) {
             return session.mode.language;
         });
 
-        sandbox.defineInputable("mode", function(session) {
+        sandboxes.defineInputable("mode", function(session) {
             return session.mode;
         });
 

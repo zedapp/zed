@@ -7,6 +7,7 @@ define(function(require, exports, module) {
 
     function plugin(options, imports, register) {
         var AcePopup = require("./lib/ace_popup").AcePopup;
+        // var AcePopup = require("ace/autocomplete/popup").AcePopup;
         var path = require("./lib/path");
         var keyCode = require("./lib/key_code");
 
@@ -58,6 +59,14 @@ define(function(require, exports, module) {
                     select();
                     e.stop();
                 });
+                // Initialize with some dummy data (works around an ACE bug)
+                popup.setData([{
+                    name: "1"
+                }, {
+                    name: "2"
+                }, {
+                    name: "3"
+                }]);
 
                 var handleSelect = false;
 
@@ -89,8 +98,7 @@ define(function(require, exports, module) {
                     if (event.keyCode === keyCode('Return')) {
                         select();
                     } else if (lastPhrase != input.val()) {
-                        updateResults();
-                        triggerOnChange();
+                        updateResults().then(triggerOnChange);
                     }
                 });
 
@@ -250,6 +258,7 @@ define(function(require, exports, module) {
                                 }, 14);
                                 $(popup.container).css("top", 0);
                             }
+                            window.results = results;
                             popup.setData(results);
                             handleSelect = true;
                         } else {
@@ -259,6 +268,7 @@ define(function(require, exports, module) {
                         lastPhrase = phrase;
                     });
                 }
+                window.popup = popup;
 
                 function doTab() {
                     var phrase = input.val();
@@ -369,10 +379,10 @@ define(function(require, exports, module) {
                 $("#blockui").remove();
             },
             showWebview: function(url) {
-                if(webviewEl) {
+                if (webviewEl) {
                     webviewEl.remove();
                 }
-                if(window.isNodeWebkit) {
+                if (window.isNodeWebkit) {
                     webviewEl = $("<div class='webview-wrapper'><iframe nwdisable nwfaketop class='webview'>");
                 } else {
                     webviewEl = $("<div class='webview-wrapper'><webview class='webview'>");
@@ -384,7 +394,7 @@ define(function(require, exports, module) {
                 });
             },
             hideWebview: function() {
-                if(webviewEl) {
+                if (webviewEl) {
                     webviewEl.remove();
                     zed.getService("editor").getActiveEditor().focus();
                 }
