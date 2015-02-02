@@ -1,0 +1,14 @@
+{
+  "name": "zedd",
+  "version": "0.1.0",
+  "dependencies": {
+    "basic-auth": "^1.0.0",
+    "ini": "^1.3.2",
+    "mime": "^1.2.11",
+    "mkdirp": "^0.3.5",
+    "nconf": "^0.7.1"
+  },
+  "bin": {
+    "zedd": "./server.js"
+  }
+}

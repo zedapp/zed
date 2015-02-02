@@ -7,10 +7,14 @@ define(function(require, exports, module) {
         var poll_watcher = require("./poll_watcher");
         var fsUtil = require("./util");
         var url = options.url;
+        var user = options.user;
+        var pass = options.pass;
 
         var mode = "directory"; // or: file
         var fileModeFilename; // if mode === "file"
         var watcher;
+
+        console.log("Web FS", options);
 
         function listFiles() {
             return new Promise(function(resolve, reject) {
@@ -23,6 +27,8 @@ define(function(require, exports, module) {
                     data: {
                         action: 'filelist'
                     },
+                    username: user || undefined,
+                    password: pass || undefined,
                     success: function(res) {
                         var items = res.split("\n");
                         for (var i = 0; i < items.length; i++) {
@@ -56,6 +62,8 @@ define(function(require, exports, module) {
                 $.ajax({
                     type: "GET",
                     url: url + path,
+                    username: user || undefined,
+                    password: pass || undefined,
                     error: function(xhr) {
                         reject(xhr.status);
                     },
@@ -89,6 +97,8 @@ define(function(require, exports, module) {
                     // dataType: 'text',
                     contentType: 'application/octet-stream',
                     processData: false,
+                    username: user || undefined,
+                    password: pass || undefined,
                     success: function(res, status, xhr) {
                         watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
                         watcher.unlockFile(path);
@@ -108,6 +118,8 @@ define(function(require, exports, module) {
                     type: 'DELETE',
                     dataType: 'text',
                     success: reject,
+                    username: user || undefined,
+                    password: pass || undefined,
                     error: function(xhr) {
                         resolve(xhr.status);
                     }
@@ -127,6 +139,8 @@ define(function(require, exports, module) {
             return new Promise(function(resolve, reject) {
                 $.ajax(url + path, {
                     type: 'HEAD',
+                    username: user || undefined,
+                    password: pass || undefined,
                     success: function(data, status, xhr) {
                         var newEtag = xhr.getResponseHeader("ETag");
                         resolve(newEtag);
@@ -141,6 +155,8 @@ define(function(require, exports, module) {
         // Check if we're dealing with one file
         $.ajax(url, {
             type: 'HEAD',
+            username: user || undefined,
+            password: pass || undefined,
             success: function(data, status, xhr) {
                 var type = xhr.getResponseHeader("X-Type");
                 if (type === "file") {

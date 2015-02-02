@@ -1,3 +1,4 @@
+/* global DTNodeStatus_Ok */
 define(function(require, exports, module) {
     plugin.consumes = ["eventbus", "history", "token_store", "fs", "editor", "config", "background", "menu"];
     plugin.provides = ["open_ui"];
@@ -52,14 +53,14 @@ define(function(require, exports, module) {
                 name: "Remote Folder",
                 url: "zedrem:"
             }, {
+                name: "Zedd Folder",
+                url: "zedd:"
+            }, {
                 name: "Github Repository",
                 url: "gh:"
             }, {
                 name: "Dropbox Folder",
                 url: "dropbox:"
-            // }, {
-            //     name: "Notes",
-            //     url: "syncfs:",
             }, {
                 name: "Configuration",
                 html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
@@ -77,7 +78,7 @@ define(function(require, exports, module) {
         var api = {
             openInNewWindow: false,
             boot: function() {
-                    console.log("HERE", closed);
+                console.log("HERE", closed);
                 config.loadConfiguration().then(function() {
                     if (closed) {
                         return;
@@ -88,7 +89,8 @@ define(function(require, exports, module) {
                     if (enable === undefined || showMenus === undefined) {
                         api.firstRun();
                     }
-                }).catch(function(err) {
+                }).
+                catch (function(err) {
                     console.error("Error booting", err);
                 });
             },
@@ -158,7 +160,7 @@ define(function(require, exports, module) {
                                 });
                                 return;
                             }
-                            if(b.notInList) {
+                            if (b.notInList) {
                                 api.open(b.name, b.name);
                                 return api.close();
                             }
@@ -177,6 +179,15 @@ define(function(require, exports, module) {
                                     api.dropbox().then(function(url) {
                                         if (url) {
                                             api.open(url.slice("dropbox:".length), url);
+                                        } else {
+                                            api.showOpenUi();
+                                        }
+                                    });
+                                    break;
+                                case "zedd:":
+                                    api.zedd().then(function(url) {
+                                        if (url) {
+                                            api.open(url, url);
                                         } else {
                                             api.showOpenUi();
                                         }
@@ -424,6 +435,137 @@ define(function(require, exports, module) {
                     function close() {
                         el.remove();
                     }
+                });
+            },
+            zedd: function() {
+                return new Promise(function(resolve) {
+                    var el = $("<div class='modal-view'></div>");
+                    $("body").append(el);
+                    $.get("/open/zedd.html", function(html) {
+                        el.html(html);
+                        $("#zedd-url").focus();
+                        $("#cancel").click(function() {
+                            close();
+                            resolve();
+                        });
+
+                        $("#zedd-form").submit(function(event) {
+                            var url = $("#zedd-url").val();
+                            var user = $("#zedd-user").val();
+                            var pass = $("#zedd-pass").val();
+                            check(url, user, pass).then(function() {
+                                updateTree();
+                            }, function(err) {
+                                $("#hint").text("Couldn't open: " + (err || "error"));
+                            });
+                            event.preventDefault();
+                        });
+                    });
+
+                    function close() {
+                        el.remove();
+                    }
+
+                    function check(url, user, pass) {
+                        return new Promise(function(resolve, reject) {
+                            // Only check http(s) links
+                            if (url.indexOf("http") !== 0) {
+                                return reject();
+                            }
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                data: {
+                                    action: 'version'
+                                },
+                                username: user || undefined,
+                                password: pass || undefined,
+                                success: function() {
+                                    resolve();
+                                },
+                                error: function(err) {
+                                    reject(err.statusText);
+                                },
+                                dataType: "text"
+                            });
+                        });
+                    }
+
+                    function updateTree() {
+                        var treeEl = $("#zedd-tree");
+                        treeEl.focus();
+
+                        function readDir(path) {
+                            return new Promise(function(resolve, reject) {
+                                $.ajax({
+                                    type: "GET",
+                                    url: $("#zedd-url").val() + path,
+                                    username: $("#zedd-user").val() || undefined,
+                                    password: $("#zedd-pass").val() || undefined,
+                                    success: function(text) {
+                                        var entries = text.split("\n");
+                                        var dirs = [];
+                                        entries.forEach(function(entry) {
+                                            if (entry[entry.length - 1] === '/') {
+                                                dirs.push({
+                                                    title: entry.slice(0, -1),
+                                                    key: path + "/" + entry.slice(0, -1),
+                                                    isFolder: true,
+                                                    isLazy: true
+                                                });
+                                            }
+                                        });
+                                        resolve(dirs);
+                                    },
+                                    error: function(err) {
+                                        reject(err.statusText);
+                                    },
+                                    dataType: "text"
+                                });
+                            });
+                        }
+
+                        function renderInitialTree(children) {
+                            treeEl.dynatree({
+                                onActivate: function(node) {
+                                    var path = node.data.key;
+                                    var url = $("#zedd-url").val() + path;
+                                    if($("#zedd-user").val()) {
+                                        url += "?user=" + $("#zedd-user").val() + "&pass=" + $("#zedd-pass").val();
+                                    }
+                                    resolve(url);
+                                    close();
+                                },
+                                onLazyRead: function(node) {
+                                    readDir(node.data.key).then(function(dirs) {
+                                        dirs.forEach(function(dir) {
+                                            node.addChild(dir);
+                                        });
+                                        node.setLazyNodeStatus(DTNodeStatus_Ok);
+                                    });
+                                },
+                                onKeydown: function(node, event) {
+                                    if (event.keyCode === 27) {
+                                        close();
+                                    }
+                                },
+                                keyboard: true,
+                                autoFocus: true,
+                                debugLevel: 0,
+                                children: children
+                            });
+                        }
+
+                        // readDir("/").then(renderInitialTree);
+                        renderInitialTree([{
+                            title: "/",
+                            key: "/",
+                            isFolder: true,
+                            isLazy: true
+                        }]);
+
+                    }
+
                 });
             },
             localChrome: function() {

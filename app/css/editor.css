@@ -802,7 +802,7 @@ div.modal-view h1 {
     font-size: 20px;
     margin-top: 5px;
 }
-div.modal-view input[type=text] {
+div.modal-view input[type=text],  div.modal-view input[type=password]{
     font-size: 14px;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     width: 100%;
@@ -814,7 +814,7 @@ div.modal-view input[type=text] {
     color: #333;
     background-color: #fff;
 }
-body.dark div.modal-view input[type=text] {
+body.dark div.modal-view input[type=text], body.dark div.modal-view input[type=password] {
     color: #eee;
     background-color: #000;
 }

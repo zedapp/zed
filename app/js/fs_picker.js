@@ -118,9 +118,19 @@ define(function(require, exports, module) {
                 bucket: bucket
             });
         } else {
+            var parts = url.split('?');
+            var webfsParts = parts[1].split("&");
+            var webfsOpts = {};
+
+            webfsParts.forEach(function(part) {
+                var spl = part.split('=');
+                webfsOpts[spl[0]] = decodeURIComponent(spl[1]);
+            });
             return Promise.resolve({
                 packagePath: "./fs/web",
-                url: url
+                url: parts[0],
+                user: webfsOpts.user,
+                pass: webfsOpts.pass
             });
         }
     };
