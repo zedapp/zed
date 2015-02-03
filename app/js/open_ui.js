@@ -19,6 +19,7 @@ define(function(require, exports, module) {
         var filterList = require("./lib/filter_list");
         var dropbox = require("./lib/dropbox");
         var githubUi = require("./open/github");
+        var niceName = require("./lib/url_extractor").niceName;
         var zedb = require("zedb");
 
         var defaultConfig = JSON.parse(require("text!../config/default/preferences.json"));
@@ -187,7 +188,7 @@ define(function(require, exports, module) {
                                 case "zedd:":
                                     api.zedd().then(function(url) {
                                         if (url) {
-                                            api.open(url, url);
+                                            api.open(niceName(url), url);
                                         } else {
                                             api.showOpenUi();
                                         }
@@ -443,6 +444,14 @@ define(function(require, exports, module) {
                     $("body").append(el);
                     $.get("/open/zedd.html", function(html) {
                         el.html(html);
+                        tokenStore.get("zedd").then(function(defaultValues) {
+                            if (defaultValues) {
+                                $("#zedd-url").val(defaultValues.url);
+                                $("#zedd-user").val(defaultValues.user);
+                                $("#zedd-pass").val(defaultValues.pass);
+                                $("#zedd-form").submit();
+                            }
+                        });
                         $("#zedd-url").focus();
                         $("#cancel").click(function() {
                             close();
@@ -454,6 +463,11 @@ define(function(require, exports, module) {
                             var user = $("#zedd-user").val();
                             var pass = $("#zedd-pass").val();
                             check(url, user, pass).then(function() {
+                                tokenStore.set("zedd", {
+                                    url: url,
+                                    user: user,
+                                    pass: pass
+                                });
                                 updateTree();
                             }, function(err) {
                                 $("#hint").text("Couldn't open: " + (err || "error"));
@@ -492,16 +506,19 @@ define(function(require, exports, module) {
                     }
 
                     function updateTree() {
+                        $("#zedd-tree").replaceWith('<div id="zedd-tree">');
                         var treeEl = $("#zedd-tree");
-                        treeEl.focus();
+                        var rootUrl = $("#zedd-url").val();
+                        var user = $("#zedd-user").val();
+                        var pass = $("#zedd-pass").val();
 
                         function readDir(path) {
                             return new Promise(function(resolve, reject) {
                                 $.ajax({
                                     type: "GET",
-                                    url: $("#zedd-url").val() + path,
-                                    username: $("#zedd-user").val() || undefined,
-                                    password: $("#zedd-pass").val() || undefined,
+                                    url: rootUrl + path,
+                                    username: user || undefined,
+                                    password: pass || undefined,
                                     success: function(text) {
                                         var entries = text.split("\n");
                                         var dirs = [];
@@ -526,12 +543,16 @@ define(function(require, exports, module) {
                         }
 
                         function renderInitialTree(children) {
+                            var ignoreActivate = false;
                             treeEl.dynatree({
                                 onActivate: function(node) {
-                                    var path = node.data.key;
-                                    var url = $("#zedd-url").val() + path;
-                                    if($("#zedd-user").val()) {
-                                        url += "?user=" + $("#zedd-user").val() + "&pass=" + $("#zedd-pass").val();
+                                    if (ignoreActivate) {
+                                        return;
+                                    }
+                                    var path = node.data.key.slice(1); // Cut off first /
+                                    var url = rootUrl + path + "?keep=1";
+                                    if (user) {
+                                        url += "&user=" + user + "&pass=" + pass;
                                     }
                                     resolve(url);
                                     close();
@@ -554,11 +575,18 @@ define(function(require, exports, module) {
                                 debugLevel: 0,
                                 children: children
                             });
+                            setTimeout(function() {
+                                var tree = treeEl.dynatree("getTree");
+                                ignoreActivate = true;
+                                tree.activateKey("/");
+                                setTimeout(function() {
+                                    ignoreActivate = false;
+                                });
+                            }, 100);
                         }
 
-                        // readDir("/").then(renderInitialTree);
                         renderInitialTree([{
-                            title: "/",
+                            title: niceName(rootUrl),
                             key: "/",
                             isFolder: true,
                             isLazy: true

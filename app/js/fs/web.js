@@ -1,20 +1,24 @@
 /*global define, $ */
 define(function(require, exports, module) {
+    plugin.consumes = ["history"];
     plugin.provides = ["fs"];
     return plugin;
 
     function plugin(options, imports, register) {
         var poll_watcher = require("./poll_watcher");
         var fsUtil = require("./util");
+        var niceName = require("../lib/url_extractor").niceName;
+
+        var history = imports.history;
+
         var url = options.url;
         var user = options.user;
         var pass = options.pass;
+        var keep = options.keep;
 
         var mode = "directory"; // or: file
         var fileModeFilename; // if mode === "file"
         var watcher;
-
-        console.log("Web FS", options);
 
         function listFiles() {
             return new Promise(function(resolve, reject) {
@@ -179,6 +183,10 @@ define(function(require, exports, module) {
                 };
 
                 watcher = poll_watcher(api, 5000);
+
+                if (keep) {
+                    history.pushProject(niceName(url), url);
+                }
 
                 register(null, {
                     fs: api

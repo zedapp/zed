@@ -77,8 +77,6 @@ var webfs = {
                 return webfs.error(res, 404, "Path not found");
             }
 
-            console.log("HERE");
-
             res.statusCode = 200;
             webfs.sendEtagHeader(res, stat);
             res.setHeader("Content-Length", "0");

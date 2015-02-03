@@ -890,3 +890,13 @@ div.modal-view #logout {
     font-size: 14px;
     right: 15px;
 }
+
+#zedd-tree {
+    position: absolute;
+    top: 110px;
+    right: 10px;
+    left: 10px;
+    bottom: 10px;
+    overflow: scroll;
+    height: auto;
+}

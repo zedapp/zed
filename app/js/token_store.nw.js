@@ -13,7 +13,6 @@ define(function(require, exports, module) {
             },
             get: function(key) {
                 var val = localStorage[key];
-                console.log("VAL", val);
                 if(!val) {
                     return Promise.resolve(val);
                 } else {

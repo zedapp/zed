@@ -119,7 +119,7 @@ define(function(require, exports, module) {
             });
         } else {
             var parts = url.split('?');
-            var webfsParts = parts[1].split("&");
+            var webfsParts = parts[1] ? parts[1].split("&") : [];
             var webfsOpts = {};
 
             webfsParts.forEach(function(part) {
@@ -130,7 +130,8 @@ define(function(require, exports, module) {
                 packagePath: "./fs/web",
                 url: parts[0],
                 user: webfsOpts.user,
-                pass: webfsOpts.pass
+                pass: webfsOpts.pass,
+                keep: webfsOpts.keep
             });
         }
     };

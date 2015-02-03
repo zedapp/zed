@@ -20,6 +20,10 @@ define(function(require, exports, module) {
                 repo: repo,
                 branch: branch
             };
+        },
+        niceName: function(url) {
+            var parts = url.split('?')[0].split('/');
+            return parts[parts.length - 1];
         }
     }
 });
