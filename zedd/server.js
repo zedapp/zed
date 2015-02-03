@@ -1,10 +1,5 @@
 #!/usr/bin/env node
 
-/**  Usage: node server.js [rootPath] [port]
- *    rootPath defaults to $HOME
- *    port defaults to 1338
- */
-
 var http = require("http");
 var pathlib = require("path");
 var urllib = require("url");
