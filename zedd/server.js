@@ -10,6 +10,7 @@ var mkdirp = require("mkdirp");
 var mime = require("mime");
 var auth = require("basic-auth");
 var nconf = require("nconf");
+var spawn = require("child_process").spawn;
 
 /**
  * Options:
@@ -47,7 +48,7 @@ switch (process.argv[2]) {
 
 
 function help() {
-    console.log("Zedd is the Zed daemon used to edit files either locally or removely using Zed.");
+    console.log("Zedd is the Zed daemon used to edit files either locally or remotely using Zed.");
     console.log("Options can be passed in either as environment variables, JSON config in");
     console.log("~/.zeddrc or as command line arguments prefixed with '--':");
     console.log();
@@ -187,7 +188,6 @@ function doDelete(req, res, filePath) {
 
 function doPost(req, res, filePath) {
     postRequest(req, res, function() {
-        console.log(res.post);
         var action = res.post && res.post.action;
         switch (action) {
             case "filelist":
@@ -195,6 +195,29 @@ function doPost(req, res, filePath) {
                     'Content-Type': 'text/plain'
                 });
                 fileList(filePath, res, function() {
+                    res.end();
+                });
+                break;
+            case "run":
+                if(config.get("enable-run") === "false") {
+                    return error(res, 500, "Run is disabled");
+                }
+                var command = res.post.command;
+                if(!command) {
+                    return error(res, 500, "No command specified");
+                }
+                try {
+                    command = JSON.parse(command);
+                } catch(e) {
+                    return error(res, 500, "Could not parse command");
+                }
+                var p = spawn(command[0], command.slice(1), {
+                    cwd: filePath,
+                    env: process.env
+                });
+                p.stdout.pipe(res);
+                p.stderr.pipe(res);
+                p.on("close", function() {
                     res.end();
                 });
                 break;

@@ -1,40 +1,60 @@
 <style>
-button {
-    position: absolute;
-    top: 15px;
-    right: 16px;
-    font-size: 14px;
-}
+    div.buttons {
+        position: absolute;
+        top: 15px;
+        right: 16px;
+        font-size: 14px;
+    }
 
-pre {
-    background: #000;
-    color: #eee;
-    padding: 5px;
-    -webkit-user-select: text;
-    cursor: text;
-}
+    pre {
+        background: #000;
+        color: #eee;
+        padding: 5px;
+        -webkit-user-select: text;
+        cursor: text;
+    }
 
-#zedd-user {
-    margin-top: 2px;
-    width: auto;
-}
-#zedd-pass {
-    margin-top: 2px;
-    width: auto;
-}
+    #zedd-url {
+        width: 40%;
+    }
+    #zedd-user {
+        margin-top: 2px;
+        width: 20%;
+    }
+    #zedd-pass {
+        margin-top: 2px;
+        width: 20%;
+    }
+    #hint {
+        color: red;
+    }
+
+    #zedd-tree {
+        position: absolute;
+        top: 90px;
+        right: 10px;
+        left: 10px;
+        bottom: 10px;
+        overflow: hidden;
+        height: auto;
+    }
+
 </style>
 <img src="/img/zed-small.png" class="logo">
+
 <h1>Open Zedd Folder</h1>
 
-<button id="cancel">Back</button>
+<div class="buttons">
+    <button id="help">Help</button>
+    <button id="cancel">Back</button>
+</div>
 <div id="container">
     <form id="zedd-form">
-        <div id="hint"></div>
         <input type="text" id="zedd-url" placeholder="Zedrem URL" value="http://localhost:7337" />
-        <br/>
         <input type="text" id="zedd-user" placeholder="Username" />
         <input type="password" id="zedd-pass" placeholder="Password" />
-        <input type="submit" value="Open">
+        <input type="submit" value="Connect">
+        <div id="hint"></div>
     </form>
     <div id="zedd-tree"></div>
 </div>

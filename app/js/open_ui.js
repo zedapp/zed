@@ -33,6 +33,9 @@ define(function(require, exports, module) {
                 name: "Local Folder",
                 url: "node:"
             }, {
+                name: "Zedd Folder",
+                url: "zedd:"
+            }, {
                 name: "Remote Folder",
                 url: "zedrem:"
             }, {
@@ -51,11 +54,11 @@ define(function(require, exports, module) {
                 name: "Local Folder",
                 url: "local:"
             }, {
-                name: "Remote Folder",
-                url: "zedrem:"
-            }, {
                 name: "Zedd Folder",
                 url: "zedd:"
+            }, {
+                name: "Remote Folder",
+                url: "zedrem:"
             }, {
                 name: "Github Repository",
                 url: "gh:"
@@ -463,6 +466,7 @@ define(function(require, exports, module) {
                             var user = $("#zedd-user").val();
                             var pass = $("#zedd-pass").val();
                             check(url, user, pass).then(function() {
+                                $("#hint").text("");
                                 tokenStore.set("zedd", {
                                     url: url,
                                     user: user,
@@ -470,7 +474,7 @@ define(function(require, exports, module) {
                                 });
                                 updateTree();
                             }, function(err) {
-                                $("#hint").text("Couldn't open: " + (err || "error"));
+                                $("#hint").text("Couldn't connect: " + (err || "connection error"));
                             });
                             event.preventDefault();
                         });
@@ -568,6 +572,7 @@ define(function(require, exports, module) {
                                 onKeydown: function(node, event) {
                                     if (event.keyCode === 27) {
                                         close();
+                                        resolve();
                                     }
                                 },
                                 keyboard: true,
