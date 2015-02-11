@@ -82,7 +82,6 @@ define(function(require, exports, module) {
         var api = {
             openInNewWindow: false,
             boot: function() {
-                console.log("HERE", closed);
                 config.loadConfiguration().then(function() {
                     if (closed) {
                         return;
@@ -530,7 +529,8 @@ define(function(require, exports, module) {
                                             if (entry[entry.length - 1] === '/') {
                                                 dirs.push({
                                                     title: entry.slice(0, -1),
-                                                    key: path + "/" + entry.slice(0, -1),
+                                                    key: entry.slice(0, -1),
+                                                    path: path + "/" + entry.slice(0, -1),
                                                     isFolder: true,
                                                     isLazy: true
                                                 });
@@ -548,12 +548,15 @@ define(function(require, exports, module) {
 
                         function renderInitialTree(children) {
                             var ignoreActivate = false;
+                            window.tree = treeEl;
+                            var activatingPath = null;
                             treeEl.dynatree({
                                 onActivate: function(node) {
                                     if (ignoreActivate) {
                                         return;
                                     }
-                                    var path = node.data.key.slice(1); // Cut off first /
+                                    localStore.set("zeddLastPath", node.data.path);
+                                    var path = node.data.path.slice(1); // Cut off first /
                                     var url = rootUrl + path + "?keep=1";
                                     if (user) {
                                         url += "&user=" + user + "&pass=" + pass;
@@ -562,11 +565,26 @@ define(function(require, exports, module) {
                                     close();
                                 },
                                 onLazyRead: function(node) {
-                                    readDir(node.data.key).then(function(dirs) {
+                                    readDir(node.data.path).then(function(dirs) {
                                         dirs.forEach(function(dir) {
-                                            node.addChild(dir);
+                                            var child = node.addChild(dir);
+                                            if(activatingPath && activatingPath[0] === dir.key) {
+                                                activatingPath = activatingPath.slice(1);
+                                                if(activatingPath.length === 0) {
+                                                    child.activate();
+                                                    setTimeout(function() {
+                                                        ignoreActivate = false;
+                                                        child.span.scrollIntoViewIfNeeded();
+                                                        child.focus();
+                                                    });
+                                                } else {
+                                                    child.expand();
+                                                }
+                                            }
                                         });
                                         node.setLazyNodeStatus(DTNodeStatus_Ok);
+                                    }, function(err) {
+                                        console.error("Error loading node", err, node);
                                     });
                                 },
                                 onKeydown: function(node, event) {
@@ -577,22 +595,33 @@ define(function(require, exports, module) {
                                 },
                                 keyboard: true,
                                 autoFocus: true,
+                                activeVisible: true,
                                 debugLevel: 0,
-                                children: children
+                                children: children,
+                                minExpandLevel: 1
                             });
                             setTimeout(function() {
-                                var tree = treeEl.dynatree("getTree");
-                                ignoreActivate = true;
-                                tree.activateKey("/");
-                                setTimeout(function() {
-                                    ignoreActivate = false;
+                                localStore.get("zeddLastPath").then(function(path) {
+                                    var tree = treeEl.dynatree("getTree");
+                                    ignoreActivate = true;
+                                    if (path && path.length > 1) {
+                                        activatingPath = path.slice(2).split('/');
+                                        var node = tree.getNodeByKey("root");
+                                        node.expand();
+                                    } else {
+                                        tree.activateKey("root");
+                                        setTimeout(function() {
+                                            ignoreActivate = false;
+                                        });
+                                    }
                                 });
                             }, 100);
                         }
 
                         renderInitialTree([{
                             title: niceName(rootUrl),
-                            key: "/",
+                            key: "root",
+                            path: "/",
                             isFolder: true,
                             isLazy: true
                         }]);
