@@ -185,7 +185,7 @@ define(function(require, exports, module) {
                 watcher = poll_watcher(api, 5000);
 
                 if (keep) {
-                    history.pushProject(niceName(url), url);
+                    history.pushProject(niceName(url), options.fullUrl);
                 }
 
                 register(null, {

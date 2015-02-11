@@ -1,13 +1,13 @@
 /* global DTNodeStatus_Ok */
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "history", "token_store", "fs", "editor", "config", "background", "menu"];
+    plugin.consumes = ["eventbus", "history", "local_store", "fs", "editor", "config", "background", "menu"];
     plugin.provides = ["open_ui"];
     return plugin;
 
     function plugin(opts, imports, register) {
         var eventbus = imports.eventbus;
         var history = imports.history;
-        var tokenStore = imports.token_store;
+        var localStore = imports.local_store;
         var fs = imports.fs;
         var editor = imports.editor;
         var config = imports.config;
@@ -329,7 +329,7 @@ define(function(require, exports, module) {
                                 dataType: "json",
                                 processData: false,
                                 success: function() {
-                                    tokenStore.set("githubToken", token);
+                                    localStore.set("githubToken", token);
                                     resolve(token);
                                     close();
                                 },
@@ -343,7 +343,7 @@ define(function(require, exports, module) {
                 });
             },
             github: function() {
-                return tokenStore.get("githubToken").then(function(githubToken) {
+                return localStore.get("githubToken").then(function(githubToken) {
                     if (!githubToken) {
                         return api.githubAuth().then(function(githubToken) {
                             if (githubToken) {
@@ -447,7 +447,7 @@ define(function(require, exports, module) {
                     $("body").append(el);
                     $.get("/open/zedd.html", function(html) {
                         el.html(html);
-                        tokenStore.get("zedd").then(function(defaultValues) {
+                        localStore.get("zedd").then(function(defaultValues) {
                             if (defaultValues) {
                                 $("#zedd-url").val(defaultValues.url);
                                 $("#zedd-user").val(defaultValues.user);
@@ -467,7 +467,7 @@ define(function(require, exports, module) {
                             var pass = $("#zedd-pass").val();
                             check(url, user, pass).then(function() {
                                 $("#hint").text("");
-                                tokenStore.set("zedd", {
+                                localStore.set("zedd", {
                                     url: url,
                                     user: user,
                                     pass: pass

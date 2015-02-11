@@ -50,10 +50,10 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
         "./open_ui"];
 
     if (window.isNodeWebkit) {
-        baseModules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw", "./token_store.nw", "./background.nw", "./cli.nw");
+        baseModules.push("./configfs.nw", "./window.nw", "./history.nw", "./sandbox.nw", "./windows.nw", "./mac_cli_command.nw", "./analytics_tracker.nw", "./webserver.nw", "./local_store.nw", "./background.nw", "./cli.nw");
         process.mainModule.exports.init();
     } else {
-        baseModules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome", "./token_store.chrome", "./background.chrome");
+        baseModules.push("./configfs.chrome", "./window.chrome", "./history.chrome", "./sandbox.chrome", "./windows.chrome", "./analytics_tracker.chrome", "./webserver.chrome", "./local_store.chrome", "./background.chrome");
     }
 
     if (options.get("url")) {

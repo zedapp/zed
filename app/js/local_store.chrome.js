@@ -1,7 +1,7 @@
 /*global define, _, nodeRequire */
 define(function(require, exports, module) {
     plugin.consumes = [];
-    plugin.provides = ["token_store"];
+    plugin.provides = ["local_store"];
     return plugin;
 
     function plugin(options, imports, register) {
@@ -33,7 +33,7 @@ define(function(require, exports, module) {
         };
 
         register(null, {
-            token_store: api
+            local_store: api
         });
     }
 });

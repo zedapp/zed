@@ -1,11 +1,11 @@
 /*global define, $ */
 define(function(require, exports, module) {
-    plugin.consumes = ["history", "token_store"];
+    plugin.consumes = ["history", "local_store"];
     plugin.provides = ["fs"];
     return plugin;
 
     function plugin(options, imports, register) {
-        var tokenStore = imports.token_store;
+        var tokenStore = imports.local_store;
         var history = imports.history;
         var poll_watcher = require("./poll_watcher");
         var AWS = require("../lib/aws-sdk.min");

@@ -128,6 +128,7 @@ define(function(require, exports, module) {
             });
             return Promise.resolve({
                 packagePath: "./fs/web",
+                fullUrl: url,
                 url: parts[0],
                 user: webfsOpts.user,
                 pass: webfsOpts.pass,
