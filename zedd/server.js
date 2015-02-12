@@ -16,8 +16,9 @@ var spawn = require("child_process").spawn;
  * Options:
  * - user
  * - pass
- * - ip
  * - port
+ * - remote
+ * - enable-run
  * - root
  * - tls-key
  * - tls-cert
@@ -34,6 +35,7 @@ if (!config.get("user") && config.get("ip") === "0.0.0.0") {
 }
 
 var ROOT = pathlib.resolve(config.get("root"));
+var enableRun = !config.get("remote") || config.get("enable-run");
 
 switch (process.argv[2]) {
     case "--help":
@@ -46,7 +48,6 @@ switch (process.argv[2]) {
         start();
 }
 
-
 function help() {
     console.log("Zedd is the Zed daemon used to edit files either locally or remotely using Zed.");
     console.log("Options can be passed in either as environment variables, JSON config in");
@@ -54,8 +55,8 @@ function help() {
     console.log();
     console.log("   user:     username to use for authentication (default: none)");
     console.log("   pass:     password to use for authentication (default: none)");
-    console.log("   ip:       IP to bind to (default: 0.0.0.0 when username/password");
-    console.log("             are specified, otherwise 127.0.0.1)");
+    console.log("   remote:   bind to 0.0.0.0, requires auth, and disables");
+    console.log("             enable-run by default");
     console.log("   port:     port to bind to (default: 7337)");
     console.log("   root:     root directory to expose (default: $HOME)");
     console.log("   tls-key:  path to TLS key file (enables https)");
@@ -187,45 +188,34 @@ function doDelete(req, res, filePath) {
 }
 
 function doPost(req, res, filePath) {
-    postRequest(req, res, function() {
+    bufferPostRequest(req, res, function() {
         var action = res.post && res.post.action;
         switch (action) {
             case "filelist":
                 res.writeHead(200, "OK", {
                     'Content-Type': 'text/plain'
                 });
-                fileList(filePath, res, function() {
-                    res.end();
-                });
+                fileList(filePath, res);
                 break;
             case "run":
-                if(config.get("enable-run") === "false") {
-                    return error(res, 500, "Run is disabled");
+                if (!enableRun) {
+                    return error(res, 403, "Run is disabled");
                 }
-                var command = res.post.command;
-                if(!command) {
-                    return error(res, 500, "No command specified");
-                }
-                try {
-                    command = JSON.parse(command);
-                } catch(e) {
-                    return error(res, 500, "Could not parse command");
-                }
-                var p = spawn(command[0], command.slice(1), {
-                    cwd: filePath,
-                    env: process.env
-                });
-                p.stdout.pipe(res);
-                p.stderr.pipe(res);
-                p.on("close", function() {
-                    res.end();
-                });
+                runCommand(filePath, res);
                 break;
             case "version":
                 res.writeHead(200, "OK", {
                     'Content-Type': 'text/plain'
                 });
-                res.end("1.0");
+                res.end("1.1");
+                break;
+            case "capabilities":
+                res.writeHead(200, "OK", {
+                    'Content-Type': 'application/json'
+                });
+                res.end(JSON.stringify({
+                    run: !!enableRun
+                }));
                 break;
             default:
                 return error(res, 404, "Unable to perform action: " + action);
@@ -269,6 +259,12 @@ function requestHandler(req, res) {
 
 function start() {
     var server, isSecure;
+    var bindIp = config.get("remote") ? "0.0.0.0" : "127.0.0.1";
+    var bindPort = config.get("port");
+    if (config.get("remote") && !config.get("user")) {
+        console.error("In remote mode, --user and --pass need to be specified.");
+        process.exit(1);
+    }
     if (config.get("tls-key") && config.get("tls-cert")) {
         server = https.createServer({
             key: fs.readFileSync(config.get("tls-key")),
@@ -279,16 +275,21 @@ function start() {
         server = http.createServer(requestHandler);
         isSecure = false;
     }
-    server.listen(config.get("port"), config.get("ip"));
+    server.listen(bindPort, bindIp);
+    server.on("error", function() {
+        console.error("ERROR: Could not listen on port", bindPort, "is zedd already running?");
+        process.exit(2);
+    });
     console.log(
-        "zedd is now listening on " + (isSecure ? "https" : "http") + "://" + config.get("ip") + ":" + config.get("port"),
-        "\nExposing filesystem:", ROOT, (config.get("user") ?
-        "\nWith authentication enabled." :
-        "\nWith authentication DISABLED."));
+        "Zedd is now listening on " + (isSecure ? "https" : "http") + "://" + bindIp + ":" + bindPort,
+        "\nExposed filesystem :", ROOT,
+        "\nMode               :", config.get("remote") ? "remote (externally accessible)" : "local",
+        "\nCommand execution  :", enableRun ? "enabled" : "disabled",
+        "\nAuthentication     :", config.get("user") ? "enabled" : "disabled");
 }
 
 
-function postRequest(req, res, callback) {
+function bufferPostRequest(req, res, callback) {
     var queryData = "";
     req.on("data", function(data) {
         queryData += data;
@@ -306,20 +307,20 @@ function postRequest(req, res, callback) {
     });
 }
 
-function fileList(root, stream, callback) {
+function fileList(root, res) {
     var stop = false;
 
-    stream.on("error", function() {
+    res.on("error", function() {
         stop = true;
     });
-    stream.on("close", function() {
+    res.on("close", function() {
         stop = true;
     });
     walk("", function(err) {
         if (err) {
-            return error(stream, 500, err.message);
+            return error(res, 500, err.message);
         }
-        callback();
+        res.end();
     });
 
     function walk(dir, callback) {
@@ -345,7 +346,7 @@ function fileList(root, stream, callback) {
                             checkDone();
                         });
                     } else if (stat && stat.isFile()) {
-                        stream.write(dir + '/' + name + "\n");
+                        res.write(dir + '/' + name + "\n");
                         checkDone();
                     } else {
                         // !stat
@@ -361,4 +362,39 @@ function fileList(root, stream, callback) {
             }
         });
     }
+}
+
+function runCommand(root, res) {
+    var command = res.post.command;
+    if (!command) {
+        return error(res, 500, "No command specified");
+    }
+    try {
+        command = JSON.parse(command);
+    } catch (e) {
+        return error(res, 500, "Could not parse command");
+    }
+    var p = spawn(command[0], command.slice(1), {
+        cwd: root,
+        env: process.env
+    });
+    res.on("error", function() {
+        console.log("Killing sub process", command[0]);
+        p.kill();
+    });
+    res.on("close", function() {
+        console.log("Killing sub process", command[0]);
+        p.kill();
+    });
+    if (res.post.stdin) {
+        p.stdin.end(res.post.stdin);
+    }
+    p.stdout.pipe(res);
+    p.stderr.pipe(res);
+    p.on("close", function() {
+        res.end();
+    });
+    p.on("error", function(err) {
+        console.error("Run error", err);
+    });
 }

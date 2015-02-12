@@ -156,6 +156,29 @@ define(function(require, exports, module) {
             });
         }
 
+        function run(command, stdin) {
+            return new Promise(function(resolve, reject) {
+                $.ajax(url, {
+                    type: "POST",
+                    url: url,
+                    data: {
+                        action: 'run',
+                        command: JSON.stringify(command),
+                        stdin: stdin
+                    },
+                    username: user || undefined,
+                    password: pass || undefined,
+                    success: function(res) {
+                        resolve(res);
+                    },
+                    error: function(xhr) {
+                        reject(xhr.status);
+                    },
+                    dataType: "text"
+                });
+            });
+        }
+
         // Check if we're dealing with one file
         $.ajax(url, {
             type: 'HEAD',
@@ -179,7 +202,8 @@ define(function(require, exports, module) {
                     deleteFile: deleteFile,
                     watchFile: watchFile,
                     unwatchFile: unwatchFile,
-                    getCacheTag: getCacheTag
+                    getCacheTag: getCacheTag,
+                    run: run
                 };
 
                 watcher = poll_watcher(api, 5000);
