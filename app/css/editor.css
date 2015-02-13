@@ -253,6 +253,7 @@ div.preview-vsplit2-right-2 {
     border-right: solid 1px #888;
     border-left: solid 1px #888;
     background: #666;
+    margin-top: -3px;
     color: #fff;
     padding: 2px;
     font-size: 11px;
