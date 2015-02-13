@@ -18,7 +18,7 @@
         "crimson_editor": {
             "name": "Crimson Editor",
             "cssClass": "ace-crimson-editor",
-            "css": "/default/editor_theme/chrimson_editor.css"
+            "css": "/default/editor_theme/crimson_editor.css"
         },
         "dawn": {
             "name": "Dawn",
@@ -62,7 +62,7 @@
         },
         "kuroir": {
             "name": "Kuroir",
-            "cssClass": "ace-kuroir-light",
+            "cssClass": "ace-kuroir",
             "css": "/default/editor_theme/kuroir.css"
         },
         "katzenmilch": {
@@ -95,10 +95,10 @@
             "cssClass": "ace-idle-fingers",
             "css": "/default/editor_theme/idle_fingers.css"
         },
-        "kr_editor_theme": {
-            "name": "kreditor_theme",
-            "cssClass": "ace-kr-editor_theme",
-            "css": "/default/editor_theme/kr_editor_theme.css"
+        "kr_ace_theme": {
+            "name": "krace_theme",
+            "cssClass": "ace-kr-theme",
+            "css": "/default/editor_theme/kr_theme.css"
         },
         "merbivore": {
             "name": "Merbivore",
@@ -132,7 +132,7 @@
         },
         "terminal": {
             "name": "Terminal",
-            "cssClass": "ace-terminal-editor_theme",
+            "cssClass": "ace-terminal-theme",
             "css": "/default/editor_theme/terminal.css"
         },
         "tomorrow_night": {
