@@ -95,8 +95,8 @@
             "cssClass": "ace-idle-fingers",
             "css": "/default/editor_theme/idle_fingers.css"
         },
-        "kr_ace_theme": {
-            "name": "krace_theme",
+        "kr_theme": {
+            "name": "krTheme",
             "cssClass": "ace-kr-theme",
             "css": "/default/editor_theme/kr_theme.css"
         },
