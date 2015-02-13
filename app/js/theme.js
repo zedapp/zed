@@ -13,20 +13,20 @@ define(function(require, exports, module) {
         var configfs = imports.configfs;
         var win = imports.window;
 
-        var defaultAceTheme = 'zed_dark';
+        var defaultEditorTheme = 'zed_dark';
         var defaultWindowTheme = 'zed_dark';
 
         // Setting file watchers (reload theme when any of them change)
-        var aceWatchers = [];
+        var editorWatchers = [];
         var windowWatchers = [];
 
         var api = {
             hook: function() {
                 eventbus.on("configchanged", function(config) {
-                    var aceTheme = config.getPreference("aceTheme");
+                    var editorTheme = config.getPreference("editorTheme");
                     var windowTheme = config.getPreference("windowTheme");
                     Promise.all([
-                        setAceTheme(aceTheme),
+                        setEditorTheme(editorTheme),
                         setWindowTheme(windowTheme),
                         loadUserCss()
                     ]).then(function() {
@@ -35,14 +35,14 @@ define(function(require, exports, module) {
                 });
 
                 eventbus.on("configcommandsreset", function(config) {
-                    var allAceThemes = config.getAceThemes();
-                    _.each(allAceThemes, function(theme, name) {
-                        command.defineConfig("Configuration:Ace Theme:" + theme.name, {
-                            doc: "Activate this ace theme. Change will take effect " +
+                    var allEditorThemes = config.getEditorThemes();
+                    _.each(allEditorThemes, function(theme, name) {
+                        command.defineConfig("Configuration:Editor Theme:" + theme.name, {
+                            doc: "Activate this editor theme. Change will take effect " +
                             "immediately, and also persist in Zed's configuration file.",
                             exec: function() {
-                                config.setPreference("aceTheme", name);
-                                setAceTheme(name).then(function() {
+                                config.setPreference("editorTheme", name);
+                                setEditorTheme(name).then(function() {
                                     refreshScrollBars();
                                 });
                             },
@@ -68,37 +68,37 @@ define(function(require, exports, module) {
             }
         };
 
-        function setAceTheme(name) {
-            var theme = config.getAceTheme(name) || config.getAceTheme(defaultAceTheme);
+        function setEditorTheme(name) {
+            var theme = config.getEditorTheme(name) || config.getEditorTheme(defaultEditorTheme);
             var nativeScrollBars = config.getPreference("nativeScrollBars");
             var customScroll = '';
             if (!nativeScrollBars) {
                 customScroll = ' custom-scroll';
             }
 
-            return loadAceCss(theme.css, true).then(function() {
+            return loadEditorCss(theme.css, true).then(function() {
                 $("body").attr("class", theme.cssClass + (theme.dark ? " dark ace_dark" : " ") + (win.useNativeFrame() ? " native-chrome" : " ") + (!useragent.isMac ? " non_mac" : " mac") + customScroll);
             });
         }
         
-        function reloadAceTheme() {
-            var theme = config.getTheme(config.getPreference("aceTheme"));
-            loadAceCss(theme.css).then(function() {
+        function reloadEditorTheme() {
+            var theme = config.getTheme(config.getPreference("editorTheme"));
+            loadEditorCss(theme.css).then(function() {
                 refreshScrollBars();
             });
         }
         
-        function loadAceCss(cssFiles, watch) {
+        function loadEditorCss(cssFiles, watch) {
             var cssCode = "";
             return Promise.all(cssFiles.map(function(file) {
                 if (watch) {
-                    watchFile(aceWatchers, file, reloadAceTheme);
+                    watchFile(editorWatchers, file, reloadEditorTheme);
                 }
                 return configfs.readFile(file).then(function(cssCode_) {
                     cssCode += cssCode_ + "\n";
                 });
             })).then(function() {
-                $('#ace-theme-css').html(cssCode);
+                $('#editor-theme-css').html(cssCode);
             });
         }
         
@@ -170,9 +170,9 @@ define(function(require, exports, module) {
             });
         }
 
-        command.define("Configuration:Preferences:Pick Ace Theme", {
+        command.define("Configuration:Preferences:Pick Editor Theme", {
             exec: function(edit, session) {
-                return command.exec("Command:Enter Command", edit, session, "Configuration:Ace Theme:");
+                return command.exec("Command:Enter Command", edit, session, "Configuration:Editor Theme:");
             },
             readOnly: true
         });

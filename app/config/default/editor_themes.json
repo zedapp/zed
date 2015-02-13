@@ -1,174 +1,174 @@
 {
-    "ace_themes": {
+    "editor_themes": {
         "zed_dark": {
             "name": "Zed Dark",
             "cssClass": "ace-zeddark",
-            "css": "/default/ace_theme/zed_dark.css"
+            "css": "/default/editor_theme/zed_dark.css"
         },
         "chrome": {
             "name": "Chrome",
             "cssClass": "ace-chrome",
-            "css": "/default/ace_theme/chrome.css"
+            "css": "/default/editor_theme/chrome.css"
         },
         "clouds": {
             "name": "Clouds",
             "cssClass": "ace-clouds",
-            "css": "/default/ace_theme/clouds.css"
+            "css": "/default/editor_theme/clouds.css"
         },
         "crimson_editor": {
             "name": "Crimson Editor",
             "cssClass": "ace-crimson-editor",
-            "css": "/default/ace_theme/chrimson_editor.css"
+            "css": "/default/editor_theme/chrimson_editor.css"
         },
         "dawn": {
             "name": "Dawn",
             "cssClass": "ace-dawn",
-            "css": "/default/ace_theme/dawn.css"
+            "css": "/default/editor_theme/dawn.css"
         },
         "dreamweaver": {
             "name": "Dreamweaver",
             "cssClass": "ace-dreamweaver",
-            "css": "/default/ace_theme/dreamweaver.css"
+            "css": "/default/editor_theme/dreamweaver.css"
         },
         "eclipse": {
             "name": "Eclipse",
             "cssClass": "ace-eclipse",
-            "css": "/default/ace_theme/eclipse.css"
+            "css": "/default/editor_theme/eclipse.css"
         },
         "github": {
             "name": "Github",
             "cssClass": "ace-github",
-            "css": "/default/ace_theme/github.css"
+            "css": "/default/editor_theme/github.css"
         },
         "solarized_light": {
             "name": "Solarized Light",
             "cssClass": "ace-solarized-light",
-            "css": "/default/ace_theme/solarized_light.css"
+            "css": "/default/editor_theme/solarized_light.css"
         },
         "textmate": {
             "name": "Textmate",
             "cssClass": "ace-tm",
-            "css": "/default/ace_theme/textmate.css"
+            "css": "/default/editor_theme/textmate.css"
         },
         "tomorrow": {
             "name": "Tomorrow",
             "cssClass": "ace-tomorrow",
-            "css": "/default/ace_theme/tomorrow.css"
+            "css": "/default/editor_theme/tomorrow.css"
         },
         "xcode": {
             "name": "XCode",
             "cssClass": "ace-xcode",
-            "css": "/default/ace_theme/xcode.css"
+            "css": "/default/editor_theme/xcode.css"
         },
         "kuroir": {
             "name": "Kuroir",
             "cssClass": "ace-kuroir-light",
-            "css": "/default/ace_theme/kuroir.css"
+            "css": "/default/editor_theme/kuroir.css"
         },
         "katzenmilch": {
             "name": "Katzenmilch",
             "cssClass": "ace-katzenmilch",
-            "css": "/default/ace_theme/katzenmilch.css"
+            "css": "/default/editor_theme/katzenmilch.css"
         },
         "ambiance": {
             "name": "Ambiance",
             "cssClass": "ace-ambiance",
-            "css": "/default/ace_theme/ambiance.css"
+            "css": "/default/editor_theme/ambiance.css"
         },
         "chaos": {
             "name": "Chaos",
             "cssClass": "ace-chaos",
-            "css": "/default/ace_theme/chaos.css"
+            "css": "/default/editor_theme/chaos.css"
         },
         "clouds_midnight": {
             "name": "Clouds Midnight",
             "cssClass": "ace-clouds-midnight",
-            "css": "/default/ace_theme/clouds_midnight.css"
+            "css": "/default/editor_theme/clouds_midnight.css"
         },
         "cobalt": {
             "name": "Cobalt",
             "cssClass": "ace-cobalt",
-            "css": "/default/ace_theme/cobalt.css"
+            "css": "/default/editor_theme/cobalt.css"
         },
         "idle_fingers": {
             "name": "Idle Fingers",
             "cssClass": "ace-idle-fingers",
-            "css": "/default/ace_theme/idle_fingers.css"
+            "css": "/default/editor_theme/idle_fingers.css"
         },
-        "kr_ace_theme": {
-            "name": "krace_theme",
-            "cssClass": "ace-kr-ace_theme",
-            "css": "/default/ace_theme/kr_ace_theme.css"
+        "kr_editor_theme": {
+            "name": "kreditor_theme",
+            "cssClass": "ace-kr-editor_theme",
+            "css": "/default/editor_theme/kr_editor_theme.css"
         },
         "merbivore": {
             "name": "Merbivore",
             "cssClass": "ace-merbivore",
-            "css": "/default/ace_theme/merbivore.css"
+            "css": "/default/editor_theme/merbivore.css"
         },
         "merbivore_soft": {
             "name": "Merbivore Soft",
             "cssClass": "ace-merbivore-soft",
-            "css": "/default/ace_theme/merbivore_soft.css"
+            "css": "/default/editor_theme/merbivore_soft.css"
         },
         "mono_industrial": {
             "name": "Mono Industrial",
             "cssClass": "ace-mono-industrial",
-            "css": "/default/ace_theme/mono_industrial.css"
+            "css": "/default/editor_theme/mono_industrial.css"
         },
         "monokai": {
             "name": "Monokai",
             "cssClass": "ace-monokai",
-            "css": "/default/ace_theme/monokai.css"
+            "css": "/default/editor_theme/monokai.css"
         },
         "pastel_on_dark": {
             "name": "Pastel on Dark",
             "cssClass": "ace-pastel-on-dark",
-            "css": "/default/ace_theme/pastel_on_dark.css"
+            "css": "/default/editor_theme/pastel_on_dark.css"
         },
         "solarized_dark": {
             "name": "Solarized Dark",
             "cssClass": "ace-solarized-dark",
-            "css": "/default/ace_theme/solarized_dark.css"
+            "css": "/default/editor_theme/solarized_dark.css"
         },
         "terminal": {
             "name": "Terminal",
-            "cssClass": "ace-terminal-ace_theme",
-            "css": "/default/ace_theme/terminal.css"
+            "cssClass": "ace-terminal-editor_theme",
+            "css": "/default/editor_theme/terminal.css"
         },
         "tomorrow_night": {
             "name": "Tomorrow Night",
             "cssClass": "ace-tomorrow-night",
-            "css": "/default/ace_theme/tomorrow_night.css"
+            "css": "/default/editor_theme/tomorrow_night.css"
         },
         "tomorrow_night_blue": {
             "name": "Tomorrow Night Blue",
             "cssClass": "ace-tomorrow-night-blue",
-            "css": "/default/ace_theme/tomorrow_night_blue.css"
+            "css": "/default/editor_theme/tomorrow_night_blue.css"
         },
         "tomorrow_night_bright": {
             "name": "Tomorrow Night Bright",
             "cssClass": "ace-tomorrow-night-bright",
-            "css": "/default/ace_theme/tomorrow_night_bright.css"
+            "css": "/default/editor_theme/tomorrow_night_bright.css"
         },
         "tomorrow_night_eighties": {
             "name": "Tomorrow Night 80s",
             "cssClass": "ace-tomorrow-night-eighties",
-            "css": "/default/ace_theme/tomorrow_night_eighties.css"
+            "css": "/default/editor_theme/tomorrow_night_eighties.css"
         },
         "twilight": {
             "name": "Twilight",
             "cssClass": "ace-twilight",
-            "css": "/default/ace_theme/twilight.css"
+            "css": "/default/editor_theme/twilight.css"
         },
         "vibrant_ink": {
             "name": "Vibrant Ink",
             "cssClass": "ace-vibrant-ink",
-            "css": "/default/ace_theme/vibrant_ink.css"
+            "css": "/default/editor_theme/vibrant_ink.css"
         },
         "base16": {
             "name": "Base 16",
             "cssClass": "base16-default",
-            "css": "/default/ace_theme/base16-default.css"
+            "css": "/default/editor_theme/base16-default.css"
         }
     }
 }

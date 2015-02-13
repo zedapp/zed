@@ -1,6 +1,5 @@
 {
     "preferences": {
-        "aceTheme": "zed_dark",
         "animatedScroll": true,
         "autoIndentOnPaste": true,
         "behaviorsEnabled": true,
@@ -11,6 +10,7 @@
         "detectIndentation": true,
         "dimInactiveEditors": true,
         "displayIndentGuides": true,
+        "editorTheme": "zed_dark",
         "fontFamily": "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
         "fontSize": 12,
         "globalAutoRevert": true,

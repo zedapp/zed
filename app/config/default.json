@@ -7,7 +7,7 @@
         "/default/commands.json",
         "/default/handlers.json",
         "/default/window_themes.json",
-        "/default/ace_themes.json",
+        "/default/editor_themes.json",
         "/default/zpm/zpm.json"
     ],
     packages: [

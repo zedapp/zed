@@ -30,7 +30,7 @@ define(function(require, exports, module) {
             commands: {},
             handlers: {},
             window_themes: {},
-            ace_themes: {},
+            editor_themes: {},
             packages: []
         };
 
@@ -112,11 +112,11 @@ define(function(require, exports, module) {
             getHandlers: function() {
                 return expandedConfiguration.handlers;
             },
-            getAceTheme: function(name) {
-                return expandedConfiguration.ace_themes[name];
+            getEditorTheme: function(name) {
+                return expandedConfiguration.editor_themes[name];
             },
-            getAceThemes: function() {
-                return expandedConfiguration.ace_themes;
+            getEditorThemes: function() {
+                return expandedConfiguration.editor_themes;
             },
             getWindowTheme: function(name) {
                 return expandedConfiguration.window_themes[name];
@@ -338,8 +338,8 @@ define(function(require, exports, module) {
                     resolveRelativePaths(mode, jsonPath);
                 });
             }
-            if (configJson.ace_themes) {
-                resolveThemes(configJson.ace_themes);
+            if (configJson.editor_themes) {
+                resolveThemes(configJson.editor_themes);
             }
             if (configJson.window_themes) {
                 resolveThemes(configJson.window_themes);
