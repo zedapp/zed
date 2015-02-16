@@ -82,6 +82,9 @@ define(function(require, exports, module) {
             },
             getCacheTag: function(path) {
                 return attempt("getCacheTag", [path]);
+            },
+            getCapabilities: function() {
+                return {};
             }
         };
 

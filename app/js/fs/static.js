@@ -69,6 +69,9 @@ define(function(require, exports, module) {
                     console.log("Doesn't exist", path);
                     return Promise.reject(404);
                 });
+            },
+            getCapabilities: function() {
+                return {};
             }
         };
 

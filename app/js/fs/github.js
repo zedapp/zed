@@ -546,6 +546,11 @@ define(function(require, exports, module) {
                         branch: name
                     };
                 });
+            },
+            getCapabilities: function() {
+                return {
+                    scm: true
+                };
             }
         };
 

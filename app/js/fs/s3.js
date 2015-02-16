@@ -122,6 +122,9 @@ define(function(require, exports, module) {
                         resolve(result.ETag);
                     });
                 });
+            },
+            getCapabilities: function() {
+                return {};
             }
         };
 

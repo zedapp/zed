@@ -9,6 +9,7 @@ define(function(require, exports, module) {
         var poll_watcher = require("./poll_watcher");
         var nodeFs = nodeRequire("fs");
         var path = nodeRequire("path");
+        var spawn = nodeRequire("child_process").spawn;
 
         var history = imports.history;
 
@@ -175,6 +176,36 @@ define(function(require, exports, module) {
                             return reject(404);
                         }
                         resolve("" + stat.mtime);
+                    });
+                });
+            },
+            getCapabilities: function() {
+                return {
+                    run: true
+                };
+            },
+            run: function(command, stdin) {
+                return new Promise(function(resolve) {
+                    var p = spawn(command[0], command.slice(1), {
+                        cwd: rootPath,
+                        env: process.env
+                    });
+                    var chunks = [];
+                    if (stdin) {
+                        p.stdin.end(stdin);
+                    }
+                    p.stdout.on("data", function(data) {
+                        chunks.push(data);
+                    });
+                    p.stderr.on("data", function(data) {
+                        chunks.push(data);
+                    });
+                    p.on("close", function() {
+                        resolve(chunks.join(''));
+                    });
+                    p.on("error", function(err) {
+                        // Not rejecting to be compatible with webfs implementation
+                        resolve(chunks.join('') + err.message);
                     });
                 });
             }

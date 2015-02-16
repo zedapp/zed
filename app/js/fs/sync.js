@@ -158,6 +158,9 @@ define(function(require, exports, module) {
                             reject(404);
                         });
                     });
+                },
+                getCapabilities: function() {
+                    return {};
                 }
             };
 

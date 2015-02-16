@@ -36,6 +36,16 @@ define(function(require, exports, module) {
         },
         isConfig: function() {
             return Promise.resolve(options.get("url").indexOf("config:") === 0);
+        },
+        getCapabilities: function() {
+            return Promise.resolve(zed.getService("fs").getCapabilities());
+        },
+        run: function(command, stdin) {
+            var fs = zed.getService("fs");
+            if(!fs.getCapabilities().run) {
+                return Promise.reject("not-supported");
+            }
+            return fs.run(command, stdin);
         }
     };
 });

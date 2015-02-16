@@ -19,6 +19,17 @@ define(function(require, exports, module) {
         var mode = "directory"; // or: file
         var fileModeFilename; // if mode === "file"
         var watcher;
+        var capabilities = {};
+
+        function promisedAjax(obj) {
+            return new Promise(function(resolve, reject) {
+                obj.username = user || undefined;
+                obj.password = pass || undefined;
+                obj.success = resolve;
+                obj.error = reject;
+                $.ajax(obj);
+            });
+        }
 
         function listFiles() {
             return new Promise(function(resolve, reject) {
@@ -203,6 +214,9 @@ define(function(require, exports, module) {
                     watchFile: watchFile,
                     unwatchFile: unwatchFile,
                     getCacheTag: getCacheTag,
+                    getCapabilities: function() {
+                        return capabilities;
+                    },
                     run: run
                 };
 
@@ -219,6 +233,17 @@ define(function(require, exports, module) {
             error: function(xhr) {
                 register(xhr);
             }
+        });
+
+        promisedAjax({
+            type: 'POST',
+            url: url,
+            data: {
+                action: 'capabilities'
+            },
+            dataType: 'json'
+        }).then(function(result) {
+            capabilities = result;
         });
     }
 });

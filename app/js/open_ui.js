@@ -571,6 +571,7 @@ define(function(require, exports, module) {
                                             if(activatingPath && activatingPath[0] === dir.key) {
                                                 activatingPath = activatingPath.slice(1);
                                                 if(activatingPath.length === 0) {
+                                                    ignoreActivate = true;
                                                     child.activate();
                                                     setTimeout(function() {
                                                         ignoreActivate = false;
@@ -603,12 +604,12 @@ define(function(require, exports, module) {
                             setTimeout(function() {
                                 localStore.get("zeddLastPath").then(function(path) {
                                     var tree = treeEl.dynatree("getTree");
-                                    ignoreActivate = true;
                                     if (path && path.length > 1) {
                                         activatingPath = path.slice(2).split('/');
                                         var node = tree.getNodeByKey("root");
                                         node.expand();
                                     } else {
+                                        ignoreActivate = true;
                                         tree.activateKey("root");
                                         setTimeout(function() {
                                             ignoreActivate = false;
