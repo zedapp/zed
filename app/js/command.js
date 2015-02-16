@@ -34,7 +34,8 @@ define(function(require, exports, module) {
                     });
                 },
                 readOnly: cmd.readOnly,
-                internal: cmd.internal
+                internal: cmd.internal,
+                requiredCapabilities: cmd.requiredCapabilities
             });
         }
 
@@ -72,6 +73,18 @@ define(function(require, exports, module) {
             },
 
             isVisible: function(session, cmd) {
+                if(cmd.requiredCapabilities) {
+                    var capabilities = zed.getService("fs").getCapabilities();
+                    var hasRequiredCapabilities = true;
+                    _.each(cmd.requiredCapabilities, function(val, key) {
+                        if(!capabilities[key]) {
+                            hasRequiredCapabilities = false;
+                        }
+                    });
+                    if(!hasRequiredCapabilities) {
+                        return false;
+                    }
+                }
                 if (cmd.modeCommand) {
                     if (!session.mode) {
                         return true;
