@@ -1,5 +1,4 @@
 define(function(require, exports, module) {
-    var async = require("../lib/async");
     return {
         binaryStringAsUint8Array: function(str) {
             var buf = new Uint8Array(str.length);
@@ -9,7 +8,12 @@ define(function(require, exports, module) {
             return buf;
         },
         uint8ArrayToBinaryString: function(arr) {
-            return String.fromCharCode.apply(null, arr);
+            var chunks = [];
+            var chunkSize = 2048;
+            for (var i = 0; i * chunkSize < arr.length; i++) {
+                chunks.push(String.fromCharCode.apply(null, arr.subarray(i * chunkSize, (i + 1) * chunkSize)));
+            }
+            return chunks.join('');
         },
         /**
          * Used to immediately return a filesystem object, where all methods are queued,
@@ -22,7 +26,7 @@ define(function(require, exports, module) {
             function queue(name, noPromise) {
                 return function() {
                     var args = _.toArray(arguments);
-                    if(resolvedFs) {
+                    if (resolvedFs) {
                         return resolvedFs[name].apply(resolvedFs, args);
                     }
                     if (noPromise) {
@@ -48,7 +52,7 @@ define(function(require, exports, module) {
                     queued.forEach(function(item) {
                         // console.log("calling", item.name, "on", item.args);
                         var prom = fs[item.name].apply(fs, item.args);
-                        if(prom && prom.then) {
+                        if (prom && prom.then) {
                             prom.then(item.resolve, item.reject);
                         }
                     });
