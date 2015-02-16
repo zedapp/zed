@@ -29,7 +29,8 @@ define(function(require, exports, module) {
             keys: {},
             commands: {},
             handlers: {},
-            themes: {},
+            window_themes: {},
+            editor_themes: {},
             packages: []
         };
 
@@ -111,11 +112,17 @@ define(function(require, exports, module) {
             getHandlers: function() {
                 return expandedConfiguration.handlers;
             },
-            getTheme: function(name) {
-                return expandedConfiguration.themes[name];
+            getEditorTheme: function(name) {
+                return expandedConfiguration.editor_themes[name];
             },
-            getThemes: function() {
-                return expandedConfiguration.themes;
+            getEditorThemes: function() {
+                return expandedConfiguration.editor_themes;
+            },
+            getWindowTheme: function(name) {
+                return expandedConfiguration.window_themes[name];
+            },
+            getWindowThemes: function() {
+                return expandedConfiguration.window_themes;
             },
             getConfiguration: function() {
                 return expandedConfiguration;
@@ -331,8 +338,14 @@ define(function(require, exports, module) {
                     resolveRelativePaths(mode, jsonPath);
                 });
             }
-            if (configJson.themes) {
-                _.each(configJson.themes, function(theme) {
+            if (configJson.editor_themes) {
+                resolveThemes(configJson.editor_themes);
+            }
+            if (configJson.window_themes) {
+                resolveThemes(configJson.window_themes);
+            }
+            function resolveThemes(themes) {
+                _.each(themes, function(theme) {
                     if (!_.isArray(theme.css)) {
                         theme.css = [theme.css];
                     }
