@@ -86,10 +86,8 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                 // Remove this project from history
                 zed.getService("history").removeProject(url);
                 zed.getService("ui").prompt({
-                    message: "Project not longer accessible by Zed. This window will now close."
-                }).then(function() {
-                    zed.getService("window").close();
-                });
+                    message: "Project not longer accessible by Zed. Will now return to project picker."
+                }).then(projectPicker);
             });
         });
     }
