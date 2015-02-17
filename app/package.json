@@ -5,7 +5,7 @@
   "node-main": "background.nw.js",
   "window": {
     "title": "Zed",
-    "toolbar": true,
+    "toolbar": false,
     "width": 1024,
     "height": 768,
     "show": true,

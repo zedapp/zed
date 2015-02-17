@@ -42,6 +42,8 @@ define(function(require, exports, module) {
                 name: "Github Repository",
                 url: "gh:"
             }, {
+                section: "Zed"
+            }, {
                 name: "Configuration",
                 html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
                 url: "nwconfig:"
@@ -65,6 +67,8 @@ define(function(require, exports, module) {
             }, {
                 name: "Dropbox Folder",
                 url: "dropbox:"
+            }, {
+                section: "Zed"
             }, {
                 name: "Configuration",
                 html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
@@ -134,7 +138,7 @@ define(function(require, exports, module) {
                         });
                     }
                     projects.push({
-                        section: "Other"
+                        section: "Open New"
                     });
                     projects = projects.concat(builtinProjects);
 
@@ -459,6 +463,9 @@ define(function(require, exports, module) {
                             close();
                             resolve();
                         });
+                        $("#help").click(function() {
+                            window.open("http://zedapp.org/zedd");
+                        });
 
                         $("#zedd-form").submit(function(event) {
                             var url = $("#zedd-url").val();
@@ -568,9 +575,9 @@ define(function(require, exports, module) {
                                     readDir(node.data.path).then(function(dirs) {
                                         dirs.forEach(function(dir) {
                                             var child = node.addChild(dir);
-                                            if(activatingPath && activatingPath[0] === dir.key) {
+                                            if (activatingPath && activatingPath[0] === dir.key) {
                                                 activatingPath = activatingPath.slice(1);
-                                                if(activatingPath.length === 0) {
+                                                if (activatingPath.length === 0) {
                                                     ignoreActivate = true;
                                                     child.activate();
                                                     setTimeout(function() {

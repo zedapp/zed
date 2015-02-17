@@ -53,14 +53,15 @@ function help() {
     console.log("Options can be passed in either as environment variables, JSON config in");
     console.log("~/.zeddrc or as command line arguments prefixed with '--':");
     console.log();
-    console.log("   user:     username to use for authentication (default: none)");
-    console.log("   pass:     password to use for authentication (default: none)");
-    console.log("   remote:   bind to 0.0.0.0, requires auth, and disables");
-    console.log("             enable-run by default");
-    console.log("   port:     port to bind to (default: 7337)");
-    console.log("   root:     root directory to expose (default: $HOME)");
-    console.log("   tls-key:  path to TLS key file (enables https)");
-    console.log("   tls-cert: path to TLS certificate file (enables https)");
+    console.log("   user:       username to use for authentication (default: none)");
+    console.log("   pass:       password to use for authentication (default: none)");
+    console.log("   remote:     bind to 0.0.0.0, requires auth, and disables");
+    console.log("               enable-run by default");
+    console.log("   port:       port to bind to (default: 7337)");
+    console.log("   root:       root directory to expose (default: $HOME)");
+    console.log("   enable-run: enable running of external programs in remote mode")
+    console.log("   tls-key:    path to TLS key file (enables https)");
+    console.log("   tls-cert:   path to TLS certificate file (enables https)");
     console.log();
 }
 
