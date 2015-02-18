@@ -27,7 +27,7 @@ var spawn = require("child_process").spawn;
 var config = nconf.argv().env().file(process.env.HOME + "/.zeddrc").defaults({
     port: 7337,
     ip: "0.0.0.0",
-    root: process.env.HOME
+    root: process.env.HOME || "/"
 });
 
 if (!config.get("user") && config.get("ip") === "0.0.0.0") {
