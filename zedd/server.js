@@ -59,7 +59,7 @@ function help() {
     console.log("               enable-run by default");
     console.log("   port:       port to bind to (default: 7337)");
     console.log("   root:       root directory to expose (default: $HOME)");
-    console.log("   enable-run: enable running of external programs in remote mode")
+    console.log("   enable-run: enable running of external programs in remote mode");
     console.log("   tls-key:    path to TLS key file (enables https)");
     console.log("   tls-cert:   path to TLS certificate file (enables https)");
     console.log();

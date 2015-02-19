@@ -100,6 +100,11 @@ define(function(require, exports, module) {
             if (config.getHandlers()[handlerName]) {
                 commandNames = commandNames.concat(config.getHandlers()[handlerName]);
             }
+            commandNames = commandNames.filter(function(cmdName) {
+                return command.isVisible({ // Fake session
+                    mode: mode
+                }, command.lookup(cmdName), true);
+            });
             return commandNames;
         }
 

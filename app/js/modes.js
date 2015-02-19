@@ -196,7 +196,7 @@ define(function(require, exports, module) {
                     var modeCommands = {};
                     modeCommands[mode.language] = cmd;
                     var commandSpec = {
-                        exec: function(edit, session, callback) {
+                        exec: function(edit, session) {
                             var cmd = commandSpec.modeCommand[session.mode.language];
                             if (cmd) {
                                 return zed.getService("sandboxes").execCommand(name, cmd, session).
@@ -213,6 +213,9 @@ define(function(require, exports, module) {
                     };
                     command.define(name, commandSpec);
                 } else {
+                    if(!existingCommand.modeCommand) {
+                        existingCommand.modeCommand = {};
+                    }
                     existingCommand.modeCommand[mode.language] = cmd;
                 }
             });

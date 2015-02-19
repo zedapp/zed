@@ -72,11 +72,16 @@ define(function(require, exports, module) {
                 return configCommands[path] || commands[path];
             },
 
-            isVisible: function(session, cmd) {
-                if(cmd.requiredCapabilities) {
+            isVisible: function(session, cmd, checkAvailabilityOnly) {
+                var requiredCapabilities = cmd.requiredCapabilities;
+                var modeName = session.mode.language;
+                if(cmd.modeCommand && cmd.modeCommand[modeName]) {
+                    requiredCapabilities = cmd.modeCommand[modeName].requiredCapabilities;
+                }
+                if(requiredCapabilities) {
                     var capabilities = zed.getService("fs").getCapabilities();
                     var hasRequiredCapabilities = true;
-                    _.each(cmd.requiredCapabilities, function(val, key) {
+                    _.each(requiredCapabilities, function(val, key) {
                         if(!capabilities[key]) {
                             hasRequiredCapabilities = false;
                         }
@@ -89,10 +94,9 @@ define(function(require, exports, module) {
                     if (!session.mode) {
                         return true;
                     }
-                    var modeName = session.mode.language;
-                    return cmd.modeCommand[modeName] && !cmd.modeCommand[modeName].internal;
+                    return cmd.modeCommand[modeName] && (!cmd.modeCommand[modeName].internal || checkAvailabilityOnly);
                 }
-                if (cmd.internal) {
+                if (cmd.internal && !checkAvailabilityOnly) {
                     return false;
                 }
                 return true;
