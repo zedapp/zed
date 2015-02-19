@@ -40,3 +40,6 @@
 [submodule "app/config/packages/gh/zedapp/config-ui"]
 	path = app/config/packages/gh/zedapp/config-ui
 	url = https://github.com/zedapp/config-ui.git
+[submodule "app/config/packages/gh/zedapp/git-tools"]
+	path = app/config/packages/gh/zedapp/git-tools
+	url = https://github.com/zedapp/git-tools.git

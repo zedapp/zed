@@ -22,6 +22,7 @@
         "gh:zedapp/bracket-check",
         "gh:zedapp/snippets",
         "gh:zedapp/staticserver",
-        "gh:zedapp/config-ui"
+        "gh:zedapp/config-ui",
+        "gh:zedapp/git-tools"
     ]
 }
