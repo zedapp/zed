@@ -160,6 +160,15 @@ define(function(require, exports, module) {
             } else {
                 $("title").text(title);
             }
+            // var config = zed.getService("config");
+            // pathBarEl.css("height", (config.getPreference("fontSize") + 7) + "px");
+            // editor.getEditors(true).forEach(function(edit) {
+            //     if (!edit.pathBarEl) {
+            //         // Bit too early
+            //         return;
+            //     }
+            //     pathBarEl.find("div").css("font-size", config.getPreference("fontSize") + "px");
+            // });
         }
 
         function switchSession(edit, session) {
