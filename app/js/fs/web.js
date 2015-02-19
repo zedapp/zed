@@ -1,16 +1,35 @@
 /*global define, $ */
 define(function(require, exports, module) {
+    plugin.consumes = ["history"];
     plugin.provides = ["fs"];
     return plugin;
 
     function plugin(options, imports, register) {
         var poll_watcher = require("./poll_watcher");
         var fsUtil = require("./util");
+        var niceName = require("../lib/url_extractor").niceName;
+
+        var history = imports.history;
+
         var url = options.url;
+        var user = options.user;
+        var pass = options.pass;
+        var keep = options.keep;
 
         var mode = "directory"; // or: file
         var fileModeFilename; // if mode === "file"
         var watcher;
+        var capabilities = {};
+
+        function promisedAjax(obj) {
+            return new Promise(function(resolve, reject) {
+                obj.username = user || undefined;
+                obj.password = pass || undefined;
+                obj.success = resolve;
+                obj.error = reject;
+                $.ajax(obj);
+            });
+        }
 
         function listFiles() {
             return new Promise(function(resolve, reject) {
@@ -23,6 +42,8 @@ define(function(require, exports, module) {
                     data: {
                         action: 'filelist'
                     },
+                    username: user || undefined,
+                    password: pass || undefined,
                     success: function(res) {
                         var items = res.split("\n");
                         for (var i = 0; i < items.length; i++) {
@@ -56,6 +77,8 @@ define(function(require, exports, module) {
                 $.ajax({
                     type: "GET",
                     url: url + path,
+                    username: user || undefined,
+                    password: pass || undefined,
                     error: function(xhr) {
                         reject(xhr.status);
                     },
@@ -89,6 +112,8 @@ define(function(require, exports, module) {
                     // dataType: 'text',
                     contentType: 'application/octet-stream',
                     processData: false,
+                    username: user || undefined,
+                    password: pass || undefined,
                     success: function(res, status, xhr) {
                         watcher.setCacheTag(path, xhr.getResponseHeader("ETag"));
                         watcher.unlockFile(path);
@@ -108,6 +133,8 @@ define(function(require, exports, module) {
                     type: 'DELETE',
                     dataType: 'text',
                     success: reject,
+                    username: user || undefined,
+                    password: pass || undefined,
                     error: function(xhr) {
                         resolve(xhr.status);
                     }
@@ -127,6 +154,8 @@ define(function(require, exports, module) {
             return new Promise(function(resolve, reject) {
                 $.ajax(url + path, {
                     type: 'HEAD',
+                    username: user || undefined,
+                    password: pass || undefined,
                     success: function(data, status, xhr) {
                         var newEtag = xhr.getResponseHeader("ETag");
                         resolve(newEtag);
@@ -138,9 +167,34 @@ define(function(require, exports, module) {
             });
         }
 
+        function run(command, stdin) {
+            return new Promise(function(resolve, reject) {
+                $.ajax(url, {
+                    type: "POST",
+                    url: url,
+                    data: {
+                        action: 'run',
+                        command: JSON.stringify(command),
+                        stdin: stdin
+                    },
+                    username: user || undefined,
+                    password: pass || undefined,
+                    success: function(res) {
+                        resolve(res);
+                    },
+                    error: function(xhr) {
+                        reject(xhr.status);
+                    },
+                    dataType: "text"
+                });
+            });
+        }
+
         // Check if we're dealing with one file
         $.ajax(url, {
             type: 'HEAD',
+            username: user || undefined,
+            password: pass || undefined,
             success: function(data, status, xhr) {
                 var type = xhr.getResponseHeader("X-Type");
                 if (type === "file") {
@@ -159,10 +213,18 @@ define(function(require, exports, module) {
                     deleteFile: deleteFile,
                     watchFile: watchFile,
                     unwatchFile: unwatchFile,
-                    getCacheTag: getCacheTag
+                    getCacheTag: getCacheTag,
+                    getCapabilities: function() {
+                        return capabilities;
+                    },
+                    run: run
                 };
 
                 watcher = poll_watcher(api, 5000);
+
+                if (keep) {
+                    history.pushProject(niceName(url), options.fullUrl);
+                }
 
                 register(null, {
                     fs: api
@@ -171,6 +233,17 @@ define(function(require, exports, module) {
             error: function(xhr) {
                 register(xhr);
             }
+        });
+
+        promisedAjax({
+            type: 'POST',
+            url: url,
+            data: {
+                action: 'capabilities'
+            },
+            dataType: 'json'
+        }).then(function(result) {
+            capabilities = result;
         });
     }
 });

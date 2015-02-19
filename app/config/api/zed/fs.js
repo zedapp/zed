@@ -16,5 +16,11 @@ module.exports = {
     },
     isConfig: function() {
         return sandboxRequest("zed/fs", "isConfig", []);
+    },
+    getCapabilities: function() {
+        return sandboxRequest("zed/fs", "getCapabilities", []);
+    },
+    run: function(command, stdin) {
+        return sandboxRequest("zed/fs", "run", [command, stdin]);
     }
 };

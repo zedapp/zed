@@ -177,7 +177,10 @@ define(function(require, exports, module) {
                 unwatchFile: function(path, callback) {
                     watcher.unwatchFile(path, callback);
                 },
-                getCacheTag: getCacheTag
+                getCacheTag: getCacheTag,
+                getCapabilities: function() {
+                    return {};
+                }
             };
 
             var watcher = poll_watcher(fs, 10000);

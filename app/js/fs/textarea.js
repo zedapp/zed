@@ -36,6 +36,9 @@ define(function(require, exports, module) {
                 unwatchFile: function() {},
                 getCacheTag: function(path, callback) {
                     return Promise.resolve("1");
+                },
+                getCapabilities: function() {
+                    return {};
                 }
             };
 

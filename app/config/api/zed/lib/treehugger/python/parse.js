@@ -164,7 +164,7 @@ define(function(require, exports, module) {
                 // console.log("Position for", resultNode.toString(), pos);
                 break;
             default:
-                console.error(skt);
+                // console.error(skt);
                 throw new Error("Unknown node type:" + nodeName);
         }
         resultNode.setAnnotation("pos", pos);

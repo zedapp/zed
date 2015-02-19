@@ -1,7 +1,7 @@
 /*global define, _, chrome, zed */
 define(function(require, exports, module) {
     "use strict";
-    plugin.consumes = ["eventbus", "command", "sandboxes", "configfs", "token_store", "background"];
+    plugin.consumes = ["eventbus", "command", "sandboxes", "configfs", "local_store", "background"];
     plugin.provides = ["config"];
     return plugin;
 
@@ -12,7 +12,7 @@ define(function(require, exports, module) {
         var command = imports.command;
         var sandboxes = imports.sandboxes;
         var configfs = imports.configfs;
-        var tokenStore = imports.token_store;
+        var tokenStore = imports.local_store;
         var background = imports.background;
 
         eventbus.declare("configchanged");

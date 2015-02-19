@@ -18,9 +18,11 @@ define(function(require, exports, module) {
             case "zedrem":
                 return "img/remote.png";
             case "http":
-                return "img/remote.png";
+                return "img/zedd.png";
             case "https":
-                return "img/remote.png";
+                return "img/zedd.png";
+            case "zedd":
+                return "img/zedd.png";
             default:
                 return "img/project.png";
         }

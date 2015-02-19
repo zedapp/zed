@@ -8,7 +8,7 @@ define(function(require, exports, module) {
         var ui = imports.ui;
         var eventbus = imports.eventbus;
 
-        if (fs.commit) {
+        if (fs.getCapabilities().scm) {
             // Enable version control commands
             var preCommitSession; // to jump back to after commit buffer is discarded
 
@@ -55,7 +55,7 @@ define(function(require, exports, module) {
                 readOnly: true
             });
 
-
+            console.log("Finalize commit");
             command.define("Version Control:Finalize Commit", {
                 exec: function(edit, session) {
                     var commitMessage = session.getValue();

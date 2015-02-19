@@ -295,6 +295,24 @@
             "doc": "Display auto-complete results based on simple text matches.",
             "scriptUrl": "./command/text_completer.js",
             "sandbox": "complete"
+        },
+        "Tools:External:Insert Command Output": {
+            "doc": "Prompts for a command-line command to run and inserts output into file",
+            "scriptUrl": "./command/external_insert_output.js",
+            "requiredCapabilities": {
+                "run": true
+            }
+        },
+        "Tools:External:Filter Selection Through Command": {
+            "doc": "Prompts for a command-line command to run and filters the current selection through it",
+            "scriptUrl": "./command/external_filter.js",
+            "inputs": {
+                "selectionText": true,
+                "selectionRange": true
+            },
+            "requiredCapabilities": {
+                "run": true
+            }
         }
     }
 }

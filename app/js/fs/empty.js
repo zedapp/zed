@@ -26,6 +26,9 @@ define(function(require, exports, module) {
             },
             getCacheTag: function() {
                 return Promise.resolve("unchanged");
+            },
+            getCapabilities: function() {
+                return {};
             }
         };
 

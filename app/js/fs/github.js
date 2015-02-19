@@ -16,12 +16,12 @@
  * - Commit involves scanning the DB for changed files, building up a new tree, posting changed files as blobs etc.
  */
 define(function(require, exports, module) {
-    plugin.consumes = ["history", "token_store"];
+    plugin.consumes = ["history", "local_store"];
     plugin.provides = ["fs"];
     return plugin;
 
     function plugin(options, imports, register) {
-        var tokenStore = imports.token_store;
+        var tokenStore = imports.local_store;
         var history = imports.history;
 
         var zedb = require("zedb");
@@ -546,6 +546,11 @@ define(function(require, exports, module) {
                         branch: name
                     };
                 });
+            },
+            getCapabilities: function() {
+                return {
+                    scm: true
+                };
             }
         };
 
