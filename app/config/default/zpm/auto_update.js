@@ -12,8 +12,9 @@ module.exports = function(info) {
 
     function check(data) {
         var date = parseInt(data, 10);
-        if(Date.now() - date > DAY) {
+        if (Date.now() - date > DAY) {
             console.log("ZPM: Checking for updates...");
+            configFs.writeFile("/packages/last.update", "" + Date.now());
             return zpm.updateAll(true).then(function(anyUpdates) {
                 if (anyUpdates) {
                     fs.isConfig().then(function(isConfig) {
@@ -23,7 +24,6 @@ module.exports = function(info) {
                     });
                     config.reload();
                 }
-                return configFs.writeFile("/packages/last.update", ""+Date.now());
             });
         }
     }

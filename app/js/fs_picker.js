@@ -68,6 +68,29 @@ define(function(require, exports, module) {
                     });
                 }
             });
+        } else if (url === "local_files:") {
+            return new Promise(function(resolve, reject) {
+                // Show pick directory
+                chrome.fileSystem.chooseEntry({
+                    type: "openWritableFile",
+                    acceptsMultiple: true
+                }, function(fileEntries) {
+                    if(!fileEntries) {
+                        return chrome.app.window.current().close();
+                    }
+
+                    if(fileEntries.length === 1) {
+                        options.set("title", fileEntries[0].name);
+                    } else {
+                        options.set("title", "Zed");
+                    }
+                    options.set("url", "local_files:");
+                    resolve({
+                        packagePath: "./fs/local_files",
+                        entries: fileEntries
+                    });
+                });
+            });
         } else if (url.indexOf("node:") === 0) {
             var path = url.substring("node:".length);
             if (path) {

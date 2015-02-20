@@ -56,6 +56,9 @@ define(function(require, exports, module) {
                 name: "Local Folder",
                 url: "local:"
             }, {
+                name: "Local File(s)",
+                url: "local_files:"
+            }, {
                 name: "Zedd Folder",
                 url: "zedd:"
             }, {
@@ -138,7 +141,7 @@ define(function(require, exports, module) {
                         });
                     }
                     projects.push({
-                        section: "Open New"
+                        section: "Open"
                     });
                     projects = projects.concat(builtinProjects);
 
