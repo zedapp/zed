@@ -691,6 +691,11 @@ div.modal-view h1 {
     font-size: 20px;
     margin-top: 5px;
 }
+div.modal-view h1 .version {
+    font-size: 12px;
+    margin-left: 4px;
+    opacity: 0.7;
+}
 div.modal-view input[type=text],  div.modal-view input[type=password]{
     font-size: 14px;
     font-family:'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;

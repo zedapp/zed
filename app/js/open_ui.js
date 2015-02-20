@@ -23,6 +23,7 @@ define(function(require, exports, module) {
         var zedb = require("zedb");
 
         var defaultConfig = JSON.parse(require("text!../config/default/preferences.json"));
+        var version = JSON.parse(require("text!../manifest.json")).version;
 
         eventbus.declare("urlchanged");
 
@@ -106,9 +107,9 @@ define(function(require, exports, module) {
             },
             showOpenUi: function() {
                 menu.disabled = true;
-                viewEl = $("<div class='modal-view'><img src='/img/zed-small.png' class='logo'><h1></h1><input type='text' id='phrase' placeholder='Filter list'><div id='item-list'></div></div>");
+                viewEl = $("<div class='modal-view'><img src='/img/zed-small.png' class='logo'><h1><span class='title'></span><span class='version'>v" + version + "</span></h1><input type='text' id='phrase' placeholder='Filter list'><div id='item-list'></div></div>");
                 $("body").append(viewEl);
-                headerEl = viewEl.find("h1");
+                headerEl = viewEl.find("h1 > span.title");
                 phraseEl = viewEl.find("#phrase");
                 listEl = viewEl.find("#item-list");
                 api.fadeOutBackground();
@@ -133,7 +134,7 @@ define(function(require, exports, module) {
                 $(".pathbar").css("opacity", "");
             },
             projectList: function() {
-                headerEl.text("Open in Zed");
+                headerEl.text("Zed");
                 history.getProjects().then(function(projects) {
                     if (projects.length > 0) {
                         projects.splice(0, 0, {
