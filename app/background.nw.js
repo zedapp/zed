@@ -263,7 +263,7 @@ function init() {
     try {
         update();
     } catch (e) {
-        lo("Error", e.message);
+        log("Error", e.message);
     }
 
     function update() {
