@@ -171,6 +171,7 @@ define(function(require, exports, module) {
                     var sessions = session_manager.getSessions();
                     var resultsPromise;
                     var phraseParts = locator.parse(phrase);
+                    var originalPhrase = phrase;
                     phrase = phraseParts[0];
                     var loc = phraseParts[1];
 
@@ -203,7 +204,7 @@ define(function(require, exports, module) {
                         if (fileCache.indexOf(phrase) === -1 && ":@#".indexOf(phrase[0]) === -1) {
                             resultList.push({
                                 path: phrase,
-                                name: "Create file '" + phrase + "'",
+                                name: "Create file '" + originalPhrase + "'",
                                 score: Infinity,
                                 icon: "action"
                             });
@@ -264,13 +265,13 @@ define(function(require, exports, module) {
                         if (resultList.length === 0 && loc === undefined && ":@#".indexOf(phrase[0]) === -1) {
                             resultList = [{
                                 path: phrase,
-                                name: "Create file '" + phrase + "'",
+                                name: "Create file '" + originalPhrase + "'",
                                 icon: "action"
                             }];
                         } else if (phrase[0] === "#") {
                             resultList = [{
                                 path: phrase,
-                                name: "Project search: " + phrase.substring(1),
+                                name: "Project search: " + originalPhrase.substring(1),
                                 icon: "action"
                             }];
                         }
