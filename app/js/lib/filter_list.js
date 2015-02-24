@@ -62,7 +62,11 @@ define(function(require, exports, module) {
                 } else {
                     el = $("<a href='#'>");
                     el.data("info", item);
-                    el.html(item.html);
+                    var html = item.html;
+                    if(item.key) {
+                        html += '<span class="meta">Alt-' + item.key + '</span>';
+                    }
+                    el.html(html);
                     el.data("idx", idx);
                     if (idx === selectIdx) {
                         el.addClass("active");
@@ -96,13 +100,14 @@ define(function(require, exports, module) {
         }
 
         function keyHandler(event) {
+            var selectedEl;
             switch (event.keyCode) {
                 case keyCode('Return'):
-                    var selectedEl = resultsEl.find("a").eq(selectIdx);
+                    selectedEl = resultsEl.find("a").eq(selectIdx);
                     if (selectedEl.length > 0) {
                         selectedEl.click();
-                        inputEl.val("");
-                        update();
+                        // inputEl.val("");
+                        // update();
                         event.preventDefault();
                     } else {
                         onSelect({
@@ -142,10 +147,21 @@ define(function(require, exports, module) {
                     cleanup();
                     break;
                 case keyCode('Delete'):
-                    var selectedEl = resultsEl.find("a").eq(selectIdx);
+                    selectedEl = resultsEl.find("a").eq(selectIdx);
                     onDelete && onDelete(selectedEl.data("info"));
                     update();
                     break;
+            }
+            if(event.altKey) {
+                console.log("Key", event);
+                var filteredItems = getFilteredList();
+                filteredItems.forEach(function(item) {
+                    console.log(item);
+                    if(item.key && item.key.charCodeAt(0) === event.keyCode) {
+                        cleanup();
+                        onSelect(item);
+                    }
+                });
             }
             updateSelection();
         }

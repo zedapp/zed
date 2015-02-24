@@ -752,6 +752,13 @@ div.modal-view #item-list div.section {
     padding: 8px;
     background-color: #eee;
 }
+
+div.modal-view #item-list span.meta {
+    position: absolute;
+    right: 10px;
+    opacity: 0.7;
+}
+
 div.modal-view #item-list a.active {
     background-color: #ccc;
 }

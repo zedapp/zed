@@ -32,10 +32,13 @@ define(function(require, exports, module) {
         if (window.isNodeWebkit) {
             builtinProjects = [{
                 name: "Local Folder",
-                url: "node:"
+                url: "node:",
+                key: "L"
             }, {
                 name: "Zedd Folder",
-                url: "zedd:"
+                html: "<u>Z</u>edd Folder",
+                url: "zedd:",
+                key: "Z"
             }, {
                 name: "Remote Folder",
                 url: "zedrem:"
@@ -47,7 +50,8 @@ define(function(require, exports, module) {
             }, {
                 name: "Configuration",
                 html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
-                url: "nwconfig:"
+                url: "nwconfig:",
+                key: "C"
             }, {
                 name: "Manual",
                 url: "manual:"
@@ -55,31 +59,35 @@ define(function(require, exports, module) {
         } else {
             builtinProjects = [{
                 name: "Local Folder",
-                url: "local:"
+                url: "local:",
+                key: "L",
             }, {
                 name: "Local File(s)",
-                url: "local_files:"
+                url: "local_files:",
+                key: "F"
             }, {
                 name: "Zedd Folder",
-                url: "zedd:"
+                url: "zedd:",
+                key: "Z"
             }, {
                 name: "Remote Folder",
-                url: "zedrem:"
+                url: "zedrem:",
             }, {
                 name: "Github Repository",
-                url: "gh:"
+                url: "gh:",
             }, {
                 name: "Dropbox Folder",
-                url: "dropbox:"
+                url: "dropbox:",
             }, {
                 section: "Zed"
             }, {
                 name: "Configuration",
                 html: "Configuration <img class='tool' data-info='set-config-dir' src='/img/edit.png'>",
-                url: "config:"
+                url: "config:",
+                key: "C"
             }, {
                 name: "Manual",
-                url: "manual:"
+                url: "manual:",
             }];
         }
 
@@ -153,7 +161,8 @@ define(function(require, exports, module) {
                         return {
                             name: project.name,
                             url: project.url,
-                            html: "<img src='" + icons.protocolIcon(project.url) + "'/>" + (project.html ? project.html : project.name)
+                            html: "<img src='" + icons.protocolIcon(project.url) + "'/>" + (project.html ? project.html : project.name),
+                            key: project.key
                         };
                     });
 
