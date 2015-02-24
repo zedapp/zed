@@ -36,7 +36,6 @@ define(function(require, exports, module) {
                 key: "L"
             }, {
                 name: "Zedd Folder",
-                html: "<u>Z</u>edd Folder",
                 url: "zedd:",
                 key: "Z"
             }, {
