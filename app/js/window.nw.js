@@ -1,23 +1,14 @@
 /*global chrome, define, nodeRequire*/
 define(function(require, exports, module) {
-    plugin.consumes = ["command", "background"];
-    plugin.provides = ["window"];
-    return plugin;
-
-    function plugin(options, imports, register) {
+    return function(command, background) {
         var gui = nodeRequire("nw.gui");
         var opts = require("./lib/options");
 
-        var command = imports.command;
-        var background = imports.background;
-
         var win = gui.Window.get();
-
-        background.registerWindow(opts.get("title"), opts.get("url"), win);
-
         var closeHandler = null;
-
         var isMaximized = false;
+        
+        background.registerWindow(opts.get("title"), opts.get("url"), win);
 
         var api = {
             close: function(force) {
@@ -118,8 +109,6 @@ define(function(require, exports, module) {
             readOnly: true
         });
 
-        register(null, {
-            window: api
-        });
-    }
+        return api;
+    };
 });

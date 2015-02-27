@@ -566,14 +566,9 @@ define(function(require, exports, module) {
                         }
 
                         function renderInitialTree(children) {
-                            var ignoreActivate = false;
-                            window.tree = treeEl;
                             var activatingPath = null;
                             treeEl.dynatree({
                                 onActivate: function(node) {
-                                    if (ignoreActivate) {
-                                        return;
-                                    }
                                     localStore.set("zeddLastPath", node.data.path);
                                     var path = node.data.path.slice(1); // Cut off first /
                                     var url = rootUrl + path + "?keep=1";
@@ -590,10 +585,8 @@ define(function(require, exports, module) {
                                             if (activatingPath && activatingPath[0] === dir.key) {
                                                 activatingPath = activatingPath.slice(1);
                                                 if (activatingPath.length === 0) {
-                                                    ignoreActivate = true;
-                                                    child.activate();
+                                                    child.focus();
                                                     setTimeout(function() {
-                                                        ignoreActivate = false;
                                                         child.span.scrollIntoViewIfNeeded();
                                                         child.focus();
                                                     });
@@ -628,11 +621,8 @@ define(function(require, exports, module) {
                                         var node = tree.getNodeByKey("root");
                                         node.expand();
                                     } else {
-                                        ignoreActivate = true;
-                                        tree.activateKey("root");
-                                        setTimeout(function() {
-                                            ignoreActivate = false;
-                                        });
+                                        var node = tree.getNodeByKey("root");
+                                        node.expand();
                                     }
                                 });
                             }, 100);

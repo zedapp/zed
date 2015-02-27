@@ -1,15 +1,9 @@
-/*global define, zed, nodeRequire */
+/*global define, zed, nodeRequire, architect */
 define(function(require, exports, module) {
-    var architect = require("../dep/architect");
-    plugin.consumes = ["command"];
-    plugin.provides = ["configfs"];
-    return plugin;
-
-    function plugin(options, imports, register) {
+    return function(command) {
         var folderPicker = require("./lib/folderpicker.nw");
-        var command = imports.command;
-
         var fsUtil = require("./fs/util");
+        var architect = require("../dep/architect");
 
         var queueFs = fsUtil.queuedFilesystem();
 
@@ -20,11 +14,11 @@ define(function(require, exports, module) {
             watchSelf: true
         }], function(err, config) {
             if (err) {
-                return register(err);
+                return console.error("Error", err);
             }
             architect.createApp(config, function(err, app) {
                 if (err) {
-                    return register(err);
+                    return console.error("Error", err);
                 }
                 try {
                     queueFs.resolve(app.getService("fs"));
@@ -52,10 +46,6 @@ define(function(require, exports, module) {
             });
         };
 
-        register(null, {
-            configfs: queueFs
-        });
-
         command.define("Configuration:Set Configuration Directory", {
             doc: "Choose which directory Zed should store it's configuration in.",
             exec: function() {
@@ -63,5 +53,7 @@ define(function(require, exports, module) {
             },
             readOnly: true
         });
-    }
+
+        return queueFs;
+    };
 });

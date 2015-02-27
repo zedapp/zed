@@ -1,13 +1,6 @@
 /*global analytics*/
 define(function(require, exports, module) {
-    "use strict";
-    plugin.consumes = ["config"];
-    plugin.provides = ["analytics_tracker"];
-    return plugin;
-
-    function plugin(options, imports, register) {
-        var config = imports.config;
-
+    return function(config) {
         var service = analytics.getService("zed");
         var tracker = service.getTracker("UA-58112-11");
 
@@ -19,9 +12,6 @@ define(function(require, exports, module) {
             }
         };
 
-        register(null, {
-            analytics_tracker: api
-        });
-
-    }
+        return Promise.resolve(api);
+    };
 });

@@ -1,17 +1,10 @@
 /*global chrome, define*/
 define(function(require, exports, module) {
-    plugin.consumes = ["eventbus", "background"];
-    plugin.provides = ["window"];
-    return plugin;
-
-    function plugin(options, imports, register) {
+    return function(eventbus, background) {
         var win = chrome.app.window.current();
 
         var userAgent = require("ace/lib/useragent");
         var opts = require("./lib/options");
-
-        var eventbus = imports.eventbus;
-        var background = imports.background;
 
         eventbus.declare("windowclose");
 
@@ -21,7 +14,7 @@ define(function(require, exports, module) {
 
         var api = {
             close: function(force) {
-                if(force || !closeHandler) {
+                if (force || !closeHandler) {
                     win.close();
                 } else {
                     eventbus.emit("windowclose");
@@ -63,10 +56,10 @@ define(function(require, exports, module) {
                 };
             },
             setBounds: function(bounds) {
-                if(bounds.isMaximized) {
+                if (bounds.isMaximized) {
                     win.maximize();
                 } else {
-                    if(bounds.width < 200 || bounds.height < 200) {
+                    if (bounds.width < 200 || bounds.height < 200) {
                         // Bounds messed up, let's just ignore and use defaults
                         return;
                     }
@@ -82,8 +75,6 @@ define(function(require, exports, module) {
             }
         };
 
-        register(null, {
-            window: api
-        });
-    }
+        return api;
+    };
 });

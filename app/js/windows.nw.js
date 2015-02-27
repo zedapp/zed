@@ -1,9 +1,6 @@
 /* global chrome, define */
 define(function(require, exports, module) {
-    plugin.provides = ["windows"];
-    return plugin;
-
-    function plugin(options, imports, register) {
+    return function() {
         global.openProjects = global.openProjects || {};
         var api = {
             openProjects: global.openProjects,
@@ -23,8 +20,6 @@ define(function(require, exports, module) {
                 gui.App.quit();
             }
         };
-        register(null, {
-            windows: api
-        });
-    }
+        return Promise.resolve(api);
+    };
 });

@@ -11,13 +11,7 @@
  */
 /*global define, $, _ */
 define(function(require, exports, module) {
-    plugin.consumes = ["command"];
-    plugin.provides = ["sandbox"];
-    return plugin;
-
-    function plugin(options, imports, register) {
-        var command = imports.command;
-
+    return function() {
         var async = require("./lib/async");
         var events = require("./lib/events");
 
@@ -164,9 +158,6 @@ define(function(require, exports, module) {
             });
         };
 
-        register(null, {
-            sandbox: api
-        });
-
+        return api;
     }
 });

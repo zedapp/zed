@@ -1,12 +1,8 @@
 /**
- * Implements a web server in Chrome
+ * Implements a web server in node-webkit
  */
 define(function(require, exports, module) {
-    plugin.provides = ["webserver"];
-    return plugin;
-
-    function plugin(options, imports, register) {
-
+    return function() {
         var express = nodeRequire("express");
         var bodyParser = nodeRequire("body-parser");
         var http = nodeRequire("http");
@@ -51,12 +47,8 @@ define(function(require, exports, module) {
             },
         };
 
-        var api = {
+        return {
             HttpServer: HttpServer
         };
-
-        register(null, {
-            webserver: api
-        });
-    }
+    };
 });

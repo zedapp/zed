@@ -1,13 +1,8 @@
 /*global define, chrome, zed */
 define(function(require, exports, module) {
-    var architect = require("../dep/architect");
-    plugin.consumes = ["command"];
-    plugin.provides = ["configfs"];
-    return plugin;
-
-    function plugin(options, imports, register) {
-        var command = imports.command;
+    return function(command) {
         var fsUtil = require("./fs/util");
+        var architect = require("../dep/architect");
 
         var queueFs = fsUtil.queuedFilesystem();
 
@@ -18,11 +13,11 @@ define(function(require, exports, module) {
             watchSelf: true
         }], function(err, config) {
             if (err) {
-                return register(err);
+                return console.error("Error", err);
             }
             architect.createApp(config, function(err, app) {
                 if (err) {
-                    return register(err);
+                    return console.error("Error", err);
                 }
                 try {
                     queueFs.resolve(app.getService("fs"));
@@ -63,10 +58,6 @@ define(function(require, exports, module) {
             });
         };
 
-        register(null, {
-            configfs: queueFs
-        });
-
         command.define("Configuration:Store in Local Folder", {
             doc: "Prompt for a local folder in which to store your Zed config. " + "Zed must restart for this to take effect.",
             exec: function() {
@@ -88,5 +79,7 @@ define(function(require, exports, module) {
             },
             readOnly: true
         });
-    }
+
+        return queueFs;
+    };
 });

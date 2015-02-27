@@ -51,7 +51,7 @@ define(function(require, exports, module) {
     // Creates local architect application with just the file system module
     function getFs(config) {
         return new Promise(function(resolve, reject) {
-            architect.resolveConfig([config, "./history.nw"], function(err, config) {
+            architect.resolveConfig([config, "./history"], function(err, config) {
                 if (err) {
                     return reject(err);
                 }

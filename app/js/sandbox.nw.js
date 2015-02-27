@@ -11,13 +11,7 @@
  */
 /*global define, $, _ */
 define(function(require, exports, module) {
-    plugin.consumes = ["command"];
-    plugin.provides = ["sandbox"];
-    return plugin;
-
-    function plugin(options, imports, register) {
-        var command = imports.command;
-
+    return function() {
         var events = require("./lib/events");
 
         var id = 0;
@@ -169,19 +163,6 @@ define(function(require, exports, module) {
             });
         };
 
-        command.define("Sandbox:Reset", {
-            doc: "Reload all sandbox code. If you've made changes to a Zed " + "extension in your sandbox, you must run this for those changes " + "to take effect.",
-            exec: function() {
-                defaultSandbox.reset().then(function() {
-                    id = 0;
-                    waitingForReply = {};
-                });
-            },
-            readOnly: true
-        });
-
-        register(null, {
-            sandbox: api
-        });
-    }
+        return api;
+    };
 });

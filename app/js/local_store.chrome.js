@@ -1,11 +1,6 @@
 /*global define, _, nodeRequire */
 define(function(require, exports, module) {
-    plugin.consumes = [];
-    plugin.provides = ["local_store"];
-    return plugin;
-
-    function plugin(options, imports, register) {
-
+    return function() {
         var api = {
             set: function(key, value) {
                 return new Promise(function(resolve) {
@@ -31,9 +26,6 @@ define(function(require, exports, module) {
                 });
             }
         };
-
-        register(null, {
-            local_store: api
-        });
-    }
+        return api;
+    };
 });

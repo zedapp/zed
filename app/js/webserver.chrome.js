@@ -2,11 +2,7 @@
  * Implements a web server in Chrome
  */
 define(function(require, exports, module) {
-    plugin.consumes = ["fs", "eventbus"];
-    plugin.provides = ["webserver"];
-    return plugin;
-
-    function plugin(options, imports, register) {
+    return function() {
         var fsUtil = require("./fs/util");
 
         var STATUS_CODES = {
@@ -204,12 +200,8 @@ define(function(require, exports, module) {
             return fsUtil.uint8ArrayToBinaryString(new Uint8Array(buffer));
         }
 
-        var api = {
+        return {
             HttpServer: HttpServer
         };
-
-        return register(null, {
-            webserver: api
-        });
     }
 });

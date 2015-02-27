@@ -1,11 +1,6 @@
 /*global chrome, define, _, zed*/
 define(function(require, exports, module) {
-    plugin.provides = ["history"];
-    return plugin;
-
-    function plugin(options, imports, register) {
-        var async = require("./lib/async");
-
+    return function() {
         var api = {
             pushProject: function(name, url) {
                 // Using setTimeout to wait for the whole architect app to the initialized
@@ -113,8 +108,6 @@ define(function(require, exports, module) {
                 chrome.storage.onChanged.addListener(listener);
             }
         };
-        register(null, {
-            history: api
-        });
-    }
+        return api;
+    };
 });

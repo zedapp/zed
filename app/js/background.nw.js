@@ -1,8 +1,5 @@
 define(function(require, exports, module) {
-    plugin.provides = ["background"];
-    return plugin;
-
-    function plugin(opts, imports, register) {
+    return function() {
         var gui = nodeRequire("nw.gui");
 
         var exp = Object.create(process.mainModule.exports);
@@ -24,8 +21,6 @@ define(function(require, exports, module) {
             }
         };
 
-        register(null, {
-            background: exp
-        });
-    }
+        return Promise.resolve(exp);
+    };
 });
