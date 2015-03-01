@@ -48,6 +48,7 @@
         "Select:Right": "Shift-Right|Alt-Shift-L",
         "Select:Page Down": "Shift-PageDown",
         "Select:Page Up": "Shift-PageUp",
+        "Select:Paragraph": "Alt-P",
         "Select:To Matching Brace": "Ctrl-Shift-5",
         "Select:Duplicate": {
             "win": "Ctrl-Shift-D",
