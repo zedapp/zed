@@ -228,19 +228,19 @@
             "readOnly": true
         },
         "Edit:Open Line Above": {
-            scriptUrl: "./command/open_line.js",
-            go: 0,
-            inputs: {
-                cursor: true,
-                lines: true
+            "scriptUrl": "./command/open_line.js",
+            "go": 0,
+            "inputs": {
+                "cursor": true,
+                "lines": true
             }
         },
         "Edit:Open Line Below": {
-            scriptUrl: "./command/open_line.js",
-            go: 1,
-            inputs: {
-                cursor: true,
-                lines: true
+            "scriptUrl": "./command/open_line.js",
+            "go": 1,
+            "inputs": {
+                "cursor": true,
+                "lines": true
             }
         },
         "Edit:Trim Whitespace": {
