@@ -100,8 +100,8 @@
             "mac": "Command-Down|Alt-Shift-G",
             "win": "Ctrl-End|Alt-Shift-G"
         },
-        "Cursor:Paragraph Up": "Alt-Up",
-        "Cursor:Paragraph Down": "Alt-Down",
+        "Cursor:Paragraph Up": "Ctrl-PageUp",
+        "Cursor:Paragraph Down": "Ctrl-PageDown",
         "Cursor:Up": {
             "mac": "Up|Ctrl-P|Alt-K",
             "win": "Up|Alt-K"
