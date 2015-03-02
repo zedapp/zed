@@ -80,6 +80,8 @@
             "mac": "Command-L"
         },
         "Help:Commands": "F1",
+        "Edit:Open Line Above": "Alt-Enter|Alt-Shift-O",
+        "Edit:Open Line Below": "Shift-Enter|Alt-O",
         "Edit:Overwrite Mode": "Insert",
         "Edit:Remove Word Left": {
             "win": "Ctrl-Backspace",
