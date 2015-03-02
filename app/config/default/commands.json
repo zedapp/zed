@@ -264,6 +264,31 @@
                 "preferences": true
             }
         },
+        "Cursor:Paragraph Up": {
+            "scriptUrl": "./command/paragraph.js",
+            "go": -1,
+            "inputs": {
+                "cursor": true,
+                "lines": true
+            }
+        },
+        "Cursor:Paragraph Down": {
+            "scriptUrl": "./command/paragraph.js",
+            "go": 1,
+            "inputs": {
+                "cursor": true,
+                "lines": true
+            }
+        },
+        "Select:Paragraph": {
+            "scriptUrl": "./command/paragraph.js",
+            "go": -1,
+            "select": true,
+            "inputs": {
+                "cursor": true,
+                "lines": true
+            }
+        },
         "Find:Find In Project Internal": {
             "doc": "Recursively search all files within the entire project.",
             "scriptUrl": "./command/search.js",
