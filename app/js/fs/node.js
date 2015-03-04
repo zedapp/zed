@@ -18,10 +18,29 @@ define(function(require, exports, module) {
 
         // Support opening a single file
         var stats = nodeFs.statSync(rootPath);
-        var filename;
+        var filename, newRoot, vcsStat;
         if (stats.isFile()) {
-            filename = path.basename(rootPath);
-            rootPath = path.dirname(rootPath);
+            var vcsFound = false;
+            filename = rootPath;
+            do {
+                // Scan up the file tree looking for version control dirs.
+                newRoot = path.dirname(rootPath);
+                if (newRoot == rootPath) {
+                    // No VCS found, give up.
+                    rootPath = path.dirname(filename);
+                    break;
+                } else {
+                    rootPath = newRoot;
+                }
+                [".bzr", ".git", ".svn", ".hg", ".fslckout", "_darcs", "CVS"].some(function(vcs) {
+                    try {
+                        vcsStat = nodeFs.statSync(path.join(rootPath, vcs));
+                        vcsFound = true;
+                        return true;
+                    } catch(ignore) {}
+                });
+            } while (!vcsFound);
+            filename = stripRoot(filename).slice(1);
         }
 
         // Copy and paste from project.js, but cannot important that due to
