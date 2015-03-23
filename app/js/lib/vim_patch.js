@@ -6,7 +6,7 @@ define(function(require, exports, module) {
         var vimKeys = vimKeyBindings.handler.defaultKeymap;
         for(var i = 0; i < vimKeys.length; i++) {
             var key = vimKeys[i];
-            if(key.keys.indexOf("<C-") === 0) {
+            if(key.keys.indexOf("<C-") === 0 || (key.type == "keyToKey" && key.toKeys.indexOf("<C-") === 0)) {
                 vimKeys.splice(i, 1);
                 i--;
             }
