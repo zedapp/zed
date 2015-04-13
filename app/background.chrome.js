@@ -235,6 +235,9 @@ function saveOpenWindows() {
 }
 
 function restoreOpenWindows(e) {
+    var wins = chrome.app.window.getAll();
+    if (wins.length) return wins[0].focus();
+    
     ignoreClose = false;
     console.log("On launched", e);
     chrome.storage.local.get("openWindows", function(result) {
