@@ -195,8 +195,12 @@ window.registerWindow = function(title, url, win) {
     }
     openProjects[url] = {
         win: win,
-        title: title
+        title: title,
+        lastFocus: new Date()
     };
+    win.contentWindow.addEventListener('focus', function() {
+        openProjects[url].lastFocus = new Date();
+    });
     win.onClosed.addListener(function() {
         delete openProjects[url];
         saveOpenWindows();
@@ -209,8 +213,12 @@ window.getOpenWindows = function() {
     Object.keys(openProjects).forEach(function(url) {
         wins.push({
             title: openProjects[url].title,
-            url: url
+            url: url,
+            lastFocus: openProjects[url].lastFocus
         });
+    });
+    wins.sort(function(a, b) {
+        return a.lastFocus < b.lastFocus;
     });
     return wins;
 };
@@ -235,6 +243,9 @@ function saveOpenWindows() {
 }
 
 function restoreOpenWindows(e) {
+    var wins = window.getOpenWindows();
+    if (wins.length) return openProjects[wins[0].url].win.focus();
+    
     ignoreClose = false;
     console.log("On launched", e);
     chrome.storage.local.get("openWindows", function(result) {
