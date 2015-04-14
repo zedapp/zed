@@ -408,7 +408,7 @@ define(function(require, exports, module) {
         });
 
         command.define("Select:None", {
-            doc: "Select entire document.",
+            doc: "Clear the selection.",
             exec: function(editor) {
                 editor.clearSelection();
             },

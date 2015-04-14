@@ -227,6 +227,22 @@
             "value": "vim",
             "readOnly": true
         },
+        "Edit:Open Line Above": {
+            "scriptUrl": "./command/open_line.js",
+            "go": 0,
+            "inputs": {
+                "cursor": true,
+                "lines": true
+            }
+        },
+        "Edit:Open Line Below": {
+            "scriptUrl": "./command/open_line.js",
+            "go": 1,
+            "inputs": {
+                "cursor": true,
+                "lines": true
+            }
+        },
         "Edit:Trim Whitespace": {
             "doc": "This command will strip spaces and tabs from the end of every line (but not the line containing the cursor), and also ensures that the document ends with one and only one newline character.",
             "scriptUrl": "./command/stripper.js",
@@ -246,6 +262,31 @@
                 "isInsertingSnippet": true,
                 "lines": true,
                 "preferences": true
+            }
+        },
+        "Cursor:Paragraph Up": {
+            "scriptUrl": "./command/paragraph.js",
+            "go": -1,
+            "inputs": {
+                "cursor": true,
+                "lines": true
+            }
+        },
+        "Cursor:Paragraph Down": {
+            "scriptUrl": "./command/paragraph.js",
+            "go": 1,
+            "inputs": {
+                "cursor": true,
+                "lines": true
+            }
+        },
+        "Select:Paragraph": {
+            "scriptUrl": "./command/paragraph.js",
+            "go": -1,
+            "select": true,
+            "inputs": {
+                "cursor": true,
+                "lines": true
             }
         },
         "Find:Find In Project Internal": {
