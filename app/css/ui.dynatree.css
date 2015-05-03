@@ -12,6 +12,7 @@ ul.dynatree-container
 	border: 1px dotted gray;
 	overflow: auto;
 	height: 100%; /* issue 263 */
+	box-sizing: border-box;
 }
 
 ul.dynatree-container ul

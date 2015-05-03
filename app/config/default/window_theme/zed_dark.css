@@ -39,6 +39,7 @@ body .ace_line-hover {
 body .ace_editor.ace_autocomplete .ace_active-line {
     background-color: #555 !important;
 }
+body .tree,
 body .dynatree-container {
     background-color: #222;
 }
