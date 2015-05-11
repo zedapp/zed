@@ -4,7 +4,8 @@
             name: "Elixir",
             highlighter: "ace/mode/elixir",
             extensions: [
-                "exs"
+                "exs",
+                "ex"
             ],
             completionTriggers: ["."]
         }
