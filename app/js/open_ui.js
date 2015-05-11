@@ -514,8 +514,9 @@ define(function(require, exports, module) {
                                 data: {
                                     action: 'version'
                                 },
-                                username: user || undefined,
-                                password: pass || undefined,
+                                headers: {
+                                    "Authorization": "Basic " + btoa(user + ":" + pass)
+                                },
                                 success: function() {
                                     resolve();
                                 },
