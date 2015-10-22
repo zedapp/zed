@@ -141,6 +141,8 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
 
                                 setupBuiltinDoc("zed::start", introText);
                                 setupBuiltinDoc("zed::log", "Zed Log\n===========\n");
+                                
+                                setupScratchBuffer();
 
                             } else {
                                 app.getService("eventbus").on("urlchanged", function() {
@@ -170,6 +172,16 @@ require(["../dep/architect", "./lib/options", "./fs_picker", "text!../manual/int
                                 }
                             });
 
+                            session_manager.specialDocs[path] = session;
+                        }
+                        
+                        function setupScratchBuffer() {
+                            var path = "zed::notes";
+                            var editor = app.getService("editor");
+                            var session_manager = app.getService("session_manager");
+                            
+                            var session = editor.createSession(path, "");
+                            
                             session_manager.specialDocs[path] = session;
                         }
                     });
