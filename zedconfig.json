@@ -1,50 +1,50 @@
 {
-    preferences: {
-        tabSize: 4,
-        gotoExclude: [
+    "preferences": {
+        "tabSize": 4,
+        "gotoExclude": [
             "/release/zed-*",
             "/nw/build/*",
             "/nw/download/*",
             "*/node_modules/*"
         ]
     },
-    modes: {
-        json: {
-            commands: {
+    "modes": {
+        "json": {
+            "commands": {
                 "Development:Update Package.json File List": {
-                    scriptUrl: "/default/command/update_package.js"
+                    "scriptUrl": "/default/command/update_package.js"
                 }
             },
-            extensions: [
+            "extensions": [
                 "!json"
             ]
         },
-        json5: {
-            extensions: [
+        "json5": {
+            "extensions": [
                 "json"
             ]
         },
-        javascript: {
-            commands: {
+        "javascript": {
+            "commands": {
                 "Tools:Check": {
-                    options: {
-                        globals: {
-                            define: true,
-                            zed: true,
-                            nodeRequire: true,
-                            _: true,
-                            $: true,
-                            ace: true,
-                            Promise: true,
-                            sandboxRequest: true,
-                            JSON5: true,
-                            chrome: true
+                    "options": {
+                        "globals": {
+                            "define": true,
+                            "zed": true,
+                            "nodeRequire": true,
+                            "_": true,
+                            "$": true,
+                            "ace": true,
+                            "Promise": true,
+                            "sandboxRequest": true,
+                            "JSON5": true,
+                            "chrome": true
                         }
                     }
                 },
                 "Tools:Complete:Snippet": {
-                    snippets: {
-                        prom: "new Promise(function(resolve, reject) {\n\t${1}\n})",
+                    "snippets": {
+                        "prom": "new Promise(function(resolve, reject) {\n\t${1}\n})",
                     }
                 }
             }
