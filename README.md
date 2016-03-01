@@ -1,7 +1,7 @@
 Zed
 ======
 
-Welcome to [Zed](http://zedapp.org), a code editor built using web technologies, designed to rethink some of the assumptions that underly most editors today. Some of the editor's core features are the features it does **not** have:
+Welcome to [Zed](http://zedapp.org), a code editor built using web technologies, designed to rethink some of the assumptions that underly most editors today. Core features that the editor does **not** have:
 
 * Tabs
 * Always visible file tree
