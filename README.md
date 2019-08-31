@@ -1,5 +1,10 @@
-Zed
-======
+<p align="center">
+  <img alt="zed logo" src="./Zed.svg" width="100px" />
+  <h1 align="center">Zed</h1>
+</p>
+
+[![Release](https://img.shields.io/github/release/zedapp/zed.svg?style=flat-square)](https://github.com/felixse/FluentTerminal/releases)
+[![Contributors](https://img.shields.io/github/contributors/zedapp/zed?style=flat-square)](https://github.com/felixse/FluentTerminal/graphs/contributors)
 
 Welcome to [Zed](http://zedapp.org), a code editor built using web technologies, designed to rethink some of the assumptions that underly most editors today. Some of the editor's core features are the features it does **not** have:
 
